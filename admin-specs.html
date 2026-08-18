@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quản trị thông số | Siêu Di Động</title>
+  <!-- V80 analytics panel visibility fix -->
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
   <style>
     :root{
@@ -39,7 +40,7 @@
     .admin-tabs{display:flex;gap:8px;margin-bottom:14px}
     .admin-tab{height:38px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:700;cursor:pointer}
     .admin-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
-    .panel{display:none}.panel.active{display:block}
+    .panel{display:none}.panel.active{display:block!important}
     .analytics-shell{padding:18px}.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .metric{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}.metric small{display:block;color:var(--muted);font-size:11px}
     .metric strong{display:block;margin-top:5px;font-size:24px}.metric em{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-style:normal}
@@ -75,7 +76,7 @@
     <button class="admin-tab active" data-tab="specs" type="button">Link thông số</button>
     <button class="admin-tab" data-tab="analytics" type="button">Thống kê</button>
   </div>
-  <section id="adminCard" class="card hidden panel active" data-panel="specs">
+  <section id="adminCard" class="card panel active" data-panel="specs">
     <div class="head">
       <div>
         <h1>Link thông số sản phẩm</h1>
@@ -87,7 +88,7 @@
     <div id="rows" class="rows"></div>
   </section>
 
-  <section id="analyticsCard" class="card hidden panel" data-panel="analytics">
+  <section id="analyticsCard" class="card panel" data-panel="analytics">
     <div class="head">
       <div><h1>Thống kê truy cập</h1><p>Lượt xem, khách truy cập, sản phẩm được xem và lượt bấm Zalo.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
@@ -124,6 +125,7 @@ const rows=document.getElementById("rows");
 const stats=document.getElementById("stats");
 const search=document.getElementById("search");
 const adminTabs=document.getElementById("adminTabs");
+const analyticsCard=document.getElementById("analyticsCard");
 const refreshAnalytics=document.getElementById("refreshAnalytics");
 let analyticsLoaded=false;
 
@@ -149,10 +151,22 @@ function baseModelName(name=""){
 }
 
 function setLoggedIn(value){
-  loginCard.classList.toggle("hidden",value);
-  adminCard.classList.toggle("hidden",!value);
-  adminTabs.classList.toggle("hidden",!value);
-  logoutBtn.classList.toggle("hidden",!value);
+  loginCard.classList.toggle("hidden", value);
+  adminTabs.classList.toggle("hidden", !value);
+  logoutBtn.classList.toggle("hidden", !value);
+
+  if(value){
+    adminCard.style.display="";
+    analyticsCard.style.display="";
+    adminCard.classList.add("active");
+    analyticsCard.classList.remove("active");
+    adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.tab==="specs");
+    });
+  }else{
+    adminCard.style.display="none";
+    analyticsCard.style.display="none";
+  }
 }
 
 function mapItem(model){
@@ -335,15 +349,47 @@ async function loadAnalytics(){
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
+
+    if(!(d.daily||[]).some(x=>Number(x.views||0)>0) && Number(o.totalViews||0)===0){
+      const note=document.createElement("div");
+      note.style.cssText="margin-top:14px;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#fafafa;color:#6b7280;font-size:12px";
+      note.textContent="Chưa có dữ liệu truy cập. Hệ thống sẽ bắt đầu ghi nhận từ khi bản thống kê được deploy và có khách truy cập website.";
+      content.appendChild(note);
+    }
     analyticsLoaded=true; loading.classList.add("hidden"); content.classList.remove("hidden");
-  }catch(e){loading.textContent=e.message;}
+  }catch(e){
+    console.error("Analytics admin:", e);
+    loading.classList.remove("hidden");
+    loading.innerHTML = `
+      <div style="max-width:560px;margin:auto;padding:18px;border:1px solid #ffd1bf;background:#fff8f4;border-radius:10px;color:#b43d00">
+        <strong>Không tải được thống kê</strong>
+        <div style="margin-top:8px;font-size:12px;color:#6b7280">${String(e.message||e)}</div>
+        <button id="retryAnalyticsBtn" class="secondary" type="button" style="margin-top:12px">Thử lại</button>
+      </div>`;
+    const retry=document.getElementById("retryAnalyticsBtn");
+    if(retry) retry.addEventListener("click",loadAnalytics);
+  }
 }
 adminTabs.addEventListener("click",e=>{
-  const btn=e.target.closest("[data-tab]"); if(!btn)return;
+  const btn=e.target.closest("[data-tab]");
+  if(!btn) return;
+
   const tab=btn.dataset.tab;
-  adminTabs.querySelectorAll(".admin-tab").forEach(x=>x.classList.toggle("active",x===btn));
-  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.dataset.panel===tab));
-  if(tab==="analytics"&&!analyticsLoaded) loadAnalytics();
+
+  adminTabs.querySelectorAll(".admin-tab").forEach(x=>{
+    x.classList.toggle("active", x===btn);
+  });
+
+  const showSpecs = tab==="specs";
+  adminCard.classList.toggle("active", showSpecs);
+  analyticsCard.classList.toggle("active", !showSpecs);
+
+  adminCard.style.display = showSpecs ? "" : "none";
+  analyticsCard.style.display = showSpecs ? "none" : "";
+
+  if(tab==="analytics"){
+    loadAnalytics();
+  }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
 

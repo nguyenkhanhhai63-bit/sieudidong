@@ -674,3 +674,11 @@ Trong `/admin-specs` có thêm tab `Thống kê`:
 - Top từ khóa tìm kiếm.
 - Lượt bấm Zalo.
 Dùng Redis hiện tại qua `REDIS_URL`. Nếu analytics lỗi, website công khai vẫn hoạt động bình thường.
+
+
+## V80 - Fix tab Thống kê trắng màn hình
+- Sửa xung đột `.hidden` và `.panel.active`.
+- Bấm `Thống kê` sẽ hiện dashboard ngay.
+- Bấm `Link thông số` quay lại đúng panel.
+- Nếu API/Redis lỗi sẽ hiển thị thông báo lỗi cụ thể và nút `Thử lại`.
+- Nếu chưa có dữ liệu sẽ hiện thông báo `Chưa có dữ liệu truy cập`, không để màn hình trắng.
