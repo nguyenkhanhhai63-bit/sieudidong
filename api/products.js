@@ -156,67 +156,7 @@ function normalizeAttributes(obj) {
 }
 
 
-async function getBestSellerScores(days = 30) {
-  const scores = new Map();
-
-  try {
-    const now = new Date();
-    const from = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-
-    const paramsBase =
-      `&fromPurchaseDate=${encodeURIComponent(from.toISOString())}` +
-      `&toPurchaseDate=${encodeURIComponent(now.toISOString())}` +
-      `&orderBy=purchaseDate&orderDirection=Desc`;
-
-    const pageSize = 100;
-    let currentItem = 0;
-
-    // Chỉ đọc tối đa 300 hóa đơn gần nhất để API nhanh và tránh timeout Vercel.
-    for (let page = 0; page < 3; page++) {
-      const data = await kvFetch(
-        `/invoices?pageSize=${pageSize}&currentItem=${currentItem}${paramsBase}`
-      );
-
-      const invoices = Array.isArray(data.data) ? data.data : [];
-      if (!invoices.length) break;
-
-      invoices.forEach(invoice => {
-        const details = Array.isArray(invoice.invoiceDetails)
-          ? invoice.invoiceDetails
-          : [];
-
-        details.forEach(d => {
-          const productId = Number(d.productId || 0);
-          const quantity = Number(d.quantity || 0);
-
-          if (!productId || quantity <= 0) return;
-
-          scores.set(productId, (scores.get(productId) || 0) + quantity);
-        });
-      });
-
-      if (invoices.length < pageSize) break;
-      currentItem += pageSize;
-    }
-
-    return scores;
-  } catch (error) {
-    // Bán chạy là tính năng phụ. Nếu API hóa đơn lỗi/quá chậm,
-    // vẫn phải trả bảng giá bình thường thay vì làm sập toàn bộ trang.
-    console.error("Best seller lookup failed:", error);
-    return scores;
-  }
-}
-
-function bestSellerCutoff(scores, limit = 20) {
-  const ranked = [...scores.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit);
-
-  return new Set(ranked.map(([productId]) => Number(productId)));
-}
-
-function normalizeProduct(item, categoryMap, bestSellerIds, bestSellerScores) {
+function normalizeProduct(item, categoryMap) {
   const cat = categoryPath(item.categoryId, categoryMap);
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
   const branches = inventories.map(i => ({
@@ -244,9 +184,7 @@ function normalizeProduct(item, categoryMap, bestSellerIds, bestSellerScores) {
           image: firstImage(child) || parentImage,
           attributes: normalizeAttributes(child).length
             ? normalizeAttributes(child)
-            : normalizeAttributes(item),
-          bestSeller: bestSellerIds.has(Number(child.id)),
-          sold30d: Number(bestSellerScores.get(Number(child.id)) || 0)
+            : normalizeAttributes(item)
         };
       })
     : [{
@@ -256,9 +194,7 @@ function normalizeProduct(item, categoryMap, bestSellerIds, bestSellerScores) {
         price: Number(item.basePrice || 0),
         onHand: totalOnHand,
         image: parentImage,
-        attributes: normalizeAttributes(item),
-        bestSeller: bestSellerIds.has(Number(item.id)),
-        sold30d: Number(bestSellerScores.get(Number(item.id)) || 0)
+        attributes: normalizeAttributes(item)
       }];
 
   return {
@@ -271,8 +207,6 @@ function normalizeProduct(item, categoryMap, bestSellerIds, bestSellerScores) {
     basePrice: Number(item.basePrice || 0),
     image: parentImage,
     attributes: normalizeAttributes(item),
-    bestSeller: bestSellerIds.has(Number(item.id)),
-    sold30d: Number(bestSellerScores.get(Number(item.id)) || 0),
     variants
   };
 }
@@ -308,23 +242,13 @@ export default async function handler(req, res) {
       currentItem += pageSize;
     }
 
-    // Dữ liệu sản phẩm là bắt buộc; dữ liệu bán chạy là tính năng phụ.
-    // Không để API hóa đơn làm hỏng toàn bộ bảng giá.
     const categories = await getCategories();
     const categoryMap = buildCategoryMap(categories);
-
-    const bestSellerScores = await getBestSellerScores(30);
-    const bestSellerIds = bestSellerCutoff(bestSellerScores, 20);
 
     const products = all
       .filter(p => !p.isDeleted)
       .filter(p => p.isActive !== false)
-      .map(p => normalizeProduct(
-        p,
-        categoryMap,
-        bestSellerIds,
-        bestSellerScores
-      ));
+      .map(p => normalizeProduct(p, categoryMap));
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
 

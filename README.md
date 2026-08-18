@@ -271,3 +271,12 @@ Khi bỏ tick:
 - Nếu API hóa đơn lỗi hoặc quá chậm, website vẫn tải toàn bộ bảng giá bình thường.
 - Nếu không lấy được dữ liệu bán chạy thì tab Bán chạy tự ẩn và mặc định chuyển sang Tất cả.
 - Khi API hóa đơn hoạt động bình thường, Bán chạy vẫn là tab mặc định.
+
+
+## V23 - Fix dứt điểm lỗi tải bảng giá
+- Đã bỏ hoàn toàn việc gọi API hóa đơn khỏi `/api/products`.
+- Bảng giá chỉ còn gọi API sản phẩm + nhóm hàng như bản ổn định trước đó.
+- Mục `Bán chạy` được quản lý bằng file `bestsellers.js`.
+- Có thể sửa danh sách tên máy bán chạy ngay trong `bestsellers.js`.
+- Nếu danh sách không khớp/để trống, website tự lấy 12 mẫu đầu tiên để mục Bán chạy không bị rỗng.
+- `Bán chạy` vẫn là tab mặc định khi khách vào web.

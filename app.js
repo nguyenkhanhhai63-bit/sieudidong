@@ -141,9 +141,7 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:detectBrand(fullName),
-        bestSeller:Boolean(v.bestSeller || p.bestSeller),
-        sold30d:Number(v.sold30d || p.sold30d || 0)
+        brand:detectBrand(fullName)
       });
     });
   });
@@ -210,6 +208,36 @@ function variantLabel(v){
   return parts.length ? parts.join(" • ") : "Phiên bản";
 }
 
+
+function isBestSellerName(name){
+  const configured = Array.isArray(window.BEST_SELLER_NAMES)
+    ? window.BEST_SELLER_NAMES
+    : [];
+
+  const n = String(name || "").toLowerCase();
+
+  if(configured.length){
+    return configured.some(keyword =>
+      n.includes(String(keyword || "").trim().toLowerCase())
+    );
+  }
+
+  return false;
+}
+
+function getBestSellerBaseNames(){
+  const flat = flattenProducts(PRODUCTS);
+  const names = [...new Set(flat.map(x=>x.baseName).filter(Boolean))];
+
+  const configuredMatches = names.filter(name=>isBestSellerName(name));
+
+  // Nếu chưa cấu hình hoặc tên chưa khớp dữ liệu thực tế,
+  // vẫn lấy 12 mẫu đầu tiên để trang không bị rỗng.
+  return configuredMatches.length
+    ? configuredMatches
+    : names.slice(0,12);
+}
+
 function renderCategoryFilters(){
   const flat = flattenProducts(PRODUCTS);
 
@@ -222,15 +250,10 @@ function renderCategoryFilters(){
   const hasOther = flat.some(p => p.brand === "Khác");
   if(hasOther) brands.push("Khác");
 
-  const hasBestSeller = flat.some(p => p.bestSeller);
-  const all = [
-    ...(hasBestSeller ? ["Bán chạy"] : []),
-    "Tất cả",
-    ...brands
-  ];
+  const all = ["Bán chạy", "Tất cả", ...brands];
 
   if(!all.includes(ACTIVE_CATEGORY)){
-    ACTIVE_CATEGORY = hasBestSeller ? "Bán chạy" : "Tất cả";
+    ACTIVE_CATEGORY = "Bán chạy";
   }
 
   categoryFilters.innerHTML = "";
@@ -266,8 +289,8 @@ function render(){
   
 
   if(ACTIVE_CATEGORY==="Bán chạy"){
-    items=items.filter(x=>x.bestSeller);
-    items.sort((a,b)=>Number(b.sold30d||0)-Number(a.sold30d||0));
+    const bestNames = new Set(getBestSellerBaseNames());
+    items = items.filter(x=>bestNames.has(x.baseName));
   }else if(ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
@@ -329,7 +352,7 @@ function render(){
     title.className="shop-title";
     title.textContent=group.name;
 
-    const groupBestSeller=group.items.some(v=>v.bestSeller);
+    const groupBestSeller=getBestSellerBaseNames().includes(group.name);
     if(groupBestSeller){
       const badge=document.createElement("span");
       badge.className="best-seller-badge";
