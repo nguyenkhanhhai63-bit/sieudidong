@@ -927,3 +927,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bấm lần nữa khi đang đọc sẽ dừng.
 - Đóng popup hoặc chạy phân tích mới sẽ tự dừng giọng đọc.
 - Không cần thêm API key hay chi phí TTS.
+
+## V117 - Nút nghe AI luôn nhìn thấy
+- Nút `🔊 Nghe tư vấn` luôn nằm cạnh `✨ Gemini phân tích`.
+- Trước khi có kết quả AI: nút hiển thị mờ và không bấm được.
+- Sau khi Gemini phân tích xong: nút tự sáng và bấm để phát lời tư vấn.
+- Đang đọc: nút đổi thành `⏹ Dừng đọc`.
+- Mobile: dropdown nhu cầu nằm một hàng; hai nút `Gemini phân tích` và `Nghe tư vấn` nằm cạnh nhau bên dưới.
