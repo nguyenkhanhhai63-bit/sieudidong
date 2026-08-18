@@ -947,6 +947,30 @@ function openInlineProductDetail(group,initialVariant,options={}){
       selectedColor=selected.color || selectedColor;
       selectedMemory=selected.memory || selectedMemory;
 
+      // Đổi ảnh theo đúng biến thể màu/dung lượng đang chọn.
+      // Nếu biến thể có ảnh riêng từ KiotViet thì dùng ảnh đó.
+      if(selected.image){
+        const currentImg=imageBox.querySelector(".product-image");
+
+        if(currentImg){
+          if(currentImg.src !== selected.image){
+            currentImg.src=selected.image;
+            currentImg.alt=`${group.name} - ${selectedColor || ""}`.trim();
+          }
+        }else{
+          imageBox.innerHTML=`
+            <img
+              class="product-image"
+              src="${selected.image}"
+              alt="${group.name} - ${selectedColor || ""}"
+              loading="eager"
+              referrerpolicy="no-referrer"
+              onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;>Chưa có ảnh</div>'"
+            >
+          `;
+        }
+      }
+
       price.textContent=money(selected.price);
       const inStock=Number(selected.onHand||0)>0;
       const stockLabel=inStock ? "✓ Còn hàng" : "Hết hàng";

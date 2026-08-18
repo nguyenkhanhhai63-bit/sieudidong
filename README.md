@@ -519,3 +519,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Desktop giữ logo ngang Siêu Di Động.
 - Mobile đổi sang logo vuông riêng, không crop logo ngang nữa.
 - Căn lại kích thước header mobile để logo không méo hoặc bị cắt.
+
+
+## V51 - Đổi ảnh theo màu/phiên bản
+- Khi khách chọn ô màu khác, ảnh lớn tự chuyển sang ảnh của biến thể đó.
+- Chọn dung lượng cũng cập nhật ảnh nếu biến thể dung lượng có ảnh riêng.
+- Giá và tồn kho vẫn đổi đồng thời như trước.
+- Dữ liệu ảnh lấy từ ảnh của từng variant KiotViet.
+- Nếu KiotViet chỉ có một ảnh chung cho tất cả biến thể thì ảnh sẽ giữ nguyên.
