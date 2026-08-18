@@ -807,3 +807,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Trong lúc xác thực chỉ hiện `Đang tải trang quản trị...`.
 - Nếu phiên đăng nhập hợp lệ, panel đầu tiên được render là `Thống kê`.
 - Nếu chưa đăng nhập, mới hiện form đăng nhập.
+
+## V100 - Sửa đúng nguyên nhân Admin mở Link thông số
+- `setLoggedIn(true)` trong V99 vẫn đang ép `adminCard` (Link thông số) thành active.
+- V100 đổi nhánh xác thực thành công sang `analyticsCard`.
+- Sau khi session được xác thực hoặc vừa đăng nhập: mở trực tiếp Thống kê.
+- Link thông số chỉ mở khi bấm tab.

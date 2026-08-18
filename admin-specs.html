@@ -418,7 +418,7 @@
     <button class="admin-tab" data-tab="specs" type="button">Link thông số</button>
     <button class="admin-tab" data-tab="seo" type="button">SEO</button>
   </div>
-  <section id="adminCard" class="card panel active" data-panel="specs" style="display:none">
+  <section id="adminCard" class="card panel" data-panel="specs" style="display:none">
     <div class="head">
       <div>
         <h1>Link thông số sản phẩm</h1>
@@ -430,7 +430,7 @@
     <div id="rows" class="rows"></div>
   </section>
 
-  <section id="analyticsCard" class="card panel" data-panel="analytics" style="display:none">
+  <section id="analyticsCard" class="card panel active" data-panel="analytics" style="display:none">
     <div class="head">
       <div><h1>Thống kê truy cập</h1><p>Lượt xem, khách truy cập, sản phẩm được xem và lượt bấm Zalo.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
@@ -540,17 +540,21 @@ function setLoggedIn(value){
   if(value){
     adminTabs.style.display="flex";
     logoutBtn.style.display="";
-    adminCard.style.display="";
-    analyticsCard.style.display="none";
+
+    // Mặc định vào THỐNG KÊ, không mở Link thông số trước.
+    adminCard.style.display="none";
+    analyticsCard.style.display="";
     seoCard.style.display="none";
 
-    adminCard.classList.add("active");
-    analyticsCard.classList.remove("active");
+    adminCard.classList.remove("active");
+    analyticsCard.classList.add("active");
     seoCard.classList.remove("active");
 
     adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
-      btn.classList.toggle("active", btn.dataset.tab==="specs");
+      btn.classList.toggle("active", btn.dataset.tab==="analytics");
     });
+
+    loadAnalytics();
   }else{
     adminTabs.style.display="none";
     logoutBtn.style.display="none";
