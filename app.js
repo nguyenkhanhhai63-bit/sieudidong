@@ -1040,8 +1040,11 @@ setInterval(load,60000);
 setInterval(loadBestSellers,60*60*1000);
 
 searchInput.addEventListener("input",render);
-darkMode.checked=true;
-}
+onlyStock.addEventListener("change",render);
 
+clearSearch.addEventListener("click",()=>{
+  searchInput.value="";
+  searchInput.focus();
+  render();
 });
 

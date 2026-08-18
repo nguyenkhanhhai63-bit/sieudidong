@@ -465,10 +465,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Mobile cho phép kéo ngang danh sách hãng, không vỡ layout.
 
 
-## V43 - Chuyển hẳn sang giao diện website
-- Bỏ hoàn toàn nút `Giao diện tối`.
-- Chỉ giữ light mode.
-- Đổi tiêu đề `Bảng giá Siêu Di Động` thành `Sản phẩm nổi bật`.
-- Đổi mô tả thành phong cách website bán hàng.
-- Title trình duyệt đổi thành `Siêu Di Động | Điện thoại & sản phẩm công nghệ`.
-- Giữ nguyên toàn bộ logic sản phẩm, giá, tồn kho, bán chạy và thông số kỹ thuật.
+## V44 - Header website bán hàng
+- Xây lại header cam giống bố cục website thương mại điện tử.
+- Logo, Danh mục, khu vực Quy Nhơn, thanh tìm kiếm, Liên hệ, Cửa hàng, giỏ hàng, tài khoản.
+- Ô tìm kiếm trên header dùng trực tiếp logic tìm sản phẩm hiện tại.
+- Bỏ hoàn toàn giao diện tối.
+- Khu đầu trang chuyển thành hero + khối bộ lọc hãng.
+- Giữ nguyên toàn bộ API, giá, tồn kho, bán chạy, popup/chi tiết và thông số kỹ thuật.
+- Mobile: header thu gọn thành logo vuông + search + tài khoản.
