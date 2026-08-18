@@ -3,25 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Bảng giá Siêu Di Động</title>
-  <link rel="stylesheet" href="/styles.css?v=3">
+  <title>Siêu Di Động - Bảng giá</title>
+  <link rel="stylesheet" href="/styles.css?v=4">
 </head>
 <body>
-  <main class="page">
-    <header class="topbar">
-      <div>
-        <h1>BẢNG GIÁ SIÊU DI ĐỘNG</h1>
-        <div id="updatedAt" class="muted">Đang cập nhật...</div>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div>
+          <div class="brand-name">SIÊU DI ĐỘNG</div>
+          <div class="brand-sub">Bảng giá sản phẩm</div>
+        </div>
       </div>
+
       <label class="theme-toggle">
         <input id="darkMode" type="checkbox">
         <span>Giao diện tối</span>
       </label>
-    </header>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>Chọn máy dễ hơn, xem giá nhanh hơn</h1>
+        <p>Giá bán và tình trạng hàng được đồng bộ trực tiếp từ hệ thống KiotViet.</p>
+      </div>
+      <div id="updatedAt" class="updated">Đang cập nhật...</div>
+    </section>
 
     <section class="toolbar">
       <div class="search-row">
-        <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy, mã hàng..." autocomplete="off">
+        <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy..." autocomplete="off">
         <button id="clearSearch" class="clear-btn" type="button">Xóa</button>
       </div>
 
@@ -34,16 +48,17 @@
       </div>
     </section>
 
-    <section id="productGrid" class="product-list">
+    <section id="productGrid" class="product-grid">
       <div class="loading">Đang tải dữ liệu KiotViet...</div>
     </section>
 
     <footer class="footer">
+      <div class="footer-title">Siêu Di Động</div>
       <div>Giá bán được đồng bộ trực tiếp từ hệ thống KiotViet.</div>
       <div>© 2026 Siêu Di Động</div>
     </footer>
   </main>
 
-  <script src="/app.js?v=3"></script>
+  <script src="/app.js?v=4"></script>
 </body>
 </html>

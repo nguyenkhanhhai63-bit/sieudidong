@@ -111,3 +111,15 @@ Bản V3:
 - nếu sản phẩm không có ảnh thì hiện placeholder
 - desktop ảnh 76x76, mobile 64x64
 - vẫn giữ nhóm model, tìm kiếm, tồn kho và giá
+
+
+## Giao diện V4 - Kiểu website
+
+Thay đổi:
+- giao diện dạng website/catalog sản phẩm
+- card sản phẩm có ảnh lớn
+- bỏ hoàn toàn mã sản phẩm khỏi giao diện
+- tìm kiếm chỉ theo tên sản phẩm
+- mỗi model là một card riêng
+- các màu/dung lượng nằm gọn bên trong card
+- mobile hiển thị dạng ảnh trái + thông tin phải

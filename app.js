@@ -15,42 +15,44 @@ function money(v){
 
 function cleanBaseName(name){
   let s = String(name || "").trim();
+
   s = s.replace(/\s*-\s*\d+\s*\/\s*(?:\d+|1T|2T)\s*$/i, "");
   s = s.replace(/\s*-\s*(Đen|Trắng|Xanh|Đỏ|Hồng|Tím|Bạc|Titan|Cam|Vàng|Green|Blue|Black|White|Silver)\s*$/i, "");
+
   return s.trim();
 }
 
-function extractMemory(name, code){
-  const text = `${name || ""} ${code || ""}`;
-  const m = text.match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
+function extractMemory(name){
+  const m = String(name || "").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
   return m ? `${m[1]}/${m[2]}` : "";
 }
 
 function extractColor(name){
   const colors = ["Đen","Trắng","Xanh","Đỏ","Hồng","Tím","Bạc","Titan","Cam","Vàng","Green","Blue","Black","White","Silver"];
   const text = String(name || "");
+
   for(const c of colors){
     const re = new RegExp(`(?:^|\\s-\\s)${c}(?:\\s-\\s|$)`,"i");
     if(re.test(text)) return c;
   }
+
   return "";
 }
 
 function flattenProducts(raw){
-  const items = [];
+  const items=[];
 
-  raw.forEach(p => {
-    (p.variants || []).forEach(v => {
+  raw.forEach(p=>{
+    (p.variants || []).forEach(v=>{
       items.push({
-        id: v.id || p.id,
-        code: v.code || p.code || "",
-        fullName: v.name || p.name || "",
-        baseName: cleanBaseName(v.name || p.name || ""),
-        memory: extractMemory(v.name || p.name, v.code || p.code),
-        color: extractColor(v.name || p.name),
-        price: Number(v.price || 0),
-        onHand: Number(v.onHand || 0),
-        image: v.image || p.image || ""
+        id:v.id || p.id,
+        fullName:v.name || p.name || "",
+        baseName:cleanBaseName(v.name || p.name || ""),
+        memory:extractMemory(v.name || p.name || ""),
+        color:extractColor(v.name || p.name || ""),
+        price:Number(v.price || 0),
+        onHand:Number(v.onHand || 0),
+        image:v.image || p.image || ""
       });
     });
   });
@@ -59,10 +61,10 @@ function flattenProducts(raw){
 }
 
 function groupItems(items){
-  const map = new Map();
+  const map=new Map();
 
-  items.forEach(item => {
-    const key = item.baseName || item.fullName;
+  items.forEach(item=>{
+    const key=item.baseName || item.fullName;
 
     if(!map.has(key)){
       map.set(key,{
@@ -72,139 +74,139 @@ function groupItems(items){
       });
     }
 
-    const group = map.get(key);
+    const group=map.get(key);
 
     if(!group.image && item.image){
-      group.image = item.image;
+      group.image=item.image;
     }
 
     group.items.push(item);
   });
 
-  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  return [...map.values()]
+    .sort((a,b)=>a.name.localeCompare(b.name,"vi"));
 }
 
 function imageHTML(group){
   if(!group.image){
-    return `<div class="product-image-wrap"><div class="image-placeholder">Chưa có ảnh</div></div>`;
+    return `<div class="image-placeholder">Chưa có ảnh</div>`;
   }
 
   return `
-    <div class="product-image-wrap">
-      <img
-        class="product-image"
-        src="${group.image}"
-        alt="${group.name}"
-        loading="lazy"
-        referrerpolicy="no-referrer"
-        onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;>Không tải được ảnh</div>'"
-      >
-    </div>
+    <img
+      class="product-image"
+      src="${group.image}"
+      alt="${group.name}"
+      loading="lazy"
+      referrerpolicy="no-referrer"
+      onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;>Chưa có ảnh</div>'"
+    >
   `;
 }
 
+function variantLabel(v){
+  const parts=[v.color,v.memory].filter(Boolean);
+  return parts.length ? parts.join(" • ") : "Phiên bản";
+}
+
 function render(){
-  const q = searchInput.value.trim().toLowerCase();
-  let items = flattenProducts(PRODUCTS);
+  const q=searchInput.value.trim().toLowerCase();
+  let items=flattenProducts(PRODUCTS);
 
   if(onlyStock.checked){
-    items = items.filter(x => x.onHand > 0);
+    items=items.filter(x=>x.onHand>0);
   }
 
   if(q){
-    items = items.filter(x =>
+    items=items.filter(x=>
       x.fullName.toLowerCase().includes(q) ||
-      x.baseName.toLowerCase().includes(q) ||
-      x.code.toLowerCase().includes(q)
+      x.baseName.toLowerCase().includes(q)
     );
   }
 
-  const groups = groupItems(items);
-  grid.innerHTML = "";
+  const groups=groupItems(items);
+  grid.innerHTML="";
 
-  const totalVariants = groups.reduce((s,g)=>s+g.items.length,0);
-  summary.textContent = `${groups.length} mẫu • ${totalVariants} phiên bản`;
+  const totalVariants=groups.reduce((sum,g)=>sum+g.items.length,0);
+  summary.textContent=`${groups.length} mẫu • ${totalVariants} phiên bản`;
 
   if(!groups.length){
-    grid.innerHTML = '<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';
+    grid.innerHTML='<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';
     return;
   }
 
-  groups.forEach(group => {
-    const card = document.createElement("article");
-    card.className = "product-group";
+  groups.forEach(group=>{
+    const card=document.createElement("article");
+    card.className="product-card";
 
-    const head = document.createElement("div");
-    head.className = "group-head";
+    const media=document.createElement("div");
+    media.className="product-media";
+    media.innerHTML=imageHTML(group);
 
-    const imgWrap = document.createElement("div");
-    imgWrap.innerHTML = imageHTML(group);
+    const body=document.createElement("div");
+    body.className="product-body";
 
-    const titleWrap = document.createElement("div");
-    titleWrap.className = "group-title-wrap";
-    titleWrap.innerHTML = `
-      <div class="group-title">${group.name}</div>
-      <div class="group-meta">${group.items.length} phiên bản</div>
-    `;
+    const title=document.createElement("div");
+    title.className="product-name";
+    title.textContent=group.name;
 
-    const chevron = document.createElement("div");
-    chevron.className = "chevron";
-    chevron.textContent = "⌄";
-
-    // unwrap the generated image wrapper child
-    head.append(imgWrap.firstElementChild, titleWrap, chevron);
-    head.addEventListener("click",()=>card.classList.toggle("collapsed"));
-
-    const body = document.createElement("div");
-    body.className = "group-body";
+    const variants=document.createElement("div");
+    variants.className="variant-list";
 
     group.items
       .sort((a,b)=>{
-        if(a.memory !== b.memory) return a.memory.localeCompare(b.memory,"vi");
+        if(a.memory!==b.memory) return a.memory.localeCompare(b.memory,"vi");
         return a.fullName.localeCompare(b.fullName,"vi");
       })
-      .forEach(v => {
-        const row = document.createElement("div");
-        row.className = "variant-row";
+      .forEach(v=>{
+        const row=document.createElement("div");
+        row.className="variant";
 
-        const desc = [v.color, v.memory].filter(Boolean).join(" • ") || v.fullName;
+        const info=document.createElement("div");
+        info.className="variant-info";
 
-        row.innerHTML = `
-          <div class="variant-cell variant-name">
-            <div>${desc}</div>
-            <div class="code">${v.code}</div>
-          </div>
-          <div class="variant-cell memory-wrap">
-            ${v.memory ? `<span class="memory">${v.memory}</span>` : ""}
-          </div>
-          <div class="variant-cell stock ${v.onHand > 0 ? "in" : ""}">
-            ${v.onHand > 0 ? "Còn hàng" : "Hết hàng"}
-          </div>
-          <div class="variant-cell price">${money(v.price)}</div>
-        `;
+        const main=document.createElement("div");
+        main.className="variant-main";
+        main.textContent=variantLabel(v);
 
-        body.appendChild(row);
+        const stock=document.createElement("div");
+        stock.className="stock" + (v.onHand>0 ? " in" : "");
+        stock.textContent=v.onHand>0 ? "Còn hàng" : "Hết hàng";
+
+        info.append(main,stock);
+
+        const price=document.createElement("div");
+        price.className="price";
+        price.textContent=money(v.price);
+
+        row.append(info,price);
+        variants.appendChild(row);
       });
 
-    card.append(head,body);
+    body.append(title,variants);
+    card.append(media,body);
     grid.appendChild(card);
   });
 }
 
 async function load(){
   try{
-    const res = await fetch("/api/products", { cache:"no-store" });
-    if(!res.ok) throw new Error("HTTP " + res.status);
+    const res=await fetch("/api/products",{cache:"no-store"});
 
-    const data = await res.json();
-    PRODUCTS = data.products || [];
+    if(!res.ok){
+      throw new Error("HTTP "+res.status);
+    }
 
-    updatedAt.textContent = "Cập nhật lúc " + new Date().toLocaleTimeString("vi-VN");
+    const data=await res.json();
+    PRODUCTS=data.products || [];
+
+    updatedAt.textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
     render();
+
   }catch(err){
     console.error(err);
-    updatedAt.textContent = "Không thể cập nhật";
-    grid.innerHTML = '<div class="empty">Không tải được dữ liệu KiotViet.</div>';
+    updatedAt.textContent="Không thể cập nhật";
+    grid.innerHTML='<div class="empty">Không tải được dữ liệu KiotViet.</div>';
   }
 }
 
@@ -217,11 +219,11 @@ clearSearch.addEventListener("click",()=>{
   render();
 });
 
-const savedTheme = localStorage.getItem("kv-theme");
+const savedTheme=localStorage.getItem("kv-theme");
 
-if(savedTheme === "dark"){
+if(savedTheme==="dark"){
   document.body.classList.add("dark");
-  darkMode.checked = true;
+  darkMode.checked=true;
 }
 
 darkMode.addEventListener("change",()=>{
