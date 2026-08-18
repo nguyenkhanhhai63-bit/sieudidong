@@ -362,7 +362,26 @@
       display:none !important;
     }
 
-  </style>
+  
+    /* V115 - Tùy chỉnh AI */
+    .ai-settings-shell{padding:22px}
+    .ai-settings-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(320px,.8fr);gap:16px}
+    .ai-settings-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px}
+    .ai-settings-box h2{margin:0 0 6px;font-size:17px}
+    .ai-settings-box p{margin:0 0 16px;color:var(--muted);font-size:12px;line-height:1.5}
+    .ai-field{margin-bottom:15px}
+    .ai-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:800}
+    .ai-field textarea{width:100%;min-height:190px;resize:vertical;border:1px solid #d9dde3;border-radius:10px;padding:12px;font:inherit;font-size:13px;line-height:1.55;outline:none;box-sizing:border-box}
+    .ai-field textarea:focus,.ai-field select:focus{border-color:#ff8b4a;box-shadow:0 0 0 3px rgba(255,90,0,.1)}
+    .ai-field select{width:100%;height:42px;border:1px solid #d9dde3;border-radius:9px;padding:0 10px;background:#fff;font:inherit;font-size:13px}
+    .ai-check{display:flex;align-items:flex-start;gap:9px;margin:12px 0;font-size:12px;line-height:1.4}
+    .ai-check input{margin-top:2px}
+    .ai-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+    .ai-settings-status{margin-top:12px;min-height:18px;font-size:12px;font-weight:700}
+    .ai-example{padding:13px;border-radius:10px;background:#fff7f2;border:1px solid #ffe0cf;color:#754027;font-size:12px;line-height:1.55}
+    @media(max-width:900px){.ai-settings-grid{grid-template-columns:1fr}}
+
+</style>
 
 <style id="login-success-toast-style">
 .login-success-toast{
@@ -416,6 +435,7 @@
   <div id="adminTabs" class="admin-tabs hidden" style="display:none">
     <button class="admin-tab active" data-tab="analytics" type="button">Thống kê</button>
     <button class="admin-tab" data-tab="specs" type="button">Link thông số</button>
+    <button class="admin-tab" data-tab="ai" type="button">Tùy chỉnh AI</button>
     <button class="admin-tab" data-tab="seo" type="button">SEO</button>
   </div>
   <section id="adminCard" class="card panel" data-panel="specs" style="display:none">
@@ -452,6 +472,88 @@
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="aiSettingsCard" class="card panel" data-panel="ai" style="display:none">
+    <div class="head">
+      <div>
+        <h1>Tùy chỉnh AI phân tích</h1>
+        <p>Thiết lập cách Gemini tư vấn khi khách so sánh sản phẩm. Cấu hình được lưu trên server và áp dụng cho mọi khách.</p>
+      </div>
+      <button id="reloadAiSettings" class="secondary" type="button">Tải lại</button>
+    </div>
+
+    <div class="ai-settings-shell">
+      <div class="ai-settings-grid">
+        <div class="ai-settings-box">
+          <h2>Chỉ dẫn riêng cho AI</h2>
+          <p>Viết bằng ngôn ngữ bình thường. Ví dụ: ưu tiên hiệu năng, không tâng bốc, phải nói rõ máy nào đáng tiền hơn.</p>
+
+          <div class="ai-field">
+            <label for="aiCustomInstructions">Nội dung muốn AI tuân theo</label>
+            <textarea id="aiCustomInstructions" maxlength="4000" placeholder="Ví dụ: Khi so sánh máy chơi game, ưu tiên CPU, GPU, pin và tản nhiệt. Nếu máy đắt hơn nhưng chênh lệch cấu hình ít thì phải nói thẳng là không đáng nâng cấp."></textarea>
+          </div>
+
+          <div class="ai-settings-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+            <div class="ai-field">
+              <label for="aiRecommendationStyle">Cách kết luận</label>
+              <select id="aiRecommendationStyle">
+                <option>Rõ ràng, chốt 1 máy</option>
+                <option>Cân bằng, nêu điều kiện chọn</option>
+                <option>Không ép chốt</option>
+              </select>
+            </div>
+            <div class="ai-field">
+              <label for="aiResponseLength">Độ dài phân tích</label>
+              <select id="aiResponseLength">
+                <option>Ngắn gọn</option>
+                <option selected>Vừa phải</option>
+                <option>Chi tiết</option>
+              </select>
+            </div>
+            <div class="ai-field">
+              <label for="aiPricePriority">Ưu tiên giá/cấu hình</label>
+              <select id="aiPricePriority">
+                <option>Ưu tiên giá tốt</option>
+                <option selected>Cân bằng</option>
+                <option>Ưu tiên cấu hình</option>
+              </select>
+            </div>
+            <div class="ai-field">
+              <label for="aiSalesTone">Giọng tư vấn</label>
+              <select id="aiSalesTone">
+                <option selected>Tư vấn trung lập</option>
+                <option>Bình dân, dễ hiểu</option>
+                <option>Chuyên gia kỹ thuật</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="ai-check"><input id="aiMustWeaknesses" type="checkbox" checked><span>Luôn nêu điểm yếu/hạn chế của từng máy, không chỉ nói ưu điểm.</span></label>
+          <label class="ai-check"><input id="aiMustPrice" type="checkbox" checked><span>Luôn xét chênh lệch giá và máy nào đáng tiền hơn.</span></label>
+          <label class="ai-check"><input id="aiAllowTie" type="checkbox" checked><span>Cho phép kết luận mỗi máy phù hợp một nhu cầu nếu không có máy thắng rõ ràng.</span></label>
+
+          <div class="ai-actions">
+            <button id="saveAiSettings" class="primary" type="button">Lưu cấu hình AI</button>
+            <button id="resetAiSettings" class="secondary" type="button">Khôi phục mặc định</button>
+          </div>
+          <div id="aiSettingsStatus" class="ai-settings-status"></div>
+        </div>
+
+        <div class="ai-settings-box">
+          <h2>Cách hoạt động</h2>
+          <p>Đây là “đào tạo theo chỉ dẫn”: AI sẽ đọc cấu hình này mỗi lần phân tích. Không cần tạo lại model Gemini.</p>
+          <div class="ai-example">
+            <strong>Ví dụ chỉ dẫn tốt:</strong><br><br>
+            “Khách của shop chủ yếu quan tâm hiệu năng và pin. Khi ưu tiên chơi game, hãy xét CPU/GPU, pin, sạc và tản nhiệt trước camera. Không được nói máy tốt hơn chỉ vì giá cao hơn. Nếu chênh giá trên 2 triệu phải giải thích phần cấu hình tăng thêm có đáng hay không.”
+          </div>
+          <div class="ai-example" style="margin-top:12px;background:#f8fafc;border-color:#e5e7eb;color:#475569">
+            <strong>Lưu ý:</strong> AI vẫn chỉ được dùng thông số thật mà website đã lấy từ nguồn sản phẩm. Chỉ dẫn quản trị không được phép khiến AI tự bịa cấu hình.
+          </div>
         </div>
       </div>
     </div>
@@ -497,7 +599,21 @@ const adminTabs=document.getElementById("adminTabs");
 const adminBootLoading=document.getElementById("adminBootLoading");
 
 const analyticsCard=document.getElementById("analyticsCard");
+const aiSettingsCard=document.getElementById("aiSettingsCard");
 const seoCard=document.getElementById("seoCard");
+
+const aiCustomInstructions=document.getElementById("aiCustomInstructions");
+const aiRecommendationStyle=document.getElementById("aiRecommendationStyle");
+const aiResponseLength=document.getElementById("aiResponseLength");
+const aiPricePriority=document.getElementById("aiPricePriority");
+const aiSalesTone=document.getElementById("aiSalesTone");
+const aiMustWeaknesses=document.getElementById("aiMustWeaknesses");
+const aiMustPrice=document.getElementById("aiMustPrice");
+const aiAllowTie=document.getElementById("aiAllowTie");
+const saveAiSettings=document.getElementById("saveAiSettings");
+const resetAiSettings=document.getElementById("resetAiSettings");
+const reloadAiSettings=document.getElementById("reloadAiSettings");
+const aiSettingsStatus=document.getElementById("aiSettingsStatus");
 const refreshSeo=document.getElementById("refreshSeo");
 const seoSitemapStatus=document.getElementById("seoSitemapStatus");
 const seoUrlCount=document.getElementById("seoUrlCount");
@@ -544,10 +660,12 @@ function setLoggedIn(value){
     // Mặc định vào THỐNG KÊ, không mở Link thông số trước.
     adminCard.style.display="none";
     analyticsCard.style.display="";
+    aiSettingsCard.style.display="none";
     seoCard.style.display="none";
 
     adminCard.classList.remove("active");
     analyticsCard.classList.add("active");
+    aiSettingsCard.classList.remove("active");
     seoCard.classList.remove("active");
 
     adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
@@ -560,6 +678,7 @@ function setLoggedIn(value){
     logoutBtn.style.display="none";
     adminCard.style.display="none";
     analyticsCard.style.display="none";
+    aiSettingsCard.style.display="none";
     seoCard.style.display="none";
   }
 }
@@ -793,6 +912,94 @@ async function loadAnalytics(){
     if(retry) retry.addEventListener("click",loadAnalytics);
   }
 }
+
+let aiSettingsLoaded=false;
+
+function fillAiSettings(s={}){
+  aiCustomInstructions.value=s.customInstructions||"";
+  aiRecommendationStyle.value=s.recommendationStyle||"Rõ ràng, chốt 1 máy";
+  aiResponseLength.value=s.responseLength||"Vừa phải";
+  aiPricePriority.value=s.pricePriority||"Cân bằng";
+  aiSalesTone.value=s.salesTone||"Tư vấn trung lập";
+  aiMustWeaknesses.checked=s.mustMentionWeaknesses!==false;
+  aiMustPrice.checked=s.mustComparePrice!==false;
+  aiAllowTie.checked=s.allowTieRecommendation!==false;
+}
+
+async function loadAiSettings(force=false){
+  if(aiSettingsLoaded && !force) return;
+  aiSettingsStatus.textContent="Đang tải cấu hình...";
+  aiSettingsStatus.style.color="#6b7280";
+  try{
+    const r=await fetch("/api/admin/ai-settings?ts="+Date.now(),{cache:"no-store"});
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Không tải được cấu hình AI");
+    fillAiSettings(data.settings||{});
+    aiSettingsLoaded=true;
+    aiSettingsStatus.textContent="✓ Đã tải cấu hình AI đang áp dụng";
+    aiSettingsStatus.style.color="#15803d";
+  }catch(e){
+    aiSettingsStatus.textContent=e.message;
+    aiSettingsStatus.style.color="#b91c1c";
+  }
+}
+
+async function persistAiSettings(){
+  saveAiSettings.disabled=true;
+  saveAiSettings.textContent="Đang lưu...";
+  aiSettingsStatus.textContent="";
+  try{
+    const payload={
+      customInstructions:aiCustomInstructions.value,
+      recommendationStyle:aiRecommendationStyle.value,
+      responseLength:aiResponseLength.value,
+      pricePriority:aiPricePriority.value,
+      salesTone:aiSalesTone.value,
+      mustMentionWeaknesses:aiMustWeaknesses.checked,
+      mustComparePrice:aiMustPrice.checked,
+      allowTieRecommendation:aiAllowTie.checked
+    };
+    const r=await fetch("/api/admin/ai-settings",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
+    fillAiSettings(data.settings||payload);
+    aiSettingsLoaded=true;
+    aiSettingsStatus.textContent="✓ Đã lưu. Các lần phân tích tiếp theo sẽ dùng cấu hình mới.";
+    aiSettingsStatus.style.color="#15803d";
+  }catch(e){
+    aiSettingsStatus.textContent=e.message;
+    aiSettingsStatus.style.color="#b91c1c";
+  }finally{
+    saveAiSettings.disabled=false;
+    saveAiSettings.textContent="Lưu cấu hình AI";
+  }
+}
+
+if(saveAiSettings) saveAiSettings.addEventListener("click",persistAiSettings);
+if(reloadAiSettings) reloadAiSettings.addEventListener("click",()=>loadAiSettings(true));
+if(resetAiSettings) resetAiSettings.addEventListener("click",async()=>{
+  if(!confirm("Khôi phục toàn bộ cấu hình AI về mặc định?")) return;
+  resetAiSettings.disabled=true;
+  try{
+    const r=await fetch("/api/admin/ai-settings",{method:"DELETE"});
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Không khôi phục được");
+    fillAiSettings(data.settings||{});
+    aiSettingsLoaded=true;
+    aiSettingsStatus.textContent="✓ Đã khôi phục cấu hình AI mặc định.";
+    aiSettingsStatus.style.color="#15803d";
+  }catch(e){
+    aiSettingsStatus.textContent=e.message;
+    aiSettingsStatus.style.color="#b91c1c";
+  }finally{
+    resetAiSettings.disabled=false;
+  }
+});
+
 adminTabs.addEventListener("click",e=>{
   const btn=e.target.closest("[data-tab]");
   if(!btn) return;
@@ -805,17 +1012,21 @@ adminTabs.addEventListener("click",e=>{
 
   const showSpecs = tab==="specs";
   const showAnalytics = tab==="analytics";
+  const showAi = tab==="ai";
   const showSeo = tab==="seo";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
+  aiSettingsCard.classList.toggle("active", showAi);
   seoCard.classList.toggle("active", showSeo);
 
   adminCard.style.display = showSpecs ? "" : "none";
   analyticsCard.style.display = showAnalytics ? "" : "none";
+  aiSettingsCard.style.display = showAi ? "" : "none";
   seoCard.style.display = showSeo ? "" : "none";
 
   if(showAnalytics){ loadAnalytics(); }
+  if(showAi){ loadAiSettings(); }
   if(showSeo){ loadSeoStatus(); }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
@@ -865,6 +1076,7 @@ setTimeout(()=>{
     logoutBtn.style.display="none";
     adminCard.style.display="none";
     analyticsCard.style.display="none";
+    if(aiSettingsCard) aiSettingsCard.style.display="none";
   }
 },4000);
 

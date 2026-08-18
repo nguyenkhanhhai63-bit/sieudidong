@@ -910,3 +910,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Fallback model trong backend vẫn chỉ tính 1 lần bấm.
 - Nới giới hạn từ 12 lên 60 lượt / IP / giờ.
 - Thông báo rate limit đổi thành tiếng Việt nhẹ nhàng hơn.
+
+## V115 - Tùy chỉnh / đào tạo AI trong trang quản trị
+- Thêm tab `Tùy chỉnh AI` tại `/admin`.
+- Quản trị có thể viết chỉ dẫn riêng cho Gemini.
+- Chọn cách kết luận, độ dài phân tích, ưu tiên giá/cấu hình và giọng tư vấn.
+- Có tùy chọn bắt buộc nêu điểm yếu, xét chênh lệch giá và cho phép kết luận hòa.
+- Cấu hình lưu trong Redis, áp dụng ngay cho các lần phân tích mới.
+- Có nút khôi phục mặc định.
+- Đây là prompt/instruction tuning, không phải fine-tune model Gemini.

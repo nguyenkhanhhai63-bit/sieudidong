@@ -77,7 +77,7 @@ function isRetriableGeminiError(status,data){
     message.includes("unavailable");
 }
 
-async function callGeminiModel(model,apiKey,input,systemInstruction){
+async function callGeminiModel(model,apiKey,input,systemInstruction,maxOutputTokens=1500){
   const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),22000);
@@ -99,7 +99,7 @@ async function callGeminiModel(model,apiKey,input,systemInstruction){
           parts:[{text:input}]
         }],
         generationConfig:{
-          maxOutputTokens:1600,
+          maxOutputTokens,
           // Gemini 2.5 không hỗ trợ thinkingLevel.
           // Dùng thinkingBudget cho 2.5; Gemini 3+ dùng thinkingLevel.
           thinkingConfig: model.startsWith("gemini-2.5")
@@ -114,6 +114,59 @@ async function callGeminiModel(model,apiKey,input,systemInstruction){
   }finally{
     clearTimeout(timer);
   }
+}
+
+
+const AI_SETTINGS_KEY="ai:compare:settings";
+
+const DEFAULT_AI_SETTINGS={
+  customInstructions:
+    "Ưu tiên tư vấn thực tế, dễ hiểu. Không tâng bốc sản phẩm. Khi chênh lệch giá đáng kể phải nói rõ máy đắt hơn có thực sự đáng tiền hay không.",
+  recommendationStyle:"Rõ ràng, chốt 1 máy",
+  responseLength:"Vừa phải",
+  pricePriority:"Cân bằng",
+  salesTone:"Tư vấn trung lập",
+  mustMentionWeaknesses:true,
+  mustComparePrice:true,
+  allowTieRecommendation:true
+};
+
+async function loadAiSettings(){
+  try{
+    const raw=await redisCommand(["GET",AI_SETTINGS_KEY]);
+    if(!raw) return {...DEFAULT_AI_SETTINGS};
+    const parsed=JSON.parse(raw);
+    return {...DEFAULT_AI_SETTINGS,...parsed};
+  }catch(_){
+    return {...DEFAULT_AI_SETTINGS};
+  }
+}
+
+function aiSettingsInstructions(settings){
+  const parts=[
+    `PHONG CÁCH TƯ VẤN DO QUẢN TRỊ CẤU HÌNH: ${settings.salesTone||"Tư vấn trung lập"}.`,
+    `CÁCH KẾT LUẬN: ${settings.recommendationStyle||"Rõ ràng, chốt 1 máy"}.`,
+    `MỨC ƯU TIÊN GIÁ/CẤU HÌNH: ${settings.pricePriority||"Cân bằng"}.`,
+    settings.mustMentionWeaknesses!==false
+      ? "BẮT BUỘC nêu cả điểm yếu/hạn chế của từng máy."
+      : "Không bắt buộc phải nêu điểm yếu nếu không đáng kể.",
+    settings.mustComparePrice!==false
+      ? "BẮT BUỘC xét chênh lệch giá và giá trị nhận được."
+      : "Không bắt buộc tập trung vào chênh lệch giá.",
+    settings.allowTieRecommendation!==false
+      ? "Được phép kết luận hòa nếu mỗi máy phù hợp một nhóm nhu cầu khác nhau."
+      : "Phải chọn ra 1 máy phù hợp nhất.",
+    settings.customInstructions
+      ? `CHỈ DẪN RIÊNG TỪ QUẢN TRỊ: ${String(settings.customInstructions).slice(0,4000)}`
+      : ""
+  ];
+  return parts.filter(Boolean).join(" ");
+}
+
+function maxTokensForSetting(settings){
+  if(settings?.responseLength==="Ngắn gọn") return 850;
+  if(settings?.responseLength==="Chi tiết") return 2200;
+  return 1500;
 }
 
 export default async function handler(req,res){
@@ -149,6 +202,7 @@ export default async function handler(req,res){
   }
 
   const need=clean(req.body?.need,100) || "Cân bằng";
+  const aiSettings=await loadAiSettings();
   const configuredModel=String(process.env.GEMINI_COMPARE_MODEL||"").trim();
   const fallbackModels=String(process.env.GEMINI_FALLBACK_MODELS||"gemini-2.5-flash-lite,gemini-2.5-flash,gemini-3.1-flash-lite")
     .split(",").map(x=>x.trim()).filter(Boolean);
@@ -184,7 +238,8 @@ Hãy phân tích đủ 4 phần bắt buộc. Ưu tiên kết luận rõ máy n�
       "3. THEO NHU CẦU: nói máy nào hơn về nhu cầu khách chọn và lý do cụ thể.",
       "4. KẾT LUẬN: chọn 1 máy phù hợp nhất; nếu hai máy quá sát nhau thì nêu điều kiện chọn từng máy.",
       "Phải xét giá bán nếu có. Không dùng bảng Markdown. Không lặp lại toàn bộ thông số kỹ thuật.",
-      "Viết tiếng Việt tự nhiên, rõ ràng, khoảng 250-450 từ."
+      "Viết tiếng Việt tự nhiên, rõ ràng.",
+      aiSettingsInstructions(aiSettings)
     ].join(" ");
 
     let finalData=null;
@@ -197,7 +252,7 @@ Hãy phân tích đủ 4 phần bắt buộc. Ưu tiên kết luận rõ máy n�
 
       let result;
       try{
-        result=await callGeminiModel(candidate,apiKey,input,systemInstruction);
+        result=await callGeminiModel(candidate,apiKey,input,systemInstruction,maxTokensForSetting(aiSettings));
       }catch(err){
         lastMessage=err?.name==="AbortError"
           ? "Gemini phản hồi quá lâu"
