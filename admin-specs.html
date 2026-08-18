@@ -616,7 +616,7 @@
 }
 
 
-.seo-editor{border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff;margin-bottom:18px}.seo-editor-title{font-size:16px;font-weight:900}.seo-editor-note{font-size:12px;color:#667085;margin:5px 0 16px}.seo-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.seo-form-grid label{display:flex;flex-direction:column;gap:6px;position:relative}.seo-form-grid label>span{font-size:12px;font-weight:800;color:#344054}.seo-form-grid input,.seo-form-grid textarea{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:10px;padding:11px 12px;font:inherit;background:#fff}.seo-form-grid textarea{resize:vertical}.seo-form-grid small{position:absolute;right:9px;bottom:7px;font-size:9px;color:#98a2b3;background:#fff;padding-left:5px}.seo-wide{grid-column:1/-1}.seo-preview{margin-top:16px;padding:16px;border:1px solid #e8eaee;border-radius:12px;background:#fafafa}.seo-preview-label{font-size:10px;font-weight:800;color:#98a2b3;text-transform:uppercase;margin-bottom:11px}.seo-preview-site{display:flex;align-items:center;gap:9px}.seo-preview-site img{width:30px;height:30px;border-radius:50%;object-fit:cover}.seo-preview-site div{display:flex;flex-direction:column}.seo-preview-site strong{font-size:13px}.seo-preview-site span{font-size:11px;color:#667085}.seo-preview-title{font-size:19px;color:#681da8;margin-top:8px}.seo-preview-desc{font-size:12px;color:#4d5156;line-height:1.5;margin-top:4px;max-width:720px}.seo-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}.seo-actions #seoSettingsStatus{font-size:12px;color:#667085}@media(max-width:700px){.seo-form-grid{grid-template-columns:1fr}.seo-wide{grid-column:auto}.seo-preview-title{font-size:17px}}
+.seo-editor{display:block!important;visibility:visible!important;opacity:1!important;border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff;margin-bottom:18px}.seo-editor-title{font-size:16px;font-weight:900}.seo-editor-note{font-size:12px;color:#667085;margin:5px 0 16px}.seo-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.seo-form-grid label{display:flex;flex-direction:column;gap:6px;position:relative}.seo-form-grid label>span{font-size:12px;font-weight:800;color:#344054}.seo-form-grid input,.seo-form-grid textarea{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:10px;padding:11px 12px;font:inherit;background:#fff}.seo-form-grid textarea{resize:vertical}.seo-form-grid small{position:absolute;right:9px;bottom:7px;font-size:9px;color:#98a2b3;background:#fff;padding-left:5px}.seo-wide{grid-column:1/-1}.seo-preview{margin-top:16px;padding:16px;border:1px solid #e8eaee;border-radius:12px;background:#fafafa}.seo-preview-label{font-size:10px;font-weight:800;color:#98a2b3;text-transform:uppercase;margin-bottom:11px}.seo-preview-site{display:flex;align-items:center;gap:9px}.seo-preview-site img{width:30px;height:30px;border-radius:50%;object-fit:cover}.seo-preview-site div{display:flex;flex-direction:column}.seo-preview-site strong{font-size:13px}.seo-preview-site span{font-size:11px;color:#667085}.seo-preview-title{font-size:19px;color:#681da8;margin-top:8px}.seo-preview-desc{font-size:12px;color:#4d5156;line-height:1.5;margin-top:4px;max-width:720px}.seo-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}.seo-actions #seoSettingsStatus{font-size:12px;color:#667085}@media(max-width:700px){.seo-form-grid{grid-template-columns:1fr}.seo-wide{grid-column:auto}.seo-preview-title{font-size:17px}}
 
 </style>
 
@@ -646,7 +646,7 @@
 <body class="auth-pending">
 <header class="top">
   <div class="top-inner">
-    <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span></div>
+    <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span><b style="font-size:10px;background:#fff1e8;color:#d94800;border:1px solid #ffd3be;border-radius:6px;padding:3px 6px">V128</b></div>
     <button id="logoutBtn" class="secondary hidden" type="button">Đăng xuất</button>
   </div>
 </header>
@@ -809,13 +809,8 @@
       <button id="refreshSeo" class="secondary" type="button">Kiểm tra lại</button>
     </div>
     <div style="padding:24px">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px">
-        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">Sitemap</div><div id="seoSitemapStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">/sitemap.xml</div></div>
-        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">URL trong Sitemap</div><div id="seoUrlCount" style="font-size:28px;font-weight:800;margin-top:8px">—</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Trang chủ + sản phẩm</div></div>
-        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">robots.txt</div><div id="seoRobotsStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Quyền Google thu thập dữ liệu</div></div>
-      </div>
-      <div class="seo-editor">
-        <div class="seo-editor-title">Nội dung hiển thị trên Google</div>
+<div class="seo-editor">
+        <div class="seo-editor-title">Nội dung hiển thị trên Google <span style="font-size:10px;color:#d94800">• V128</span></div>
         <div class="seo-editor-note">Chỉnh tại đây khi cần đổi tên website, tiêu đề, mô tả hoặc logo nhỏ cạnh tên miền. Không cần sửa code.</div>
         <div class="seo-form-grid">
           <label><span>Tên website</span><input id="seoSiteName" maxlength="80" placeholder="Siêu Di Động"></label>
@@ -829,6 +824,13 @@
         <div class="seo-preview"><div class="seo-preview-label">Xem trước gần giống Google</div><div class="seo-preview-site"><img id="seoPreviewIcon" src="/assets/logo-square.jpg" alt=""><div><strong id="seoPreviewName">Siêu Di Động</strong><span>https://sieudidong.vn</span></div></div><div id="seoPreviewTitle" class="seo-preview-title">Siêu Di Động | Điện thoại & sản phẩm công nghệ</div><div id="seoPreviewDesc" class="seo-preview-desc"></div></div>
         <div class="seo-actions"><button id="saveSeoSettings" class="primary" type="button">Lưu SEO</button><button id="reloadSeoSettings" class="secondary" type="button">Tải lại</button><button id="resetSeoSettings" class="secondary" type="button">Khôi phục mặc định</button><span id="seoSettingsStatus"></span></div>
       </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px">
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">Sitemap</div><div id="seoSitemapStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">/sitemap.xml</div></div>
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">URL trong Sitemap</div><div id="seoUrlCount" style="font-size:28px;font-weight:800;margin-top:8px">—</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Trang chủ + sản phẩm</div></div>
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">robots.txt</div><div id="seoRobotsStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Quyền Google thu thập dữ liệu</div></div>
+      </div>
+      
       <div style="border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff">
         <div style="font-size:15px;font-weight:800;margin-bottom:12px">Công cụ SEO</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
