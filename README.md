@@ -192,3 +192,22 @@ Không hiển thị thông tin KiotViet trên giao diện công khai.
 - Tổ hợp màu/dung lượng không tồn tại sẽ bị mờ và không bấm được.
 - Khi đổi thuộc tính, tình trạng còn hàng cũng đổi theo đúng biến thể.
 - Không cần reload trang.
+
+
+## V13 - Ẩn thuộc tính của biến thể hết hàng
+Khi bật "Chỉ hiện hàng còn tồn":
+- Chỉ dùng các biến thể `onHand > 0` để tạo nút Màu sắc và Dung lượng.
+- Màu/dung lượng chỉ tồn tại ở biến thể hết hàng sẽ không xuất hiện.
+- Nếu một model không còn bất kỳ biến thể nào có hàng, ẩn luôn toàn bộ model.
+- Giá và trạng thái chỉ lấy từ biến thể còn hàng.
+
+Khi bỏ tick:
+- Hiện lại đầy đủ cả biến thể hết hàng.
+
+
+## V14 - Giao diện full width
+- Desktop tăng chiều rộng nội dung lên tối đa 1560px.
+- Màn hình rất rộng tăng lên tối đa 1760px.
+- Card sản phẩm trải ngang, giảm khoảng trống 2 bên.
+- Ảnh sản phẩm và khu vực thông tin được cân đối lại.
+- Tablet/mobile vẫn responsive như cũ.

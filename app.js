@@ -266,8 +266,16 @@ function render(){
   const groups=groupItems(items);
   grid.innerHTML="";
 
-  const totalVariants=groups.reduce((sum,g)=>sum+g.items.length,0);
-  summary.textContent=`${groups.length} mẫu • ${totalVariants} phiên bản`;
+  const visibleGroups = groups.filter(g =>
+    !onlyStock.checked || g.items.some(v => Number(v.onHand || 0) > 0)
+  );
+  const totalVariants = visibleGroups.reduce((sum,g)=>{
+    const variants = onlyStock.checked
+      ? g.items.filter(v => Number(v.onHand || 0) > 0)
+      : g.items;
+    return sum + variants.length;
+  },0);
+  summary.textContent=`${visibleGroups.length} mẫu • ${totalVariants} phiên bản`;
 
   if(!groups.length){
     grid.innerHTML='<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';
@@ -275,6 +283,14 @@ function render(){
   }
 
   groups.forEach(group=>{
+    const selectableVariants = onlyStock.checked
+      ? group.items.filter(v => Number(v.onHand || 0) > 0)
+      : [...group.items];
+
+    // Nếu đang bật "Chỉ hiện hàng còn tồn" và model không còn biến thể nào có hàng,
+    // ẩn luôn toàn bộ model.
+    if(!selectableVariants.length) return;
+
     const card=document.createElement("article");
     card.className="product-card product-detail-card";
 
@@ -294,7 +310,7 @@ function render(){
     title.textContent=group.name;
 
     // Chọn biến thể mặc định: ưu tiên còn hàng, sau đó giá thấp nhất.
-    const sortedVariants=[...group.items].sort((a,b)=>{
+    const sortedVariants=[...selectableVariants].sort((a,b)=>{
       const stockDiff=(b.onHand>0)-(a.onHand>0);
       if(stockDiff!==0) return stockDiff;
       return Number(a.price||0)-Number(b.price||0);
@@ -317,15 +333,15 @@ function render(){
     const selectors=document.createElement("div");
     selectors.className="selectors";
 
-    const colors=[...new Set(group.items.map(x=>x.color).filter(Boolean))];
-    const memories=[...new Set(group.items.map(x=>x.memory).filter(Boolean))];
+    const colors=[...new Set(selectableVariants.map(x=>x.color).filter(Boolean))];
+    const memories=[...new Set(selectableVariants.map(x=>x.memory).filter(Boolean))];
 
     const colorOptions=new Map();
     const memoryOptions=new Map();
 
     function findBestVariant(){
       // Khớp chính xác cả màu + dung lượng nếu có.
-      let matches=group.items.filter(v=>{
+      let matches=selectableVariants.filter(v=>{
         const colorOk=!selectedColor || v.color===selectedColor;
         const memoryOk=!selectedMemory || v.memory===selectedMemory;
         return colorOk && memoryOk;
@@ -333,13 +349,13 @@ function render(){
 
       // Nếu tổ hợp không tồn tại, giữ lựa chọn vừa click và tìm biến thể gần nhất.
       if(!matches.length && selectedColor){
-        matches=group.items.filter(v=>v.color===selectedColor);
+        matches=selectableVariants.filter(v=>v.color===selectedColor);
       }
       if(!matches.length && selectedMemory){
-        matches=group.items.filter(v=>v.memory===selectedMemory);
+        matches=selectableVariants.filter(v=>v.memory===selectedMemory);
       }
       if(!matches.length){
-        matches=[...group.items];
+        matches=[...selectableVariants];
       }
 
       return matches.sort((a,b)=>{
@@ -352,7 +368,7 @@ function render(){
     function updateAvailability(){
       // Với màu đang chọn, chỉ enable dung lượng có tổ hợp thật.
       memoryOptions.forEach((chip,mem)=>{
-        const exists=group.items.some(v=>{
+        const exists=selectableVariants.some(v=>{
           const colorOk=!selectedColor || v.color===selectedColor;
           return colorOk && v.memory===mem;
         });
@@ -361,7 +377,7 @@ function render(){
 
       // Với dung lượng đang chọn, chỉ enable màu có tổ hợp thật.
       colorOptions.forEach((chip,color)=>{
-        const exists=group.items.some(v=>{
+        const exists=selectableVariants.some(v=>{
           const memOk=!selectedMemory || v.memory===selectedMemory;
           return memOk && v.color===color;
         });
@@ -421,7 +437,7 @@ function render(){
           selectedColor=c;
 
           // Nếu dung lượng hiện tại không có với màu mới, tự chọn dung lượng đầu tiên phù hợp.
-          const compatible=group.items.filter(v=>v.color===selectedColor);
+          const compatible=selectableVariants.filter(v=>v.color===selectedColor);
           if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
             selectedMemory=compatible.find(v=>v.memory)?.memory || "";
           }
@@ -459,7 +475,7 @@ function render(){
           selectedMemory=m;
 
           // Nếu màu hiện tại không có với dung lượng mới, tự chọn màu đầu tiên phù hợp.
-          const compatible=group.items.filter(v=>v.memory===selectedMemory);
+          const compatible=selectableVariants.filter(v=>v.memory===selectedMemory);
           if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
             selectedColor=compatible.find(v=>v.color)?.color || "";
           }
