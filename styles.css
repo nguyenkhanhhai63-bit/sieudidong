@@ -6120,3 +6120,235 @@ textarea{
     animation:none !important;
   }
 }
+
+
+/* =========================================================
+   V85 - Header desktop tinh gọn, đồng bộ thương hiệu
+   ========================================================= */
+
+@media(min-width:721px){
+  .commerce-header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:1000 !important;
+    background:#fff !important;
+    border-top:3px solid #ff5a00 !important;
+    border-bottom:1px solid #e9edf1 !important;
+    box-shadow:0 4px 16px rgba(15,23,42,.035) !important;
+  }
+
+  .commerce-header-inner{
+    width:min(1280px,calc(100% - 40px)) !important;
+    min-height:76px !important;
+    margin:0 auto !important;
+    padding:10px 0 !important;
+
+    display:grid !important;
+    grid-template-columns:176px 112px minmax(360px,1fr) auto !important;
+    gap:14px !important;
+    align-items:center !important;
+  }
+
+  /* Logo được đặt trong khối cùng tone nền thay vì 1 mảng cam tách biệt */
+  .commerce-brand-block{
+    height:50px !important;
+    display:flex !important;
+    align-items:center !important;
+    padding:0 12px !important;
+    border:1px solid #ffe0cf !important;
+    border-radius:12px !important;
+    background:linear-gradient(180deg,#fffaf7 0%,#fff5ef 100%) !important;
+  }
+
+  .commerce-logo{
+    width:100% !important;
+    height:auto !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+  }
+
+  .commerce-logo-wide{
+    display:block !important;
+    width:142px !important;
+    height:auto !important;
+    max-height:34px !important;
+    object-fit:contain !important;
+    border-radius:0 !important;
+    mix-blend-mode:multiply;
+  }
+
+  .commerce-logo-mobile{
+    display:none !important;
+  }
+
+  .commerce-category-menu{
+    position:relative !important;
+    width:100% !important;
+  }
+
+  .commerce-category-btn{
+    width:100% !important;
+    height:46px !important;
+    padding:0 14px !important;
+    border:1px solid #ffd6bf !important;
+    border-radius:11px !important;
+    background:#fff7f2 !important;
+    color:#d94b00 !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:9px !important;
+
+    font-family:var(--font-ui) !important;
+    font-size:13px !important;
+    font-weight:650 !important;
+    line-height:1 !important;
+    letter-spacing:0 !important;
+    white-space:nowrap !important;
+  }
+
+  .commerce-category-btn span{
+    font-family:Arial,sans-serif !important;
+    font-size:17px !important;
+    font-weight:400 !important;
+    line-height:1 !important;
+    transform:translateY(-1px);
+  }
+
+  .commerce-category-btn strong{
+    font-size:13px !important;
+    font-weight:650 !important;
+    letter-spacing:0 !important;
+  }
+
+  .commerce-category-btn:hover{
+    background:#fff0e8 !important;
+    border-color:#ffb98f !important;
+  }
+
+  .commerce-search{
+    width:100% !important;
+    height:46px !important;
+    margin:0 !important;
+  }
+
+  .commerce-search input{
+    width:100% !important;
+    height:46px !important;
+    padding:0 72px 0 16px !important;
+    border:1px solid #dde2e8 !important;
+    border-radius:12px !important;
+    background:#f8f9fb !important;
+    color:#1f2937 !important;
+    font-size:14px !important;
+    font-weight:400 !important;
+    transition:border-color .15s ease,background .15s ease,box-shadow .15s ease !important;
+  }
+
+  .commerce-search input::placeholder{
+    color:#8a919b !important;
+    opacity:1 !important;
+  }
+
+  .commerce-search input:focus{
+    background:#fff !important;
+    border-color:#ff9f69 !important;
+    box-shadow:0 0 0 3px rgba(255,90,0,.08) !important;
+  }
+
+  #clearSearch{
+    right:42px !important;
+    width:26px !important;
+    height:26px !important;
+    border-radius:50% !important;
+    background:#eef1f4 !important;
+    color:#777 !important;
+  }
+
+  .commerce-search-icon{
+    right:14px !important;
+    color:#ff5a00 !important;
+    font-size:19px !important;
+  }
+
+  .commerce-header-note{
+    justify-self:end !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:7px !important;
+    color:#515862 !important;
+    font-size:12px !important;
+    font-weight:650 !important;
+    white-space:nowrap !important;
+  }
+
+  .commerce-header-note span{
+    color:#ff8c52 !important;
+  }
+
+  /* Những khối cũ không còn cần trên desktop */
+  .commerce-location,
+  .commerce-contact,
+  .commerce-store,
+  .commerce-mini-icon{
+    display:none !important;
+  }
+
+  /* Vô hiệu pseudo text cũ để tránh trùng */
+  .commerce-header-inner::after{
+    content:none !important;
+    display:none !important;
+  }
+}
+
+/* Desktop hẹp */
+@media(min-width:721px) and (max-width:980px){
+  .commerce-header-inner{
+    width:calc(100% - 24px) !important;
+    grid-template-columns:150px 104px minmax(260px,1fr) !important;
+    gap:10px !important;
+  }
+
+  .commerce-header-note{
+    display:none !important;
+  }
+
+  .commerce-brand-block{
+    padding:0 9px !important;
+  }
+
+  .commerce-logo-wide{
+    width:126px !important;
+  }
+}
+
+/* Mobile giữ layout V68 nhưng làm logo hòa với header hơn */
+@media(max-width:720px){
+  .commerce-header{
+    background:#fff !important;
+    border-top:3px solid #ff5a00 !important;
+    box-shadow:0 3px 12px rgba(15,23,42,.04) !important;
+  }
+
+  .commerce-brand-block{
+    display:contents !important;
+  }
+
+  .commerce-header-note{
+    display:none !important;
+  }
+
+  .commerce-logo{
+    background:#fff7f2 !important;
+    border:1px solid #ffe0cf !important;
+    border-radius:11px !important;
+  }
+
+  .commerce-logo-mobile{
+    border-radius:9px !important;
+  }
+}

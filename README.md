@@ -715,3 +715,12 @@ V81:
 - Trong thời gian kiểm tra cookie/session chỉ hiện `Đang kiểm tra phiên đăng nhập...`.
 - Nếu session còn hợp lệ: vào thẳng trang quản trị.
 - Nếu session hết hạn: mới hiện form đăng nhập.
+
+
+## V85 - Làm lại header
+- Logo được đặt trong nền kem rất nhạt cùng tone thương hiệu, bớt cảm giác mảng cam bị tách khỏi header.
+- Nút `Danh mục` đổi font-weight, line-height, padding và icon để tự nhiên hơn.
+- Thanh tìm kiếm sáng, mềm và cân với logo/nút.
+- `Tư vấn • Cửa hàng Quy Nhơn` thành phần tử thật, không còn pseudo-element.
+- Desktop dùng layout 4 cột cân đối; desktop hẹp tự ẩn phần ghi chú.
+- Mobile giữ layout gọn nhưng logo hòa với nền header hơn.
