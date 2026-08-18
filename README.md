@@ -164,3 +164,23 @@ vivo (gồm iQOO), HONOR, Huawei, Nubia/RedMagic, Motorola, Google, ASUS,
 Sony, Nothing và Khác.
 
 Không hiển thị thông tin KiotViet trên giao diện công khai.
+
+
+## V10 - Hiển thị thuộc tính sản phẩm
+
+- Tên sản phẩm hiển thị riêng.
+- Thuộc tính của từng phiên bản hiển thị rõ:
+  - Dung lượng
+  - Màu sắc
+- Ưu tiên lấy trực tiếp từ `attributes` của KiotViet.
+- Nếu KiotViet không trả thuộc tính, website tự nhận diện từ tên phiên bản làm fallback.
+- Mã sản phẩm vẫn không hiển thị.
+
+
+## V11 - Bố cục kiểu trang chi tiết sản phẩm
+- Ảnh sản phẩm bên trái.
+- Tên máy và giá nổi bật bên phải.
+- Màu sắc và dung lượng trình bày thành các lựa chọn.
+- Tình trạng còn hàng đặt cạnh thông tin chính.
+- Danh sách giá từng phiên bản nằm phía dưới.
+- Mobile tự chuyển sang bố cục gọn hơn.

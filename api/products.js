@@ -145,6 +145,16 @@ function categoryPath(categoryId, categoryMap) {
   };
 }
 
+
+function normalizeAttributes(obj) {
+  const attrs = Array.isArray(obj?.attributes) ? obj.attributes : [];
+
+  return attrs.map(a => ({
+    name: a.attributeName || a.name || a.Name || "",
+    value: a.attributeValue || a.value || a.Value || ""
+  })).filter(a => a.name || a.value);
+}
+
 function normalizeProduct(item, categoryMap) {
   const cat = categoryPath(item.categoryId, categoryMap);
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
@@ -170,7 +180,10 @@ function normalizeProduct(item, categoryMap) {
           name: child.fullName || child.name || child.code,
           price: Number(child.basePrice || item.basePrice || 0),
           onHand,
-          image: firstImage(child) || parentImage
+          image: firstImage(child) || parentImage,
+          attributes: normalizeAttributes(child).length
+            ? normalizeAttributes(child)
+            : normalizeAttributes(item)
         };
       })
     : [{
@@ -179,7 +192,8 @@ function normalizeProduct(item, categoryMap) {
         name: item.fullName || item.name || item.code,
         price: Number(item.basePrice || 0),
         onHand: totalOnHand,
-        image: parentImage
+        image: parentImage,
+        attributes: normalizeAttributes(item)
       }];
 
   return {
@@ -191,6 +205,7 @@ function normalizeProduct(item, categoryMap) {
     rootCategoryName: cat.rootName,
     basePrice: Number(item.basePrice || 0),
     image: parentImage,
+    attributes: normalizeAttributes(item),
     variants
   };
 }

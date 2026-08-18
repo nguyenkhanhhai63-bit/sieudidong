@@ -24,6 +24,56 @@ function cleanBaseName(name){
   return s.trim();
 }
 
+
+function attributeValue(attrs, keys){
+  const list = Array.isArray(attrs) ? attrs : [];
+
+  for(const a of list){
+    const name = String(a.name || "").trim().toLowerCase();
+    const value = String(a.value || "").trim();
+
+    if(keys.some(k => name.includes(k)) && value){
+      return value;
+    }
+  }
+
+  return "";
+}
+
+function getMemory(attrs, name){
+  const byAttr = attributeValue(attrs, [
+    "dung lượng", "dung luong", "bộ nhớ", "bo nho",
+    "ram/rom", "rom", "memory", "capacity"
+  ]);
+
+  if(byAttr) return byAttr;
+
+  const m = String(name || "").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
+  return m ? `${m[1]}/${m[2]}` : "";
+}
+
+function getColor(attrs, name){
+  const byAttr = attributeValue(attrs, [
+    "màu", "mau", "color", "colour"
+  ]);
+
+  if(byAttr) return byAttr;
+
+  const colors = [
+    "Đen","Trắng","Xanh","Đỏ","Hồng","Tím","Bạc","Titan",
+    "Cam","Vàng","Green","Blue","Black","White","Silver"
+  ];
+
+  const text = String(name || "");
+
+  for(const c of colors){
+    const re = new RegExp(`(?:^|\\s-\\s)${c}(?:\\s-\\s|$)`,"i");
+    if(re.test(text)) return c;
+  }
+
+  return "";
+}
+
 function extractMemory(name){
   const m = String(name || "").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
   return m ? `${m[1]}/${m[2]}` : "";
@@ -73,18 +123,25 @@ function flattenProducts(raw){
 
   raw.forEach(p=>{
     (p.variants || []).forEach(v=>{
+      const attrs = Array.isArray(v.attributes) && v.attributes.length
+        ? v.attributes
+        : (p.attributes || []);
+
+      const fullName = v.name || p.name || "";
+
       items.push({
         id:v.id || p.id,
-        fullName:v.name || p.name || "",
-        baseName:cleanBaseName(v.name || p.name || ""),
-        memory:extractMemory(v.name || p.name || ""),
-        color:extractColor(v.name || p.name || ""),
+        fullName,
+        baseName:cleanBaseName(fullName),
+        memory:getMemory(attrs, fullName),
+        color:getColor(attrs, fullName),
+        attributes:attrs,
         price:Number(v.price || 0),
         onHand:Number(v.onHand || 0),
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:detectBrand(v.name || p.name || "")
+        brand:detectBrand(fullName)
       });
     });
   });
@@ -138,7 +195,17 @@ function imageHTML(group){
 }
 
 function variantLabel(v){
-  return [v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
+  const parts=[];
+
+  if(v.memory){
+    parts.push(`Dung lượng: ${v.memory}`);
+  }
+
+  if(v.color){
+    parts.push(`Màu sắc: ${v.color}`);
+  }
+
+  return parts.length ? parts.join(" • ") : "Phiên bản";
 }
 
 function renderCategoryFilters(){
@@ -209,7 +276,7 @@ function render(){
 
   groups.forEach(group=>{
     const card=document.createElement("article");
-    card.className="product-card";
+    card.className="product-card product-detail-card";
 
     const media=document.createElement("div");
     media.className="product-media";
@@ -218,48 +285,103 @@ function render(){
     const body=document.createElement("div");
     body.className="product-body";
 
+    const brandLine=document.createElement("div");
+    brandLine.className="product-brand";
+    brandLine.textContent=group.items[0]?.brand || "";
+
     const title=document.createElement("div");
     title.className="product-name";
     title.textContent=group.name;
 
+    const prices = group.items.map(x=>Number(x.price||0)).filter(x=>x>0);
+    const minPrice = prices.length ? Math.min(...prices) : 0;
+
+    const price=document.createElement("div");
+    price.className="main-price";
+    price.textContent=money(minPrice);
+
+    const hint=document.createElement("div");
+    hint.className="variant-hint";
+    hint.textContent="Chọn phiên bản:";
+
+    const memories=[...new Set(group.items.map(x=>x.memory).filter(Boolean))];
+    const colors=[...new Set(group.items.map(x=>x.color).filter(Boolean))];
+
+    const selectors=document.createElement("div");
+    selectors.className="selectors";
+
+    if(colors.length){
+      const row=document.createElement("div");
+      row.className="selector-row";
+      const label=document.createElement("div");
+      label.className="selector-label";
+      label.textContent="Màu sắc";
+
+      const options=document.createElement("div");
+      options.className="selector-options";
+
+      colors.forEach(c=>{
+        const chip=document.createElement("span");
+        chip.className="option-chip";
+        chip.textContent=c;
+        options.appendChild(chip);
+      });
+
+      row.append(label,options);
+      selectors.appendChild(row);
+    }
+
+    if(memories.length){
+      const row=document.createElement("div");
+      row.className="selector-row";
+      const label=document.createElement("div");
+      label.className="selector-label";
+      label.textContent="Dung lượng";
+
+      const options=document.createElement("div");
+      options.className="selector-options";
+
+      memories.forEach(m=>{
+        const chip=document.createElement("span");
+        chip.className="option-chip memory-chip";
+        chip.textContent=m;
+        options.appendChild(chip);
+      });
+
+      row.append(label,options);
+      selectors.appendChild(row);
+    }
+
+    const stock=document.createElement("div");
+    stock.className="detail-stock";
+    stock.textContent=group.items.some(x=>x.onHand>0) ? "✓ Còn hàng" : "Hết hàng";
+
     const variants=document.createElement("div");
-    variants.className="variant-list";
+    variants.className="variant-price-list";
 
     group.items
-      .sort((a,b)=>{
-        if(a.memory!==b.memory) return a.memory.localeCompare(b.memory,"vi");
-        return a.fullName.localeCompare(b.fullName,"vi");
-      })
+      .sort((a,b)=>a.price-b.price)
       .forEach(v=>{
         const row=document.createElement("div");
-        row.className="variant";
+        row.className="variant-price-row";
 
         const info=document.createElement("div");
+        info.className="variant-desc";
+        info.textContent=[v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
 
-        const main=document.createElement("div");
-        main.className="variant-main";
-        main.textContent=variantLabel(v);
+        const p=document.createElement("div");
+        p.className="variant-row-price";
+        p.textContent=money(v.price);
 
-        const stock=document.createElement("div");
-        stock.className="stock" + (v.onHand>0 ? " in" : "");
-        stock.textContent=v.onHand>0 ? "Còn hàng" : "Hết hàng";
-
-        info.append(main,stock);
-
-        const price=document.createElement("div");
-        price.className="price";
-        price.textContent=money(v.price);
-
-        row.append(info,price);
+        row.append(info,p);
         variants.appendChild(row);
       });
 
-    body.append(title,variants);
+    body.append(brandLine,title,price,hint,selectors,stock,variants);
     card.append(media,body);
     grid.appendChild(card);
   });
 }
-
 async function load(){
   try{
     const res=await fetch("/api/products",{cache:"no-store"});
