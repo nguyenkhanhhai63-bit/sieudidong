@@ -434,3 +434,13 @@ Chỉ giữ 10 nhóm thông số:
 10. Thiết kế
 
 Các thông số phụ khác từ nguồn sẽ không hiển thị.
+
+
+## V39 - Tối ưu giao diện
+- Trang chi tiết chuyển sang layout card hiện đại, cân đối hơn.
+- Ảnh sản phẩm lớn hơn, giá nổi bật hơn.
+- Màu/dung lượng dạng nút đẹp và dễ chọn.
+- Khối sản phẩm tương tự, thông tin phiên bản và thông số kỹ thuật đồng bộ giao diện.
+- Giảm đường kẻ thô, tăng khoảng trắng và bo góc.
+- Mobile được tối ưu lại riêng.
+- Chỉ thay đổi giao diện; logic giá, tồn kho, thông số và API giữ nguyên.
