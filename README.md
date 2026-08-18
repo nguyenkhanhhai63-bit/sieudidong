@@ -264,3 +264,10 @@ Khi bỏ tick:
 - Sản phẩm bán chạy có badge `BÁN CHẠY`.
 - Khách vẫn có thể chuyển sang Tất cả hoặc các hãng điện thoại.
 - Không hiển thị thông tin nguồn/API trên giao diện.
+
+
+## V22 - Fix lỗi Bán chạy làm sập bảng giá
+- Tính năng Bán chạy chỉ đọc tối đa 300 hóa đơn gần nhất trong 30 ngày.
+- Nếu API hóa đơn lỗi hoặc quá chậm, website vẫn tải toàn bộ bảng giá bình thường.
+- Nếu không lấy được dữ liệu bán chạy thì tab Bán chạy tự ẩn và mặc định chuyển sang Tất cả.
+- Khi API hóa đơn hoạt động bình thường, Bán chạy vẫn là tab mặc định.
