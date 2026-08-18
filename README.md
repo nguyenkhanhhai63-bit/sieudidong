@@ -299,3 +299,19 @@ Nguyên nhân:
 - JavaScript dừng ngay sau khi cập nhật số lượng sản phẩm, nên màn hình hiện số mẫu nhưng không render card.
 
 Bản V25 khôi phục `colorHex()` và giữ nguyên API ổn định của V24.
+
+
+## V26 - Bán chạy thực tế 30 ngày, API riêng
+
+- `/api/products` giữ nguyên luồng ổn định, không gọi hóa đơn.
+- `/api/bestsellers` là endpoint riêng.
+- Bán chạy = tổng `quantity` theo `productId` trong hóa đơn 30 ngày gần nhất.
+- Loại hóa đơn có trạng thái chữ chứa `Đã hủy` / `Hủy` / `Cancel` / `Void`.
+- API ranking cache 60 phút trong instance Vercel.
+- HTTP cache: `s-maxage=3600, stale-while-revalidate=86400`.
+- Trình duyệt giữ ranking gần nhất trong localStorage tối đa 48 giờ.
+- Tab `Bán chạy` mở mặc định.
+- Nếu API bán chạy lỗi:
+  + có ranking cũ -> dùng ranking cũ;
+  + chưa từng có ranking -> tự chuyển sang `Tất cả`.
+- Lỗi API bán chạy không bao giờ làm hỏng `/api/products`.

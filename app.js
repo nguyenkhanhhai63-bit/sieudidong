@@ -38,6 +38,73 @@ function loadProductCache(){
 }
 let ACTIVE_CATEGORY = "Bán chạy";
 
+let BEST_SELLER_PRODUCT_IDS = [];
+let BEST_SELLER_READY = false;
+
+const BEST_SELLER_CACHE_KEY = "sieudidong-bestsellers-30d-v1";
+const BEST_SELLER_CACHE_MAX_AGE = 48 * 60 * 60 * 1000;
+
+function saveBestSellerCache(payload){
+  try{
+    localStorage.setItem(BEST_SELLER_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      ranking: payload.ranking || []
+    }));
+  }catch(_){}
+}
+
+function loadBestSellerCache(){
+  try{
+    const raw = localStorage.getItem(BEST_SELLER_CACHE_KEY);
+    if(!raw) return false;
+
+    const cached = JSON.parse(raw);
+    if(!Array.isArray(cached.ranking) || !cached.ranking.length) return false;
+    if(Date.now() - Number(cached.savedAt || 0) > BEST_SELLER_CACHE_MAX_AGE) return false;
+
+    BEST_SELLER_PRODUCT_IDS = cached.ranking.map(x=>Number(x.productId)).filter(Boolean);
+    BEST_SELLER_READY = BEST_SELLER_PRODUCT_IDS.length > 0;
+    return BEST_SELLER_READY;
+  }catch(_){
+    return false;
+  }
+}
+
+async function loadBestSellers(){
+  try{
+    const res = await fetch("/api/bestsellers", { cache: "default" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+
+    const data = await res.json();
+    const ranking = Array.isArray(data.ranking) ? data.ranking : [];
+
+    if(!ranking.length) throw new Error("Empty best seller ranking");
+
+    BEST_SELLER_PRODUCT_IDS = ranking.map(x=>Number(x.productId)).filter(Boolean);
+    BEST_SELLER_READY = BEST_SELLER_PRODUCT_IDS.length > 0;
+
+    saveBestSellerCache(data);
+
+    if(ACTIVE_CATEGORY === "Bán chạy"){
+      renderCategoryFilters();
+      render();
+    }
+  }catch(err){
+    console.error("Best sellers:", err);
+
+    // Dùng cache gần nhất. Nếu chưa từng có cache thì chuyển về Tất cả
+    // để không làm trắng trang.
+    if(!BEST_SELLER_READY && !loadBestSellerCache()){
+      if(ACTIVE_CATEGORY === "Bán chạy"){
+        ACTIVE_CATEGORY = "Tất cả";
+        renderCategoryFilters();
+        render();
+      }
+    }
+  }
+}
+
+
 function money(v){
   return new Intl.NumberFormat("vi-VN").format(Number(v || 0)) + " đ";
 }
@@ -236,35 +303,6 @@ function variantLabel(v){
 }
 
 
-function isBestSellerName(name){
-  const configured = Array.isArray(window.BEST_SELLER_NAMES)
-    ? window.BEST_SELLER_NAMES
-    : [];
-
-  const n = String(name || "").toLowerCase();
-
-  if(configured.length){
-    return configured.some(keyword =>
-      n.includes(String(keyword || "").trim().toLowerCase())
-    );
-  }
-
-  return false;
-}
-
-function getBestSellerBaseNames(){
-  const flat = flattenProducts(PRODUCTS);
-  const names = [...new Set(flat.map(x=>x.baseName).filter(Boolean))];
-
-  const configuredMatches = names.filter(name=>isBestSellerName(name));
-
-  // Nếu chưa cấu hình hoặc tên chưa khớp dữ liệu thực tế,
-  // vẫn lấy 12 mẫu đầu tiên để trang không bị rỗng.
-  return configuredMatches.length
-    ? configuredMatches
-    : names.slice(0,12);
-}
-
 function renderCategoryFilters(){
   const flat = flattenProducts(PRODUCTS);
 
@@ -277,10 +315,17 @@ function renderCategoryFilters(){
   const hasOther = flat.some(p => p.brand === "Khác");
   if(hasOther) brands.push("Khác");
 
-  const all = ["Bán chạy", "Tất cả", ...brands];
+  const all = [
+    ...(BEST_SELLER_READY ? ["Bán chạy"] : []),
+    "Tất cả",
+    ...brands
+  ];
 
-  if(!all.includes(ACTIVE_CATEGORY)){
-    ACTIVE_CATEGORY = "Bán chạy";
+  // Khi mới mở trang mà cache Bán chạy đang được tải,
+  // vẫn giữ trạng thái Bán chạy. Nếu API thật sự lỗi và không có cache,
+  // loadBestSellers() sẽ tự chuyển về Tất cả.
+  if(!all.includes(ACTIVE_CATEGORY) && ACTIVE_CATEGORY !== "Bán chạy"){
+    ACTIVE_CATEGORY = "Tất cả";
   }
 
   categoryFilters.innerHTML = "";
@@ -304,7 +349,6 @@ function renderCategoryFilters(){
     categoryFilters.appendChild(btn);
   });
 }
-
 
 function colorHex(name){
   const s=String(name||"").trim().toLowerCase();
@@ -335,6 +379,12 @@ function colorHex(name){
 }
 
 function render(){
+  if(ACTIVE_CATEGORY==="Bán chạy" && !BEST_SELLER_READY){
+    grid.innerHTML='<div class="loading">Đang tải sản phẩm bán chạy...</div>';
+    summary.textContent="";
+    return;
+  }
+
   const q=searchInput.value.trim().toLowerCase();
   let items=flattenProducts(PRODUCTS);
 
@@ -345,8 +395,13 @@ function render(){
   
 
   if(ACTIVE_CATEGORY==="Bán chạy"){
-    const bestNames = new Set(getBestSellerBaseNames());
-    items = items.filter(x=>bestNames.has(x.baseName));
+    const rank = new Map(
+      BEST_SELLER_PRODUCT_IDS.map((id,index)=>[Number(id),index])
+    );
+
+    items = items
+      .filter(x=>rank.has(Number(x.id)))
+      .sort((a,b)=>rank.get(Number(a.id))-rank.get(Number(b.id)));
   }else if(ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
@@ -408,7 +463,9 @@ function render(){
     title.className="shop-title";
     title.textContent=group.name;
 
-    const groupBestSeller=getBestSellerBaseNames().includes(group.name);
+    const groupBestSeller=group.items.some(v=>
+      BEST_SELLER_PRODUCT_IDS.includes(Number(v.id))
+    );
     if(groupBestSeller){
       const badge=document.createElement("span");
       badge.className="best-seller-badge";
@@ -698,7 +755,10 @@ async function load(){
   }
 }
 
-// Hiện cache ngay nếu có, rồi cập nhật nền.
+// Nạp danh sách bán chạy gần nhất trước để tab mặc định hiển thị ngay.
+loadBestSellerCache();
+
+// Hiện cache sản phẩm ngay nếu có, rồi cập nhật nền.
 if(loadProductCache()){
   updatedAt.textContent="Đang cập nhật...";
   renderCategoryFilters();
@@ -706,7 +766,9 @@ if(loadProductCache()){
 }
 
 load();
+loadBestSellers();
 setInterval(load,60000);
+setInterval(loadBestSellers,60*60*1000);
 
 searchInput.addEventListener("input",render);
 onlyStock.addEventListener("change",render);
