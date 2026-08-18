@@ -5018,3 +5018,169 @@ body.detail-view-active .catalog-overview{
     border-radius:11px !important;
   }
 }
+
+
+/* =========================================================
+   V53 - Fix font toàn website
+   Dùng system font ổn định, không phụ thuộc font ngoài
+   ========================================================= */
+
+:root{
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea{
+  font-family:var(--font-ui) !important;
+  font-synthesis:none;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
+/* Bỏ letter-spacing quá gắt ở các nhãn nhỏ */
+.catalog-eyebrow,
+.catalog-brand-label,
+.store-filter-label,
+.filter-label{
+  letter-spacing:.35px !important;
+}
+
+/* Font weight đồng đều */
+.catalog-title-wrap h1,
+.store-hero h1,
+.detail-heading h2,
+.compact-product-title{
+  font-family:var(--font-ui) !important;
+  font-weight:700 !important;
+}
+
+.category-btn,
+.compact-product-price,
+.detail-price,
+.detail-option-label,
+.detail-section-title,
+.technical-spec-title,
+.tech-spec-label{
+  font-family:var(--font-ui) !important;
+}
+
+/* Tránh chữ nhỏ bị thô/nhòe */
+.catalog-title-wrap p,
+.catalog-update-box,
+.catalog-meta-row,
+.summary,
+.store-updated,
+.updated{
+  font-weight:400 !important;
+}
+
+/* Mobile */
+@media(max-width:720px){
+  html,
+  body{
+    font-size:16px;
+  }
+
+  .catalog-title-wrap h1{
+    font-size:22px !important;
+    line-height:1.25 !important;
+  }
+
+  .catalog-title-wrap p{
+    font-size:12px !important;
+    line-height:1.5 !important;
+  }
+
+  .catalog-brand-label{
+    font-size:10px !important;
+  }
+
+  .category-btn{
+    font-size:11px !important;
+    font-weight:600 !important;
+  }
+}
+
+
+/* V54 - Menu Danh mục */
+.commerce-category-menu{
+  position:relative;
+  flex:0 0 auto;
+}
+.commerce-category-menu .commerce-category-btn{
+  height:44px;
+}
+.commerce-category-dropdown{
+  position:absolute;
+  top:calc(100% + 10px);
+  left:0;
+  width:280px;
+  padding:8px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  box-shadow:0 14px 36px rgba(15,23,42,.14);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-6px);
+  transition:.16s ease;
+  z-index:1000;
+}
+.commerce-category-menu.open .commerce-category-dropdown{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.commerce-category-dropdown button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border:0;
+  border-radius:9px;
+  background:#fff;
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+}
+.commerce-category-dropdown button:hover{
+  background:#fff5ef;
+}
+.category-menu-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  flex:0 0 38px;
+  border-radius:9px;
+  background:#fff1e8;
+  color:#ff5a00;
+  font-size:24px;
+}
+.commerce-category-dropdown strong{
+  display:block;
+  font-size:14px;
+  color:#111827;
+}
+.commerce-category-dropdown small{
+  display:block;
+  margin-top:3px;
+  color:#6b7280;
+  font-size:11px;
+  font-weight:400;
+}
+@media(max-width:720px){
+  .commerce-category-dropdown{
+    position:fixed;
+    top:70px;
+    left:12px;
+    right:12px;
+    width:auto;
+  }
+}

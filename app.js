@@ -255,6 +255,14 @@ function normalizeProductBaseName(fullName, color, memory){
   return s;
 }
 
+
+let ACTIVE_MAIN_CATEGORY="Điện thoại";
+window.addEventListener("sdd:main-category",(e)=>{
+  ACTIVE_MAIN_CATEGORY=e.detail?.category || "Điện thoại";
+  ACTIVE_CATEGORY="Tất cả";
+  renderCategoryFilters();
+  render();
+});
 function flattenProducts(raw){
   const items=[];
 
@@ -348,7 +356,11 @@ function variantLabel(v){
 
 
 function renderCategoryFilters(){
-  const flat = flattenProducts(PRODUCTS);
+  const flat = flattenProducts(PRODUCTS).filter(p=>{
+    const root=String(p.rootCategoryName||p.categoryName||"").toLowerCase();
+    if(ACTIVE_MAIN_CATEGORY==="Máy tính bảng") return /máy tính bảng|tablet|ipad/.test(root);
+    return !/máy tính bảng|tablet|ipad/.test(root);
+  });
 
   const brands = [...new Set(
     flat.map(p => p.brand).filter(Boolean)
@@ -446,7 +458,7 @@ function render(){
   grid.innerHTML="";
 
   const totalVariants=groups.reduce((sum,g)=>sum+g.items.length,0);
-  summary.textContent=`${groups.length} mẫu • ${totalVariants} phiên bản`;
+  summary.textContent="";
 
   if(!groups.length){
     grid.innerHTML='<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';

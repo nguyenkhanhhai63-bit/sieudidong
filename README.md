@@ -527,3 +527,10 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Giá và tồn kho vẫn đổi đồng thời như trước.
 - Dữ liệu ảnh lấy từ ảnh của từng variant KiotViet.
 - Nếu KiotViet chỉ có một ảnh chung cho tất cả biến thể thì ảnh sẽ giữ nguyên.
+
+
+## V53 - Fix font
+- Dùng system font: Segoe UI / Roboto / Arial.
+- Không dùng font ngoài nên không bị lỗi tải font.
+- Giảm letter-spacing ở các nhãn nhỏ.
+- Cân lại font-weight và line-height cho desktop/mobile.

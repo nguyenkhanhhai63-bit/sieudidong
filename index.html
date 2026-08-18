@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Siêu Di Động | Điện thoại & sản phẩm công nghệ</title>
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
-  <link rel="stylesheet" href="/styles.css?v=51">
+  <link rel="stylesheet" href="/styles.css?v=54">
 </head>
 <body>
 
@@ -16,10 +16,22 @@
       <img class="commerce-logo-mobile" src="/assets/logo-square.jpg" alt="Siêu Di Động">
     </a>
 
-    <button class="commerce-category-btn" type="button" onclick="document.getElementById('categoryFilters').scrollIntoView({behavior:'smooth'})">
-      <span>☰</span>
-      <strong>Danh mục</strong>
-    </button>
+    <div class="commerce-category-menu">
+      <button class="commerce-category-btn" id="commerceCategoryBtn" type="button" aria-expanded="false">
+        <span>☰</span>
+        <strong>Danh mục</strong>
+      </button>
+      <div class="commerce-category-dropdown" id="commerceCategoryDropdown">
+        <button type="button" data-main-category="Điện thoại">
+          <span class="category-menu-icon">▯</span>
+          <span><strong>Điện thoại</strong><small>Xem các hãng điện thoại</small></span>
+        </button>
+        <button type="button" data-main-category="Máy tính bảng">
+          <span class="category-menu-icon">▭</span>
+          <span><strong>Máy tính bảng</strong><small>Xem sản phẩm máy tính bảng</small></span>
+        </button>
+      </div>
+    </div>
 
     <div class="commerce-location">
       <span class="commerce-location-icon">⌖</span>
@@ -85,7 +97,6 @@
 
     <div class="catalog-meta-row">
       <div id="summary" class="summary"></div>
-      <div class="catalog-meta-note">Giá và tình trạng hàng được cập nhật thường xuyên.</div>
     </div>
   </section>
 
@@ -107,6 +118,43 @@
 
 </main>
 
-<script src="/app.js?v=51"></script>
+<script src="/app.js?v=54"></script>
+
+<script>
+(function(){
+  const wrap=document.querySelector('.commerce-category-menu');
+  const btn=document.getElementById('commerceCategoryBtn');
+  const menu=document.getElementById('commerceCategoryDropdown');
+  if(!wrap || !btn || !menu) return;
+
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    const open=wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true':'false');
+  });
+
+  document.addEventListener('click', function(e){
+    if(!wrap.contains(e.target)){
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+    }
+  });
+
+  menu.querySelectorAll('[data-main-category]').forEach(function(item){
+    item.addEventListener('click', function(){
+      const category=this.dataset.mainCategory;
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+
+      // Phát sự kiện để app.js?v=54 có thể lọc theo nhóm sản phẩm.
+      window.dispatchEvent(new CustomEvent('sdd:main-category',{detail:{category:category}}));
+
+      const filters=document.getElementById('categoryFilters');
+      if(filters) filters.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
