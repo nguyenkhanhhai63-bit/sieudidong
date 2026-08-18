@@ -656,3 +656,10 @@ Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng t
 - Để gắn Zalo thật, mở `app.js` và sửa:
   `const SIEUDIDONG_ZALO_URL = "https://zalo.me/";`
   thành link Zalo của shop/nhân viên.
+
+
+## V75 - Nút Zalo giữa màn hình
+- Sửa đúng file `styles.css` đang được website sử dụng.
+- Nút Zalo cố định ở giữa cạnh phải màn hình.
+- Desktop: icon + chữ `Bạn cần hỗ trợ?`.
+- Mobile: vẫn ở giữa cạnh phải; màn hình rất nhỏ chỉ hiện icon để không che nội dung.
