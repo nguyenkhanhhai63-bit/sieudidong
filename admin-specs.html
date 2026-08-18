@@ -452,19 +452,20 @@
 
   <section id="analyticsCard" class="card panel active" data-panel="analytics" style="display:none">
     <div class="head">
-      <div><h1>Thống kê truy cập</h1><p>Lượt xem, khách truy cập, sản phẩm được xem và lượt bấm Zalo.</p></div>
+      <div><h1>Thống kê truy cập</h1><p>Lượt truy cập duy nhất, khách truy cập, so sánh sản phẩm và lượt bấm Zalo.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
     </div>
     <div class="analytics-shell">
       <div id="analyticsLoading" class="aload">Đang tải thống kê...</div>
       <div id="analyticsContent" class="hidden">
         <div class="metric-grid">
-          <div class="metric"><small>Lượt xem hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
+          <div class="metric"><small>Lượt truy cập hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
           <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
-          <div class="metric"><small>Lượt xem 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng: 0</em></div>
+          <div class="metric"><small>Lượt truy cập duy nhất 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng: 0</em></div>
           <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
           <div class="metric"><small>Khách đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
           <div class="metric"><small>Lượt mở chi tiết</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
+          <div class="metric"><small>Lượt tạo so sánh</small><strong id="mTodayCompare">0</strong><em id="mCompare30">30 ngày: 0</em></div>
         </div>
         <div class="analytics-grid">
           <div class="abox"><h2>Lượt truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
@@ -472,6 +473,8 @@
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Sản phẩm được so sánh nhiều</h2><div id="compareProductRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Cặp máy được so sánh nhiều</h2><div id="comparePairRanks" class="ranklist"></div></div>
         </div>
       </div>
     </div>
@@ -879,6 +882,8 @@ async function loadAnalytics(){
     mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
     mOnlineNow.textContent=fmt(o.onlineNow);
     mDetailClicks.textContent=fmt(o.detailClicks);
+    document.getElementById("mTodayCompare").textContent=fmt(o.todayCompare);
+    document.getElementById("mCompare30").textContent=`30 ngày: ${fmt(o.compare30)}`;
     const chart=document.getElementById("trafficChart"); chart.innerHTML="";
     const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
@@ -886,6 +891,8 @@ async function loadAnalytics(){
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
+    renderRank("compareProductRanks",d.topCompareProducts);
+    renderRank("comparePairRanks",d.topComparePairs);
     const filterList=Object.entries(d.filters||{}).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value).slice(0,12);
     renderRank("filterRanks",filterList);
 

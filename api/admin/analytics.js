@@ -83,7 +83,8 @@ export default async function handler(req,res){
 
     const [
       dailyViews,dailyZalo,todayVisitors,visitors7,visitors30,
-      totalViews,totalVisitors,zaloAll,devices,topProducts,topSearches,onlineNow,detailClicks,filters
+      totalViews,totalVisitors,zaloAll,devices,topProducts,topSearches,onlineNow,detailClicks,filters,
+      dailyCompare,compareAll,topCompareProducts,topComparePairs,dailyRawViews,totalRawViews
     ]=await Promise.all([
       mget(d30.map(d=>`analytics:pageviews:day:${d}`)),
       mget(d30.map(d=>`analytics:zalo:day:${d}`)),
@@ -102,13 +103,21 @@ export default async function handler(req,res){
         return n(await safeCommand(["ZCOUNT","analytics:online",String(now-5*60*1000),"+inf"],0));
       })(),
       getNum("analytics:detail_clicks:all"),
-      hash("analytics:filters:all")
+      hash("analytics:filters:all"),
+      mget(d30.map(d=>`analytics:compare:day:${d}`)),
+      getNum("analytics:compare:all"),
+      top("analytics:compare_products:all"),
+      top("analytics:compare_pairs:all"),
+      mget(d30.map(d=>`analytics:raw_pageviews:day:${d}`)),
+      getNum("analytics:raw_pageviews:all")
     ]);
 
     const daily=d30.map((date,i)=>({
       date,
       views:n(dailyViews[i]),
-      zalo:n(dailyZalo[i])
+      rawViews:n(dailyRawViews[i]),
+      zalo:n(dailyZalo[i]),
+      compare:n(dailyCompare[i])
     }));
 
     const sum=(arr,key)=>arr.reduce((s,x)=>s+n(x[key]),0);
@@ -130,12 +139,20 @@ export default async function handler(req,res){
         zalo30:sum(daily,"zalo"),
         zaloAll,
         onlineNow,
-        detailClicks
+        detailClicks,
+        todayCompare:daily.at(-1)?.compare||0,
+        compare7:sum(last7,"compare"),
+        compare30:sum(daily,"compare"),
+        compareAll,
+        todayRawViews:daily.at(-1)?.rawViews||0,
+        totalRawViews
       },
       daily,
       devices,
       topProducts,
       topSearches,
+      topCompareProducts,
+      topComparePairs,
       filters
     });
   }catch(err){

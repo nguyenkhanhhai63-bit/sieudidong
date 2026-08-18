@@ -1309,6 +1309,13 @@ async function openCompareModal(){
     return;
   }
 
+  // Một lượt so sánh = khách thực sự bấm mở bảng so sánh với >= 2 máy.
+  try{
+    sendAnalytics("compare_create",{
+      products:COMPARE_ITEMS.map(x=>x.name).slice(0,3)
+    });
+  }catch(_){}
+
   let modal=document.getElementById("compareModal");
   if(!modal){
     modal=document.createElement("div");

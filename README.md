@@ -940,3 +940,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Không còn fallback sang voice mặc định của hệ điều hành/trình duyệt.
 - Chờ tối đa 2 giây cho danh sách voice tải xong.
 - Nếu thiết bị không có giọng Việt, báo `Thiết bị chưa có giọng đọc tiếng Việt` và không phát sai ngôn ngữ.
+
+## V121 - Chuẩn hóa thống kê khách duy nhất + lượt so sánh
+- `Lượt truy cập` chỉ tính 1 lần / visitor / ngày, reload hay mở lại nhiều lần không tăng.
+- Visitor ID lưu localStorage + cookie; nếu thiếu ID thì server dùng fingerprint băm từ IP + User-Agent làm fallback.
+- Nhiều thiết bị cùng Wi-Fi vẫn ưu tiên ID riêng của từng trình duyệt, không gộp chỉ vì chung IP.
+- Vẫn lưu raw pageviews riêng để chẩn đoán nhưng không dùng làm lượt truy cập chính.
+- `Khách online` tiếp tục deduplicate theo visitor ID trong 5 phút.
+- Thêm `Lượt tạo so sánh`: chỉ tính khi khách thực sự mở bảng so sánh với ít nhất 2 máy.
+- Thêm bảng `Sản phẩm được so sánh nhiều` và `Cặp máy được so sánh nhiều`.
