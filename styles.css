@@ -4640,3 +4640,76 @@ body.detail-view-active .page{
     display:none;
   }
 }
+
+
+/* =========================================================
+   V47 - Card có trạng thái + Xem chi tiết
+   ========================================================= */
+.compact-product-meta{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid #eef0f3;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.compact-stock{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:0 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.compact-stock.in-stock{
+  background:#edf9f1;
+  color:#16843b;
+}
+
+.compact-stock.out-stock{
+  background:#f1f2f4;
+  color:#7a7f87;
+}
+
+.compact-detail-btn{
+  min-height:32px;
+  padding:0 12px;
+  border:1px solid #ff5a00;
+  border-radius:7px;
+  background:#fff;
+  color:#e34e00;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.compact-detail-btn:hover{
+  background:#ff5a00;
+  color:#fff;
+}
+
+@media(max-width:720px){
+  .compact-product-meta{
+    margin-top:9px;
+    padding-top:8px;
+    gap:6px;
+  }
+
+  .compact-stock{
+    min-height:26px;
+    padding:0 7px;
+    font-size:10px;
+  }
+
+  .compact-detail-btn{
+    min-height:29px;
+    padding:0 8px;
+    font-size:10px;
+  }
+}

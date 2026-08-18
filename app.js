@@ -482,7 +482,26 @@ function render(){
     price.className="compact-product-price";
     price.textContent=defaultVariant ? money(defaultVariant.price) : "Liên hệ";
 
-    body.append(title,price);
+    const meta=document.createElement("div");
+    meta.className="compact-product-meta";
+
+    const stock=document.createElement("span");
+    const inStock=Boolean(defaultVariant && Number(defaultVariant.onHand||0)>0);
+    stock.className="compact-stock " + (inStock ? "in-stock" : "out-stock");
+    stock.textContent=inStock ? "✓ Còn hàng" : "Hết hàng";
+
+    const cta=document.createElement("button");
+    cta.type="button";
+    cta.className="compact-detail-btn";
+    cta.textContent="Xem chi tiết";
+    cta.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      openInlineProductDetail(group,defaultVariant);
+    });
+
+    meta.append(stock,cta);
+
+    body.append(title,price,meta);
     card.append(media,body);
 
     const open=()=>openInlineProductDetail(group,defaultVariant);

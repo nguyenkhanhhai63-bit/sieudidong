@@ -489,3 +489,10 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Bỏ bớt location/contact/cart/account icon gây rối.
 - Gom phần bên phải thành text tư vấn/cửa hàng đơn giản.
 - Mobile: logo vuông + search.
+
+
+## V47 - Card sản phẩm có CTA
+- Thêm trạng thái `✓ Còn hàng` / `Hết hàng`.
+- Thêm nút `Xem chi tiết` ngay trên card.
+- Bấm nút hoặc bấm card đều mở trang chi tiết như hiện tại.
+- Mobile thu gọn kích thước nút để không vỡ layout.
