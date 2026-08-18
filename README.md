@@ -324,10 +324,9 @@ Bản V25 khôi phục `colorHex()` và giữ nguyên API ổn định của V24
 - Cơ chế tính bán chạy 30 ngày và cache của V26 giữ nguyên.
 
 
-## V28 - Card sản phẩm gọn
-- Danh sách ngoài ưu tiên chỉ hiển thị ảnh sản phẩm, tên và giá.
-- Thuộc tính màu sắc, dung lượng, tình trạng và các phiên bản được đưa vào `Xem chi tiết`.
-- Bấm `Xem chi tiết` mới mở toàn bộ thuộc tính.
-- Khi chọn màu/dung lượng trong chi tiết, logic đổi giá và tồn kho cũ vẫn được giữ.
-- Tab mặc định vẫn là `Tất cả`.
-- API sản phẩm và API bán chạy 30 ngày không thay đổi.
+## V29 - Card gọn thật sự
+- Ngoài danh sách chỉ hiển thị: ảnh, tên sản phẩm, giá.
+- Không còn màu, dung lượng, tình trạng, nút trạng thái ở card ngoài.
+- Bấm vào card mở popup chi tiết.
+- Popup hiển thị đầy đủ màu sắc, dung lượng, giá, tồn kho.
+- Bấm màu/dung lượng trong popup vẫn đổi giá theo biến thể.

@@ -8,6 +8,11 @@ const darkMode = document.getElementById("darkMode");
 const summary = document.getElementById("summary");
 const categoryFilters = document.getElementById("categoryFilters");
 
+const productModal = document.getElementById("productModal");
+const productModalContent = document.getElementById("productModalContent");
+const productModalClose = document.getElementById("productModalClose");
+
+
 let PRODUCTS = [];
 const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
 const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -379,29 +384,14 @@ function colorHex(name){
 }
 
 function render(){
-  if(ACTIVE_CATEGORY==="Bán chạy" && !BEST_SELLER_READY){
-    grid.innerHTML='<div class="loading">Đang tải sản phẩm bán chạy...</div>';
-    summary.textContent="";
-    return;
-  }
-
   const q=searchInput.value.trim().toLowerCase();
   let items=flattenProducts(PRODUCTS);
 
-  // Không lọc bỏ toàn bộ sản phẩm hết hàng ở đây.
-  // Khi bật "Chỉ hiện hàng còn tồn":
-  // - sản phẩm còn hàng: chỉ hiện các biến thể còn hàng
-  // - sản phẩm hết toàn bộ: vẫn giữ card và báo "Hết hàng"
-  
-
   if(ACTIVE_CATEGORY==="Bán chạy"){
-    const rank = new Map(
-      BEST_SELLER_PRODUCT_IDS.map((id,index)=>[Number(id),index])
-    );
-
-    items = items
-      .filter(x=>rank.has(Number(x.id)))
-      .sort((a,b)=>rank.get(Number(a.id))-rank.get(Number(b.id)));
+    const bestNames = typeof getBestSellerBaseNames==="function"
+      ? new Set(getBestSellerBaseNames())
+      : new Set();
+    items = items.filter(x=>bestNames.has(x.baseName));
   }else if(ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
@@ -416,299 +406,282 @@ function render(){
   const groups=groupItems(items);
   grid.innerHTML="";
 
-  // Luôn hiển thị tất cả model đang kinh doanh, kể cả hết hàng.
-  const visibleGroups=[...groups];
+  const totalVariants=groups.reduce((sum,g)=>sum+g.items.length,0);
+  summary.textContent=`${groups.length} mẫu • ${totalVariants} phiên bản`;
 
-  const totalVariants=visibleGroups.reduce((sum,g)=>sum+g.items.length,0);
-
-  summary.textContent=`${visibleGroups.length} mẫu • ${totalVariants} phiên bản`;
-
-  if(!visibleGroups.length){
+  if(!groups.length){
     grid.innerHTML='<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';
     return;
   }
 
-  visibleGroups.forEach(group=>{
-    const inStockVariants=group.items.filter(v=>Number(v.onHand||0)>0);
-    const isProductOutOfStock=inStockVariants.length===0;
-
-    // Nếu model còn ít nhất 1 biến thể có hàng và checkbox đang bật,
-    // chỉ hiện các biến thể còn hàng.
-    // Nếu model hết toàn bộ, vẫn dùng toàn bộ biến thể để hiện thông tin + báo Hết hàng.
+  groups.forEach(group=>{
     const variants=[...group.items];
-
     if(!variants.length) return;
 
-    const sorted=[...variants].sort((a,b)=>{
+    const defaultVariant=[...variants].sort((a,b)=>{
       const stockDiff=(b.onHand>0)-(a.onHand>0);
       if(stockDiff!==0) return stockDiff;
       return Number(a.price||0)-Number(b.price||0);
-    });
-
-    let selected=sorted[0];
-    let selectedColor=selected?.color || "";
-    let selectedMemory=selected?.memory || "";
+    })[0];
 
     const card=document.createElement("article");
-    card.className="shop-card";
+    card.className="compact-product-card";
+    card.tabIndex=0;
 
     const media=document.createElement("div");
-    media.className="shop-media";
+    media.className="compact-product-media";
     media.innerHTML=imageHTML(group);
 
     const body=document.createElement("div");
-    body.className="shop-body";
+    body.className="compact-product-body";
 
     const title=document.createElement("div");
-    title.className="shop-title";
+    title.className="compact-product-title";
     title.textContent=group.name;
 
-    const groupBestSeller=group.items.some(v=>
-      BEST_SELLER_PRODUCT_IDS.includes(Number(v.id))
-    );
-    if(groupBestSeller){
-      const badge=document.createElement("span");
-      badge.className="best-seller-badge";
-      badge.textContent="BÁN CHẠY";
-      body.appendChild(badge);
-    }
-
-    const attributeArea=document.createElement("div");
-    attributeArea.className="shop-attributes";
-
-    const colorRow=document.createElement("div");
-    colorRow.className="shop-attr-row";
-
-    const colorLabel=document.createElement("div");
-    colorLabel.className="shop-attr-label";
-    colorLabel.textContent="Màu";
-
-    const colorOptions=document.createElement("div");
-    colorOptions.className="shop-attr-options";
-
-    const memoryRow=document.createElement("div");
-    memoryRow.className="shop-attr-row";
-
-    const memoryLabel=document.createElement("div");
-    memoryLabel.className="shop-attr-label";
-    memoryLabel.textContent="Dung lượng";
-
-    const memoryOptions=document.createElement("div");
-    memoryOptions.className="shop-attr-options";
-
-    const uniqueColors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
-    const uniqueMemories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
-
-    const colorButtons=new Map();
-    const memoryButtons=new Map();
-
-    function pickVariant(){
-      let matches=variants.filter(v=>{
-        const colorOk=!selectedColor || v.color===selectedColor;
-        const memoryOk=!selectedMemory || v.memory===selectedMemory;
-        return colorOk && memoryOk;
-      });
-
-      if(!matches.length && selectedColor){
-        matches=variants.filter(v=>v.color===selectedColor);
-      }
-
-      if(!matches.length && selectedMemory){
-        matches=variants.filter(v=>v.memory===selectedMemory);
-      }
-
-      if(!matches.length){
-        matches=[...variants];
-      }
-
-      matches.sort((a,b)=>{
-        const stockDiff=(b.onHand>0)-(a.onHand>0);
-        if(stockDiff!==0) return stockDiff;
-        return Number(a.price||0)-Number(b.price||0);
-      });
-
-      return matches[0] || null;
-    }
-
     const price=document.createElement("div");
-    price.className="shop-price";
+    price.className="compact-product-price";
+    price.textContent=defaultVariant ? money(defaultVariant.price) : "Liên hệ";
 
-    const status=document.createElement("div");
-    status.className="shop-status" + (isProductOutOfStock ? " out" : "");
-
-    const buy=document.createElement("button");
-    buy.className="buy-btn";
-    buy.type="button";
-    buy.textContent=isProductOutOfStock ? "HẾT HÀNG" : "CÒN HÀNG";
-
-    const variantsList=document.createElement("div");
-    variantsList.className="quick-variants";
-
-    function updateAvailableButtons(){
-      memoryButtons.forEach((btn,mem)=>{
-        const exists=variants.some(v=>{
-          const colorOk=!selectedColor || v.color===selectedColor;
-          return colorOk && v.memory===mem;
-        });
-        btn.classList.toggle("disabled",!exists);
-      });
-
-      colorButtons.forEach((btn,color)=>{
-        const exists=variants.some(v=>{
-          const memOk=!selectedMemory || v.memory===selectedMemory;
-          return memOk && v.color===color;
-        });
-        btn.classList.toggle("disabled",!exists);
-      });
-    }
-
-    function renderVariantList(){
-      variantsList.innerHTML="";
-
-      variants.forEach(v=>{
-        const row=document.createElement("button");
-        row.type="button";
-        row.className="quick-variant";
-
-        if(selected && v.id===selected.id){
-          row.classList.add("active");
-        }
-
-        const left=document.createElement("span");
-        left.textContent=[v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
-
-        const right=document.createElement("strong");
-        right.textContent=money(v.price);
-
-        row.append(left,right);
-
-        row.addEventListener("click",()=>{
-          selected=v;
-          selectedColor=v.color || "";
-          selectedMemory=v.memory || "";
-          updateUI();
-        });
-
-        variantsList.appendChild(row);
-      });
-    }
-
-    function updateUI(){
-      selected=pickVariant();
-
-      if(selected){
-        selectedColor=selected.color || selectedColor;
-        selectedMemory=selected.memory || selectedMemory;
-
-        price.textContent=money(selected.price);
-        const selectedInStock=Number(selected.onHand||0)>0;
-        status.textContent=selectedInStock ? "✓ Còn hàng" : "Hết hàng";
-        status.classList.toggle("out", !selectedInStock);
-
-        buy.textContent=selectedInStock ? "CÒN HÀNG" : "HẾT HÀNG";
-        buy.classList.toggle("out-of-stock", !selectedInStock);
-      }else{
-        price.textContent="Liên hệ";
-        status.textContent="";
-      }
-
-      colorButtons.forEach((btn,color)=>{
-        btn.classList.toggle("active",color===selectedColor);
-      });
-
-      if(typeof colorNote!=="undefined"){
-        colorNote.textContent=selectedColor ? `(${selectedColor})` : "";
-      }
-
-      memoryButtons.forEach((btn,mem)=>{
-        btn.classList.toggle("active",mem===selectedMemory);
-      });
-
-      updateAvailableButtons();
-      renderVariantList();
-    }
-
-    const colorNote=document.createElement("span");
-    colorNote.className="color-note";
-
-    uniqueColors.forEach(color=>{
-      const btn=document.createElement("button");
-      btn.type="button";
-      btn.className="color-swatch";
-      btn.setAttribute("aria-label",color);
-      btn.title=color;
-
-      const dot=document.createElement("span");
-      dot.className="color-swatch-dot";
-      dot.style.background=colorHex(color);
-
-      btn.appendChild(dot);
-
-      btn.addEventListener("click",()=>{
-        if(btn.classList.contains("disabled")) return;
-
-        selectedColor=color;
-
-        const compatible=variants.filter(v=>v.color===selectedColor);
-
-        if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
-          selectedMemory=compatible.find(v=>v.memory)?.memory || "";
-        }
-
-        updateUI();
-      });
-
-      colorButtons.set(color,btn);
-      colorOptions.appendChild(btn);
-    });
-
-    colorOptions.appendChild(colorNote);
-
-    uniqueMemories.forEach(mem=>{
-      const btn=document.createElement("button");
-      btn.type="button";
-      btn.className="shop-attr-btn";
-      btn.textContent=mem;
-
-      btn.addEventListener("click",()=>{
-        if(btn.classList.contains("disabled")) return;
-
-        selectedMemory=mem;
-
-        const compatible=variants.filter(v=>v.memory===selectedMemory);
-
-        if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
-          selectedColor=compatible.find(v=>v.color)?.color || "";
-        }
-
-        updateUI();
-      });
-
-      memoryButtons.set(mem,btn);
-      memoryOptions.appendChild(btn);
-    });
-
-    if(uniqueColors.length){
-      colorRow.append(colorLabel,colorOptions);
-      attributeArea.appendChild(colorRow);
-    }
-
-    if(uniqueMemories.length){
-      memoryRow.append(memoryLabel,memoryOptions);
-      attributeArea.appendChild(memoryRow);
-    }
-
-    buy.addEventListener("click",()=>{
-      variantsList.classList.toggle("open");
-    });
-
-    body.append(title,attributeArea,price,buy,status,variantsList);
+    body.append(title,price);
     card.append(media,body);
-    grid.appendChild(card);
 
-    updateUI();
+    const open=()=>openProductModal(group,defaultVariant);
+    card.addEventListener("click",open);
+    card.addEventListener("keydown",e=>{
+      if(e.key==="Enter" || e.key===" "){
+        e.preventDefault();
+        open();
+      }
+    });
+
+    grid.appendChild(card);
   });
 }
+
+function openProductModal(group,initialVariant){
+  if(!productModal || !productModalContent) return;
+
+  const variants=[...group.items];
+  let selected=initialVariant || variants[0] || null;
+  let selectedColor=selected?.color || "";
+  let selectedMemory=selected?.memory || "";
+
+  productModalContent.innerHTML="";
+
+  const wrap=document.createElement("div");
+  wrap.className="modal-product-layout";
+
+  const left=document.createElement("div");
+  left.className="modal-product-image";
+  left.innerHTML=imageHTML(group);
+
+  const right=document.createElement("div");
+  right.className="modal-product-info";
+
+  const title=document.createElement("h2");
+  title.textContent=group.name;
+
+  const price=document.createElement("div");
+  price.className="modal-product-price";
+
+  const stock=document.createElement("div");
+  stock.className="modal-product-stock";
+
+  const colorBlock=document.createElement("div");
+  colorBlock.className="modal-attr-block";
+
+  const colorLabel=document.createElement("div");
+  colorLabel.className="modal-attr-label";
+  colorLabel.textContent="Màu sắc";
+
+  const colorOptions=document.createElement("div");
+  colorOptions.className="modal-color-options";
+
+  const colorNote=document.createElement("span");
+  colorNote.className="modal-color-note";
+
+  const memoryBlock=document.createElement("div");
+  memoryBlock.className="modal-attr-block";
+
+  const memoryLabel=document.createElement("div");
+  memoryLabel.className="modal-attr-label";
+  memoryLabel.textContent="Dung lượng";
+
+  const memoryOptions=document.createElement("div");
+  memoryOptions.className="modal-memory-options";
+
+  const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
+  const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
+
+  const colorButtons=new Map();
+  const memoryButtons=new Map();
+
+  function findVariant(){
+    let matches=variants.filter(v=>{
+      const cOk=!selectedColor || v.color===selectedColor;
+      const mOk=!selectedMemory || v.memory===selectedMemory;
+      return cOk && mOk;
+    });
+
+    if(!matches.length && selectedColor){
+      matches=variants.filter(v=>v.color===selectedColor);
+    }
+    if(!matches.length && selectedMemory){
+      matches=variants.filter(v=>v.memory===selectedMemory);
+    }
+    if(!matches.length) matches=[...variants];
+
+    return matches.sort((a,b)=>{
+      const stockDiff=(b.onHand>0)-(a.onHand>0);
+      if(stockDiff!==0) return stockDiff;
+      return Number(a.price||0)-Number(b.price||0);
+    })[0] || null;
+  }
+
+  function updateAvailability(){
+    colorButtons.forEach((btn,color)=>{
+      const exists=variants.some(v=>{
+        const mOk=!selectedMemory || v.memory===selectedMemory;
+        return mOk && v.color===color;
+      });
+      btn.classList.toggle("disabled",!exists);
+    });
+
+    memoryButtons.forEach((btn,mem)=>{
+      const exists=variants.some(v=>{
+        const cOk=!selectedColor || v.color===selectedColor;
+        return cOk && v.memory===mem;
+      });
+      btn.classList.toggle("disabled",!exists);
+    });
+  }
+
+  function updateUI(){
+    selected=findVariant();
+
+    if(selected){
+      selectedColor=selected.color || selectedColor;
+      selectedMemory=selected.memory || selectedMemory;
+
+      price.textContent=money(selected.price);
+      stock.textContent=Number(selected.onHand||0)>0 ? "✓ Còn hàng" : "Hết hàng";
+      stock.classList.toggle("out",!(Number(selected.onHand||0)>0));
+    }else{
+      price.textContent="Liên hệ";
+      stock.textContent="";
+    }
+
+    colorButtons.forEach((btn,color)=>{
+      btn.classList.toggle("active",color===selectedColor);
+    });
+
+    memoryButtons.forEach((btn,mem)=>{
+      btn.classList.toggle("active",mem===selectedMemory);
+    });
+
+    colorNote.textContent=selectedColor ? `(${selectedColor})` : "";
+
+    updateAvailability();
+  }
+
+  colors.forEach(color=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="modal-color-swatch";
+    btn.title=color;
+
+    const swatch=document.createElement("span");
+    swatch.style.background=colorHex(color);
+    btn.appendChild(swatch);
+
+    btn.addEventListener("click",()=>{
+      if(btn.classList.contains("disabled")) return;
+
+      selectedColor=color;
+      const compatible=variants.filter(v=>v.color===selectedColor);
+
+      if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
+        selectedMemory=compatible.find(v=>v.memory)?.memory || "";
+      }
+
+      updateUI();
+    });
+
+    colorButtons.set(color,btn);
+    colorOptions.appendChild(btn);
+  });
+
+  if(colors.length){
+    colorOptions.appendChild(colorNote);
+    colorBlock.append(colorLabel,colorOptions);
+  }
+
+  memories.forEach(mem=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="modal-memory-btn";
+    btn.textContent=mem;
+
+    btn.addEventListener("click",()=>{
+      if(btn.classList.contains("disabled")) return;
+
+      selectedMemory=mem;
+      const compatible=variants.filter(v=>v.memory===selectedMemory);
+
+      if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
+        selectedColor=compatible.find(v=>v.color)?.color || "";
+      }
+
+      updateUI();
+    });
+
+    memoryButtons.set(mem,btn);
+    memoryOptions.appendChild(btn);
+  });
+
+  if(memories.length){
+    memoryBlock.append(memoryLabel,memoryOptions);
+  }
+
+  right.append(title,price,stock);
+
+  if(colors.length) right.appendChild(colorBlock);
+  if(memories.length) right.appendChild(memoryBlock);
+
+  wrap.append(left,right);
+  productModalContent.appendChild(wrap);
+
+  productModal.classList.add("open");
+  productModal.setAttribute("aria-hidden","false");
+  document.body.classList.add("modal-open");
+
+  updateUI();
+}
+
+function closeProductModal(){
+  if(!productModal) return;
+  productModal.classList.remove("open");
+  productModal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("modal-open");
+}
+
+if(productModalClose){
+  productModalClose.addEventListener("click",closeProductModal);
+}
+
+if(productModal){
+  productModal.addEventListener("click",e=>{
+    if(e.target.classList.contains("product-modal-backdrop")){
+      closeProductModal();
+    }
+  });
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closeProductModal();
+});
+
 async function load(){
   try{
     const res=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
