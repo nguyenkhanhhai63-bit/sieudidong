@@ -1128,6 +1128,9 @@ async function openCompareModal(){
   modal.querySelector(".compare-modal-close").addEventListener("click",close);
   modal.querySelector(".compare-modal-backdrop").addEventListener("click",close);
 
+  const dialog=modal.querySelector(".compare-modal-dialog");
+  const loading=modal.querySelector(".compare-loading");
+
   const groups=[...COMPARE_ITEMS];
 
   async function loadCompareData(){
@@ -1137,7 +1140,17 @@ async function openCompareModal(){
     return {results,specs,maps};
   }
 
-  let compareData=await loadCompareData();
+  let compareData;
+  try{
+    compareData=await loadCompareData();
+  }catch(err){
+    compareData={
+      results:groups.map(()=>({ok:false,specs:[],error:err?.message||"Không tải được thông số"})),
+      specs:groups.map(()=>[]),
+      maps:groups.map(()=>new Map())
+    };
+  }
+
   let specs=compareData.specs;
   let maps=compareData.maps;
   let specResults=compareData.results;
@@ -1193,7 +1206,7 @@ async function openCompareModal(){
   });
 
   aiBox.append(aiTop,aiResult);
-  dialog.appendChild(aiBox);
+  if(dialog) dialog.appendChild(aiBox);
 
   const preferred=[
     "Màn hình","Hệ điều hành","Camera sau","Camera trước",
@@ -1210,9 +1223,7 @@ async function openCompareModal(){
     return a.localeCompare(b,"vi");
   });
 
-  const dialog=modal.querySelector(".compare-modal-dialog");
-  const loading=modal.querySelector(".compare-loading");
-  loading.remove();
+  if(loading) loading.remove();
 
   const failedIndexes=specResults
     .map((x,i)=>x?.ok ? -1 : i)

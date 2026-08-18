@@ -875,3 +875,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Frontend Gemini timeout sau 20 giây.
 - Backend gọi Gemini timeout sau 18 giây.
 - Không còn popup treo vô hạn.
+
+## V110 - Fix lỗi popup So sánh bị đứng
+- Nguyên nhân: code AI gọi `dialog.appendChild(aiBox)` trước khi biến `dialog` được khai báo.
+- JavaScript dừng tại đó nên popup cứ hiện `Đang tải thông số...`.
+- Đã chuyển khai báo `dialog`/`loading` lên đúng vị trí.
+- Giữ nguyên Gemini, timeout 5 giây cho thông số và nút thử lại của V109.
+- Thêm fallback để lỗi tải thông số không làm popup đứng.
