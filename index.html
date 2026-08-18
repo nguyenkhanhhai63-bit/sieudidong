@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Siêu Di Động | Điện thoại & sản phẩm công nghệ</title>
-  <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
+  <link id="siteFavicon" rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
+  <link rel="apple-touch-icon" href="/assets/logo-square.jpg">
 
   <meta name="description" content="Siêu Di Động Quy Nhơn - điện thoại, máy tính bảng và sản phẩm công nghệ. Giá và tình trạng hàng được cập nhật thường xuyên.">
   <meta name="robots" content="index,follow,max-image-preview:large">
@@ -27,8 +28,27 @@
   }
   </script>
   <script id="seoProductJsonLd" type="application/ld+json"></script>
+  <script>
+  // SEO settings editable from Admin > SEO. Static defaults remain as fallback for crawlers.
+  (async()=>{try{
+    const r=await fetch('/api/seo-settings'); if(!r.ok)return;
+    const {settings:s}=await r.json(); if(!s)return;
+    const setMeta=(sel,val)=>{const e=document.querySelector(sel);if(e&&val)e.setAttribute('content',val)};
+    if(s.seoTitle) document.title=s.seoTitle;
+    setMeta('meta[name="description"]',s.description);
+    setMeta('meta[property="og:site_name"]',s.siteName);
+    setMeta('meta[property="og:title"]',s.seoTitle);
+    setMeta('meta[property="og:description"]',s.ogDescription||s.description);
+    setMeta('meta[property="og:image"]',s.logo);
+    const fav=document.getElementById('siteFavicon'); if(fav&&s.favicon) fav.href=s.favicon;
+    const apple=document.querySelector('link[rel="apple-touch-icon"]'); if(apple&&s.favicon) apple.href=s.favicon;
+    const org=document.getElementById('seoOrganizationJsonLd');
+    if(org){const j=JSON.parse(org.textContent||'{}');j.name=s.siteName||j.name;j.logo=s.logo||j.logo;j.areaServed=s.areaServed||j.areaServed;org.textContent=JSON.stringify(j)}
+  }catch(_){}})();
+  </script>
 
-  <link rel="stylesheet" href="/styles.css?v=123">
+
+  <link rel="stylesheet" href="/styles.css?v=125">
 </head>
 <body>
 
@@ -140,7 +160,7 @@
 
 </main>
 
-<script src="/app.js?v=123"></script>
+<script src="/app.js?v=125"></script>
 
 <a id="zaloConsultBtn" class="zalo-float" href="https://zalo.me/0353105423"
        target="_blank" rel="noopener noreferrer" aria-label="Chat Zalo với nhân viên tư vấn">

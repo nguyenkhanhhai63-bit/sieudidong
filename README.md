@@ -973,3 +973,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Cặp đứng đầu có rank nhấn màu cam.
 - Toàn bộ khối cặp máy trải full-width để dễ đọc.
 - Mobile chuyển sang layout dọc, vẫn giữ cấu trúc đối đầu rõ ràng.
+
+## V125 - Quản trị nội dung SEO Google
+- Thêm form trong Quản trị > SEO để tự chỉnh tên website, title, description, mô tả social, favicon/logo và khu vực.
+- Có xem trước kết quả Google ngay trong quản trị.
+- Lưu cấu hình vào Redis, không cần sửa code mỗi lần đổi nội dung quảng bá.
+- Trang khách tự nạp cấu hình SEO và cập nhật title/meta/OG/favicon/Organization schema.
+- Favicon mặc định dùng logo vuông Siêu Di Động.
+- Không thêm chữ KiotvietWeb vào metadata website.

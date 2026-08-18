@@ -615,6 +615,9 @@
   }
 }
 
+
+.seo-editor{border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff;margin-bottom:18px}.seo-editor-title{font-size:16px;font-weight:900}.seo-editor-note{font-size:12px;color:#667085;margin:5px 0 16px}.seo-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.seo-form-grid label{display:flex;flex-direction:column;gap:6px;position:relative}.seo-form-grid label>span{font-size:12px;font-weight:800;color:#344054}.seo-form-grid input,.seo-form-grid textarea{width:100%;box-sizing:border-box;border:1px solid #dfe3e8;border-radius:10px;padding:11px 12px;font:inherit;background:#fff}.seo-form-grid textarea{resize:vertical}.seo-form-grid small{position:absolute;right:9px;bottom:7px;font-size:9px;color:#98a2b3;background:#fff;padding-left:5px}.seo-wide{grid-column:1/-1}.seo-preview{margin-top:16px;padding:16px;border:1px solid #e8eaee;border-radius:12px;background:#fafafa}.seo-preview-label{font-size:10px;font-weight:800;color:#98a2b3;text-transform:uppercase;margin-bottom:11px}.seo-preview-site{display:flex;align-items:center;gap:9px}.seo-preview-site img{width:30px;height:30px;border-radius:50%;object-fit:cover}.seo-preview-site div{display:flex;flex-direction:column}.seo-preview-site strong{font-size:13px}.seo-preview-site span{font-size:11px;color:#667085}.seo-preview-title{font-size:19px;color:#681da8;margin-top:8px}.seo-preview-desc{font-size:12px;color:#4d5156;line-height:1.5;margin-top:4px;max-width:720px}.seo-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}.seo-actions #seoSettingsStatus{font-size:12px;color:#667085}@media(max-width:700px){.seo-form-grid{grid-template-columns:1fr}.seo-wide{grid-column:auto}.seo-preview-title{font-size:17px}}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -809,6 +812,21 @@
         <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">URL trong Sitemap</div><div id="seoUrlCount" style="font-size:28px;font-weight:800;margin-top:8px">—</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Trang chủ + sản phẩm</div></div>
         <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">robots.txt</div><div id="seoRobotsStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Quyền Google thu thập dữ liệu</div></div>
       </div>
+      <div class="seo-editor">
+        <div class="seo-editor-title">Nội dung hiển thị trên Google</div>
+        <div class="seo-editor-note">Chỉnh tại đây khi cần đổi tên website, tiêu đề, mô tả hoặc logo nhỏ cạnh tên miền. Không cần sửa code.</div>
+        <div class="seo-form-grid">
+          <label><span>Tên website</span><input id="seoSiteName" maxlength="80" placeholder="Siêu Di Động"></label>
+          <label><span>Khu vực</span><input id="seoAreaServed" maxlength="100" placeholder="Quy Nhơn"></label>
+          <label class="seo-wide"><span>Tiêu đề Google</span><input id="seoTitleInput" maxlength="120" placeholder="Siêu Di Động | Điện thoại & sản phẩm công nghệ"><small id="seoTitleCount">0/120</small></label>
+          <label class="seo-wide"><span>Mô tả Google</span><textarea id="seoDescription" maxlength="320" rows="3"></textarea><small id="seoDescCount">0/320</small></label>
+          <label class="seo-wide"><span>Mô tả khi chia sẻ mạng xã hội</span><textarea id="seoOgDescription" maxlength="320" rows="2"></textarea></label>
+          <label><span>Favicon / logo nhỏ Google</span><input id="seoFavicon" placeholder="/assets/logo-square.jpg"></label>
+          <label><span>Logo thương hiệu</span><input id="seoLogo" placeholder="/assets/logo-square.jpg"></label>
+        </div>
+        <div class="seo-preview"><div class="seo-preview-label">Xem trước gần giống Google</div><div class="seo-preview-site"><img id="seoPreviewIcon" src="/assets/logo-square.jpg" alt=""><div><strong id="seoPreviewName">Siêu Di Động</strong><span>https://sieudidong.vn</span></div></div><div id="seoPreviewTitle" class="seo-preview-title">Siêu Di Động | Điện thoại & sản phẩm công nghệ</div><div id="seoPreviewDesc" class="seo-preview-desc"></div></div>
+        <div class="seo-actions"><button id="saveSeoSettings" class="primary" type="button">Lưu SEO</button><button id="reloadSeoSettings" class="secondary" type="button">Tải lại</button><button id="resetSeoSettings" class="secondary" type="button">Khôi phục mặc định</button><span id="seoSettingsStatus"></span></div>
+      </div>
       <div style="border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff">
         <div style="font-size:15px;font-weight:800;margin-bottom:12px">Công cụ SEO</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -856,6 +874,17 @@ const seoSitemapStatus=document.getElementById("seoSitemapStatus");
 const seoUrlCount=document.getElementById("seoUrlCount");
 const seoRobotsStatus=document.getElementById("seoRobotsStatus");
 const seoMessage=document.getElementById("seoMessage");
+const seoSiteName=document.getElementById("seoSiteName");
+const seoAreaServed=document.getElementById("seoAreaServed");
+const seoTitleInput=document.getElementById("seoTitleInput");
+const seoDescription=document.getElementById("seoDescription");
+const seoOgDescription=document.getElementById("seoOgDescription");
+const seoFavicon=document.getElementById("seoFavicon");
+const seoLogo=document.getElementById("seoLogo");
+const saveSeoSettings=document.getElementById("saveSeoSettings");
+const reloadSeoSettings=document.getElementById("reloadSeoSettings");
+const resetSeoSettings=document.getElementById("resetSeoSettings");
+const seoSettingsStatus=document.getElementById("seoSettingsStatus");
 const refreshAnalytics=document.getElementById("refreshAnalytics");
 let analyticsLoaded=false;
 
@@ -1315,7 +1344,7 @@ adminTabs.addEventListener("click",e=>{
 
   if(showAnalytics){ loadAnalytics(); }
   if(showAi){ loadAiSettings(); }
-  if(showSeo){ loadSeoStatus(); }
+  if(showSeo){ loadSeoStatus(); loadSeoSettings(); }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
 
@@ -1382,6 +1411,32 @@ function showLoginSuccess(){
   setTimeout(()=>el.classList.remove("show"),2200);
 }
 
+
+function updateSeoPreview(){
+  const name=seoSiteName.value||"Siêu Di Động", title=seoTitleInput.value||"", desc=seoDescription.value||"";
+  document.getElementById("seoPreviewName").textContent=name;
+  document.getElementById("seoPreviewTitle").textContent=title;
+  document.getElementById("seoPreviewDesc").textContent=desc;
+  document.getElementById("seoPreviewIcon").src=seoFavicon.value||"/assets/logo-square.jpg";
+  document.getElementById("seoTitleCount").textContent=`${title.length}/120`;
+  document.getElementById("seoDescCount").textContent=`${desc.length}/320`;
+}
+async function loadSeoSettings(){
+  seoSettingsStatus.textContent="Đang tải...";
+  try{const r=await fetch("/api/admin/seo-settings",{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json(),x=d.settings||{};
+    seoSiteName.value=x.siteName||"";seoAreaServed.value=x.areaServed||"";seoTitleInput.value=x.seoTitle||"";seoDescription.value=x.description||"";seoOgDescription.value=x.ogDescription||"";seoFavicon.value=x.favicon||"";seoLogo.value=x.logo||"";updateSeoPreview();seoSettingsStatus.textContent="Đã tải.";
+  }catch(e){seoSettingsStatus.textContent="Không tải được SEO: "+e.message}
+}
+async function persistSeoSettings(){
+  seoSettingsStatus.textContent="Đang lưu...";
+  const body={siteName:seoSiteName.value,areaServed:seoAreaServed.value,seoTitle:seoTitleInput.value,description:seoDescription.value,ogDescription:seoOgDescription.value,favicon:seoFavicon.value,logo:seoLogo.value};
+  try{const r=await fetch("/api/admin/seo-settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error("HTTP "+r.status);seoSettingsStatus.textContent="✓ Đã lưu. Website sẽ dùng nội dung mới.";showToast("Đã lưu SEO");}
+  catch(e){seoSettingsStatus.textContent="Lưu thất bại: "+e.message}
+}
+[seoSiteName,seoAreaServed,seoTitleInput,seoDescription,seoOgDescription,seoFavicon,seoLogo].forEach(el=>el&&el.addEventListener("input",updateSeoPreview));
+if(saveSeoSettings)saveSeoSettings.addEventListener("click",persistSeoSettings);
+if(reloadSeoSettings)reloadSeoSettings.addEventListener("click",loadSeoSettings);
+if(resetSeoSettings)resetSeoSettings.addEventListener("click",async()=>{if(!confirm("Khôi phục nội dung SEO mặc định?"))return;await fetch("/api/admin/seo-settings",{method:"DELETE"});loadSeoSettings();});
 
 async function loadSeoStatus(){
   seoSitemapStatus.textContent="Đang kiểm tra...";
