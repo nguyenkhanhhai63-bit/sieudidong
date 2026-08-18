@@ -487,10 +487,60 @@ function extractSpecs(html) {
     rows.push({label,value});
   }
 
-  // 1) Classic table rows.
+  // CHỈ lấy vùng bảng "Thông Số Kỹ Thuật".
+  // Tuyệt đối không quét toàn bộ bài viết / mô tả sản phẩm.
+  let scope = "";
+
+  const sectionPatterns = [
+    // Heading + block/table following it
+    /<(?:h2|h3|h4|div|p)\b[^>]*>\s*(?:<[^>]+>\s*)*th[oô]ng\s*s[oố]\s*k[yỹ]\s*thu[aậ]t(?:\s*<\/[^>]+>)*\s*<\/(?:h2|h3|h4|div|p)>([\s\S]{0,30000})/i,
+
+    // Common ids/classes containing spec/configuration
+    /<(?:section|div)\b[^>]*(?:id|class)=["'][^"']*(?:thong-so|thongso|spec|specification|configuration|cau-hinh)[^"']*["'][^>]*>([\s\S]{0,30000})<\/(?:section|div)>/i,
+
+    // A table whose nearby text contains "Thông Số Kỹ Thuật"
+    /th[oô]ng\s*s[oố]\s*k[yỹ]\s*thu[aậ]t[\s\S]{0,1500}?(<table\b[\s\S]{0,25000}?<\/table>)/i
+  ];
+
+  for(const re of sectionPatterns){
+    const m = html.match(re);
+    if(m){
+      scope = m[1] || m[0];
+      break;
+    }
+  }
+
+  // If heading block captured too much, cut at the next major section heading.
+  if(scope){
+    scope = scope.split(
+      /<(?:h2|h3|h4)\b[^>]*>[\s\S]*?(?:video|tin tức|bài viết|đánh giá|sản phẩm tương tự|khuyến mãi)[\s\S]*?<\/(?:h2|h3|h4)>/i
+    )[0];
+  }
+
+  // Fallback: only use a table that itself looks like a spec table.
+  if(!scope){
+    const tables = html.match(/<table\b[\s\S]*?<\/table>/gi) || [];
+    for(const table of tables){
+      const text = stripTags(table).toLowerCase();
+      const hits = [
+        "màn hình","hệ điều hành","camera sau","camera trước",
+        "cpu","ram","bộ nhớ","sim","pin","thiết kế"
+      ].filter(x=>text.includes(x)).length;
+
+      if(hits >= 4){
+        scope = table;
+        break;
+      }
+    }
+  }
+
+  // Không tìm thấy bảng kỹ thuật => không lấy đại nội dung khác.
+  if(!scope) return [];
+
+  // 1) Classic table rows inside the technical spec area.
   const trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
   let tr;
-  while ((tr = trRe.exec(html))) {
+  while ((tr = trRe.exec(scope))) {
     const cells = [];
     const tdRe = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
     let td;
@@ -504,45 +554,42 @@ function extractSpecs(html) {
     }
   }
 
-  // 2) Definition lists.
+  // 2) Definition lists, but ONLY inside the technical spec area.
   const dlRe=/<dt\b[^>]*>([\s\S]*?)<\/dt>\s*<dd\b[^>]*>([\s\S]*?)<\/dd>/gi;
   let dl;
-  while((dl=dlRe.exec(html))){
+  while((dl=dlRe.exec(scope))){
     add(dl[1],dl[2]);
   }
 
-  // 3) Common div/li "label : value" blocks used by product sites.
-  const blockText=stripTags(
-    html
-      .replace(/<\/(?:div|li|p|section|article)>/gi,"\n")
-      .replace(/<br\s*\/?>/gi,"\n")
-  );
+  // 3) Common two-column div/li rows inside the technical spec area.
+  const rowRe=/<(?:div|li)\b[^>]*>([\s\S]*?)<\/(?:div|li)>/gi;
+  let block;
+  while((block=rowRe.exec(scope))){
+    const inner=block[1];
 
-  const lines=blockText.split("\n").map(x=>x.trim()).filter(Boolean);
+    const pair=inner.match(
+      /<(?:div|span|p|strong|b)\b[^>]*>([\s\S]*?)<\/(?:div|span|p|strong|b)>\s*<(?:div|span|p)\b[^>]*>([\s\S]*?)<\/(?:div|span|p)>/i
+    );
 
-  for(const line of lines){
-    const m=line.match(/^([^:]{2,80}):\s*(.+)$/);
-    if(m) add(m[1],m[2]);
-  }
-
-  // 4) Adjacent lines, e.g. "CPU" then next line contains the value.
-  for(let i=0;i<lines.length-1;i++){
-    if(wantedLabel(lines[i]) && !wantedLabel(lines[i+1])){
-      add(lines[i],lines[i+1]);
+    if(pair){
+      add(pair[1],pair[2]);
     }
   }
 
-  // Deduplicate by normalized label, prefer richer value.
+  // Deduplicate by exact technical label, prefer richer value.
   const map = new Map();
+
   for (const row of rows) {
     const key = normalizeSpecLabel(row.label);
     const old = map.get(key);
-    if (!old || row.value.length > old.value.length) map.set(key,row);
+
+    if (!old || row.value.length > old.value.length) {
+      map.set(key,row);
+    }
   }
 
   return [...map.values()];
 }
-
 
 function canonicalSpecLabel(label="") {
   const n = normalizeSpecLabel(label);

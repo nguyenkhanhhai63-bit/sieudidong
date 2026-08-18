@@ -589,3 +589,11 @@ V62:
 - Tăng khoảng trắng, bo góc và shadow để giao diện bớt thô.
 - Bảng thông số desktop rộng label hơn, mobile vẫn giữ gọn.
 - CTA card rõ hơn trên mobile.
+
+
+## V64 - Chỉ đọc bảng Thông Số Kỹ Thuật từ link nguồn
+- Không quét toàn bộ bài viết/mô tả trên trang nguồn.
+- Chỉ lấy dữ liệu nằm trong khu vực/bảng `Thông Số Kỹ Thuật`.
+- Nếu không tìm thấy bảng kỹ thuật thật sự, trả về trống thay vì lấy đại đoạn văn.
+- Vẫn chỉ giữ đúng 10 nhóm thông số chính.
+- Đổi cache namespace để loại dữ liệu sai cũ.
