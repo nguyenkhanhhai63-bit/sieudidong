@@ -330,3 +330,15 @@ Bản V25 khôi phục `colorHex()` và giữ nguyên API ổn định của V24
 - Bấm vào card mở popup chi tiết.
 - Popup hiển thị đầy đủ màu sắc, dung lượng, giá, tồn kho.
 - Bấm màu/dung lượng trong popup vẫn đổi giá theo biến thể.
+
+
+## V30 - Fix bấm sản phẩm không mở chi tiết
+Nguyên nhân:
+- app.js chạy trước khi HTML của popup (productModal) được tạo.
+- Các biến productModal / productModalContent nhận null.
+- Vì vậy bấm card gọi openProductModal() nhưng hàm thoát ngay.
+
+Đã sửa:
+- Đưa app.js xuống cuối body, sau toàn bộ HTML popup.
+- Khi JavaScript chạy, popup đã tồn tại trong DOM.
+- Bấm card mở popup chi tiết bình thường.
