@@ -9,7 +9,7 @@ Không có nút thêm/sửa link thông số trên giao diện khách.
 
 ## Quản trị
 Truy cập trực tiếp:
-- `/admin-specs`
+- `/admin`
 
 Trang này yêu cầu mật khẩu. Sau khi đăng nhập mới xem được danh sách model và:
 - Dán link nguồn.
@@ -50,7 +50,7 @@ KV_REST_API_TOKEN=...
 ```
 
 ## Luồng hoạt động
-1. Admin vào `/admin-specs`.
+1. Admin vào `/admin`.
 2. Đăng nhập.
 3. Danh sách model được lấy từ `/api/products`.
 4. Admin dán đúng link nguồn từng model.

@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/admin-specs",
+      "source": "/admin",
       "destination": "/admin-specs.html"
+    },
+    {
+      "source": "/admin-specs",
+      "destination": "/admin-redirect.html"
     },
     {
       "source": "/san-pham/(.*)",

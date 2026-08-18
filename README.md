@@ -665,7 +665,7 @@ Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng t
 - Mobile: vẫn ở giữa cạnh phải; màn hình rất nhỏ chỉ hiện icon để không che nội dung.
 
 ## V79 - Thống kê truy cập
-Trong `/admin-specs` có thêm tab `Thống kê`:
+Trong `/admin` có thêm tab `Thống kê`:
 - Lượt xem hôm nay / 7 ngày / 30 ngày / tổng.
 - Khách truy cập gần đúng (Redis HyperLogLog), không lưu IP.
 - Biểu đồ 30 ngày.
@@ -711,7 +711,7 @@ V81:
 
 
 ## V84 - Không hiện form đăng nhập trong lúc kiểm tra session
-- Khi reload `/admin-specs`, form đăng nhập không còn lóe lên 1-2 giây.
+- Khi reload `/admin`, form đăng nhập không còn lóe lên 1-2 giây.
 - Trong thời gian kiểm tra cookie/session chỉ hiện `Đang kiểm tra phiên đăng nhập...`.
 - Nếu session còn hợp lệ: vào thẳng trang quản trị.
 - Nếu session hết hạn: mới hiện form đăng nhập.
@@ -732,3 +732,9 @@ V81:
 - Nút Danh mục chuyển sang nền trắng, viền xám nhẹ, font tự nhiên hơn.
 - Search trở thành thành phần chính, tổng thể giống header web bán hàng hơn.
 - Mobile chỉ hiện icon vuông, không bị nền dư.
+
+
+## V91 - Đường dẫn quản trị gọn
+- Trang quản trị chính: `/admin`
+- Đường dẫn cũ `/admin-specs` tự chuyển sang `/admin`
+- Không đổi các API admin hiện tại.
