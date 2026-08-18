@@ -35,6 +35,21 @@
     @media(max-width:760px){
       .head{display:block}.search{margin-top:12px;width:100%}.row{grid-template-columns:1fr;gap:7px;border-bottom:1px solid #eee;border-radius:0}.actions{justify-content:flex-end}
     }
+  
+    .admin-tabs{display:flex;gap:8px;margin-bottom:14px}
+    .admin-tab{height:38px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:700;cursor:pointer}
+    .admin-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+    .panel{display:none}.panel.active{display:block}
+    .analytics-shell{padding:18px}.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .metric{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}.metric small{display:block;color:var(--muted);font-size:11px}
+    .metric strong{display:block;margin-top:5px;font-size:24px}.metric em{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-style:normal}
+    .analytics-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:14px}.abox{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+    .abox h2{margin:0;padding:14px 15px;border-bottom:1px solid var(--line);font-size:14px}.chart{height:240px;padding:18px 12px 12px;display:flex;align-items:flex-end;gap:5px}
+    .barwrap{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}.bar{width:100%;min-height:2px;background:linear-gradient(180deg,#ff7b36,var(--orange));border-radius:5px 5px 2px 2px}.blabel{font-size:8px;color:var(--muted)}
+    .ranklist{padding:7px 14px 12px}.rankrow{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #f0f1f3;font-size:12px}.rankrow:last-child{border-bottom:0}.rankvalue{font-weight:800}
+    .devrow{display:flex;justify-content:space-between;padding:10px 15px;border-bottom:1px solid #f0f1f3;font-size:12px}.aload{padding:40px;text-align:center;color:var(--muted)}
+    @media(max-width:760px){.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-grid{grid-template-columns:1fr}.chart{height:190px}.metric strong{font-size:20px}}
+
   </style>
 </head>
 <body>
@@ -56,7 +71,11 @@
     </form>
   </section>
 
-  <section id="adminCard" class="card hidden">
+  <div id="adminTabs" class="admin-tabs hidden">
+    <button class="admin-tab active" data-tab="specs" type="button">Link thông số</button>
+    <button class="admin-tab" data-tab="analytics" type="button">Thống kê</button>
+  </div>
+  <section id="adminCard" class="card hidden panel active" data-panel="specs">
     <div class="head">
       <div>
         <h1>Link thông số sản phẩm</h1>
@@ -67,6 +86,31 @@
     <div id="stats" class="stats"></div>
     <div id="rows" class="rows"></div>
   </section>
+
+  <section id="analyticsCard" class="card hidden panel" data-panel="analytics">
+    <div class="head">
+      <div><h1>Thống kê truy cập</h1><p>Lượt xem, khách truy cập, sản phẩm được xem và lượt bấm Zalo.</p></div>
+      <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
+    </div>
+    <div class="analytics-shell">
+      <div id="analyticsLoading" class="aload">Đang tải thống kê...</div>
+      <div id="analyticsContent" class="hidden">
+        <div class="metric-grid">
+          <div class="metric"><small>Lượt xem hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
+          <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
+          <div class="metric"><small>Lượt xem 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng: 0</em></div>
+          <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
+        </div>
+        <div class="analytics-grid">
+          <div class="abox"><h2>Lượt truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
+          <div class="abox"><h2>Thiết bị truy cập</h2><div id="deviceList"></div></div>
+          <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script>
@@ -79,6 +123,9 @@ const logoutBtn=document.getElementById("logoutBtn");
 const rows=document.getElementById("rows");
 const stats=document.getElementById("stats");
 const search=document.getElementById("search");
+const adminTabs=document.getElementById("adminTabs");
+const refreshAnalytics=document.getElementById("refreshAnalytics");
+let analyticsLoaded=false;
 
 let products=[];
 let links={};
@@ -104,6 +151,7 @@ function baseModelName(name=""){
 function setLoggedIn(value){
   loginCard.classList.toggle("hidden",value);
   adminCard.classList.toggle("hidden",!value);
+  adminTabs.classList.toggle("hidden",!value);
   logoutBtn.classList.toggle("hidden",!value);
 }
 
@@ -261,6 +309,43 @@ async function loadAdmin(){
   setLoggedIn(true);
   render();
 }
+
+
+function fmt(n){return new Intl.NumberFormat("vi-VN").format(Number(n||0));}
+function renderRank(id,list){
+  const host=document.getElementById(id); host.innerHTML="";
+  if(!list?.length){host.innerHTML='<div class="empty">Chưa có dữ liệu.</div>';return;}
+  list.forEach((x,i)=>{const r=document.createElement("div");r.className="rankrow";r.innerHTML=`<span>${i+1}</span><span>${x.name}</span><span class="rankvalue">${fmt(x.value)}</span>`;host.appendChild(r);});
+}
+async function loadAnalytics(){
+  const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
+  loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
+  try{
+    const r=await fetch("/api/admin/analytics?ts="+Date.now(),{cache:"no-store"});
+    const d=await r.json(); if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
+    const o=d.overview||{};
+    mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`7 ngày: ${fmt(o.views7)}`;
+    mTodayVisitors.textContent=fmt(o.todayVisitors); mVisitors30.textContent=`30 ngày: ${fmt(o.visitors30)}`;
+    mViews30.textContent=fmt(o.views30); mTotalViews.textContent=`Tổng: ${fmt(o.totalViews)}`;
+    mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
+    const chart=document.getElementById("trafficChart"); chart.innerHTML="";
+    const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
+    daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem, ${fmt(x.visitors)} khách`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
+    const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
+    const dh=document.getElementById("deviceList");dh.innerHTML="";
+    Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
+    renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
+    analyticsLoaded=true; loading.classList.add("hidden"); content.classList.remove("hidden");
+  }catch(e){loading.textContent=e.message;}
+}
+adminTabs.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-tab]"); if(!btn)return;
+  const tab=btn.dataset.tab;
+  adminTabs.querySelectorAll(".admin-tab").forEach(x=>x.classList.toggle("active",x===btn));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.dataset.panel===tab));
+  if(tab==="analytics"&&!analyticsLoaded) loadAnalytics();
+});
+refreshAnalytics.addEventListener("click",loadAnalytics);
 
 loginForm.addEventListener("submit",async(e)=>{
   e.preventDefault();

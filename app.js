@@ -27,6 +27,46 @@ const categoryFilters = document.getElementById("categoryFilters");
 const inlineProductDetail = document.getElementById("inlineProductDetail");
 
 
+const ANALYTICS_VISITOR_KEY="sdd-analytics-visitor-v1";
+function analyticsVisitorId(){
+  try{
+    let id=localStorage.getItem(ANALYTICS_VISITOR_KEY);
+    if(!id){
+      id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+      localStorage.setItem(ANALYTICS_VISITOR_KEY,id);
+    }
+    return id;
+  }catch(_){ return "v_"+Math.random().toString(36).slice(2,14); }
+}
+function analyticsDevice(){
+  const ua=navigator.userAgent||"", w=window.innerWidth||0;
+  if(/iPad|Tablet/i.test(ua)||(w>=720&&w<=1024&&/Android/i.test(ua))) return "tablet";
+  if(/Android|iPhone|iPod|Mobile/i.test(ua)||w<720) return "mobile";
+  return "desktop";
+}
+function sendAnalytics(type,extra={}){
+  try{
+    fetch("/api/analytics",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({type,visitorId:analyticsVisitorId(),device:analyticsDevice(),...extra}),
+      keepalive:true
+    }).catch(()=>{});
+  }catch(_){}
+}
+sendAnalytics("page_view");
+
+let analyticsSearchTimer=null;
+function trackSearchQuery(){
+  clearTimeout(analyticsSearchTimer);
+  analyticsSearchTimer=setTimeout(()=>{
+    const query=String(searchInput?.value||"").trim();
+    if(query.length>=2) sendAnalytics("search",{query});
+  },900);
+}
+
+
+
 let PRODUCTS = [];
 const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
 const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -978,7 +1018,9 @@ function openProductFromUrl(){
 }
 
 function openInlineProductDetail(group,initialVariant,options={}){
-  if(!inlineProductDetail) return;
+  
+  sendAnalytics("product_view",{product:String(group?.name||"")});
+if(!inlineProductDetail) return;
 
   if(options.updateUrl !== false){
     const url=productUrl(group.name);
@@ -1523,3 +1565,7 @@ if(sortSelect){
   });
 }
 
+
+if(searchInput) searchInput.addEventListener("input",trackSearchQuery);
+const analyticsZaloButton=document.getElementById("zaloConsultBtn");
+if(analyticsZaloButton) analyticsZaloButton.addEventListener("click",()=>sendAnalytics("zalo_click"));

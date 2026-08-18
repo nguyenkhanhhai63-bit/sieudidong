@@ -663,3 +663,14 @@ Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng t
 - Nút Zalo cố định ở giữa cạnh phải màn hình.
 - Desktop: icon + chữ `Bạn cần hỗ trợ?`.
 - Mobile: vẫn ở giữa cạnh phải; màn hình rất nhỏ chỉ hiện icon để không che nội dung.
+
+## V79 - Thống kê truy cập
+Trong `/admin-specs` có thêm tab `Thống kê`:
+- Lượt xem hôm nay / 7 ngày / 30 ngày / tổng.
+- Khách truy cập gần đúng (Redis HyperLogLog), không lưu IP.
+- Biểu đồ 30 ngày.
+- Mobile / Desktop / Tablet.
+- Top sản phẩm được xem.
+- Top từ khóa tìm kiếm.
+- Lượt bấm Zalo.
+Dùng Redis hiện tại qua `REDIS_URL`. Nếu analytics lỗi, website công khai vẫn hoạt động bình thường.
