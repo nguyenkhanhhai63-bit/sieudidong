@@ -3,68 +3,111 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Siêu Di Động - Bảng giá</title>
+  <title>Siêu Di Động | Điện thoại & sản phẩm công nghệ</title>
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
-  <link rel="stylesheet" href="/styles.css?v=42">
+  <link rel="stylesheet" href="/styles.css?v=45">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="brand">
-        <img class="brand-logo-wide" src="/assets/logo-wide.jpg" alt="Siêu Di Động">
-        <img class="brand-logo-square" src="/assets/logo-square.jpg" alt="Siêu Di Động">
-      </div>
 
-      <label class="theme-toggle">
-        <input id="darkMode" type="checkbox">
-        <span>Giao diện tối</span>
-      </label>
+<header class="commerce-header">
+  <div class="commerce-header-inner">
+    <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
+      <img src="/assets/logo-wide.jpg" alt="Siêu Di Động">
+    </a>
+
+    <button class="commerce-category-btn" type="button" onclick="document.getElementById('categoryFilters').scrollIntoView({behavior:'smooth'})">
+      <span>☰</span>
+      <strong>Danh mục</strong>
+    </button>
+
+    <div class="commerce-location">
+      <span class="commerce-location-icon">⌖</span>
+      <span>
+        <small>Khu vực mua hàng</small>
+        <strong>Quy Nhơn</strong>
+      </span>
     </div>
-  </header>
 
-  <main class="page">
-  <section class="catalog-shell">
-    <section class="page-title">
+    <div class="commerce-search">
+      <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
+      <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      <span class="commerce-search-icon">⌕</span>
+    </div>
+
+    <div class="commerce-contact">
+      <span class="commerce-contact-icon">☎</span>
+      <span>
+        <small>Gọi mua hàng</small>
+        <strong>Siêu Di Động</strong>
+      </span>
+    </div>
+
+    <div class="commerce-store">
+      <span class="commerce-store-icon">▣</span>
+      <span>
+        <small>Cửa hàng</small>
+        <strong>Quy Nhơn</strong>
+      </span>
+    </div>
+
+    <div class="commerce-mini-icon" title="Giỏ hàng">🛒</div>
+    <div class="commerce-mini-icon" title="Tài khoản">♙</div>
+  </div>
+</header>
+
+<main class="page">
+
+  <section class="store-hero">
+    <div>
+      <div class="store-hero-kicker">SIÊU DI ĐỘNG</div>
+      <h1>Sản phẩm nổi bật</h1>
+      <p>Khám phá các mẫu điện thoại đang có tại Siêu Di Động.</p>
+    </div>
+
+    <div class="store-benefits">
+      <div class="store-benefit">
+        <strong>✓ Sản phẩm chọn lọc</strong>
+        <span>Thông tin rõ ràng</span>
+      </div>
+      <div class="store-benefit">
+        <strong>✓ Giá cập nhật</strong>
+        <span>Theo tình trạng thực tế</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="store-filter-card">
+    <div class="store-filter-top">
       <div>
-        <h1>Bảng giá Siêu Di Động</h1>
-        <p>Giá bán và tình trạng hàng được cập nhật thường xuyên.</p>
-      </div>
-      <div id="updatedAt" class="updated">Đang cập nhật...</div>
-    </section>
-
-    <section class="toolbar">
-      <div class="search-row">
-        <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy..." autocomplete="off">
-        <button id="clearSearch" class="clear-btn" type="button">Xóa</button>
+        <div class="store-filter-label">Hãng điện thoại</div>
+        <div id="categoryFilters" class="category-filters" aria-label="Lọc theo hãng"></div>
       </div>
 
-      <div class="brand-filter-block"><div class="filter-label">Hãng điện thoại</div><div id="categoryFilters" class="category-filters" aria-label="Lọc theo hãng"></div></div>
+      <div id="updatedAt" class="store-updated">Đang cập nhật...</div>
+    </div>
 
-      <div class="filter-row">
-        
-        <div id="summary" class="summary"></div>
-      </div>
-    </section>
-
-      </section>
+    <div class="store-filter-bottom">
+      <div id="summary" class="summary"></div>
+    </div>
+  </section>
 
   <section id="productGrid" class="product-grid">
-      <div class="loading">Đang tải bảng giá...</div>
-    </section>
+    <div class="loading">Đang tải sản phẩm...</div>
+  </section>
 
-    <section id="inlineProductDetail" class="inline-product-detail" hidden></section>
+  <section id="inlineProductDetail" class="inline-product-detail" hidden></section>
 
-    <footer class="footer">
-      <div class="footer-brand">
-        <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
-        <span>SIÊU DI ĐỘNG</span>
-      </div>
-      <div>Thông tin sản phẩm và giá bán được cập nhật thường xuyên.</div>
-      <div>© 2026 Siêu Di Động</div>
-    </footer>
-  </main>
-</div>
+  <footer class="footer">
+    <div class="footer-brand">
+      <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
+      <span>SIÊU DI ĐỘNG</span>
+    </div>
+    <div>Thông tin sản phẩm và giá bán được cập nhật thường xuyên.</div>
+    <div>© 2026 Siêu Di Động</div>
+  </footer>
 
-  <script src="/app.js?v=42"></script>
+</main>
+
+<script src="/app.js?v=45"></script>
 </body>
 </html>

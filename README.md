@@ -473,3 +473,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Khu đầu trang chuyển thành hero + khối bộ lọc hãng.
 - Giữ nguyên toàn bộ API, giá, tồn kho, bán chạy, popup/chi tiết và thông số kỹ thuật.
 - Mobile: header thu gọn thành logo vuông + search + tài khoản.
+
+
+## V45 - Fix header thật sự
+- V44 trước đó đóng gói nhầm index.html cũ nên giao diện không thay đổi.
+- V45 thay toàn bộ index.html bằng header thương mại điện tử mới.
+- Có thanh cam, logo, Danh mục, khu vực Quy Nhơn, search, Liên hệ, Cửa hàng, giỏ hàng, tài khoản.
+- Không còn `Bảng giá Siêu Di Động` và không còn nút giao diện tối.
+- Giữ nguyên toàn bộ app.js/API hiện có.
