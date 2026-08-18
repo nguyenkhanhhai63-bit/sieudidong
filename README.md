@@ -981,3 +981,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Trang khách tự nạp cấu hình SEO và cập nhật title/meta/OG/favicon/Organization schema.
 - Favicon mặc định dùng logo vuông Siêu Di Động.
 - Không thêm chữ KiotvietWeb vào metadata website.
+
+## V126 - Sửa mục SEO không hiện trong quản trị
+- Sửa lỗi V125: panel SEO bị đặt ra ngoài thẻ `<main>` của trang quản trị.
+- Chuyển toàn bộ panel SEO vào đúng khu vực quản trị.
+- Đổi tên tab thành `SEO & Google` để dễ nhận biết.
+- Khi bấm tab sẽ thấy ngay khối `Nội dung hiển thị trên Google` và phần xem trước.
