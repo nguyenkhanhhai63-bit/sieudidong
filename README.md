@@ -18,7 +18,7 @@ Trong KiotViet, đăng nhập tài khoản admin và vào phần Thiết lập k
 
 Bạn cần 3 giá trị:
 
-- Tên gian hàng / Retailer
+- Tên gian hàng / Retailer: `sieudidong`
 - Client ID
 - Mã bảo mật / Client Secret
 
@@ -68,3 +68,22 @@ Vercel sẽ hướng dẫn CNAME cần tạo.
 KiotViet có Public API phục vụ tích hợp website/CRM và hỗ trợ đối tượng Hàng hóa. Bộ code này đã tách phần bí mật sang API serverless, đúng hướng an toàn hơn so với gọi KiotViet trực tiếp từ trình duyệt.
 
 Nếu API thực tế của gian hàng trả field khác một chút (ví dụ child products / inventories khác cấu trúc), chỉ cần chỉnh normalizeProduct() trong api/products.js.
+
+
+## Cấu hình riêng cho gian hàng này
+
+Retailer đã xác định là:
+
+```text
+sieudidong
+```
+
+Trên Vercel, tạo 3 Environment Variables:
+
+```text
+KIOTVIET_RETAILER=sieudidong
+KIOTVIET_CLIENT_ID=<Client ID của bạn>
+KIOTVIET_CLIENT_SECRET=<Mã bảo mật mới của bạn>
+```
+
+Không ghi Client Secret trực tiếp vào source code hoặc commit lên GitHub.
