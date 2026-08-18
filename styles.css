@@ -390,3 +390,56 @@ body.dark{
   .variant-main{font-size:12px}
   .price{font-size:15px}
 }
+
+
+/* ===== Branding Siêu Di Động ===== */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.brand-logo-wide{
+  display:block;
+  height:42px;
+  width:auto;
+  max-width:340px;
+  object-fit:contain;
+  border-radius:8px;
+}
+
+.brand-logo-square{
+  display:none;
+  width:42px;
+  height:42px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.footer-brand{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:6px;
+  color:var(--text);
+  font-weight:800;
+}
+
+.footer-brand img{
+  width:28px;
+  height:28px;
+  border-radius:7px;
+  object-fit:cover;
+}
+
+@media(max-width:640px){
+  .brand-logo-wide{
+    display:none;
+  }
+
+  .brand-logo-square{
+    display:block;
+  }
+}

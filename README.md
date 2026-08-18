@@ -123,3 +123,12 @@ Thay đổi:
 - mỗi model là một card riêng
 - các màu/dung lượng nằm gọn bên trong card
 - mobile hiển thị dạng ảnh trái + thông tin phải
+
+
+## Giao diện V5 - Thêm logo Siêu Di Động
+
+Đã thêm 2 logo:
+- `assets/logo-wide.jpg`: logo ngang dùng trên desktop.
+- `assets/logo-square.jpg`: logo vuông dùng trên mobile, favicon và footer.
+
+Upload toàn bộ thư mục `assets` cùng các file frontend.
