@@ -11,8 +11,8 @@
   Có thể thêm bao nhiêu model tùy ý.
 */
 window.SIEUDIDONG_SPEC_LINKS = {
-  // Ví dụ:
-  // "Honor WIN RT": "https://mobilecity.vn/dien-thoai/....html",
-  // "Honor WIN 5G": "https://mobilecity.vn/dien-thoai/....html",
-  // "Redmi K90 Max": "https://mobilecity.vn/dien-thoai/....html"
+  
+  "Honor WIN RT": "https://mobilecity.vn/dien-thoai/honor-win-rt-pin-10000mah.html",
+  "Honor WIN 5G": "https://mobilecity.vn/dien-thoai/honor-win-5g-pin-khung.html",
+  "Redmi K90 Max": "https://mobilecity.vn/dien-thoai/....html"
 };
