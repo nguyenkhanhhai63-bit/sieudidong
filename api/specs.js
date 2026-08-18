@@ -1,42 +1,134 @@
 
-const MC_BASE = "https://mobilecity.vn";
-
 const memoryCache = new Map();
 
-const CATEGORY_URLS = {
-  "honor": ["/dien-thoai-honor", "/"],
-  "vivo": ["/dien-thoai-vivo", "/"],
-  "iqoo": ["/dien-thoai-vivo", "/"],
-  "oppo": ["/dien-thoai-oppo", "/"],
-  "oneplus": ["/dien-thoai-oneplus", "/"],
-  "xiaomi": ["/dien-thoai-xiaomi", "/"],
-  "redmi": ["/dien-thoai-redmi", "/dien-thoai-xiaomi", "/"],
-  "poco": ["/dien-thoai-poco", "/dien-thoai-xiaomi", "/"],
-  "samsung": ["/dien-thoai-samsung-chinh-hang", "/"],
-  "apple": ["/dien-thoai-iphone-chinh-hang", "/"],
-  "iphone": ["/dien-thoai-iphone-chinh-hang", "/"],
-  "nubia": ["/dien-thoai-nubia-red-magic", "/"],
-  "redmagic": ["/dien-thoai-nubia-red-magic", "/"],
-  "realme": ["/dien-thoai-realme", "/"],
-  "asus": ["/dien-thoai-asus", "/"],
-  "google": ["/dien-thoai-google", "/"],
-  "motorola": ["/dien-thoai-lenovo-motorola", "/"]
-};
 
-const SPEC_LABELS = [
-  "màn hình", "loại màn hình", "màu màn hình", "chuẩn màn hình",
-  "độ phân giải", "màn hình rộng", "công nghệ cảm ứng",
-  "hệ điều hành", "ngôn ngữ",
-  "camera sau", "camera trước", "quay phim",
-  "cpu", "chip", "chipset", "gpu",
-  "ram", "bộ nhớ trong", "bộ nhớ", "thẻ nhớ",
-  "thẻ sim", "sim",
-  "dung lượng pin", "pin", "sạc", "sạc nhanh",
-  "wifi", "bluetooth", "gps", "nfc", "kết nối",
-  "kích thước", "trọng lượng", "thiết kế",
-  "chống nước", "kháng nước", "bảo mật",
-  "cảm biến", "loa", "âm thanh"
-];
+const SPEC_LINKS_KEY = "sdd:spec-links:v1";
+
+function redisConfig() {
+  return {
+    url:
+      process.env.UPSTASH_REDIS_REST_URL ||
+      process.env.KV_REST_API_URL ||
+      "",
+    token:
+      process.env.UPSTASH_REDIS_REST_TOKEN ||
+      process.env.KV_REST_API_TOKEN ||
+      ""
+  };
+}
+
+async function redisCommand(command) {
+  const { url, token } = redisConfig();
+
+  if (!url || !token) {
+    throw new Error(
+      "Thiếu UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN"
+    );
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(command)
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Redis ${res.status}: ${text}`);
+  }
+
+  const data = await res.json();
+  return data.result;
+}
+
+async function getSpecLinks() {
+  const raw = await redisCommand(["GET", SPEC_LINKS_KEY]);
+  if (!raw) return {};
+
+  try {
+    const value = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return value && typeof value === "object" ? value : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+async function saveSpecLinks(map) {
+  await redisCommand(["SET", SPEC_LINKS_KEY, JSON.stringify(map)]);
+}
+
+
+function removeVietnameseMarksSimple(str="") {
+  return String(str)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D");
+}
+
+function normalizedModel(str="") {
+  return removeVietnameseMarksSimple(str)
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\b(?:8|12|16|24)\s*\/\s*(?:128|256|512|1024)\b/g, " ")
+    .replace(/\b(?:128|256|512)\s*gb\b/g, " ")
+    .replace(/\b(?:1|2)\s*tb\b/g, " ")
+    .replace(/\s*-\s*(?:den|trang|bac|xanh(?: duong| la| bien| ngoc| mint)?|do|hong|tim|titan(?: xam| den| trang)?|cam|vang)\s*$/g, " ")
+    .replace(/[^a-z0-9+]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function resolveManualLink(productName, links) {
+  const target = normalizedModel(productName);
+
+  let best = null;
+  let bestScore = -1;
+
+  for (const [model, value] of Object.entries(links || {})) {
+    const url = typeof value === "string" ? value : value?.url;
+    if (!url) continue;
+
+    const key = normalizedModel(model);
+    if (!key) continue;
+
+    let score = -1;
+
+    if (target === key) {
+      score = 10000 + key.length;
+    } else if (target.startsWith(key + " ") || target.includes(" " + key + " ")) {
+      score = 5000 + key.length;
+    } else if (key.startsWith(target + " ")) {
+      score = 1000 + target.length;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = { model, url };
+    }
+  }
+
+  return best;
+}
+
+async function fetchTextManual(url) {
+  const r = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (compatible; SieuDiDongCatalog/1.0; +https://sieudidong.vn)",
+      "Accept": "text/html,application/xhtml+xml"
+    }
+  });
+
+  if (!r.ok) {
+    throw new Error(`Nguồn thông số HTTP ${r.status}`);
+  }
+
+  return r.text();
+}
 
 function decodeHtml(text="") {
   return String(text)
@@ -522,66 +614,79 @@ function extractTitle(html) {
   return title ? stripTags(title[1]) : "";
 }
 
+
 export default async function handler(req, res) {
   const name = String(req.query?.name || "").trim();
+  const refresh = String(req.query?.refresh || "") === "1";
 
   if (!name) {
     return res.status(400).json({ error: "Missing product name" });
   }
 
-  const key = normalized(name);
-  const cached = memoryCache.get(key);
+  const cacheKey = normalizedModel(name);
+  const cached = memoryCache.get(cacheKey);
 
-  if (cached && Date.now() < cached.expiresAt) {
-    res.setHeader("Cache-Control","public, s-maxage=604800, stale-while-revalidate=2592000");
-    return res.status(200).json({ ...cached.data, cached: true });
+  if (!refresh && cached && Date.now() < cached.expiresAt) {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=86400, stale-while-revalidate=604800"
+    );
+    return res.status(200).json({
+      productName: name,
+      specs: cached.data.specs,
+      fetchedAt: cached.data.fetchedAt,
+      cached: true
+    });
   }
 
   try {
-    const found = await findProductPage(name);
+    const links = await getSpecLinks();
+    const source = resolveManualLink(name, links);
 
-    if (!found) {
+    if (!source) {
       return res.status(404).json({
-        error: "Không tìm thấy trang thông số phù hợp",
+        error: "Chưa gắn link thông số cho model này",
         productName: name
       });
     }
 
-    const html = found.html || await fetchText(found.href);
-    const specs = coreSpecsOnly(extractSpecs(html));
+    const sourceHtml = await fetchTextManual(source.url);
+    const specs = coreSpecsOnly(extractSpecs(sourceHtml));
 
     if (!specs.length) {
       return res.status(404).json({
-        error: "Trang nguồn chưa có bảng thông số kỹ thuật",
-        productName: name,
-        sourceUrl: found.href
+        error: "Link đã gắn nhưng chưa đọc được thông số kỹ thuật",
+        productName: name
       });
     }
 
     const data = {
       productName: name,
-      sourceName: extractTitle(html) || found.text,
-      sourceUrl: found.href,
-      matchScore: Math.round(found.score * 100) / 100,
-      parserVersion: "v38-core-specs",
-      verifiedModel: true,
       specs,
       fetchedAt: new Date().toISOString()
     };
 
-    memoryCache.set(key, {
+    memoryCache.set(cacheKey, {
       data,
-      expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000
+      expiresAt: Date.now() + 24 * 60 * 60 * 1000
     });
 
-    res.setHeader("Cache-Control","public, s-maxage=604800, stale-while-revalidate=2592000");
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=86400, stale-while-revalidate=604800"
+    );
+
+    // Không trả sourceUrl ra phía khách.
     return res.status(200).json(data);
+
   } catch (error) {
-    console.error("Specs error:", error);
+    console.error("Specs manual source:", error);
 
     if (cached?.data) {
       return res.status(200).json({
-        ...cached.data,
+        productName: name,
+        specs: cached.data.specs,
+        fetchedAt: cached.data.fetchedAt,
         cached: true,
         stale: true
       });

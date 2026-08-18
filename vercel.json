@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/admin-specs",
+      "destination": "/admin-specs.html"
+    },
+    {
       "source": "/san-pham/(.*)",
       "destination": "/index.html"
     },
