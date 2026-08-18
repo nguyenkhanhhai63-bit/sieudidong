@@ -813,3 +813,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - V100 đổi nhánh xác thực thành công sang `analyticsCard`.
 - Sau khi session được xác thực hoặc vừa đăng nhập: mở trực tiếp Thống kê.
 - Link thông số chỉ mở khi bấm tab.
+
+## V101 - So sánh sản phẩm
+- Mỗi card có nút `So sánh`.
+- Chọn tối đa 3 sản phẩm.
+- Thanh so sánh nổi phía dưới, giữ lựa chọn bằng localStorage.
+- Bấm `So sánh` mở bảng đối chiếu giá, tồn kho và thông số kỹ thuật.
+- Thông số được lấy từ chính `/api/specs` và link nguồn đã gắn trong quản trị.
+- Hỗ trợ desktop/mobile.

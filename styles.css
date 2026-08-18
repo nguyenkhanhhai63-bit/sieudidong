@@ -6633,3 +6633,174 @@ a[href*="zalo.me"]{
     right:22px !important;
   }
 }
+
+
+/* =========================================================
+   V101 - So sánh sản phẩm
+   ========================================================= */
+.compact-card-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.compact-compare-btn{
+  min-height:32px;
+  padding:0 10px;
+  border:1px solid #d8dde3;
+  border-radius:7px;
+  background:#fff;
+  color:#525a64;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.compact-compare-btn:hover{
+  border-color:#ff9b66;
+  color:#e34e00;
+}
+.compact-compare-btn.active{
+  border-color:#ff5a00;
+  background:#fff3ec;
+  color:#e34e00;
+}
+
+.compare-bar{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  z-index:980;
+  width:min(980px,calc(100% - 36px));
+  min-height:66px;
+  transform:translate(-50%,120px);
+  opacity:0;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 12px;
+  border:1px solid #e2e5e9;
+  border-radius:14px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 12px 36px rgba(15,23,42,.18);
+  transition:.22s ease;
+}
+.compare-bar.show{
+  transform:translate(-50%,0);
+  opacity:1;
+  pointer-events:auto;
+}
+.compare-bar-items{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  overflow:auto;
+}
+.compare-chip{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  max-width:260px;
+  padding:8px 9px 8px 11px;
+  border-radius:10px;
+  background:#f6f7f9;
+  color:#30343a;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.compare-chip span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.compare-chip button{
+  width:22px;height:22px;border:0;border-radius:50%;background:#e8eaed;cursor:pointer;font-size:16px;
+}
+.compare-bar-actions{display:flex;gap:8px;flex:0 0 auto}
+.compare-clear-btn,.compare-open-btn{
+  min-height:38px;padding:0 14px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;
+}
+.compare-clear-btn{border:1px solid #dfe3e8;background:#fff;color:#555}
+.compare-open-btn{border:1px solid #ff5a00;background:#ff5a00;color:#fff}
+.compare-open-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.compare-notice{
+  position:fixed;left:50%;bottom:98px;z-index:1100;transform:translate(-50%,15px);
+  padding:10px 14px;border-radius:9px;background:#222;color:#fff;font-size:12px;font-weight:700;
+  opacity:0;pointer-events:none;transition:.18s ease;
+}
+.compare-notice.show{opacity:1;transform:translate(-50%,0)}
+
+.compare-modal{
+  position:fixed;inset:0;z-index:1200;display:none;
+}
+.compare-modal.open{display:block}
+.compare-modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.52)}
+.compare-modal-dialog{
+  position:relative;
+  width:min(1380px,calc(100% - 30px));
+  max-height:calc(100vh - 30px);
+  overflow:auto;
+  margin:15px auto;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.26);
+}
+.compare-modal-close{
+  position:absolute;right:16px;top:14px;z-index:2;
+  width:38px;height:38px;border:0;border-radius:50%;background:#f0f2f5;font-size:24px;cursor:pointer;
+}
+.compare-modal-head{padding:24px 26px 18px;border-bottom:1px solid #eceff2}
+.compare-modal-head h2{margin:0;font-size:26px}
+.compare-modal-head p{margin:6px 0 0;color:#737b85;font-size:13px}
+.compare-loading,.compare-empty{padding:50px 24px;text-align:center;color:#737b85}
+.compare-table-wrap{overflow:auto}
+.compare-table{min-width:900px}
+.compare-row{
+  display:grid;
+  grid-template-columns:190px repeat(3,minmax(240px,1fr));
+  border-bottom:1px solid #e7eaee;
+}
+.compare-row>div{padding:15px 16px;border-right:1px solid #e7eaee}
+.compare-row>div:last-child{border-right:0}
+.compare-header-row{position:sticky;top:0;z-index:1;background:#fff}
+.compare-label{background:#fafbfc;font-size:13px;font-weight:800}
+.compare-value{font-size:13px;line-height:1.55;white-space:pre-line}
+.compare-product-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.compare-product-image{height:150px;width:100%;display:flex;align-items:center;justify-content:center}
+.compare-product-image .product-image{max-width:150px;max-height:145px;object-fit:contain}
+.compare-product-head strong{font-size:14px;line-height:1.35}
+.compare-product-price{color:#d90000;font-size:16px;font-weight:800}
+.compare-product-stock{padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700}
+.compare-product-stock.in{background:#edf9f1;color:#16843b}
+.compare-product-stock.out{background:#f1f2f4;color:#7a7f87}
+
+@media(max-width:720px){
+  .compact-product-meta{
+    align-items:flex-end;
+  }
+  .compact-card-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .compact-compare-btn,.compact-detail-btn{
+    min-height:28px;
+    padding:0 7px;
+    font-size:9px;
+  }
+  .compare-bar{
+    width:calc(100% - 20px);
+    bottom:10px;
+    align-items:stretch;
+    flex-direction:column;
+    gap:8px;
+  }
+  .compare-bar-actions{justify-content:flex-end}
+  .compare-chip{max-width:200px;font-size:11px}
+  .compare-modal-dialog{width:calc(100% - 12px);margin:6px auto;max-height:calc(100vh - 12px)}
+  .compare-modal-head{padding:18px 52px 14px 16px}
+  .compare-modal-head h2{font-size:20px}
+  .compare-row{grid-template-columns:130px repeat(3,minmax(190px,1fr))}
+  .compare-row>div{padding:12px 10px}
+}
