@@ -829,3 +829,19 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khi đã chọn, nút đổi thành `✓ Đã chọn so sánh`.
 - Giữ nguyên thanh so sánh nổi phía dưới và bảng so sánh tối đa 3 sản phẩm.
 - Có dòng gợi ý bên dưới giá để khách dễ nhận ra tính năng.
+
+
+## V103 - Làm lại So sánh trên Mobile
+- Mobile không còn dùng bảng ngang rộng khó đọc.
+- Mỗi thông số trở thành một khối riêng; giá trị từng máy xếp dọc.
+- Phần đầu hiển thị 2-3 card sản phẩm gọn để biết đang so máy nào.
+- Thanh chọn ghi rõ `Đã chọn 1/3 • Chọn thêm ít nhất 1 máy`.
+- Khi đủ 2 máy, nút đổi thành `So sánh ngay`.
+- Nút trên trang chi tiết đổi thành `+ Thêm vào so sánh`.
+- Ẩn nút Zalo khi cửa sổ so sánh đang mở để không che nội dung.
+
+## V104 - Tinh gọn trang chi tiết
+- Bỏ khối `Thông tin sản phẩm` vì lặp lại hãng / số phiên bản / tình trạng.
+- Bỏ khối `Thông tin phiên bản` vì màu và dung lượng đã chọn trực tiếp phía trên.
+- Chỉ giữ một dòng lưu ý ngắn trước phần `Thông Số Kỹ Thuật`.
+- Tình trạng còn hàng vẫn hiển thị ở phần đầu trang.

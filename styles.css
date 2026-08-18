@@ -6871,3 +6871,269 @@ a[href*="zalo.me"]{
     font-size:11px;
   }
 }
+
+
+/* =========================================================
+   V103 - So sánh mobile dễ đọc / thao tác rõ ràng
+   ========================================================= */
+body.modal-open #zaloConsultBtn{
+  display:none !important;
+}
+
+.compare-bar-actions{
+  align-items:center;
+}
+.compare-bar-instruction{
+  color:#6b7280;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.compare-mobile{
+  display:none;
+}
+
+@media(max-width:720px){
+  .detail-compare-btn{
+    border-radius:9px;
+    background:#fff7f2;
+    font-size:11px;
+    font-weight:800;
+  }
+
+  .compact-card-actions{
+    width:100%;
+  }
+
+  .compact-compare-btn{
+    background:#fff7f2;
+    border-color:#ffc9aa;
+    color:#d94b00;
+  }
+
+  .compare-bar{
+    padding:10px;
+  }
+
+  .compare-bar-items{
+    width:100%;
+  }
+
+  .compare-bar-actions{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    align-items:center;
+    gap:7px;
+  }
+
+  .compare-bar-instruction{
+    white-space:normal;
+    line-height:1.35;
+    font-size:10px;
+  }
+
+  .compare-clear-btn{
+    min-height:36px;
+    padding:0 10px;
+  }
+
+  .compare-open-btn{
+    min-height:36px;
+    padding:0 12px;
+  }
+
+  .compare-modal-dialog{
+    border-radius:18px 18px 0 0;
+    width:100%;
+    height:94vh;
+    max-height:94vh;
+    margin:6vh 0 0;
+  }
+
+  .compare-modal-head{
+    position:sticky;
+    top:0;
+    z-index:8;
+    background:#fff;
+    padding:18px 58px 14px 16px;
+    box-shadow:0 1px 0 #eceff2;
+  }
+
+  .compare-modal-head h2{
+    font-size:22px;
+    line-height:1.2;
+  }
+
+  .compare-modal-head p{
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  .compare-modal-close{
+    position:fixed;
+    top:calc(6vh + 12px);
+    right:14px;
+    z-index:10;
+    width:42px;
+    height:42px;
+  }
+
+  .compare-table{
+    display:none;
+  }
+
+  .compare-mobile{
+    display:block;
+    padding-bottom:24px;
+  }
+
+  .compare-mobile-products{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding:14px;
+    background:#f7f8fa;
+    border-bottom:1px solid #e5e7eb;
+  }
+
+  .compare-mobile-product-card{
+    min-width:0;
+    padding:12px 9px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#fff;
+    text-align:center;
+  }
+
+  .compare-mobile-product-card:nth-child(3){
+    grid-column:1 / -1;
+    width:50%;
+    justify-self:center;
+  }
+
+  .compare-mobile-product-image{
+    height:110px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .compare-mobile-product-image .product-image{
+    max-width:108px;
+    max-height:105px;
+    object-fit:contain;
+  }
+
+  .compare-mobile-product-name{
+    margin-top:7px;
+    min-height:38px;
+    font-size:12px;
+    line-height:1.35;
+    font-weight:800;
+    overflow:hidden;
+  }
+
+  .compare-mobile-product-card .compare-product-price{
+    margin-top:7px;
+    font-size:15px;
+  }
+
+  .compare-mobile-product-card .compare-product-stock{
+    display:inline-flex;
+    margin-top:7px;
+  }
+
+  .compare-mobile-spec{
+    margin:12px 12px 0;
+    overflow:hidden;
+    border:1px solid #e4e7eb;
+    border-radius:12px;
+    background:#fff;
+  }
+
+  .compare-mobile-spec h3{
+    margin:0;
+    padding:11px 13px;
+    background:#f7f8fa;
+    border-bottom:1px solid #e4e7eb;
+    color:#111827;
+    font-size:14px;
+    line-height:1.3;
+  }
+
+  .compare-mobile-spec-item{
+    padding:11px 13px 12px;
+    border-bottom:1px solid #edf0f2;
+  }
+
+  .compare-mobile-spec-item:last-child{
+    border-bottom:0;
+  }
+
+  .compare-mobile-spec-name{
+    margin-bottom:5px;
+    color:#6b7280;
+    font-size:10px;
+    line-height:1.3;
+    font-weight:700;
+  }
+
+  .compare-mobile-spec-value{
+    color:#111827;
+    font-size:13px;
+    line-height:1.55;
+    white-space:pre-line;
+  }
+
+  .compare-table-wrap{
+    overflow:visible;
+  }
+}
+
+@media(max-width:390px){
+  .compare-bar-actions{
+    grid-template-columns:1fr auto;
+  }
+  .compare-bar-instruction{
+    grid-column:1 / -1;
+  }
+  .compare-mobile-products{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    padding:10px;
+  }
+}
+
+
+/* =========================================================
+   V104 - Tinh gọn trang chi tiết
+   Bỏ 2 khối lặp: Thông tin sản phẩm + Thông tin phiên bản
+   ========================================================= */
+.detail-info{
+  padding-bottom:8px;
+}
+
+.detail-note-compact{
+  margin-top:16px;
+  border:1px solid #eceff2;
+  border-radius:12px;
+  background:#fff;
+}
+
+.detail-note-compact .detail-note-body{
+  padding:14px 16px;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.55;
+}
+
+@media(max-width:720px){
+  .detail-note-compact{
+    margin-top:12px;
+  }
+  .detail-note-compact .detail-note-body{
+    padding:12px 13px;
+    font-size:11px;
+  }
+}

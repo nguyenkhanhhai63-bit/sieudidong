@@ -932,11 +932,17 @@ function renderCompareBar(){
   const open=document.createElement("button");
   open.type="button";
   open.className="compare-open-btn";
-  open.textContent=`So sánh (${COMPARE_ITEMS.length})`;
   open.disabled=COMPARE_ITEMS.length<2;
+  open.textContent=COMPARE_ITEMS.length<2 ? "Chọn thêm 1 máy" : `So sánh ngay (${COMPARE_ITEMS.length})`;
   open.addEventListener("click",openCompareModal);
 
-  actions.append(clear,open);
+  const instruction=document.createElement("div");
+  instruction.className="compare-bar-instruction";
+  instruction.textContent=COMPARE_ITEMS.length<2
+    ? `Đã chọn ${COMPARE_ITEMS.length}/${MAX_COMPARE_ITEMS} • Chọn thêm ít nhất 1 máy`
+    : `Đã chọn ${COMPARE_ITEMS.length}/${MAX_COMPARE_ITEMS} • Có thể so sánh`;
+
+  actions.append(instruction,clear,open);
   bar.append(left,actions);
   bar.classList.add("show");
 }
@@ -1028,6 +1034,7 @@ async function openCompareModal(){
   const wrap=document.createElement("div");
   wrap.className="compare-table-wrap";
 
+  // DESKTOP: bảng đối chiếu truyền thống.
   const table=document.createElement("div");
   table.className="compare-table";
 
@@ -1069,13 +1076,59 @@ async function openCompareModal(){
     table.appendChild(row);
   });
 
+  // MOBILE: mỗi thông số là một khối, giá trị từng máy xếp dọc.
+  const mobile=document.createElement("div");
+  mobile.className="compare-mobile";
+
+  const mobileProducts=document.createElement("div");
+  mobileProducts.className="compare-mobile-products";
+  groups.forEach(group=>{
+    const variant=getDefaultVariantForGroup(group);
+    const card=document.createElement("div");
+    card.className="compare-mobile-product-card";
+    card.innerHTML=`
+      <div class="compare-mobile-product-image">${imageHTML(group)}</div>
+      <div class="compare-mobile-product-name">${group.name}</div>
+      <div class="compare-product-price">${variant?money(variant.price):"Liên hệ"}</div>
+      <div class="compare-product-stock ${variant&&Number(variant.onHand||0)>0?"in":"out"}">${variant&&Number(variant.onHand||0)>0?"✓ Còn hàng":"Hết hàng"}</div>`;
+    mobileProducts.appendChild(card);
+  });
+  mobile.appendChild(mobileProducts);
+
+  labels.forEach(label=>{
+    const section=document.createElement("section");
+    section.className="compare-mobile-spec";
+
+    const h=document.createElement("h3");
+    h.textContent=label;
+    section.appendChild(h);
+
+    groups.forEach((group,index)=>{
+      const item=document.createElement("div");
+      item.className="compare-mobile-spec-item";
+
+      const name=document.createElement("div");
+      name.className="compare-mobile-spec-name";
+      name.textContent=group.name;
+
+      const value=document.createElement("div");
+      value.className="compare-mobile-spec-value";
+      value.textContent=maps[index].get(label)||"—";
+
+      item.append(name,value);
+      section.appendChild(item);
+    });
+
+    mobile.appendChild(section);
+  });
+
   if(!labels.length){
     const empty=document.createElement("div");
     empty.className="compare-empty";
     empty.textContent="Các sản phẩm này chưa có đủ thông số kỹ thuật để so sánh.";
     wrap.appendChild(empty);
   }else{
-    wrap.appendChild(table);
+    wrap.append(table,mobile);
   }
 
   dialog.appendChild(wrap);
@@ -1155,12 +1208,12 @@ function render(){
     const compareBtn=document.createElement("button");
     compareBtn.type="button";
     compareBtn.className="compact-compare-btn" + (isCompared(group) ? " active" : "");
-    compareBtn.textContent=isCompared(group) ? "✓ Đã chọn" : "So sánh";
+    compareBtn.textContent=isCompared(group) ? "✓ Đã chọn" : "+ So sánh";
     compareBtn.addEventListener("click",(e)=>{
       e.stopPropagation();
       if(toggleCompare(group)){
         compareBtn.classList.toggle("active",isCompared(group));
-        compareBtn.textContent=isCompared(group) ? "✓ Đã chọn" : "So sánh";
+        compareBtn.textContent=isCompared(group) ? "✓ Đã chọn" : "+ So sánh";
       }
     });
 
@@ -1414,12 +1467,12 @@ if(!inlineProductDetail) return;
   const detailCompareBtn=document.createElement("button");
   detailCompareBtn.type="button";
   detailCompareBtn.className="detail-compare-btn" + (isCompared(group) ? " active" : "");
-  detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "⇄ So sánh sản phẩm";
+  detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "+ Thêm vào so sánh";
   detailCompareBtn.addEventListener("click",(e)=>{
     e.stopPropagation();
     if(toggleCompare(group)){
       detailCompareBtn.classList.toggle("active",isCompared(group));
-      detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "⇄ So sánh sản phẩm";
+      detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "+ Thêm vào so sánh";
     }
   });
 
@@ -1449,7 +1502,7 @@ if(!inlineProductDetail) return;
 
   const compareHint=document.createElement("div");
   compareHint.className="detail-compare-hint";
-  compareHint.textContent="Muốn so cấu hình với máy khác? Bấm “So sánh sản phẩm” phía trên.";
+  compareHint.textContent="Chọn máy này rồi chọn thêm ít nhất 1 máy khác để so cấu hình.";
 
   const colorRow=document.createElement("div");
   colorRow.className="detail-option-row";
@@ -1483,7 +1536,6 @@ if(!inlineProductDetail) return;
   info.append(price,chooseText);
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
-  info.append(infoBox);
 
   const related=document.createElement("aside");
   related.className="detail-related";
@@ -1537,45 +1589,11 @@ if(!inlineProductDetail) return;
 
   main.append(gallery,info,related);
 
-  const lower=document.createElement("div");
-  lower.className="detail-lower";
-
-  const specs=document.createElement("section");
-  specs.className="detail-specs";
-
-  const specsTitle=document.createElement("div");
-  specsTitle.className="detail-section-title";
-  specsTitle.textContent="Thông tin phiên bản";
-
-  const specsBody=document.createElement("div");
-  specsBody.className="detail-specs-body";
-
-  const rowBrand=document.createElement("div");
-  rowBrand.className="detail-spec-row";
-  rowBrand.innerHTML=`<span>Hãng</span><strong>${brand}</strong>`;
-
-  const rowColors=document.createElement("div");
-  rowColors.className="detail-spec-row";
-  rowColors.innerHTML=`<span>Màu sắc</span><strong>${[...new Set(variants.map(v=>v.color).filter(Boolean))].join(", ") || "Đang cập nhật"}</strong>`;
-
-  const rowMem=document.createElement("div");
-  rowMem.className="detail-spec-row";
-  rowMem.innerHTML=`<span>Dung lượng</span><strong>${[...new Set(variants.map(v=>v.memory).filter(Boolean))].join(", ") || "Đang cập nhật"}</strong>`;
-
-  specsBody.append(rowBrand,rowColors,rowMem);
-  specs.append(specsTitle,specsBody);
-
   const note=document.createElement("section");
-  note.className="detail-note";
-  const noteTitle=document.createElement("div");
-  noteTitle.className="detail-section-title";
-  noteTitle.textContent="Lưu ý";
+  note.className="detail-note detail-note-compact";
   const noteBody=document.createElement("div");
   noteBody.className="detail-note-body";
-  noteBody.textContent="Giá và tình trạng hàng được cập nhật thường xuyên. Vui lòng chọn đúng màu sắc và dung lượng để xem giá của từng phiên bản.";
-  note.append(noteTitle,noteBody);
-
-  lower.append(specs,note);
+  noteBody.textContent="Giá và tình trạng hàng được cập nhật thường xuyên theo màu sắc và dung lượng đang chọn.";
 
   const technical=document.createElement("section");
   technical.className="technical-spec-section";
@@ -1589,14 +1607,14 @@ if(!inlineProductDetail) return;
 
   technical.append(technicalTitle,technicalBody);
 
-  shell.append(topbar,breadcrumb,heading,main,lower,technical);
+  shell.append(topbar,breadcrumb,heading,main,note,technical);
   inlineProductDetail.appendChild(shell);
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
   const colorButtons=new Map();
   const memoryButtons=new Map();
-  const stockText=infoBox.querySelector(".js-stock-text");
+  const stockText=statusTop;
 
   function findVariant(){
     let matches=variants.filter(v=>{
