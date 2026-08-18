@@ -41,6 +41,33 @@ function extractColor(name){
   return "";
 }
 
+
+function detectBrand(name){
+  const text = String(name || "").toLowerCase();
+
+  const brands = [
+    ["Xiaomi", ["xiaomi", "redmi", "poco"]],
+    ["Apple", ["iphone", "ipad", "apple"]],
+    ["Samsung", ["samsung", "galaxy"]],
+    ["OPPO", ["oppo", "oneplus", "realme"]],
+    ["vivo", ["vivo", "iqoo"]],
+    ["HONOR", ["honor"]],
+    ["Huawei", ["huawei"]],
+    ["Nubia", ["nubia", "redmagic", "red magic"]],
+    ["Motorola", ["motorola", "moto"]],
+    ["Google", ["google pixel", "pixel"]],
+    ["ASUS", ["asus", "rog phone"]],
+    ["Sony", ["sony", "xperia"]],
+    ["Nothing", ["nothing phone", "cmf phone"]]
+  ];
+
+  for(const [brand, keywords] of brands){
+    if(keywords.some(k => text.includes(k))) return brand;
+  }
+
+  return "Khác";
+}
+
 function flattenProducts(raw){
   const items=[];
 
@@ -56,7 +83,8 @@ function flattenProducts(raw){
         onHand:Number(v.onHand || 0),
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
-        rootCategoryName:p.rootCategoryName || p.categoryName || "Khác"
+        rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
+        brand:detectBrand(v.name || p.name || "")
       });
     });
   });
@@ -114,28 +142,33 @@ function variantLabel(v){
 }
 
 function renderCategoryFilters(){
-  const categories = [...new Set(
-    PRODUCTS
-      .map(p => p.rootCategoryName || p.categoryName)
+  const brands = [...new Set(
+    flattenProducts(PRODUCTS)
+      .map(p => p.brand)
       .filter(Boolean)
-  )].sort((a,b)=>a.localeCompare(b,"vi"));
+  )]
+  .filter(b => b !== "Khác")
+  .sort((a,b)=>a.localeCompare(b,"vi"));
 
-  const all = ["Tất cả", ...categories];
+  const hasOther = flattenProducts(PRODUCTS).some(p => p.brand === "Khác");
+  if(hasOther) brands.push("Khác");
 
-  if(ACTIVE_CATEGORY !== "Tất cả" && !categories.includes(ACTIVE_CATEGORY)){
+  const all = ["Tất cả", ...brands];
+
+  if(ACTIVE_CATEGORY !== "Tất cả" && !brands.includes(ACTIVE_CATEGORY)){
     ACTIVE_CATEGORY = "Tất cả";
   }
 
   categoryFilters.innerHTML = "";
 
-  all.forEach(cat=>{
+  all.forEach(brand=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="category-btn" + (cat===ACTIVE_CATEGORY ? " active" : "");
-    btn.textContent=cat;
+    btn.className="category-btn" + (brand===ACTIVE_CATEGORY ? " active" : "");
+    btn.textContent=brand;
 
     btn.addEventListener("click",()=>{
-      ACTIVE_CATEGORY=cat;
+      ACTIVE_CATEGORY=brand;
       renderCategoryFilters();
       render();
     });
@@ -153,7 +186,7 @@ function render(){
   }
 
   if(ACTIVE_CATEGORY!=="Tất cả"){
-    items=items.filter(x=>x.rootCategoryName===ACTIVE_CATEGORY);
+    items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
 
   if(q){
@@ -184,10 +217,6 @@ function render(){
 
     const body=document.createElement("div");
     body.className="product-body";
-
-    const category=document.createElement("div");
-    category.className="category-label";
-    category.textContent=group.categoryName || group.rootCategoryName || "";
 
     const title=document.createElement("div");
     title.className="product-name";
@@ -225,7 +254,7 @@ function render(){
         variants.appendChild(row);
       });
 
-    body.append(category,title,variants);
+    body.append(title,variants);
     card.append(media,body);
     grid.appendChild(card);
   });

@@ -155,3 +155,12 @@ Vì vậy các sản phẩm đã chuyển sang trạng thái ngừng kinh doanh 
 - Website tự tạo các nút lọc nhóm hàng từ dữ liệu KiotViet.
 - Không cần tự gõ danh mục trong code.
 - Vẫn chỉ lấy hàng đang kinh doanh (`isActive=true`).
+
+
+## V9 - Lọc theo hãng điện thoại
+Website tự nhận diện hãng từ tên sản phẩm để tạo bộ lọc:
+Xiaomi (gồm Redmi/Poco), Apple, Samsung, OPPO (gồm OnePlus/realme),
+vivo (gồm iQOO), HONOR, Huawei, Nubia/RedMagic, Motorola, Google, ASUS,
+Sony, Nothing và Khác.
+
+Không hiển thị thông tin KiotViet trên giao diện công khai.

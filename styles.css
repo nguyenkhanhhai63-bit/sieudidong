@@ -339,3 +339,14 @@ body.dark{
   .variant-main{font-size:12px}
   .price{font-size:14px}
 }
+
+
+.brand-filter-block{
+  margin-top:10px;
+}
+.filter-label{
+  margin-bottom:2px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+}
