@@ -701,3 +701,10 @@ V81:
 - Biểu đồ cao và dễ nhìn hơn.
 - Desktop lớn dùng tối đa ~1700px.
 - Tablet/mobile tự co thành 2 cột KPI rồi 1 cột nội dung.
+
+
+## V83 - Fix nháy trang đăng nhập/admin khi load
+- Ẩn toàn bộ nội dung quản trị ngay từ HTML trước khi JS kiểm tra session.
+- Chỉ hiện `Link thông số / Thống kê` sau khi xác thực admin thành công.
+- Nếu chưa đăng nhập chỉ hiện form đăng nhập.
+- Không còn cảnh form đăng nhập và khung Link thông số cùng xuất hiện khi reload.

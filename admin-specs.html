@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quản trị thông số | Siêu Di Động</title>
-  <!-- V82 dashboard full-width -->
+  <!-- V83 auth flash fix -->
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
   <style>
     :root{
@@ -302,9 +302,31 @@
       }
     }
 
+  
+    /* =========================================================
+       V83 - Không nháy giao diện admin khi vừa load trang
+       ========================================================= */
+    body.auth-pending #adminTabs,
+    body.auth-pending #adminCard,
+    body.auth-pending #analyticsCard,
+    body.auth-pending #logoutBtn{
+      display:none !important;
+    }
+
+    body.authenticated #loginCard{
+      display:none !important;
+    }
+
+    body:not(.authenticated):not(.auth-pending) #adminTabs,
+    body:not(.authenticated):not(.auth-pending) #adminCard,
+    body:not(.authenticated):not(.auth-pending) #analyticsCard,
+    body:not(.authenticated):not(.auth-pending) #logoutBtn{
+      display:none !important;
+    }
+
   </style>
 </head>
-<body>
+<body class="auth-pending">
 <header class="top">
   <div class="top-inner">
     <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span></div>
@@ -323,11 +345,11 @@
     </form>
   </section>
 
-  <div id="adminTabs" class="admin-tabs hidden">
+  <div id="adminTabs" class="admin-tabs hidden" style="display:none">
     <button class="admin-tab active" data-tab="specs" type="button">Link thông số</button>
     <button class="admin-tab" data-tab="analytics" type="button">Thống kê</button>
   </div>
-  <section id="adminCard" class="card panel active" data-panel="specs">
+  <section id="adminCard" class="card panel active" data-panel="specs" style="display:none">
     <div class="head">
       <div>
         <h1>Link thông số sản phẩm</h1>
@@ -339,7 +361,7 @@
     <div id="rows" class="rows"></div>
   </section>
 
-  <section id="analyticsCard" class="card panel" data-panel="analytics">
+  <section id="analyticsCard" class="card panel" data-panel="analytics" style="display:none">
     <div class="head">
       <div><h1>Thống kê truy cập</h1><p>Lượt xem, khách truy cập, sản phẩm được xem và lượt bấm Zalo.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
@@ -402,19 +424,28 @@ function baseModelName(name=""){
 }
 
 function setLoggedIn(value){
+  document.body.classList.remove("auth-pending");
+  document.body.classList.toggle("authenticated", value);
+
   loginCard.classList.toggle("hidden", value);
   adminTabs.classList.toggle("hidden", !value);
   logoutBtn.classList.toggle("hidden", !value);
 
   if(value){
+    adminTabs.style.display="flex";
+    logoutBtn.style.display="";
     adminCard.style.display="";
-    analyticsCard.style.display="";
+    analyticsCard.style.display="none";
+
     adminCard.classList.add("active");
     analyticsCard.classList.remove("active");
+
     adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.tab==="specs");
     });
   }else{
+    adminTabs.style.display="none";
+    logoutBtn.style.display="none";
     adminCard.style.display="none";
     analyticsCard.style.display="none";
   }
@@ -688,6 +719,19 @@ loadAdmin().catch(e=>{
   loginMessage.textContent=e.message;
   setLoggedIn(false);
 });
+
+setTimeout(()=>{
+  if(document.body.classList.contains("auth-pending")){
+    document.body.classList.remove("auth-pending");
+    document.body.classList.remove("authenticated");
+    loginCard.classList.remove("hidden");
+    adminTabs.style.display="none";
+    logoutBtn.style.display="none";
+    adminCard.style.display="none";
+    analyticsCard.style.display="none";
+  }
+},4000);
+
 </script>
 </body>
 </html>
