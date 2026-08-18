@@ -364,3 +364,11 @@ Nguyên nhân:
 - Tên model được chuẩn hóa bằng cách loại đúng thuộc tính của từng biến thể.
 - Hỗ trợ màu nhiều từ như Xanh Dương, Xanh Lá, Titan Xám, Đen Bạc...
 - Các biến thể cùng model sẽ gom lại thành một card và chỉ tách trong popup chi tiết.
+
+
+## V33 - Chi tiết load thẳng trong trang
+- Bấm sản phẩm không mở popup/cửa sổ nổi nữa.
+- Danh sách sản phẩm được ẩn và trang hiển thị trực tiếp khu vực chi tiết.
+- Có nút `← Quay lại danh sách`.
+- Giữ nguyên giao diện chi tiết đẹp của V31.
+- Màu sắc, dung lượng, giá và tồn kho vẫn đổi theo biến thể.

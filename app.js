@@ -8,9 +8,7 @@ const darkMode = document.getElementById("darkMode");
 const summary = document.getElementById("summary");
 const categoryFilters = document.getElementById("categoryFilters");
 
-const productModal = document.getElementById("productModal");
-const productModalContent = document.getElementById("productModalContent");
-const productModalClose = document.getElementById("productModalClose");
+const inlineProductDetail = document.getElementById("inlineProductDetail");
 
 
 let PRODUCTS = [];
@@ -488,7 +486,7 @@ function render(){
     body.append(title,price);
     card.append(media,body);
 
-    const open=()=>openProductModal(group,defaultVariant);
+    const open=()=>openInlineProductDetail(group,defaultVariant);
     card.addEventListener("click",open);
     card.addEventListener("keydown",e=>{
       if(e.key==="Enter" || e.key===" "){
@@ -517,20 +515,31 @@ function relatedProductGroups(currentGroup, limit=3){
     .slice(0,limit);
 }
 
-function openProductModal(group,initialVariant){
-  if(!productModal || !productModalContent) return;
+
+function openInlineProductDetail(group,initialVariant){
+  if(!inlineProductDetail) return;
 
   const variants=[...group.items];
   let selected=initialVariant || variants[0] || null;
   let selectedColor=selected?.color || "";
   let selectedMemory=selected?.memory || "";
 
-  productModalContent.innerHTML="";
+  inlineProductDetail.innerHTML="";
 
   const shell=document.createElement("div");
-  shell.className="detail-page";
+  shell.className="detail-page inline-detail-page";
 
-  // Breadcrumb
+  const topbar=document.createElement("div");
+  topbar.className="inline-detail-topbar";
+
+  const backBtn=document.createElement("button");
+  backBtn.type="button";
+  backBtn.className="inline-back-btn";
+  backBtn.textContent="← Quay lại danh sách";
+  backBtn.addEventListener("click",closeInlineProductDetail);
+
+  topbar.appendChild(backBtn);
+
   const breadcrumb=document.createElement("div");
   breadcrumb.className="detail-breadcrumb";
   const brand=group.items[0]?.brand || "Điện thoại";
@@ -547,7 +556,6 @@ function openProductModal(group,initialVariant){
 
   heading.append(title,statusTop);
 
-  // Main layout: image | info | related
   const main=document.createElement("div");
   main.className="detail-main";
 
@@ -558,11 +566,7 @@ function openProductModal(group,initialVariant){
   imageBox.className="detail-image-box";
   imageBox.innerHTML=imageHTML(group);
 
-  const imageCaption=document.createElement("div");
-  imageCaption.className="detail-image-caption";
-  imageCaption.textContent="Hình ảnh sản phẩm";
-
-  gallery.append(imageBox,imageCaption);
+  gallery.append(imageBox);
 
   const info=document.createElement("div");
   info.className="detail-info";
@@ -603,31 +607,10 @@ function openProductModal(group,initialVariant){
     <div class="detail-info-line"><span>Tình trạng</span><strong class="js-stock-text"></strong></div>
   `;
 
-  const actions=document.createElement("div");
-  actions.className="detail-actions";
-
-  const primary=document.createElement("button");
-  primary.type="button";
-  primary.className="detail-action-primary";
-  primary.textContent="LIÊN HỆ TƯ VẤN";
-
-  const secondary=document.createElement("button");
-  secondary.type="button";
-  secondary.className="detail-action-secondary";
-  secondary.textContent="XEM SẢN PHẨM KHÁC";
-
-  secondary.addEventListener("click",()=>{
-    closeProductModal();
-    window.scrollTo({top:0,behavior:"smooth"});
-    searchInput.focus();
-  });
-
-  actions.append(primary,secondary);
-
   info.append(price,chooseText);
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
-  info.append(infoBox,actions);
+  info.append(infoBox);
 
   const related=document.createElement("aside");
   related.className="detail-related";
@@ -673,10 +656,7 @@ function openProductModal(group,initialVariant){
 
       text.append(name,p);
       item.append(thumb,text);
-
-      item.addEventListener("click",()=>{
-        openProductModal(rg,rv);
-      });
+      item.addEventListener("click",()=>openInlineProductDetail(rg,rv));
 
       related.appendChild(item);
     });
@@ -684,7 +664,6 @@ function openProductModal(group,initialVariant){
 
   main.append(gallery,info,related);
 
-  // Lower section similar to the reference site's technical block
   const lower=document.createElement("div");
   lower.className="detail-lower";
 
@@ -725,8 +704,8 @@ function openProductModal(group,initialVariant){
 
   lower.append(specs,note);
 
-  shell.append(breadcrumb,heading,main,lower);
-  productModalContent.appendChild(shell);
+  shell.append(topbar,breadcrumb,heading,main,lower);
+  inlineProductDetail.appendChild(shell);
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
@@ -782,7 +761,6 @@ function openProductModal(group,initialVariant){
       selectedMemory=selected.memory || selectedMemory;
 
       price.textContent=money(selected.price);
-
       const inStock=Number(selected.onHand||0)>0;
       const stockLabel=inStock ? "✓ Còn hàng" : "Hết hàng";
 
@@ -790,10 +768,6 @@ function openProductModal(group,initialVariant){
       statusTop.classList.toggle("out",!inStock);
       stockText.textContent=inStock ? "Còn hàng" : "Hết hàng";
       stockText.classList.toggle("out",!inStock);
-    }else{
-      price.textContent="Liên hệ";
-      statusTop.textContent="";
-      stockText.textContent="";
     }
 
     colorButtons.forEach((btn,color)=>{
@@ -860,34 +834,22 @@ function openProductModal(group,initialVariant){
     memoryOptions.appendChild(btn);
   });
 
-  productModal.classList.add("open");
-  productModal.setAttribute("aria-hidden","false");
-  document.body.classList.add("modal-open");
+  productGrid.hidden=true;
+  inlineProductDetail.hidden=false;
 
+  inlineProductDetail.scrollIntoView({behavior:"smooth",block:"start"});
   updateUI();
 }
-function closeProductModal(){
-  if(!productModal) return;
-  productModal.classList.remove("open");
-  productModal.setAttribute("aria-hidden","true");
-  document.body.classList.remove("modal-open");
-}
 
-if(productModalClose){
-  productModalClose.addEventListener("click",closeProductModal);
-}
+function closeInlineProductDetail(){
+  if(!inlineProductDetail) return;
 
-if(productModal){
-  productModal.addEventListener("click",e=>{
-    if(e.target.classList.contains("product-modal-backdrop")){
-      closeProductModal();
-    }
-  });
-}
+  inlineProductDetail.hidden=true;
+  inlineProductDetail.innerHTML="";
+  productGrid.hidden=false;
 
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape") closeProductModal();
-});
+  productGrid.scrollIntoView({behavior:"smooth",block:"start"});
+}
 
 async function load(){
   try{
