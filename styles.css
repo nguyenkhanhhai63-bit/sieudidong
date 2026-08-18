@@ -1984,3 +1984,37 @@ body.modal-open{
     padding:14px 10px 18px;
   }
 }
+
+
+/* ===== V34: Detail opens as the page itself ===== */
+body.detail-view-active #productGrid{
+  display:none !important;
+}
+
+/* Hide catalog/search/filter blocks while viewing a product.
+   These selectors cover the current page structure without affecting the detail content. */
+body.detail-view-active .catalog-toolbar,
+body.detail-view-active .catalog-header,
+body.detail-view-active .search-area,
+body.detail-view-active .filters,
+body.detail-view-active .category-tabs,
+body.detail-view-active .result-summary{
+  display:none !important;
+}
+
+body.detail-view-active #inlineProductDetail{
+  display:block !important;
+  margin-top:0;
+  border-left:0;
+  border-right:0;
+  border-radius:0;
+}
+
+body.detail-view-active .inline-detail-page{
+  max-width:1180px;
+  margin:0 auto;
+}
+
+html{
+  scroll-behavior:auto;
+}

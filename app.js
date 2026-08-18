@@ -837,7 +837,11 @@ function openInlineProductDetail(group,initialVariant){
   productGrid.hidden=true;
   inlineProductDetail.hidden=false;
 
-  inlineProductDetail.scrollIntoView({behavior:"smooth",block:"start"});
+  document.body.classList.add("detail-view-active");
+  window.scrollTo({top:0,left:0,behavior:"auto"});
+  if(!history.state || history.state.view!=="detail"){
+    history.pushState({view:"detail"},"",location.href);
+  }
   updateUI();
 }
 
@@ -848,8 +852,20 @@ function closeInlineProductDetail(){
   inlineProductDetail.innerHTML="";
   productGrid.hidden=false;
 
-  productGrid.scrollIntoView({behavior:"smooth",block:"start"});
+  document.body.classList.remove("detail-view-active");
+  window.scrollTo({top:0,left:0,behavior:"auto"});
 }
+
+
+window.addEventListener("popstate",()=>{
+  if(inlineProductDetail && !inlineProductDetail.hidden){
+    inlineProductDetail.hidden=true;
+    inlineProductDetail.innerHTML="";
+    productGrid.hidden=false;
+    document.body.classList.remove("detail-view-active");
+    window.scrollTo({top:0,left:0,behavior:"auto"});
+  }
+});
 
 async function load(){
   try{

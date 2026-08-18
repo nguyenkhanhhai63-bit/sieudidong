@@ -372,3 +372,11 @@ Nguyên nhân:
 - Có nút `← Quay lại danh sách`.
 - Giữ nguyên giao diện chi tiết đẹp của V31.
 - Màu sắc, dung lượng, giá và tồn kho vẫn đổi theo biến thể.
+
+
+## V34 - Mở chi tiết như một trang riêng
+- Bấm sản phẩm: chuyển ngay lên đầu trang chi tiết, không kéo xuống khu vực phía dưới.
+- Chi tiết sản phẩm trở thành nội dung chính của trang.
+- Không dùng popup.
+- Nút quay lại đưa về danh sách.
+- Nút Back của trình duyệt cũng quay về danh sách.
