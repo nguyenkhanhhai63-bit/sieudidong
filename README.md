@@ -892,3 +892,14 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Trong lúc chờ có trạng thái tiến trình rõ ràng.
 - Nếu Gemini trả 429 hoặc lỗi API, giao diện báo nguyên nhân rõ hơn.
 - Nếu Vercel đã có `GEMINI_COMPARE_MODEL`, hãy đổi thành `gemini-3.7-flash` hoặc xóa biến đó để dùng mặc định mới.
+
+## V112 - Gemini tự fallback khi model quá tải
+- Mặc định dùng `gemini-2.5-flash`.
+- Nếu model chính lỗi 429/503/high demand, backend tự thử lần lượt model dự phòng.
+- Model dự phòng mặc định: `gemini-2.5-flash,gemini-2.0-flash` (không gọi trùng model).
+- Có thể cấu hình:
+  - `GEMINI_COMPARE_MODEL`
+  - `GEMINI_FALLBACK_MODELS` dạng danh sách phân tách bằng dấu phẩy.
+- Frontend tự retry thêm 1 lần khi backend báo AI đang bận.
+- Không hiển thị nguyên thông báo lỗi tiếng Anh của Google cho khách.
+- Thông báo khách chỉ còn dạng tiếng Việt ngắn gọn.

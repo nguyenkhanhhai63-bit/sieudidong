@@ -51,6 +51,54 @@ function extractResponseText(data){
   return parts.join("\n").trim();
 }
 
+
+function isRetriableGeminiError(status,data){
+  const message=String(data?.error?.message||"").toLowerCase();
+  return status===429 || status===503 || status===500 ||
+    message.includes("high demand") ||
+    message.includes("resource exhausted") ||
+    message.includes("temporarily") ||
+    message.includes("overloaded") ||
+    message.includes("unavailable");
+}
+
+async function callGeminiModel(model,apiKey,input,systemInstruction){
+  const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),22000);
+
+  try{
+    const r=await fetch(endpoint,{
+      method:"POST",
+      signal:controller.signal,
+      headers:{
+        "Content-Type":"application/json",
+        "x-goog-api-key":apiKey
+      },
+      body:JSON.stringify({
+        system_instruction:{
+          parts:[{text:systemInstruction}]
+        },
+        contents:[{
+          role:"user",
+          parts:[{text:input}]
+        }],
+        generationConfig:{
+          maxOutputTokens:1600,
+          thinkingConfig:{
+            thinkingLevel:"low"
+          }
+        }
+      })
+    });
+
+    const data=await r.json().catch(()=>({}));
+    return {r,data,model};
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
 export default async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
 
@@ -83,7 +131,11 @@ export default async function handler(req,res){
   }
 
   const need=clean(req.body?.need,100) || "Cân bằng";
-  const model=process.env.GEMINI_COMPARE_MODEL || "gemini-3.7-flash";
+  const configuredModel=String(process.env.GEMINI_COMPARE_MODEL||"").trim();
+  const fallbackModels=String(process.env.GEMINI_FALLBACK_MODELS||"gemini-2.5-flash,gemini-2.0-flash")
+    .split(",").map(x=>x.trim()).filter(Boolean);
+  const modelCandidates=[configuredModel||"gemini-2.5-flash",...fallbackModels]
+    .filter((x,i,a)=>x && a.indexOf(x)===i);
 
   const productText=products.map((p,i)=>{
     const specText=p.specs.map(s=>`- ${s.label}: ${s.value}`).join("\n");
@@ -117,59 +169,67 @@ Hãy phân tích đủ 4 phần bắt buộc. Ưu tiên kết luận rõ máy n�
       "Viết tiếng Việt tự nhiên, rõ ràng, khoảng 250-450 từ."
     ].join(" ");
 
-    const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),30000);
+    let finalData=null;
+    let finalModel="";
+    let lastStatus=0;
+    let lastMessage="";
 
-    let r;
-    try{
-      r=await fetch(endpoint,{
-        method:"POST",
-        signal:controller.signal,
-        headers:{
-          "Content-Type":"application/json",
-          "x-goog-api-key":apiKey
-        },
-        body:JSON.stringify({
-          system_instruction:{
-            parts:[{text:systemInstruction}]
-          },
-          contents:[{
-            role:"user",
-            parts:[{text:input}]
-          }],
-          generationConfig:{
-            maxOutputTokens:1600,
-            thinkingConfig:{
-              thinkingLevel:"low"
-            }
-          }
-        })
+    for(let i=0;i<modelCandidates.length;i++){
+      const candidate=modelCandidates[i];
+
+      let result;
+      try{
+        result=await callGeminiModel(candidate,apiKey,input,systemInstruction);
+      }catch(err){
+        lastMessage=err?.name==="AbortError"
+          ? "Gemini phản hồi quá lâu"
+          : (err?.message||"Không kết nối được Gemini");
+
+        // Timeout/network: thử model dự phòng tiếp theo.
+        if(i<modelCandidates.length-1) continue;
+        return res.status(502).json({
+          error:"AI đang bận. Vui lòng thử lại sau ít phút."
+        });
+      }
+
+      const {r,data}=result;
+      lastStatus=r.status;
+      lastMessage=String(data?.error?.message||"");
+
+      if(r.ok){
+        finalData=data;
+        finalModel=candidate;
+        break;
+      }
+
+      console.error("Gemini compare error:",candidate,r.status,data);
+
+      if(isRetriableGeminiError(r.status,data) && i<modelCandidates.length-1){
+        continue;
+      }
+
+      return res.status(r.status===429 ? 429 : 502).json({
+        error:r.status===429
+          ? "AI đang bận do lượng truy cập cao. Vui lòng thử lại sau ít phút."
+          : "AI tạm thời chưa thể phân tích. Vui lòng thử lại."
       });
-    }finally{
-      clearTimeout(timer);
     }
 
-    const data=await r.json().catch(()=>({}));
-
-    if(!r.ok){
-      console.error("Gemini compare error:",r.status,data);
-      const googleMessage=String(data?.error?.message||"").slice(0,180);
+    if(!finalData){
       return res.status(502).json({
-        error: r.status===429
-          ? "Gemini đang giới hạn lượt dùng. Vui lòng thử lại sau ít phút."
-          : (googleMessage ? `Gemini lỗi: ${googleMessage}` : "Gemini đang bận. Vui lòng thử lại.")
+        error:"AI đang bận. Vui lòng thử lại sau ít phút."
       });
     }
 
+    const data=finalData;
     const text=extractResponseText(data);
     if(!text){
       return res.status(502).json({error:"AI chưa trả về nội dung phân tích."});
     }
 
-    return res.status(200).json({ok:true,text,model});
+    return res.status(200).json({ok:true,text,model:finalModel});
   }catch(err){
     console.error("AI compare:",err);
-    return res.status(502).json({error:err?.name==="AbortError" ? "Gemini mất hơn 30 giây để phản hồi. Vui lòng thử lại." : "Không kết nối được Gemini. Vui lòng thử lại."});
+    return res.status(502).json({error:"AI tạm thời chưa thể phản hồi. Vui lòng thử lại sau ít phút."});
   }
 }

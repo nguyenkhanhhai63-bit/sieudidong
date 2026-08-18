@@ -1040,6 +1040,7 @@ function aiComparePayload(groups,specs){
 
 async function runAiCompare(groups,specs,need,button,result){
   button.disabled=true;
+  delete button.dataset.retried;
   const old=button.textContent;
   button.textContent="Gemini đang phân tích...";
   result.classList.add("loading");
@@ -1075,7 +1076,37 @@ async function runAiCompare(groups,specs,need,button,result){
     }
 
     const data=await r.json().catch(()=>({}));
-    if(!r.ok) throw new Error(data.error||"Không phân tích được.");
+    if(!r.ok){
+      const message=data.error||"AI đang bận.";
+      if((r.status===429 || r.status===502) && !button.dataset.retried){
+        button.dataset.retried="1";
+        const el=waitNode();
+        if(el) el.textContent="AI đang bận, hệ thống tự thử lại một lần...";
+        await new Promise(resolve=>setTimeout(resolve,1200));
+
+        const retryController=new AbortController();
+        const retryTimer=setTimeout(()=>retryController.abort(),35000);
+        try{
+          const rr=await fetch("/api/compare-ai",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            signal:retryController.signal,
+            body:JSON.stringify({
+              need,
+              products:aiComparePayload(groups,specs)
+            })
+          });
+          const rd=await rr.json().catch(()=>({}));
+          if(!rr.ok) throw new Error(rd.error||message);
+          result.classList.remove("loading");
+          renderAiCompareText(result,rd.text);
+          return;
+        }finally{
+          clearTimeout(retryTimer);
+        }
+      }
+      throw new Error(message);
+    }
 
     result.classList.remove("loading");
     renderAiCompareText(result,data.text);
@@ -1084,7 +1115,7 @@ async function runAiCompare(groups,specs,need,button,result){
     result.innerHTML="";
     const error=document.createElement("div");
     error.className="compare-ai-error";
-    error.textContent=err?.name==="AbortError" ? "Gemini mất hơn 35 giây để phản hồi. Hãy thử lại hoặc chọn nhu cầu khác." : (err?.message||"Gemini đang tạm thời không sử dụng được.");
+    error.textContent=err?.name==="AbortError" ? "AI phản hồi hơi lâu. Vui lòng thử lại." : (err?.message||"AI đang bận. Vui lòng thử lại sau ít phút.");
     result.appendChild(error);
   }finally{
     clearTimeout(statusTimer1);
