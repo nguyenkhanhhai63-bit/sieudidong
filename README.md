@@ -255,3 +255,12 @@ Khi bỏ tick:
 - Sản phẩm hết hàng vẫn xuất hiện và ghi `Hết hàng`.
 - Các màu và dung lượng của sản phẩm hết hàng vẫn được giữ để khách xem.
 - Sản phẩm đã ngừng kinh doanh vẫn được loại theo dữ liệu API.
+
+
+## V21 - Mục Bán chạy mặc định
+- Thêm mục `Bán chạy` và tự chọn mặc định khi khách mở website.
+- Bán chạy được tính tự động từ số lượng bán trong hóa đơn 30 ngày gần nhất.
+- Backend gọi API hóa đơn, cộng số lượng theo `productId`, chọn Top 20 biến thể bán nhiều nhất.
+- Sản phẩm bán chạy có badge `BÁN CHẠY`.
+- Khách vẫn có thể chuyển sang Tất cả hoặc các hãng điện thoại.
+- Không hiển thị thông tin nguồn/API trên giao diện.

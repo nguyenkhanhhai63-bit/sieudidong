@@ -155,7 +155,63 @@ function normalizeAttributes(obj) {
   })).filter(a => a.name || a.value);
 }
 
-function normalizeProduct(item, categoryMap) {
+
+async function getBestSellerScores(days = 30) {
+  const scores = new Map();
+
+  const now = new Date();
+  const from = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
+  const fromDate = encodeURIComponent(from.toISOString());
+  const toDate = encodeURIComponent(now.toISOString());
+
+  const pageSize = 100;
+  let currentItem = 0;
+
+  // Giới hạn 2.000 hóa đơn gần nhất để tránh API quá nặng.
+  for (let page = 0; page < 20; page++) {
+    const data = await kvFetch(
+      `/invoices?pageSize=${pageSize}` +
+      `&currentItem=${currentItem}` +
+      `&fromPurchaseDate=${fromDate}` +
+      `&toPurchaseDate=${toDate}` +
+      `&orderBy=purchaseDate&orderDirection=Desc`
+    );
+
+    const invoices = Array.isArray(data.data) ? data.data : [];
+    if (!invoices.length) break;
+
+    invoices.forEach(invoice => {
+      const details = Array.isArray(invoice.invoiceDetails)
+        ? invoice.invoiceDetails
+        : [];
+
+      details.forEach(d => {
+        const productId = Number(d.productId || 0);
+        const quantity = Number(d.quantity || 0);
+
+        if (!productId || quantity <= 0) return;
+
+        scores.set(productId, (scores.get(productId) || 0) + quantity);
+      });
+    });
+
+    if (invoices.length < pageSize) break;
+    currentItem += pageSize;
+  }
+
+  return scores;
+}
+
+function bestSellerCutoff(scores, limit = 20) {
+  const ranked = [...scores.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+
+  return new Set(ranked.map(([productId]) => Number(productId)));
+}
+
+function normalizeProduct(item, categoryMap, bestSellerIds, bestSellerScores) {
   const cat = categoryPath(item.categoryId, categoryMap);
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
   const branches = inventories.map(i => ({
@@ -183,7 +239,9 @@ function normalizeProduct(item, categoryMap) {
           image: firstImage(child) || parentImage,
           attributes: normalizeAttributes(child).length
             ? normalizeAttributes(child)
-            : normalizeAttributes(item)
+            : normalizeAttributes(item),
+          bestSeller: bestSellerIds.has(Number(child.id)),
+          sold30d: Number(bestSellerScores.get(Number(child.id)) || 0)
         };
       })
     : [{
@@ -193,7 +251,9 @@ function normalizeProduct(item, categoryMap) {
         price: Number(item.basePrice || 0),
         onHand: totalOnHand,
         image: parentImage,
-        attributes: normalizeAttributes(item)
+        attributes: normalizeAttributes(item),
+        bestSeller: bestSellerIds.has(Number(item.id)),
+        sold30d: Number(bestSellerScores.get(Number(item.id)) || 0)
       }];
 
   return {
@@ -206,6 +266,8 @@ function normalizeProduct(item, categoryMap) {
     basePrice: Number(item.basePrice || 0),
     image: parentImage,
     attributes: normalizeAttributes(item),
+    bestSeller: bestSellerIds.has(Number(item.id)),
+    sold30d: Number(bestSellerScores.get(Number(item.id)) || 0),
     variants
   };
 }
@@ -241,13 +303,23 @@ export default async function handler(req, res) {
       currentItem += pageSize;
     }
 
-    const categories = await getCategories();
+    const [categories, bestSellerScores] = await Promise.all([
+      getCategories(),
+      getBestSellerScores(30)
+    ]);
+
     const categoryMap = buildCategoryMap(categories);
+    const bestSellerIds = bestSellerCutoff(bestSellerScores, 20);
 
     const products = all
       .filter(p => !p.isDeleted)
       .filter(p => p.isActive !== false)
-      .map(p => normalizeProduct(p, categoryMap));
+      .map(p => normalizeProduct(
+        p,
+        categoryMap,
+        bestSellerIds,
+        bestSellerScores
+      ));
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
 

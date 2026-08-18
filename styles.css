@@ -1130,3 +1130,28 @@ label[for="onlyStock"]{
   background:#9ca3af;
   cursor:pointer;
 }
+
+
+/* ===== V21 - Sản phẩm bán chạy ===== */
+.best-seller-filter{
+  color:#e54b00 !important;
+  font-weight:700 !important;
+}
+
+.best-seller-filter.active{
+  color:#e54b00 !important;
+}
+
+.best-seller-badge{
+  align-self:flex-start;
+  display:inline-flex;
+  align-items:center;
+  margin-bottom:5px;
+  padding:3px 7px;
+  border-radius:4px;
+  background:#ff5a00;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  line-height:1.2;
+}

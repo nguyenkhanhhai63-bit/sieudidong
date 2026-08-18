@@ -9,7 +9,7 @@ const summary = document.getElementById("summary");
 const categoryFilters = document.getElementById("categoryFilters");
 
 let PRODUCTS = [];
-let ACTIVE_CATEGORY = "Tất cả";
+let ACTIVE_CATEGORY = "Bán chạy";
 
 function money(v){
   return new Intl.NumberFormat("vi-VN").format(Number(v || 0)) + " đ";
@@ -141,7 +141,9 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:detectBrand(fullName)
+        brand:detectBrand(fullName),
+        bestSeller:Boolean(v.bestSeller || p.bestSeller),
+        sold30d:Number(v.sold30d || p.sold30d || 0)
       });
     });
   });
@@ -209,68 +211,48 @@ function variantLabel(v){
 }
 
 function renderCategoryFilters(){
+  const flat = flattenProducts(PRODUCTS);
+
   const brands = [...new Set(
-    flattenProducts(PRODUCTS)
-      .map(p => p.brand)
-      .filter(Boolean)
+    flat.map(p => p.brand).filter(Boolean)
   )]
   .filter(b => b !== "Khác")
   .sort((a,b)=>a.localeCompare(b,"vi"));
 
-  const hasOther = flattenProducts(PRODUCTS).some(p => p.brand === "Khác");
+  const hasOther = flat.some(p => p.brand === "Khác");
   if(hasOther) brands.push("Khác");
 
-  const all = ["Tất cả", ...brands];
+  const hasBestSeller = flat.some(p => p.bestSeller);
+  const all = [
+    ...(hasBestSeller ? ["Bán chạy"] : []),
+    "Tất cả",
+    ...brands
+  ];
 
-  if(ACTIVE_CATEGORY !== "Tất cả" && !brands.includes(ACTIVE_CATEGORY)){
-    ACTIVE_CATEGORY = "Tất cả";
+  if(!all.includes(ACTIVE_CATEGORY)){
+    ACTIVE_CATEGORY = hasBestSeller ? "Bán chạy" : "Tất cả";
   }
 
   categoryFilters.innerHTML = "";
 
-  all.forEach(brand=>{
+  all.forEach(filter=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="category-btn" + (brand===ACTIVE_CATEGORY ? " active" : "");
-    btn.textContent=brand;
+    btn.className="category-btn" + (filter===ACTIVE_CATEGORY ? " active" : "");
+    btn.textContent=filter;
+
+    if(filter==="Bán chạy"){
+      btn.classList.add("best-seller-filter");
+    }
 
     btn.addEventListener("click",()=>{
-      ACTIVE_CATEGORY=brand;
+      ACTIVE_CATEGORY=filter;
       renderCategoryFilters();
       render();
     });
 
     categoryFilters.appendChild(btn);
   });
-}
-
-
-function colorHex(name){
-  const s=String(name||"").trim().toLowerCase();
-
-  const map=[
-    [["đen","black"], "#202124"],
-    [["trắng","white"], "#f5f5f5"],
-    [["xanh dương","blue","xanh biển"], "#6f8fe8"],
-    [["xanh lá","green"], "#75b84f"],
-    [["xanh"], "#70a7d9"],
-    [["đỏ","red"], "#d84a4a"],
-    [["hồng","pink"], "#e8a7bb"],
-    [["tím","purple"], "#9a79d6"],
-    [["bạc","silver"], "#c9ced4"],
-    [["titan","titanium"], "#8a8a86"],
-    [["xám","gray","grey"], "#8a8f98"],
-    [["cam","orange"], "#e58a4a"],
-    [["vàng","gold","yellow"], "#d8b15c"],
-    [["nâu","brown"], "#8b6a55"],
-    [["be","cream"], "#d8c8ae"]
-  ];
-
-  for(const [keys,hex] of map){
-    if(keys.some(k=>s.includes(k))) return hex;
-  }
-
-  return "#d9dde3";
 }
 
 function render(){
@@ -283,7 +265,10 @@ function render(){
   // - sản phẩm hết toàn bộ: vẫn giữ card và báo "Hết hàng"
   
 
-  if(ACTIVE_CATEGORY!=="Tất cả"){
+  if(ACTIVE_CATEGORY==="Bán chạy"){
+    items=items.filter(x=>x.bestSeller);
+    items.sort((a,b)=>Number(b.sold30d||0)-Number(a.sold30d||0));
+  }else if(ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
 
@@ -343,6 +328,14 @@ function render(){
     const title=document.createElement("div");
     title.className="shop-title";
     title.textContent=group.name;
+
+    const groupBestSeller=group.items.some(v=>v.bestSeller);
+    if(groupBestSeller){
+      const badge=document.createElement("span");
+      badge.className="best-seller-badge";
+      badge.textContent="BÁN CHẠY";
+      body.appendChild(badge);
+    }
 
     const attributeArea=document.createElement("div");
     attributeArea.className="shop-attributes";
