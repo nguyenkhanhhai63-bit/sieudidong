@@ -6527,3 +6527,27 @@ textarea{
     display:none !important;
   }
 }
+
+
+/* V87 - Hạ nút Zalo xuống gần góc dưới hơn */
+#zaloFloat,
+.zalo-float,
+.zalo-float-btn,
+.zalo-floating,
+.zalo-chat,
+.floating-zalo,
+a[href*="zalo.me"]{
+  bottom:18px !important;
+}
+
+@media(max-width:720px){
+  #zaloFloat,
+  .zalo-float,
+  .zalo-float-btn,
+  .zalo-floating,
+  .zalo-chat,
+  .floating-zalo,
+  a[href*="zalo.me"]{
+    bottom:14px !important;
+  }
+}
