@@ -454,3 +454,12 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Sản phẩm tương tự chuyển sang layout dọc rõ ràng, không còn chữ bị bó hẹp.
 - Thông tin phiên bản, lưu ý và thông số kỹ thuật xếp dọc.
 - Danh sách ngoài giữ 2 cột nhưng giảm kích thước ảnh/text hợp lý.
+
+
+## V42 - Xây lại phần đầu trang
+- Gom tiêu đề, tìm kiếm, bộ lọc hãng và số lượng vào một card điều khiển riêng.
+- Search lớn, rõ và hiện đại hơn.
+- Bộ lọc hãng chuyển sang dạng pill/chip.
+- Tab active dùng màu cam thương hiệu.
+- Bán chạy tách nhẹ bằng tông vàng/cam.
+- Mobile cho phép kéo ngang danh sách hãng, không vỡ layout.
