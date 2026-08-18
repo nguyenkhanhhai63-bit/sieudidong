@@ -1025,7 +1025,52 @@ function stopCompareSpeech(){
   }
 }
 
-function speakCompareAdvice(text,button){
+function getVietnameseSpeechVoice(){
+  if(!("speechSynthesis" in window)) return null;
+
+  const voices=speechSynthesis.getVoices?.()||[];
+
+  // Chỉ chấp nhận voice tiếng Việt. Tuyệt đối không fallback sang voice mặc định.
+  const exact=voices.find(v=>String(v.lang||"").toLowerCase()==="vi-vn");
+  if(exact) return exact;
+
+  const byLang=voices.find(v=>/^vi(?:-|_)/i.test(String(v.lang||"")));
+  if(byLang) return byLang;
+
+  const byName=voices.find(v=>/vietnamese|tiếng việt|tieng viet/i.test(String(v.name||"")));
+  return byName||null;
+}
+
+async function waitForVietnameseSpeechVoice(timeoutMs=2000){
+  const voice=getVietnameseSpeechVoice();
+  if(voice) return voice;
+
+  return new Promise(resolve=>{
+    let finished=false;
+
+    const finish=(value)=>{
+      if(finished) return;
+      finished=true;
+      clearTimeout(timer);
+      try{ speechSynthesis.removeEventListener("voiceschanged",onVoicesChanged); }catch(_){}
+      resolve(value||null);
+    };
+
+    const onVoicesChanged=()=>{
+      const found=getVietnameseSpeechVoice();
+      if(found) finish(found);
+    };
+
+    try{
+      speechSynthesis.addEventListener("voiceschanged",onVoicesChanged);
+      speechSynthesis.getVoices?.();
+    }catch(_){}
+
+    const timer=setTimeout(()=>finish(getVietnameseSpeechVoice()),timeoutMs);
+  });
+}
+
+async function speakCompareAdvice(text,button){
   if(!("speechSynthesis" in window)){
     showCompareNotice("Trình duyệt này chưa hỗ trợ đọc văn bản.");
     return;
@@ -1037,7 +1082,6 @@ function speakCompareAdvice(text,button){
     return;
   }
 
-  // Nếu đang đọc cùng nội dung => dừng.
   if(speechSynthesis.speaking && compareSpeechText===normalized){
     stopCompareSpeech();
     return;
@@ -1045,32 +1089,49 @@ function speakCompareAdvice(text,button){
 
   stopCompareSpeech();
 
+  const originalText=button.textContent;
+  button.disabled=true;
+  button.textContent="Đang tìm giọng Việt...";
+
+  const viVoice=await waitForVietnameseSpeechVoice();
+
+  button.disabled=false;
+  button.textContent=originalText;
+
+  if(!viVoice){
+    showCompareNotice("Thiết bị chưa có giọng đọc tiếng Việt.");
+    return;
+  }
+
   compareSpeechText=normalized;
   compareSpeechButton=button;
 
   const utter=new SpeechSynthesisUtterance(normalized);
   utter.lang="vi-VN";
+  utter.voice=viVoice;
   utter.rate=1.02;
   utter.pitch=1;
   utter.volume=1;
-
-  const voices=speechSynthesis.getVoices?.()||[];
-  const viVoice=voices.find(v=>/^vi(-|_)/i.test(v.lang)) || voices.find(v=>/Vietnam/i.test(v.name));
-  if(viVoice) utter.voice=viVoice;
 
   utter.onstart=()=>{
     button.classList.add("speaking");
     button.textContent="⏹ Dừng đọc";
   };
+
   utter.onend=stopCompareSpeech;
-  utter.onerror=stopCompareSpeech;
+
+  utter.onerror=()=>{
+    stopCompareSpeech();
+    showCompareNotice("Không phát được giọng đọc tiếng Việt trên thiết bị này.");
+  };
 
   compareSpeechUtterance=utter;
+
   try{
     speechSynthesis.speak(utter);
   }catch(_){
     stopCompareSpeech();
-    showCompareNotice("Không phát được giọng đọc trên thiết bị này.");
+    showCompareNotice("Không phát được giọng đọc tiếng Việt trên thiết bị này.");
   }
 }
 

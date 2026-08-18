@@ -934,3 +934,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Sau khi Gemini phân tích xong: nút tự sáng và bấm để phát lời tư vấn.
 - Đang đọc: nút đổi thành `⏹ Dừng đọc`.
 - Mobile: dropdown nhu cầu nằm một hàng; hai nút `Gemini phân tích` và `Nghe tư vấn` nằm cạnh nhau bên dưới.
+
+## V118 - Chỉ phát giọng tiếng Việt
+- Chỉ sử dụng voice `vi-VN`, `vi-*` hoặc voice có tên Vietnamese/Tiếng Việt.
+- Không còn fallback sang voice mặc định của hệ điều hành/trình duyệt.
+- Chờ tối đa 2 giây cho danh sách voice tải xong.
+- Nếu thiết bị không có giọng Việt, báo `Thiết bị chưa có giọng đọc tiếng Việt` và không phát sai ngôn ngữ.

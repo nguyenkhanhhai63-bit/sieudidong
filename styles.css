@@ -7461,3 +7461,9 @@ body.modal-open #zaloConsultBtn{
     font-size:11px;
   }
 }
+
+
+/* V118 - thông báo giọng đọc tiếng Việt */
+.compare-ai-voice-btn:disabled{
+  cursor:wait;
+}
