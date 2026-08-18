@@ -219,3 +219,12 @@ Khi bỏ tick:
 - Bấm "XEM PHIÊN BẢN" để mở nhanh màu/dung lượng và đổi giá.
 - Menu hãng dạng ngang.
 - Responsive 4 / 3 / 2 cột tùy màn hình.
+
+
+## V16 - Hiển thị đầy đủ màu và dung lượng
+- Không còn chỉ hiển thị thuộc tính của biến thể mặc định.
+- Card hiển thị tất cả màu còn hàng của sản phẩm.
+- Card hiển thị tất cả dung lượng còn hàng của sản phẩm.
+- Bấm màu hoặc dung lượng sẽ đổi giá theo đúng tổ hợp.
+- Tổ hợp không tồn tại hoặc hết hàng sẽ tự ẩn.
+- Nút "XEM PHIÊN BẢN" vẫn cho xem danh sách tất cả biến thể còn hàng.

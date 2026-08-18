@@ -960,3 +960,64 @@ body.dark{
     font-size:10px;
   }
 }
+
+
+/* ===== V16 - Hiển thị đầy đủ thuộc tính còn hàng ===== */
+.shop-attributes{
+  margin-top:7px;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.shop-attr-row{
+  display:grid;
+  grid-template-columns:62px minmax(0,1fr);
+  gap:6px;
+  align-items:start;
+}
+
+.shop-attr-label{
+  padding-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.shop-attr-options{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+}
+
+.shop-attr-btn{
+  min-height:25px;
+  padding:3px 7px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--card);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  cursor:pointer;
+}
+
+.shop-attr-btn.active{
+  border-color:var(--shop-orange);
+  color:var(--shop-orange-dark);
+  box-shadow:0 0 0 1px var(--shop-orange) inset;
+}
+
+.shop-attr-btn.disabled{
+  display:none;
+}
+
+@media(max-width:720px){
+  .shop-attr-row{
+    grid-template-columns:1fr;
+    gap:3px;
+  }
+
+  .shop-attr-label{
+    padding-top:0;
+  }
+}

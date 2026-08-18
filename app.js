@@ -286,17 +286,21 @@ function render(){
   }
 
   visibleGroups.forEach(group=>{
-    const selectableVariants=onlyStock.checked
+    const variants=onlyStock.checked
       ? group.items.filter(v=>Number(v.onHand||0)>0)
       : [...group.items];
 
-    const sorted=[...selectableVariants].sort((a,b)=>{
+    if(!variants.length) return;
+
+    const sorted=[...variants].sort((a,b)=>{
       const stockDiff=(b.onHand>0)-(a.onHand>0);
       if(stockDiff!==0) return stockDiff;
       return Number(a.price||0)-Number(b.price||0);
     });
 
-    const defaultVariant=sorted[0]||null;
+    let selected=sorted[0];
+    let selectedColor=selected?.color || "";
+    let selectedMemory=selected?.memory || "";
 
     const card=document.createElement("article");
     card.className="shop-card";
@@ -312,83 +316,222 @@ function render(){
     title.className="shop-title";
     title.textContent=group.name;
 
-    const specs=document.createElement("div");
-    specs.className="shop-specs";
+    const attributeArea=document.createElement("div");
+    attributeArea.className="shop-attributes";
 
-    const chips=[];
-    if(defaultVariant?.memory) chips.push(defaultVariant.memory);
-    if(defaultVariant?.color) chips.push(defaultVariant.color);
+    const colorRow=document.createElement("div");
+    colorRow.className="shop-attr-row";
 
-    chips.forEach(x=>{
-      const chip=document.createElement("span");
-      chip.className="shop-chip";
-      chip.textContent=x;
-      specs.appendChild(chip);
-    });
+    const colorLabel=document.createElement("div");
+    colorLabel.className="shop-attr-label";
+    colorLabel.textContent="Màu";
+
+    const colorOptions=document.createElement("div");
+    colorOptions.className="shop-attr-options";
+
+    const memoryRow=document.createElement("div");
+    memoryRow.className="shop-attr-row";
+
+    const memoryLabel=document.createElement("div");
+    memoryLabel.className="shop-attr-label";
+    memoryLabel.textContent="Dung lượng";
+
+    const memoryOptions=document.createElement("div");
+    memoryOptions.className="shop-attr-options";
+
+    const uniqueColors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
+    const uniqueMemories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
+
+    const colorButtons=new Map();
+    const memoryButtons=new Map();
+
+    function pickVariant(){
+      let matches=variants.filter(v=>{
+        const colorOk=!selectedColor || v.color===selectedColor;
+        const memoryOk=!selectedMemory || v.memory===selectedMemory;
+        return colorOk && memoryOk;
+      });
+
+      if(!matches.length && selectedColor){
+        matches=variants.filter(v=>v.color===selectedColor);
+      }
+
+      if(!matches.length && selectedMemory){
+        matches=variants.filter(v=>v.memory===selectedMemory);
+      }
+
+      if(!matches.length){
+        matches=[...variants];
+      }
+
+      matches.sort((a,b)=>{
+        const stockDiff=(b.onHand>0)-(a.onHand>0);
+        if(stockDiff!==0) return stockDiff;
+        return Number(a.price||0)-Number(b.price||0);
+      });
+
+      return matches[0] || null;
+    }
 
     const price=document.createElement("div");
     price.className="shop-price";
-    price.textContent=defaultVariant ? money(defaultVariant.price) : "Liên hệ";
+
+    const status=document.createElement("div");
+    status.className="shop-status";
 
     const buy=document.createElement("button");
     buy.className="buy-btn";
     buy.type="button";
     buy.textContent="XEM PHIÊN BẢN";
 
-    const status=document.createElement("div");
-    status.className="shop-status";
-    status.textContent=defaultVariant?.onHand>0 ? "✓ Còn hàng" : "Hết hàng";
+    const variantsList=document.createElement("div");
+    variantsList.className="quick-variants";
 
-    const variants=document.createElement("div");
-    variants.className="quick-variants";
-
-    // Chỉ hiện tối đa 4 biến thể để card gọn giống trang mẫu.
-    sorted.slice(0,4).forEach(v=>{
-      const row=document.createElement("button");
-      row.type="button";
-      row.className="quick-variant";
-
-      const left=document.createElement("span");
-      left.textContent=[v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
-
-      const right=document.createElement("strong");
-      right.textContent=money(v.price);
-
-      row.append(left,right);
-
-      row.addEventListener("click",()=>{
-        price.textContent=money(v.price);
-        status.textContent=v.onHand>0 ? "✓ Còn hàng" : "Hết hàng";
-
-        specs.innerHTML="";
-        [v.memory,v.color].filter(Boolean).forEach(x=>{
-          const chip=document.createElement("span");
-          chip.className="shop-chip";
-          chip.textContent=x;
-          specs.appendChild(chip);
+    function updateAvailableButtons(){
+      memoryButtons.forEach((btn,mem)=>{
+        const exists=variants.some(v=>{
+          const colorOk=!selectedColor || v.color===selectedColor;
+          return colorOk && v.memory===mem;
         });
-
-        variants.querySelectorAll(".quick-variant").forEach(el=>el.classList.remove("active"));
-        row.classList.add("active");
+        btn.classList.toggle("disabled",!exists);
       });
 
-      variants.appendChild(row);
+      colorButtons.forEach((btn,color)=>{
+        const exists=variants.some(v=>{
+          const memOk=!selectedMemory || v.memory===selectedMemory;
+          return memOk && v.color===color;
+        });
+        btn.classList.toggle("disabled",!exists);
+      });
+    }
+
+    function renderVariantList(){
+      variantsList.innerHTML="";
+
+      variants.forEach(v=>{
+        const row=document.createElement("button");
+        row.type="button";
+        row.className="quick-variant";
+
+        if(selected && v.id===selected.id){
+          row.classList.add("active");
+        }
+
+        const left=document.createElement("span");
+        left.textContent=[v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
+
+        const right=document.createElement("strong");
+        right.textContent=money(v.price);
+
+        row.append(left,right);
+
+        row.addEventListener("click",()=>{
+          selected=v;
+          selectedColor=v.color || "";
+          selectedMemory=v.memory || "";
+          updateUI();
+        });
+
+        variantsList.appendChild(row);
+      });
+    }
+
+    function updateUI(){
+      selected=pickVariant();
+
+      if(selected){
+        selectedColor=selected.color || selectedColor;
+        selectedMemory=selected.memory || selectedMemory;
+
+        price.textContent=money(selected.price);
+        status.textContent=selected.onHand>0 ? "✓ Còn hàng" : "Hết hàng";
+      }else{
+        price.textContent="Liên hệ";
+        status.textContent="";
+      }
+
+      colorButtons.forEach((btn,color)=>{
+        btn.classList.toggle("active",color===selectedColor);
+      });
+
+      memoryButtons.forEach((btn,mem)=>{
+        btn.classList.toggle("active",mem===selectedMemory);
+      });
+
+      updateAvailableButtons();
+      renderVariantList();
+    }
+
+    uniqueColors.forEach(color=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="shop-attr-btn";
+      btn.textContent=color;
+
+      btn.addEventListener("click",()=>{
+        if(btn.classList.contains("disabled")) return;
+
+        selectedColor=color;
+
+        const compatible=variants.filter(v=>v.color===selectedColor);
+
+        if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
+          selectedMemory=compatible.find(v=>v.memory)?.memory || "";
+        }
+
+        updateUI();
+      });
+
+      colorButtons.set(color,btn);
+      colorOptions.appendChild(btn);
     });
 
-    if(variants.firstElementChild){
-      variants.firstElementChild.classList.add("active");
+    uniqueMemories.forEach(mem=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="shop-attr-btn";
+      btn.textContent=mem;
+
+      btn.addEventListener("click",()=>{
+        if(btn.classList.contains("disabled")) return;
+
+        selectedMemory=mem;
+
+        const compatible=variants.filter(v=>v.memory===selectedMemory);
+
+        if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
+          selectedColor=compatible.find(v=>v.color)?.color || "";
+        }
+
+        updateUI();
+      });
+
+      memoryButtons.set(mem,btn);
+      memoryOptions.appendChild(btn);
+    });
+
+    if(uniqueColors.length){
+      colorRow.append(colorLabel,colorOptions);
+      attributeArea.appendChild(colorRow);
+    }
+
+    if(uniqueMemories.length){
+      memoryRow.append(memoryLabel,memoryOptions);
+      attributeArea.appendChild(memoryRow);
     }
 
     buy.addEventListener("click",()=>{
-      variants.classList.toggle("open");
-      buy.textContent=variants.classList.contains("open")
+      variantsList.classList.toggle("open");
+      buy.textContent=variantsList.classList.contains("open")
         ? "ẨN PHIÊN BẢN"
         : "XEM PHIÊN BẢN";
     });
 
-    body.append(title,specs,price,buy,status,variants);
+    body.append(title,attributeArea,price,buy,status,variantsList);
     card.append(media,body);
     grid.appendChild(card);
+
+    updateUI();
   });
 }
 async function load(){
