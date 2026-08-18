@@ -949,3 +949,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - `Khách online` tiếp tục deduplicate theo visitor ID trong 5 phút.
 - Thêm `Lượt tạo so sánh`: chỉ tính khi khách thực sự mở bảng so sánh với ít nhất 2 máy.
 - Thêm bảng `Sản phẩm được so sánh nhiều` và `Cặp máy được so sánh nhiều`.
+
+## V122 - Analytics Dashboard Pro
+- Tối ưu lại bố cục dashboard: KPI quan trọng lên đầu, 4 ô/hàng desktop, 2 ô/hàng mobile.
+- Phân biệt rõ khách duy nhất, lượt truy cập, online, mở sản phẩm, Zalo và so sánh.
+- Card KPI có thanh nhấn màu, số lớn dễ quét nhanh.
+- Biểu đồ và các bảng ranking đồng bộ khoảng cách, font, đường viền và responsive.
+- Giữ nguyên logic thống kê V121; V122 chủ yếu tối ưu giao diện để không làm sai dữ liệu.
