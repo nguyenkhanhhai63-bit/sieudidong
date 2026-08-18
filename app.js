@@ -39,6 +39,87 @@ function loadProductCache(){
 }
 let ACTIVE_CATEGORY = "Tất cả";
 let ACTIVE_PRICE_FILTER = "Tất cả giá";
+let ACTIVE_SORT = "default";
+
+function slugParam(value=""){
+  return String(value || "").trim();
+}
+
+function updateUrlFromState(){
+  const url = new URL(location.href);
+  const q = searchInput?.value?.trim() || "";
+
+  // Giữ URL trang chi tiết riêng biệt, chỉ sync filter ở trang danh sách.
+  if(location.pathname.startsWith("/san-pham/")) return;
+
+  if(ACTIVE_MAIN_CATEGORY) url.searchParams.set("category", ACTIVE_MAIN_CATEGORY);
+  else url.searchParams.delete("category");
+
+  if(ACTIVE_CATEGORY && ACTIVE_CATEGORY !== "Tất cả")
+    url.searchParams.set("brand", ACTIVE_CATEGORY);
+  else
+    url.searchParams.delete("brand");
+
+  if(ACTIVE_PRICE_FILTER && ACTIVE_PRICE_FILTER !== "Tất cả giá")
+    url.searchParams.set("price", ACTIVE_PRICE_FILTER);
+  else
+    url.searchParams.delete("price");
+
+  if(ACTIVE_SORT && ACTIVE_SORT !== "default")
+    url.searchParams.set("sort", ACTIVE_SORT);
+  else
+    url.searchParams.delete("sort");
+
+  if(q) url.searchParams.set("q", q);
+  else url.searchParams.delete("q");
+
+  history.replaceState(history.state, "", url.pathname + (url.search ? url.search : ""));
+}
+
+function loadStateFromUrl(){
+  const params = new URLSearchParams(location.search);
+
+  const category = params.get("category");
+  const brand = params.get("brand");
+  const price = params.get("price");
+  const sort = params.get("sort");
+  const q = params.get("q");
+
+  if(category) ACTIVE_MAIN_CATEGORY = category;
+  if(brand) ACTIVE_CATEGORY = brand;
+  if(price && PRICE_FILTERS.some(x=>x.label===price)) ACTIVE_PRICE_FILTER = price;
+  if(["default","price-asc","price-desc","name-asc"].includes(sort || "")) ACTIVE_SORT = sort;
+  if(q && searchInput) searchInput.value = q;
+}
+
+function sortGroups(groups){
+  const list = [...groups];
+
+  if(ACTIVE_SORT === "price-asc"){
+    return list.sort((a,b)=>{
+      const pa=Number(getDefaultVariantForGroup(a)?.price || 0);
+      const pb=Number(getDefaultVariantForGroup(b)?.price || 0);
+      if(pa===0) return 1;
+      if(pb===0) return -1;
+      return pa-pb;
+    });
+  }
+
+  if(ACTIVE_SORT === "price-desc"){
+    return list.sort((a,b)=>{
+      const pa=Number(getDefaultVariantForGroup(a)?.price || 0);
+      const pb=Number(getDefaultVariantForGroup(b)?.price || 0);
+      return pb-pa;
+    });
+  }
+
+  if(ACTIVE_SORT === "name-asc"){
+    return list.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"vi"));
+  }
+
+  return list;
+}
+
 
 const PRICE_FILTERS = [
   { label:"Tất cả giá", min:0, max:Infinity },
@@ -93,6 +174,7 @@ function renderPriceFilters(){
       ACTIVE_PRICE_FILTER=item.label;
       renderPriceFilters();
       render();
+      updateUrlFromState();
     });
 
     host.appendChild(btn);
@@ -401,6 +483,7 @@ function renderMainCategoryMenu(){
 
       renderCategoryFilters();
       render();
+      updateUrlFromState();
 
       window.scrollTo({top:0,behavior:"smooth"});
     });
@@ -582,6 +665,7 @@ function renderCategoryFilters(){
       ACTIVE_CATEGORY=filter;
       renderCategoryFilters();
       render();
+      updateUrlFromState();
     });
 
     categoryFilters.appendChild(btn);
@@ -640,6 +724,7 @@ function render(){
 
   let groups=groupItems(items);
   groups=groups.filter(groupMatchesPrice);
+  groups=sortGroups(groups);
 
   grid.innerHTML="";
 
@@ -1333,7 +1418,12 @@ async function load(){
     }
 
     // Lần mở đầu tiên mà API lỗi thì thử cache trình duyệt.
-    if(loadProductCache()){
+    loadStateFromUrl();
+if(document.getElementById("sortSelect")){
+  document.getElementById("sortSelect").value=ACTIVE_SORT;
+}
+
+if(loadProductCache()){
       updatedAt.textContent="Đang hiển thị dữ liệu gần nhất";
       renderCategoryFilters();
       render();
@@ -1365,7 +1455,10 @@ loadBestSellers();
 setInterval(load,60000);
 setInterval(loadBestSellers,60*60*1000);
 
-searchInput.addEventListener("input",render);
+searchInput.addEventListener("input",()=>{
+  render();
+  updateUrlFromState();
+});
 onlyStock.addEventListener("change",render);
 
 clearSearch.addEventListener("click",()=>{
@@ -1395,4 +1488,17 @@ if(commerceCategoryBtn && commerceCategoryMenu){
 }
 
 
+
+
+
+const sortSelect=document.getElementById("sortSelect");
+
+if(sortSelect){
+  sortSelect.value=ACTIVE_SORT;
+  sortSelect.addEventListener("change",()=>{
+    ACTIVE_SORT=sortSelect.value || "default";
+    render();
+    updateUrlFromState();
+  });
+}
 

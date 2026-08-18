@@ -625,3 +625,23 @@ Mobile có thể kéo ngang các mức giá.
 - Mobile giờ chỉ còn 1 hàng: logo vuông + thanh tìm kiếm full chiều ngang.
 - Ẩn hẳn các khối desktop trên mobile.
 - Giảm khoảng trắng giữa header và bộ lọc.
+
+
+## V69 - Sắp xếp + URL bộ lọc
+Thêm sắp xếp:
+- Mặc định
+- Giá thấp đến cao
+- Giá cao đến thấp
+- Tên A → Z
+
+Bộ lọc được đồng bộ vào URL:
+- `category`
+- `brand`
+- `price`
+- `sort`
+- `q`
+
+Ví dụ:
+`/?brand=HONOR&price=5+-+10+triệu&sort=price-asc`
+
+Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng thái lọc/tìm kiếm.

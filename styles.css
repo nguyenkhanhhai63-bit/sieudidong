@@ -5917,3 +5917,58 @@ textarea{
     font-size:12px !important;
   }
 }
+
+
+/* =========================================================
+   V69 - Sắp xếp + URL bộ lọc
+   ========================================================= */
+
+.catalog-sort-area{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding-top:13px;
+  border-top:1px solid #eef0f3;
+}
+
+.sort-select{
+  min-width:210px;
+  height:38px;
+  padding:0 36px 0 13px;
+  border:1px solid #e3e6ea;
+  border-radius:10px;
+  background:#fff;
+  color:#333;
+  font-family:inherit;
+  font-size:.78rem;
+  font-weight:650;
+  outline:none;
+  cursor:pointer;
+}
+
+.sort-select:focus{
+  border-color:#ff9a63;
+  box-shadow:0 0 0 3px rgba(255,90,0,.08);
+}
+
+@media(max-width:720px){
+  .catalog-sort-area{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding-top:10px;
+  }
+
+  .catalog-sort-area .catalog-brand-label{
+    margin:0;
+    flex:0 0 auto;
+  }
+
+  .sort-select{
+    min-width:0;
+    width:min(220px,68vw);
+    height:36px;
+    font-size:.74rem;
+  }
+}
