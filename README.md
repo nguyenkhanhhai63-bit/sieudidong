@@ -280,3 +280,13 @@ Khi bỏ tick:
 - Có thể sửa danh sách tên máy bán chạy ngay trong `bestsellers.js`.
 - Nếu danh sách không khớp/để trống, website tự lấy 12 mẫu đầu tiên để mục Bán chạy không bị rỗng.
 - `Bán chạy` vẫn là tab mặc định khi khách vào web.
+
+
+## V24 - API ổn định
+- Bỏ hoàn toàn API nhóm hàng `/categories`; web phân hãng trực tiếp từ tên sản phẩm nên không cần gọi endpoint phụ.
+- `/api/products` chỉ còn lấy sản phẩm, tồn kho, giá, ảnh và thuộc tính.
+- Backend giữ dữ liệu thành công gần nhất trong bộ nhớ và trả lại nếu KiotViet lỗi tạm thời.
+- Frontend lưu bảng giá gần nhất vào localStorage.
+- Refresh API lỗi sẽ không còn xóa bảng đang hiển thị.
+- Nếu mở web lúc API lỗi, trình duyệt sẽ dùng dữ liệu gần nhất đã lưu.
+- Bán chạy vẫn dùng `bestsellers.js`, không gọi API hóa đơn.

@@ -2,6 +2,12 @@
 const TOKEN_URL = "https://id.kiotviet.vn/connect/token";
 const API_BASE = "https://public.kiotapi.com";
 
+
+let responseCache = {
+  products: null,
+  savedAt: 0
+};
+
 let tokenCache = {
   token: null,
   expiresAt: 0
@@ -89,62 +95,6 @@ function firstImage(obj) {
 }
 
 
-async function getCategories() {
-  const pageSize = 100;
-  let currentItem = 0;
-  const all = [];
-
-  for (let page = 0; page < 20; page++) {
-    const data = await kvFetch(
-      `/categories?pageSize=${pageSize}&currentItem=${currentItem}&hierachicalData=false`
-    );
-
-    const items = Array.isArray(data.data) ? data.data : [];
-
-    if (!items.length) break;
-
-    all.push(...items);
-
-    if (items.length < pageSize) break;
-
-    currentItem += pageSize;
-  }
-
-  return all;
-}
-
-function buildCategoryMap(categories) {
-  const map = new Map();
-
-  categories.forEach(c => {
-    map.set(Number(c.categoryId), {
-      id: Number(c.categoryId),
-      parentId: c.parentId == null ? null : Number(c.parentId),
-      name: c.categoryName || "Khác"
-    });
-  });
-
-  return map;
-}
-
-function categoryPath(categoryId, categoryMap) {
-  const current = categoryMap.get(Number(categoryId));
-  if (!current) return { name: "Khác", rootName: "Khác" };
-
-  let root = current;
-  const seen = new Set();
-
-  while (root.parentId && categoryMap.has(root.parentId) && !seen.has(root.id)) {
-    seen.add(root.id);
-    root = categoryMap.get(root.parentId);
-  }
-
-  return {
-    name: current.name || "Khác",
-    rootName: root.name || current.name || "Khác"
-  };
-}
-
 
 function normalizeAttributes(obj) {
   const attrs = Array.isArray(obj?.attributes) ? obj.attributes : [];
@@ -156,8 +106,7 @@ function normalizeAttributes(obj) {
 }
 
 
-function normalizeProduct(item, categoryMap) {
-  const cat = categoryPath(item.categoryId, categoryMap);
+function normalizeProduct(item) {
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
   const branches = inventories.map(i => ({
     branchId: i.branchId,
@@ -202,8 +151,8 @@ function normalizeProduct(item, categoryMap) {
     code: item.code,
     name: item.fullName || item.name || item.code,
     categoryId: item.categoryId,
-    categoryName: cat.name,
-    rootCategoryName: cat.rootName,
+    categoryName: "",
+    rootCategoryName: "",
     basePrice: Number(item.basePrice || 0),
     image: parentImage,
     attributes: normalizeAttributes(item),
@@ -242,15 +191,17 @@ export default async function handler(req, res) {
       currentItem += pageSize;
     }
 
-    const categories = await getCategories();
-    const categoryMap = buildCategoryMap(categories);
-
     const products = all
       .filter(p => !p.isDeleted)
       .filter(p => p.isActive !== false)
-      .map(p => normalizeProduct(p, categoryMap));
+      .map(p => normalizeProduct(p));
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
+
+    responseCache = {
+      products,
+      savedAt: Date.now()
+    };
 
     return res.status(200).json({
       products,
@@ -259,6 +210,16 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error(error);
+
+    if (Array.isArray(responseCache.products) && responseCache.products.length) {
+      res.setHeader("Cache-Control", "no-store");
+      return res.status(200).json({
+        products: responseCache.products,
+        count: responseCache.products.length,
+        stale: true
+      });
+    }
+
     return res.status(500).json({
       error: error.message || "Unknown error"
     });

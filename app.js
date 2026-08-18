@@ -9,6 +9,33 @@ const summary = document.getElementById("summary");
 const categoryFilters = document.getElementById("categoryFilters");
 
 let PRODUCTS = [];
+const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
+const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+
+function saveProductCache(products){
+  try{
+    localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      products
+    }));
+  }catch(_){}
+}
+
+function loadProductCache(){
+  try{
+    const raw=localStorage.getItem(PRODUCT_CACHE_KEY);
+    if(!raw) return false;
+
+    const cached=JSON.parse(raw);
+    if(!Array.isArray(cached.products) || !cached.products.length) return false;
+    if(Date.now()-Number(cached.savedAt||0) > PRODUCT_CACHE_MAX_AGE) return false;
+
+    PRODUCTS=cached.products;
+    return true;
+  }catch(_){
+    return false;
+  }
+}
 let ACTIVE_CATEGORY = "Bán chạy";
 
 function money(v){
@@ -598,26 +625,59 @@ function render(){
 }
 async function load(){
   try{
-    const res=await fetch("/api/products",{cache:"no-store"});
+    const res=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
 
     if(!res.ok){
       throw new Error("HTTP "+res.status);
     }
 
     const data=await res.json();
-    PRODUCTS=data.products || [];
 
-    updatedAt.textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
+    if(!Array.isArray(data.products) || !data.products.length){
+      throw new Error("Empty product data");
+    }
+
+    PRODUCTS=data.products;
+    saveProductCache(PRODUCTS);
+
+    updatedAt.textContent=data.stale
+      ? "Đang hiển thị dữ liệu gần nhất"
+      : "Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
 
     renderCategoryFilters();
     render();
 
   }catch(err){
     console.error(err);
+
+    // Không xóa bảng đang hiển thị nếu lần refresh sau bị lỗi.
+    if(PRODUCTS.length){
+      updatedAt.textContent="Đang hiển thị dữ liệu gần nhất";
+      return;
+    }
+
+    // Lần mở đầu tiên mà API lỗi thì thử cache trình duyệt.
+    if(loadProductCache()){
+      updatedAt.textContent="Đang hiển thị dữ liệu gần nhất";
+      renderCategoryFilters();
+      render();
+      return;
+    }
+
     updatedAt.textContent="Không thể cập nhật";
-    grid.innerHTML='<div class="empty">Không tải được bảng giá. Vui lòng thử lại sau.</div>';
+    grid.innerHTML='<div class="empty">Không tải được bảng giá. Vui lòng tải lại trang sau ít phút.</div>';
   }
 }
+
+// Hiện cache ngay nếu có, rồi cập nhật nền.
+if(loadProductCache()){
+  updatedAt.textContent="Đang cập nhật...";
+  renderCategoryFilters();
+  render();
+}
+
+load();
+setInterval(load,60000);
 
 searchInput.addEventListener("input",render);
 onlyStock.addEventListener("change",render);
@@ -640,5 +700,3 @@ darkMode.addEventListener("change",()=>{
   localStorage.setItem("kv-theme",darkMode.checked ? "dark" : "light");
 });
 
-load();
-setInterval(load,60000);
