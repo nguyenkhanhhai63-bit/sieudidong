@@ -2712,3 +2712,41 @@ body.dark .detail-choose-text{
     height:180px;
   }
 }
+
+
+/* V40 - Tăng kích thước khu vực Sản phẩm tương tự */
+@media (min-width:1101px){
+  .detail-main{
+    grid-template-columns:360px minmax(0,1fr) 340px;
+  }
+
+  .detail-related-title{
+    padding:13px 15px;
+    font-size:14px;
+    font-weight:700;
+  }
+
+  .detail-related-item{
+    grid-template-columns:84px minmax(0,1fr);
+    gap:12px;
+    padding:12px;
+    min-height:108px;
+  }
+
+  .detail-related-thumb{
+    width:84px;
+    height:84px;
+  }
+
+  .detail-related-name{
+    font-size:13px;
+    line-height:1.35;
+    font-weight:700;
+  }
+
+  .detail-related-price{
+    margin-top:5px;
+    font-size:14px;
+    font-weight:700;
+  }
+}
