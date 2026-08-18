@@ -5777,3 +5777,143 @@ textarea{
     padding-top:11px !important;
   }
 }
+
+
+/* =========================================================
+   V68 - Fix mobile header bị vỡ layout
+   Nguyên nhân: wrapper .commerce-category-menu vẫn chiếm một ô grid
+   dù nút Danh mục đã bị ẩn, làm ô search rơi xuống hàng dưới.
+   ========================================================= */
+
+@media(max-width:720px){
+
+  .commerce-header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:100 !important;
+    background:#fff !important;
+  }
+
+  .commerce-header::before{
+    height:3px !important;
+  }
+
+  .commerce-header-inner{
+    width:100% !important;
+    min-height:64px !important;
+    padding:8px 12px !important;
+    display:grid !important;
+    grid-template-columns:48px minmax(0,1fr) !important;
+    grid-template-rows:48px !important;
+    gap:10px !important;
+    align-items:center !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Quan trọng: ẩn luôn wrapper Danh mục, không chỉ ẩn button */
+  .commerce-category-menu,
+  .commerce-location,
+  .commerce-contact,
+  .commerce-store,
+  .commerce-mini-icon{
+    display:none !important;
+  }
+
+  .commerce-logo{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    width:48px !important;
+    height:48px !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .commerce-logo-wide{
+    display:none !important;
+  }
+
+  .commerce-logo-mobile{
+    display:block !important;
+    width:46px !important;
+    height:46px !important;
+    max-width:46px !important;
+    max-height:46px !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:10px !important;
+    margin:0 !important;
+  }
+
+  .commerce-search{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    width:100% !important;
+    min-width:0 !important;
+    height:44px !important;
+    margin:0 !important;
+    padding:0 !important;
+    position:relative !important;
+  }
+
+  .commerce-search input{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    height:44px !important;
+    padding:0 68px 0 13px !important;
+    border:1px solid #dfe3e8 !important;
+    border-radius:10px !important;
+    background:#f8f9fa !important;
+    font-size:13px !important;
+    box-sizing:border-box !important;
+  }
+
+  #clearSearch{
+    right:38px !important;
+    width:24px !important;
+    height:24px !important;
+  }
+
+  .commerce-search-icon{
+    right:11px !important;
+    font-size:20px !important;
+  }
+
+  /* Trang bắt đầu ngay dưới header, không để khoảng trắng giả */
+  .page{
+    padding-top:0 !important;
+  }
+
+  .catalog-overview{
+    margin-top:10px !important;
+  }
+}
+
+/* Màn hình rất nhỏ */
+@media(max-width:390px){
+  .commerce-header-inner{
+    grid-template-columns:44px minmax(0,1fr) !important;
+    padding:7px 9px !important;
+    gap:8px !important;
+  }
+
+  .commerce-logo,
+  .commerce-logo-mobile{
+    width:44px !important;
+    height:44px !important;
+    max-width:44px !important;
+    max-height:44px !important;
+  }
+
+  .commerce-search,
+  .commerce-search input{
+    height:42px !important;
+  }
+
+  .commerce-search input{
+    font-size:12px !important;
+  }
+}

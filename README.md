@@ -617,3 +617,11 @@ Thêm bộ lọc:
 
 Bộ lọc dùng đúng mức giá đang hiển thị trên card sản phẩm và kết hợp được với hãng, Bán chạy và ô tìm kiếm.
 Mobile có thể kéo ngang các mức giá.
+
+
+## V68 - Fix header mobile
+- Sửa lỗi logo nằm một hàng, search rơi xuống hàng dưới.
+- Nguyên nhân là `.commerce-category-menu` vẫn chiếm một cột grid dù nút Danh mục bị ẩn.
+- Mobile giờ chỉ còn 1 hàng: logo vuông + thanh tìm kiếm full chiều ngang.
+- Ẩn hẳn các khối desktop trên mobile.
+- Giảm khoảng trắng giữa header và bộ lọc.
