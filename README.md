@@ -505,3 +505,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Nút Back của trình duyệt quay lại danh sách.
 - Sản phẩm tương tự khi bấm cũng đổi sang URL của sản phẩm đó.
 - `vercel.json` có rewrite `/san-pham/(.*)` về `index.html` để link trực tiếp không bị 404.
+
+
+## V49 - Xây lại khu vực Sản phẩm nổi bật
+- Gộp tiêu đề, trạng thái cập nhật, thương hiệu và số lượng thành một panel duy nhất.
+- Loại bỏ 2 box cam bên phải gây cảm giác rời rạc.
+- Bộ lọc hãng chuyển thành pill nhỏ, gọn và giống website e-commerce hơn.
+- Cập nhật thời gian thành badge trạng thái riêng.
+- Mobile kéo ngang hãng, không vỡ layout.
