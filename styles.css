@@ -1155,3 +1155,84 @@ label[for="onlyStock"]{
   font-weight:700;
   line-height:1.2;
 }
+
+
+/* V27: Bán chạy là mục phụ, không còn là tab mặc định */
+.category-btn.best-seller-filter{
+  margin-left: 18px;
+  font-weight: 700;
+}
+.category-btn.best-seller-filter::before{
+  content: "★ ";
+}
+
+
+/* V28 - Card ngoài chỉ tập trung hình, tên và giá */
+.product-card{
+  position: relative;
+}
+
+/* Các thông tin phụ chỉ hiện trong phần chi tiết */
+.product-detail{
+  margin-top: 10px;
+  border-top: 1px solid #eceff3;
+  padding-top: 8px;
+}
+
+.product-detail > summary{
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid #ff5a00;
+  border-radius: 5px;
+  color: #e65100;
+  font-weight: 700;
+  font-size: 13px;
+  user-select: none;
+}
+
+.product-detail > summary::-webkit-details-marker{
+  display:none;
+}
+
+.product-detail > summary::after{
+  content:" ›";
+  margin-left:5px;
+}
+
+.product-detail[open] > summary::after{
+  content:" ˅";
+}
+
+.product-detail-body{
+  margin-top: 12px;
+}
+
+/* Khi chưa mở chi tiết: chỉ giữ hình + tên + giá */
+.product-card:not(:has(.product-detail[open])) .product-meta,
+.product-card:not(:has(.product-detail[open])) .variant-title,
+.product-card:not(:has(.product-detail[open])) .variant-row,
+.product-card:not(:has(.product-detail[open])) .stock,
+.product-card:not(:has(.product-detail[open])) .stock-status{
+  display:none;
+}
+
+/* Card gọn và cân đối hơn */
+.product-name{
+  margin-top: 10px;
+}
+
+.product-price{
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+@media (min-width: 900px){
+  .product-card{
+    min-height: 0;
+  }
+}

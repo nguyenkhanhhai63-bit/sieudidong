@@ -315,3 +315,19 @@ Bản V25 khôi phục `colorHex()` và giữ nguyên API ổn định của V24
   + có ranking cũ -> dùng ranking cũ;
   + chưa từng có ranking -> tự chuyển sang `Tất cả`.
 - Lỗi API bán chạy không bao giờ làm hỏng `/api/products`.
+
+
+## V27
+- Khi mở website mặc định vào `Tất cả`.
+- Danh sách hãng nằm ngay sau `Tất cả`.
+- `Bán chạy` được chuyển thành mục phụ ở cuối danh sách hãng và có ký hiệu ★ để dễ nhận biết.
+- Cơ chế tính bán chạy 30 ngày và cache của V26 giữ nguyên.
+
+
+## V28 - Card sản phẩm gọn
+- Danh sách ngoài ưu tiên chỉ hiển thị ảnh sản phẩm, tên và giá.
+- Thuộc tính màu sắc, dung lượng, tình trạng và các phiên bản được đưa vào `Xem chi tiết`.
+- Bấm `Xem chi tiết` mới mở toàn bộ thuộc tính.
+- Khi chọn màu/dung lượng trong chi tiết, logic đổi giá và tồn kho cũ vẫn được giữ.
+- Tab mặc định vẫn là `Tất cả`.
+- API sản phẩm và API bán chạy 30 ngày không thay đổi.
