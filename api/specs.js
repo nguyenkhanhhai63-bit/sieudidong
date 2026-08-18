@@ -161,29 +161,144 @@ function extractProductLinks(html) {
   return [...map.values()];
 }
 
+
+function slugify(text="") {
+  return removeVietnameseMarks(String(text))
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\b(chinh hang|like new|full|leica)\b/g, " ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function modelCore(text="") {
+  let s = String(text).trim();
+
+  // Strip specs inside parentheses from KiotViet title.
+  s = s.replace(/\([^)]*\)/g, " ");
+
+  // Remove common variant suffixes.
+  s = s.replace(/\s*-\s*(đen|trắng|xanh(?: dương| lá| biển| ngọc| mint)?|đỏ|hồng|tím|bạc|titan(?: xám| đen| trắng)?|cam|vàng)\s*$/i,"");
+  s = s.replace(/\s*-\s*\d+\s*\/\s*(?:\d+|1t|2t)\s*$/i,"");
+
+  return s.replace(/\s+/g," ").trim();
+}
+
+function directSlugCandidates(productName) {
+  const core = modelCore(productName);
+  const slug = slugify(core);
+  const n = normalized(productName);
+  const out = new Set();
+
+  if (slug) {
+    out.add(`${MC_BASE}/dien-thoai/${slug}.html`);
+  }
+
+  // Common MobileCity SEO URL patterns.
+  if (n.includes("honor win rt")) {
+    out.add(`${MC_BASE}/dien-thoai/honor-win-rt-pin-10000mah.html`);
+  }
+  if (n.includes("honor win 5g") || /\bhonor win\b/.test(n)) {
+    out.add(`${MC_BASE}/dien-thoai/honor-win-5g-pin-khung.html`);
+  }
+  if (n.includes("honor win turbo")) {
+    out.add(`${MC_BASE}/dien-thoai/honor-win-turbo.html`);
+  }
+
+  return [...out];
+}
+
+function candidateTextFromHref(href="") {
+  try {
+    const u = new URL(href, MC_BASE);
+    return decodeURIComponent(
+      u.pathname
+        .split("/")
+        .pop()
+        .replace(/\.html.*$/i,"")
+        .replace(/[-_]+/g," ")
+    );
+  } catch (_) {
+    return href;
+  }
+}
+
+async function pageLooksLikeProduct(url, productName) {
+  try {
+    const html = await fetchText(url);
+    const title = extractTitle(html);
+    const score = similarity(productName, title || candidateTextFromHref(url));
+
+    // Also require specs-ish content so category/news pages do not pass.
+    const specHint = /th[oô]ng s[oố] k[yỹ] thu[aậ]t|camera sau|dung l[uư][oợ]ng pin|chipset|b[oộ] nh[oớ] trong/i.test(
+      stripTags(html).slice(0, 120000)
+    );
+
+    if (score >= 0.40 && specHint) {
+      return { href:url, text:title || candidateTextFromHref(url), score, html };
+    }
+  } catch (_) {}
+
+  return null;
+}
+
 async function findProductPage(productName) {
+  // 1) Try deterministic URLs first. This fixes products whose category cards
+  // use image-only links or different anchor markup.
+  for (const url of directSlugCandidates(productName)) {
+    const direct = await pageLooksLikeProduct(url, productName);
+    if (direct) return direct;
+  }
+
+  // 2) Search MobileCity category pages.
   const brand = detectBrand(productName);
   const paths = CATEGORY_URLS[brand] || ["/"];
-
   const candidates = [];
 
   for (const path of paths) {
     try {
       const html = await fetchText(MC_BASE + path);
+
+      // Capture any product URL even when anchor text is empty/image-only.
+      const hrefRe = /href=["']([^"']*\/dien-thoai\/[^"']+\.html[^"']*)["']/gi;
+      let hm;
+      while ((hm = hrefRe.exec(html))) {
+        let href = hm[1];
+        if (href.startsWith("//")) href = "https:" + href;
+        else if (href.startsWith("/")) href = MC_BASE + href;
+        else if (!/^https?:\/\//i.test(href)) href = MC_BASE + "/" + href.replace(/^\/+/,"");
+
+        candidates.push({
+          href,
+          text:candidateTextFromHref(href)
+        });
+      }
+
+      // Keep the old richer anchor extraction too.
       candidates.push(...extractProductLinks(html));
     } catch (_) {}
   }
 
-  let best = null;
-
+  // Deduplicate before scoring.
+  const unique = new Map();
   for (const c of candidates) {
-    const score = similarity(productName, c.text);
-    if (!best || score > best.score) best = { ...c, score };
+    const old = unique.get(c.href);
+    if (!old || c.text.length > old.text.length) unique.set(c.href,c);
   }
 
-  // Conservative threshold to avoid copying specs from the wrong model.
-  if (!best || best.score < 0.48) return null;
-  return best;
+  const ranked = [...unique.values()]
+    .map(c => ({...c, score:similarity(productName,c.text)}))
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,8);
+
+  // Validate the best few pages instead of trusting anchor text alone.
+  for (const c of ranked) {
+    if (c.score < 0.30) continue;
+    const validated = await pageLooksLikeProduct(c.href, productName);
+    if (validated) return validated;
+  }
+
+  return null;
 }
 
 function wantedLabel(label) {
@@ -191,37 +306,72 @@ function wantedLabel(label) {
   return SPEC_LABELS.some(x => n.includes(normalized(x)));
 }
 
+
 function extractSpecs(html) {
   const rows = [];
+
+  function add(label,value){
+    label=stripTags(label).replace(/:\s*$/,"").trim();
+    value=stripTags(value).trim();
+
+    if(!label || !value) return;
+    if(!wantedLabel(label)) return;
+    if(label.length>90 || value.length>2200) return;
+
+    rows.push({label,value});
+  }
+
+  // 1) Classic table rows.
   const trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
   let tr;
-
   while ((tr = trRe.exec(html))) {
     const cells = [];
     const tdRe = /<(?:td|th)\b[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
     let td;
 
     while ((td = tdRe.exec(tr[1]))) {
-      cells.push(stripTags(td[1]));
+      cells.push(td[1]);
     }
 
-    if (cells.length < 2) continue;
-
-    const label = cells[0].replace(/:\s*$/,"").trim();
-    const value = cells.slice(1).join("\n").trim();
-
-    if (!label || !value || !wantedLabel(label)) continue;
-    if (label.length > 80 || value.length > 1800) continue;
-
-    rows.push({ label, value });
+    if(cells.length >= 2){
+      add(cells[0],cells.slice(1).join("<br>"));
+    }
   }
 
-  // Deduplicate labels, prefer the richer value.
+  // 2) Definition lists.
+  const dlRe=/<dt\b[^>]*>([\s\S]*?)<\/dt>\s*<dd\b[^>]*>([\s\S]*?)<\/dd>/gi;
+  let dl;
+  while((dl=dlRe.exec(html))){
+    add(dl[1],dl[2]);
+  }
+
+  // 3) Common div/li "label : value" blocks used by product sites.
+  const blockText=stripTags(
+    html
+      .replace(/<\/(?:div|li|p|section|article)>/gi,"\n")
+      .replace(/<br\s*\/?>/gi,"\n")
+  );
+
+  const lines=blockText.split("\n").map(x=>x.trim()).filter(Boolean);
+
+  for(const line of lines){
+    const m=line.match(/^([^:]{2,80}):\s*(.+)$/);
+    if(m) add(m[1],m[2]);
+  }
+
+  // 4) Adjacent lines, e.g. "CPU" then next line contains the value.
+  for(let i=0;i<lines.length-1;i++){
+    if(wantedLabel(lines[i]) && !wantedLabel(lines[i+1])){
+      add(lines[i],lines[i+1]);
+    }
+  }
+
+  // Deduplicate by normalized label, prefer richer value.
   const map = new Map();
   for (const row of rows) {
     const key = normalized(row.label);
     const old = map.get(key);
-    if (!old || row.value.length > old.value.length) map.set(key, row);
+    if (!old || row.value.length > old.value.length) map.set(key,row);
   }
 
   return [...map.values()];
@@ -260,7 +410,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const html = await fetchText(found.href);
+    const html = found.html || await fetchText(found.href);
     const specs = extractSpecs(html);
 
     if (!specs.length) {
@@ -276,6 +426,7 @@ export default async function handler(req, res) {
       sourceName: extractTitle(html) || found.text,
       sourceUrl: found.href,
       matchScore: Math.round(found.score * 100) / 100,
+      parserVersion: "v36",
       specs,
       fetchedAt: new Date().toISOString()
     };

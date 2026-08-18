@@ -517,7 +517,7 @@ function relatedProductGroups(currentGroup, limit=3){
 
 
 
-const SPEC_CACHE_PREFIX = "sieudidong-specs-v1:";
+const SPEC_CACHE_PREFIX = "sieudidong-specs-v2:";
 const SPEC_CACHE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 function specCacheKey(name){
@@ -591,7 +591,7 @@ async function loadTechnicalSpecs(productName,container){
 
   try{
     const res=await fetch(
-      "/api/specs?name="+encodeURIComponent(productName),
+      "/api/specs?v=36&name="+encodeURIComponent(productName),
       {cache:"default"}
     );
 

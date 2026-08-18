@@ -399,3 +399,12 @@ Nguyên nhân:
 
 ### File mới
 `api/specs.js`
+
+
+## V36 - Fix thông số MobileCity không hiển thị
+- Thử URL model trực tiếp trước khi crawl danh mục.
+- Hỗ trợ các URL SEO đặc biệt như Honor WIN RT / Honor WIN / Honor WIN Turbo.
+- Khi crawl danh mục, đọc cả link chỉ có ảnh, không còn phụ thuộc text trong thẻ `<a>`.
+- Validate trang sản phẩm trước khi lấy thông số để tránh ghép sai model.
+- Parser thông số đọc được table, dt/dd và các block label:value.
+- Đổi cache client từ specs-v1 sang specs-v2 để bỏ cache lỗi của bản V35.
