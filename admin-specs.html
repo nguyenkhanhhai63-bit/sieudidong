@@ -413,6 +413,7 @@
   <div id="adminTabs" class="admin-tabs hidden" style="display:none">
     <button class="admin-tab active" data-tab="specs" type="button">Link thông số</button>
     <button class="admin-tab" data-tab="analytics" type="button">Thống kê</button>
+    <button class="admin-tab" data-tab="sitemap" type="button">Sitemap</button>
   </div>
   <section id="adminCard" class="card panel active" data-panel="specs" style="display:none">
     <div class="head">
@@ -455,6 +456,29 @@
 
 </main>
 
+  <section id="sitemapCard" class="card panel" data-panel="sitemap" style="display:none">
+    <div class="head">
+      <div>
+        <h1>Sitemap website</h1>
+        <p>Link sitemap dùng để Google và các công cụ tìm kiếm thu thập danh sách trang sản phẩm.</p>
+      </div>
+    </div>
+    <div style="padding:24px">
+      <div style="max-width:900px;border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff">
+        <div style="font-size:13px;color:#6b7280;margin-bottom:8px">Đường dẫn Sitemap</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input id="sitemapUrl" class="field" type="text" readonly value="https://sieudidong.vn/sitemap.xml" style="flex:1;min-width:280px;font-weight:700">
+          <button id="copySitemapBtn" class="secondary" type="button">Sao chép</button>
+          <a class="primary" href="/sitemap.xml" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center">Mở Sitemap</a>
+        </div>
+        <div id="sitemapCopyMessage" style="margin-top:10px;font-size:13px;color:#15803d;min-height:18px"></div>
+        <p style="margin:12px 0 0;color:#6b7280;font-size:13px;line-height:1.55">
+          Sitemap hiện được tạo tự động và gom các màu/dung lượng của cùng một model thành một URL.
+        </p>
+      </div>
+    </div>
+  </section>
+
 <script>
 const authLoading=document.getElementById("authLoading");
 const loginCard=document.getElementById("loginCard");
@@ -468,6 +492,10 @@ const stats=document.getElementById("stats");
 const search=document.getElementById("search");
 const adminTabs=document.getElementById("adminTabs");
 const analyticsCard=document.getElementById("analyticsCard");
+const sitemapCard=document.getElementById("sitemapCard");
+const copySitemapBtn=document.getElementById("copySitemapBtn");
+const sitemapUrl=document.getElementById("sitemapUrl");
+const sitemapCopyMessage=document.getElementById("sitemapCopyMessage");
 const refreshAnalytics=document.getElementById("refreshAnalytics");
 let analyticsLoaded=false;
 
@@ -506,9 +534,11 @@ function setLoggedIn(value){
     logoutBtn.style.display="";
     adminCard.style.display="";
     analyticsCard.style.display="none";
+    sitemapCard.style.display="none";
 
     adminCard.classList.add("active");
     analyticsCard.classList.remove("active");
+    sitemapCard.classList.remove("active");
 
     adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.tab==="specs");
@@ -518,6 +548,7 @@ function setLoggedIn(value){
     logoutBtn.style.display="none";
     adminCard.style.display="none";
     analyticsCard.style.display="none";
+    sitemapCard.style.display="none";
   }
 }
 
@@ -761,17 +792,38 @@ adminTabs.addEventListener("click",e=>{
   });
 
   const showSpecs = tab==="specs";
+  const showAnalytics = tab==="analytics";
+  const showSitemap = tab==="sitemap";
+
   adminCard.classList.toggle("active", showSpecs);
-  analyticsCard.classList.toggle("active", !showSpecs);
+  analyticsCard.classList.toggle("active", showAnalytics);
+  sitemapCard.classList.toggle("active", showSitemap);
 
   adminCard.style.display = showSpecs ? "" : "none";
-  analyticsCard.style.display = showSpecs ? "none" : "";
+  analyticsCard.style.display = showAnalytics ? "" : "none";
+  sitemapCard.style.display = showSitemap ? "" : "none";
 
-  if(tab==="analytics"){
+  if(showAnalytics){
     loadAnalytics();
   }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
+
+if(copySitemapBtn){
+  copySitemapBtn.addEventListener("click",async()=>{
+    const value=sitemapUrl.value;
+    try{
+      await navigator.clipboard.writeText(value);
+      sitemapCopyMessage.textContent="✓ Đã sao chép link Sitemap";
+    }catch(_){
+      sitemapUrl.select();
+      document.execCommand("copy");
+      sitemapCopyMessage.textContent="✓ Đã sao chép link Sitemap";
+    }
+    setTimeout(()=>{ sitemapCopyMessage.textContent=""; },2200);
+  });
+}
+
 
 loginForm.addEventListener("submit",async(e)=>{
   e.preventDefault();

@@ -772,3 +772,17 @@ V81:
 - Vẫn giữ lượt xem, khách, Zalo, sản phẩm xem nhiều, từ khóa và thiết bị.
 
 Không cần thêm biến môi trường mới; dùng Redis hiện tại.
+
+
+## V95 - Gom sitemap theo model
+- Sitemap không còn tạo URL riêng cho từng màu/dung lượng.
+- Các biến thể như `Đen - 12/256`, `Trắng - 12/256` được gom về một URL model duy nhất.
+- Ví dụ:
+  `/san-pham/honor-win-5g-snapdragon-8-elite-gen-5-pin-10000mah`
+- Giúp tránh sitemap có nhiều URL gần như trùng nội dung.
+
+
+## V96 - Tab Sitemap trong quản trị
+- Thêm tab `Sitemap` tại `/admin`.
+- Hiển thị `https://sieudidong.vn/sitemap.xml`.
+- Có nút Sao chép và Mở Sitemap.
