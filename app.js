@@ -2370,8 +2370,114 @@ loadBestSellers();
 setInterval(load,60000);
 setInterval(loadBestSellers,60*60*1000);
 
+
+const searchSuggestions=document.getElementById("searchSuggestions");
+
+function getSearchSuggestionGroups(query,limit=5){
+  const q=String(query||"").trim().toLowerCase();
+  if(!q) return [];
+  let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
+  items=items.filter(x=>
+    String(x.fullName||"").toLowerCase().includes(q) ||
+    String(x.baseName||"").toLowerCase().includes(q) ||
+    String(x.brand||"").toLowerCase().includes(q)
+  );
+  return groupItems(items).slice(0,limit);
+}
+
+function closeSearchSuggestions(){
+  if(!searchSuggestions) return;
+  searchSuggestions.hidden=true;
+  searchSuggestions.innerHTML="";
+}
+
+function renderSearchSuggestions(){
+  if(!searchSuggestions) return;
+  const q=searchInput.value.trim();
+  if(!q){
+    closeSearchSuggestions();
+    return;
+  }
+
+  const groups=getSearchSuggestionGroups(q,5);
+  searchSuggestions.innerHTML="";
+
+  if(!groups.length){
+    const empty=document.createElement("div");
+    empty.className="search-suggestion-empty";
+    empty.textContent="Không tìm thấy sản phẩm.";
+    searchSuggestions.appendChild(empty);
+    searchSuggestions.hidden=false;
+    return;
+  }
+
+  groups.forEach(group=>{
+    const variant=getDefaultVariantForGroup(group);
+    const row=document.createElement("button");
+    row.type="button";
+    row.className="search-suggestion-item";
+
+    const media=document.createElement("div");
+    media.className="search-suggestion-image";
+    media.innerHTML=imageHTML(group);
+
+    const info=document.createElement("div");
+    info.className="search-suggestion-info";
+
+    const name=document.createElement("div");
+    name.className="search-suggestion-name";
+    name.textContent=group.name;
+
+    const bottom=document.createElement("div");
+    bottom.className="search-suggestion-bottom";
+
+    const price=document.createElement("span");
+    price.className="search-suggestion-price";
+    price.textContent=variant?money(variant.price):"Liên hệ";
+
+    const stock=document.createElement("span");
+    const inStock=Boolean(variant&&Number(variant.onHand||0)>0);
+    stock.className="search-suggestion-stock "+(inStock?"in":"out");
+    stock.textContent=inStock?"Còn hàng":"Hết hàng";
+
+    bottom.append(price,stock);
+    info.append(name,bottom);
+    row.append(media,info);
+
+    row.addEventListener("pointerdown",e=>e.preventDefault());
+    row.addEventListener("click",()=>{
+      closeSearchSuggestions();
+      searchInput.blur();
+      openInlineProductDetail(group,variant);
+    });
+
+    searchSuggestions.appendChild(row);
+  });
+
+  const all=document.createElement("button");
+  all.type="button";
+  all.className="search-suggestion-all";
+  all.textContent="Xem tất cả kết quả cho “"+q+"”";
+  all.addEventListener("pointerdown",e=>e.preventDefault());
+  all.addEventListener("click",()=>{
+    closeSearchSuggestions();
+    searchInput.blur();
+    render();
+    updateUrlFromState();
+    document.querySelector(".catalog-overview")?.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  searchSuggestions.appendChild(all);
+  searchSuggestions.hidden=false;
+}
+
+searchInput.addEventListener("focus",renderSearchSuggestions);
+document.addEventListener("pointerdown",e=>{
+  if(!e.target.closest(".commerce-search")) closeSearchSuggestions();
+});
+
 searchInput.addEventListener("input",()=>{
   render();
+  renderSearchSuggestions();
   updateUrlFromState();
 });
 onlyStock.addEventListener("change",render);
@@ -2379,6 +2485,7 @@ onlyStock.addEventListener("change",render);
 clearSearch.addEventListener("click",()=>{
   searchInput.value="";
   searchInput.focus();
+  closeSearchSuggestions();
   render();
 });
 
