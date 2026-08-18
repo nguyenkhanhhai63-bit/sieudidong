@@ -692,3 +692,12 @@ V81:
 - Các thống kê còn lại chạy song song.
 - Thêm timeout 12 giây trên trang admin.
 - Nếu API lỗi hoặc chậm sẽ hiện lỗi + nút Thử lại, không quay vô hạn.
+
+
+## V82 - Tối ưu giao diện thống kê
+- Tăng chiều rộng dashboard lên gần full màn hình desktop.
+- Giảm khoảng trống hai bên.
+- Tăng font KPI, tiêu đề, danh sách và thiết bị.
+- Biểu đồ cao và dễ nhìn hơn.
+- Desktop lớn dùng tối đa ~1700px.
+- Tablet/mobile tự co thành 2 cột KPI rồi 1 cột nội dung.
