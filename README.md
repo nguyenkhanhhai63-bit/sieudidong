@@ -481,3 +481,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Có thanh cam, logo, Danh mục, khu vực Quy Nhơn, search, Liên hệ, Cửa hàng, giỏ hàng, tài khoản.
 - Không còn `Bảng giá Siêu Di Động` và không còn nút giao diện tối.
 - Giữ nguyên toàn bộ app.js/API hiện có.
+
+
+## V46 - Header tối giản
+- Bỏ thanh cam đặc full chiều cao, chỉ giữ line cam nhận diện thương hiệu.
+- Header nền trắng, logo trái, Danh mục + search giữa.
+- Bỏ bớt location/contact/cart/account icon gây rối.
+- Gom phần bên phải thành text tư vấn/cửa hàng đơn giản.
+- Mobile: logo vuông + search.

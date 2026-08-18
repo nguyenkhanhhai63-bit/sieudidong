@@ -4384,3 +4384,259 @@ body.detail-view-active .page{
     margin-left:0;
   }
 }
+
+
+/* =========================================================
+   V46 - Header tối giản, cân đối, giống website bán hàng thật
+   ========================================================= */
+
+.commerce-header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:#ffffff !important;
+  border-bottom:1px solid #eceef2;
+  box-shadow:0 2px 10px rgba(20,24,32,.04);
+}
+
+.commerce-header::before{
+  content:"";
+  display:block;
+  height:4px;
+  background:#ff5a00;
+}
+
+.commerce-header-inner{
+  width:min(1380px,calc(100% - 36px));
+  min-height:76px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:170px 104px minmax(360px,1fr) auto;
+  gap:14px;
+  align-items:center;
+}
+
+/* logo */
+.commerce-logo{
+  height:52px;
+  display:flex;
+  align-items:center;
+}
+
+.commerce-logo img{
+  width:160px;
+  max-height:46px;
+  object-fit:contain;
+  border-radius:8px;
+}
+
+/* category */
+.commerce-category-btn{
+  height:42px;
+  padding:0 14px;
+  border:1px solid #ffd6bf;
+  border-radius:9px;
+  background:#fff7f2;
+  color:#df4d00;
+  font-size:12px;
+  font-weight:700;
+}
+
+.commerce-category-btn span{
+  font-size:16px;
+}
+
+.commerce-category-btn:hover{
+  background:#fff0e7;
+}
+
+/* hide the location block from desktop header; too much clutter */
+.commerce-location{
+  display:none !important;
+}
+
+/* search */
+.commerce-search{
+  height:44px;
+}
+
+.commerce-search input{
+  height:44px;
+  border:1px solid #dfe3e8;
+  border-radius:10px;
+  background:#f9fafb;
+  padding:0 72px 0 15px;
+  font-size:13px;
+  color:#222;
+  transition:.15s ease;
+}
+
+.commerce-search input:focus{
+  background:#fff;
+  border-color:#ff8d50;
+  box-shadow:0 0 0 3px rgba(255,90,0,.10);
+}
+
+#clearSearch{
+  right:42px;
+  background:#eef0f2;
+}
+
+.commerce-search-icon{
+  right:13px;
+  color:#ff5a00;
+}
+
+/* actions grouped on right */
+.commerce-header-inner > .commerce-contact,
+.commerce-header-inner > .commerce-store,
+.commerce-header-inner > .commerce-mini-icon{
+  display:none;
+}
+
+.commerce-header-inner::after{
+  content:"Tư vấn  |  Cửa hàng Quy Nhơn";
+  justify-self:end;
+  color:#555;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* main top area */
+.store-hero{
+  padding:24px 0 18px;
+}
+
+.store-hero-kicker{
+  display:none;
+}
+
+.store-hero h1{
+  font-size:30px;
+  letter-spacing:-.4px;
+}
+
+.store-hero p{
+  margin-top:6px;
+  font-size:13px;
+}
+
+/* benefits smaller and cleaner */
+.store-benefits{
+  border:0;
+  background:transparent;
+  gap:10px;
+}
+
+.store-benefit{
+  min-width:155px;
+  padding:10px 13px;
+  border:1px solid #ffe0cb;
+  border-radius:10px;
+  background:#fff8f3;
+}
+
+.store-benefit + .store-benefit{
+  border-left:1px solid #ffe0cb;
+}
+
+.store-benefit strong{
+  font-size:11px;
+}
+
+.store-benefit span{
+  font-size:10px;
+}
+
+/* filter card simpler */
+.store-filter-card{
+  padding:14px 16px 12px;
+  border-radius:12px;
+  box-shadow:0 4px 16px rgba(20,24,32,.04);
+}
+
+.category-btn{
+  min-height:35px;
+  padding:6px 14px;
+  border-radius:8px;
+}
+
+.store-filter-bottom{
+  margin-top:10px;
+  padding-top:9px;
+}
+
+/* Tablet */
+@media(max-width:1050px){
+  .commerce-header-inner{
+    grid-template-columns:145px 96px minmax(260px,1fr);
+  }
+
+  .commerce-header-inner::after{
+    display:none;
+  }
+
+  .commerce-logo img{
+    width:140px;
+  }
+}
+
+/* Mobile */
+@media(max-width:720px){
+  .commerce-header::before{
+    height:3px;
+  }
+
+  .commerce-header-inner{
+    width:100%;
+    min-height:64px;
+    padding:7px 10px;
+    box-sizing:border-box;
+    display:grid;
+    grid-template-columns:46px minmax(0,1fr);
+    gap:8px;
+  }
+
+  .commerce-logo{
+    width:46px;
+    height:46px;
+  }
+
+  .commerce-logo img{
+    width:46px;
+    height:46px;
+    object-fit:cover;
+    object-position:left;
+    border-radius:9px;
+  }
+
+  .commerce-category-btn{
+    display:none;
+  }
+
+  .commerce-header-inner::after{
+    display:none;
+  }
+
+  .commerce-search{
+    height:42px;
+  }
+
+  .commerce-search input{
+    height:42px;
+    font-size:12px;
+  }
+
+  .store-hero{
+    padding:15px 2px 11px;
+  }
+
+  .store-hero h1{
+    font-size:22px;
+  }
+
+  .store-benefits{
+    display:none;
+  }
+}
