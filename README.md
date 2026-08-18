@@ -645,3 +645,7 @@ Ví dụ:
 `/?brand=HONOR&price=5+-+10+triệu&sort=price-asc`
 
 Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng thái lọc/tìm kiếm.
+
+## V70
+- Đổi nút `← Quay lại danh sách` thành `← Về trang chủ`.
+- Khi bấm sẽ chuyển thẳng về `/`, không giữ URL sản phẩm hoặc bộ lọc cũ.

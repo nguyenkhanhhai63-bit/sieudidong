@@ -989,8 +989,11 @@ function openInlineProductDetail(group,initialVariant,options={}){
   const backBtn=document.createElement("button");
   backBtn.type="button";
   backBtn.className="inline-back-btn";
-  backBtn.textContent="← Quay lại danh sách";
-  backBtn.addEventListener("click",closeInlineProductDetail);
+  backBtn.textContent="← Về trang chủ";
+  backBtn.addEventListener("click",()=>{
+    // Về đúng trang chủ và xóa trạng thái sản phẩm/bộ lọc trên URL.
+    window.location.href="/";
+  });
 
   topbar.appendChild(backBtn);
 
