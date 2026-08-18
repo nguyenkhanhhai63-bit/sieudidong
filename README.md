@@ -496,3 +496,12 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Thêm nút `Xem chi tiết` ngay trên card.
 - Bấm nút hoặc bấm card đều mở trang chi tiết như hiện tại.
 - Mobile thu gọn kích thước nút để không vỡ layout.
+
+
+## V48 - Link riêng cho từng sản phẩm
+- Khi bấm một sản phẩm, URL đổi thành dạng `/san-pham/ten-san-pham`.
+- Có thể copy link chi tiết và gửi trực tiếp cho khách.
+- Mở trực tiếp link sản phẩm sẽ tự tải đúng trang chi tiết.
+- Nút Back của trình duyệt quay lại danh sách.
+- Sản phẩm tương tự khi bấm cũng đổi sang URL của sản phẩm đó.
+- `vercel.json` có rewrite `/san-pham/(.*)` về `index.html` để link trực tiếp không bị 404.

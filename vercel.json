@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+    {
+      "source": "/san-pham/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
+    }
   ]
 }

@@ -633,8 +633,66 @@ async function loadTechnicalSpecs(productName,container){
   }
 }
 
-function openInlineProductDetail(group,initialVariant){
+
+function slugifyProductName(text=""){
+  return String(text)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/Đ/g,"D")
+    .toLowerCase()
+    .replace(/\([^)]*\)/g," ")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-+|-+$/g,"");
+}
+
+function productUrl(groupName=""){
+  return "/san-pham/" + slugifyProductName(groupName);
+}
+
+function currentProductSlug(){
+  const m=location.pathname.match(/^\/san-pham\/([^/?#]+)/i);
+  return m ? decodeURIComponent(m[1]) : "";
+}
+
+function findGroupBySlug(slug){
+  if(!slug || !PRODUCTS.length) return null;
+
+  const groups=groupItems(flattenProducts(PRODUCTS));
+  return groups.find(g=>slugifyProductName(g.name)===slug) || null;
+}
+
+function openProductFromUrl(){
+  const slug=currentProductSlug();
+  if(!slug) return false;
+
+  const group=findGroupBySlug(slug);
+  if(!group) return false;
+
+  const variants=[...group.items];
+  const defaultVariant=variants.sort((a,b)=>{
+    const stockDiff=(b.onHand>0)-(a.onHand>0);
+    if(stockDiff!==0) return stockDiff;
+    return Number(a.price||0)-Number(b.price||0);
+  })[0] || null;
+
+  openInlineProductDetail(group,defaultVariant,{updateUrl:false});
+  return true;
+}
+
+function openInlineProductDetail(group,initialVariant,options={}){
   if(!inlineProductDetail) return;
+
+  if(options.updateUrl !== false){
+    const url=productUrl(group.name);
+    if(location.pathname !== url){
+      history.pushState(
+        {view:"detail", slug:slugifyProductName(group.name)},
+        "",
+        url
+      );
+    }
+  }
 
   const variants=[...group.items];
   let selected=initialVariant || variants[0] || null;
@@ -976,25 +1034,46 @@ function openInlineProductDetail(group,initialVariant){
 }
 
 function closeInlineProductDetail(){
-  if(!inlineProductDetail) return;
+  if(location.pathname.startsWith("/san-pham/")){
+    history.back();
+    return;
+  }
 
+  if(!inlineProductDetail) return;
   inlineProductDetail.hidden=true;
   inlineProductDetail.innerHTML="";
   productGrid.hidden=false;
-
   document.body.classList.remove("detail-view-active");
   window.scrollTo({top:0,left:0,behavior:"auto"});
 }
 
 
 window.addEventListener("popstate",()=>{
-  if(inlineProductDetail && !inlineProductDetail.hidden){
+  const slug=currentProductSlug();
+
+  if(slug){
+    const group=findGroupBySlug(slug);
+    if(group){
+      const variants=[...group.items];
+      const defaultVariant=variants.sort((a,b)=>{
+        const stockDiff=(b.onHand>0)-(a.onHand>0);
+        if(stockDiff!==0) return stockDiff;
+        return Number(a.price||0)-Number(b.price||0);
+      })[0] || null;
+
+      openInlineProductDetail(group,defaultVariant,{updateUrl:false});
+      return;
+    }
+  }
+
+  if(inlineProductDetail){
     inlineProductDetail.hidden=true;
     inlineProductDetail.innerHTML="";
-    productGrid.hidden=false;
-    document.body.classList.remove("detail-view-active");
-    window.scrollTo({top:0,left:0,behavior:"auto"});
   }
+
+  productGrid.hidden=false;
+  document.body.classList.remove("detail-view-active");
+  window.scrollTo({top:0,left:0,behavior:"auto"});
 });
 
 async function load(){
@@ -1020,6 +1099,10 @@ async function load(){
 
     renderCategoryFilters();
     render();
+
+    if(currentProductSlug()){
+      openProductFromUrl();
+    }
 
   }catch(err){
     console.error(err);
@@ -1051,6 +1134,10 @@ if(loadProductCache()){
   updatedAt.textContent="Đang cập nhật...";
   renderCategoryFilters();
   render();
+
+  if(currentProductSlug()){
+    openProductFromUrl();
+  }
 }
 
 load();
