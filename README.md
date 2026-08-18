@@ -184,3 +184,11 @@ Không hiển thị thông tin KiotViet trên giao diện công khai.
 - Tình trạng còn hàng đặt cạnh thông tin chính.
 - Danh sách giá từng phiên bản nằm phía dưới.
 - Mobile tự chuyển sang bố cục gọn hơn.
+
+
+## V12 - Chọn màu/dung lượng tự đổi giá
+- Bấm màu → tự chọn biến thể phù hợp và cập nhật giá.
+- Bấm dung lượng → tự chọn biến thể phù hợp và cập nhật giá.
+- Tổ hợp màu/dung lượng không tồn tại sẽ bị mờ và không bấm được.
+- Khi đổi thuộc tính, tình trạng còn hàng cũng đổi theo đúng biến thể.
+- Không cần reload trang.

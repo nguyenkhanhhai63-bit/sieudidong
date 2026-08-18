@@ -560,3 +560,38 @@ body.dark{
     margin-top:9px;
   }
 }
+
+
+/* ===== V12 - Chọn biến thể đổi giá ===== */
+.option-chip{
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.option-chip:hover:not(.disabled){
+  border-color:var(--accent);
+}
+
+.option-chip.active{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-weight:700;
+  box-shadow:0 0 0 1px var(--accent) inset;
+}
+
+.option-chip.disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  text-decoration:line-through;
+}
+
+.selected-info{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.detail-stock.out{
+  color:var(--price);
+}
