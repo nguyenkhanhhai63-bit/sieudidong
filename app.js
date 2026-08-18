@@ -194,11 +194,11 @@ function detectBrand(name){
   const text = String(name || "").toLowerCase();
 
   const brands = [
-    ["Xiaomi", ["xiaomi", "redmi", "poco"]],
+    ["Xiaomi", ["xiaomi", "redmi", "poco", "mi " ]],
     ["Apple", ["iphone", "ipad", "apple"]],
     ["Samsung", ["samsung", "galaxy"]],
-    ["OPPO", ["oppo", "oneplus", "realme"]],
-    ["vivo", ["vivo", "iqoo"]],
+    ["OPPO", ["oppo", "oneplus", "realme", "find x", "reno", "k13", "k15"]],
+    ["vivo", ["vivo", "iqoo", "i qoo"]],
     ["HONOR", ["honor"]],
     ["Huawei", ["huawei"]],
     ["Nubia", ["nubia", "redmagic", "red magic"]],
@@ -380,7 +380,7 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:detectBrand(fullName)
+        brand:detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" "))
       });
     });
   });
@@ -450,14 +450,47 @@ function variantLabel(v){
 function renderCategoryFilters(){
   const flat = flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
 
-  const brands = [...new Set(
-    flat.map(p => p.brand).filter(Boolean)
-  )]
-  .filter(b => b !== "Khác")
-  .sort((a,b)=>a.localeCompare(b,"vi"));
+  // Lấy hãng từ chính dữ liệu sản phẩm + tên danh mục KiotViet.
+  // Không phụ thuộc vào việc variant có ghi hãng hay không.
+  const brandSet = new Set();
+
+  PRODUCTS.forEach(p=>{
+    const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
+    if(ACTIVE_MAIN_CATEGORY && categoryKey(root) !== categoryKey(ACTIVE_MAIN_CATEGORY)) return;
+
+    const candidates = [
+      p.name,
+      p.categoryName,
+      p.rootCategoryName,
+      ...((p.variants || []).map(v=>v.name))
+    ].filter(Boolean).join(" ");
+
+    const brand = detectBrand(candidates);
+    if(brand && brand !== "Khác") brandSet.add(brand);
+  });
+
+  flat.forEach(p=>{
+    if(p.brand && p.brand !== "Khác") brandSet.add(p.brand);
+  });
+
+  const preferredOrder = [
+    "HONOR","OPPO","vivo","Xiaomi","Samsung","Apple",
+    "Huawei","Nubia","Motorola","Google","ASUS","Sony","Nothing"
+  ];
+
+  const brands = [...brandSet].sort((a,b)=>{
+    const ai=preferredOrder.indexOf(a);
+    const bi=preferredOrder.indexOf(b);
+    if(ai !== -1 || bi !== -1){
+      if(ai === -1) return 1;
+      if(bi === -1) return -1;
+      return ai-bi;
+    }
+    return a.localeCompare(b,"vi");
+  });
 
   const hasOther = flat.some(p => p.brand === "Khác");
-  if(hasOther) brands.push("Khác");
+  if(hasOther && !brands.length) brands.push("Khác");
 
   const all = [
     "Tất cả",

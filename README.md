@@ -542,3 +542,10 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Hiển thị số sản phẩm trong từng danh mục.
 - Khi KiotViet thêm/bớt/đổi tên danh mục, web tự cập nhật theo dữ liệu API.
 - Chọn danh mục sẽ lọc sản phẩm theo đúng root category từ KiotViet.
+
+
+## V56 - Khôi phục phân loại hãng
+- Phần THƯƠNG HIỆU tự tạo lại từ dữ liệu sản phẩm KiotViet.
+- Nhận diện hãng từ tên sản phẩm, tên danh mục và tên phiên bản.
+- Giữ phân loại chính Điện thoại / Máy tính bảng từ KiotViet.
+- Khi chọn Điện thoại, các nút hãng như HONOR, OPPO, vivo, Xiaomi... xuất hiện theo dữ liệu thực tế.
