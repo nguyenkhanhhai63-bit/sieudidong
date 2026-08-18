@@ -34,48 +34,10 @@ async function isAdmin(req) {
 
 const SPEC_LINKS_KEY = "sdd:spec-links:v1";
 
-function redisConfig() {
-  return {
-    url:
-      process.env.UPSTASH_REDIS_REST_URL ||
-      process.env.KV_REST_API_URL ||
-      "",
-    token:
-      process.env.UPSTASH_REDIS_REST_TOKEN ||
-      process.env.KV_REST_API_TOKEN ||
-      ""
-  };
-}
-
-async function redisCommand(command) {
-  const { url, token } = redisConfig();
-
-  if (!url || !token) {
-    throw new Error(
-      "Thiếu UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN"
-    );
-  }
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(command)
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Redis ${res.status}: ${text}`);
-  }
-
-  const data = await res.json();
-  return data.result;
-}
+import { redisGet, redisSet } from "../../lib/redis.js";
 
 async function getSpecLinks() {
-  const raw = await redisCommand(["GET", SPEC_LINKS_KEY]);
+  const raw = await redisGet(SPEC_LINKS_KEY);
   if (!raw) return {};
 
   try {
@@ -87,7 +49,7 @@ async function getSpecLinks() {
 }
 
 async function saveSpecLinks(map) {
-  await redisCommand(["SET", SPEC_LINKS_KEY, JSON.stringify(map)]);
+  await redisSet(SPEC_LINKS_KEY, JSON.stringify(map));
 }
 
 function cleanModel(value) {
