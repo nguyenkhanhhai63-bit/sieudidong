@@ -2,7 +2,7 @@
 const grid = document.getElementById("productGrid");
 const searchInput = document.getElementById("searchInput");
 const clearSearch = document.getElementById("clearSearch");
-const onlyStock = document.getElementById("onlyStock");
+const onlyStock = { checked: false, addEventListener: ()=>{} };
 const updatedAt = document.getElementById("updatedAt");
 const darkMode = document.getElementById("darkMode");
 const summary = document.getElementById("summary");
@@ -300,12 +300,7 @@ function render(){
   // Luôn hiển thị tất cả model đang kinh doanh, kể cả hết hàng.
   const visibleGroups=[...groups];
 
-  const totalVariants=visibleGroups.reduce((sum,g)=>{
-    const variants=onlyStock.checked
-      ? g.items.filter(v=>Number(v.onHand||0)>0)
-      : g.items;
-    return sum+variants.length;
-  },0);
+  const totalVariants=visibleGroups.reduce((sum,g)=>sum+g.items.length,0);
 
   summary.textContent=`${visibleGroups.length} mẫu • ${totalVariants} phiên bản`;
 
@@ -321,9 +316,7 @@ function render(){
     // Nếu model còn ít nhất 1 biến thể có hàng và checkbox đang bật,
     // chỉ hiện các biến thể còn hàng.
     // Nếu model hết toàn bộ, vẫn dùng toàn bộ biến thể để hiện thông tin + báo Hết hàng.
-    const variants=(onlyStock.checked && !isProductOutOfStock)
-      ? inStockVariants
-      : [...group.items];
+    const variants=[...group.items];
 
     if(!variants.length) return;
 
@@ -417,7 +410,7 @@ function render(){
     const buy=document.createElement("button");
     buy.className="buy-btn";
     buy.type="button";
-    buy.textContent="XEM PHIÊN BẢN";
+    buy.textContent=isProductOutOfStock ? "HẾT HÀNG" : "CÒN HÀNG";
 
     const variantsList=document.createElement("div");
     variantsList.className="quick-variants";
@@ -479,10 +472,12 @@ function render(){
         selectedMemory=selected.memory || selectedMemory;
 
         price.textContent=money(selected.price);
-        status.textContent=isProductOutOfStock
-          ? "Hết hàng"
-          : (selected.onHand>0 ? "✓ Còn hàng" : "Hết hàng");
-        status.classList.toggle("out", isProductOutOfStock || !(selected.onHand>0));
+        const selectedInStock=Number(selected.onHand||0)>0;
+        status.textContent=selectedInStock ? "✓ Còn hàng" : "Hết hàng";
+        status.classList.toggle("out", !selectedInStock);
+
+        buy.textContent=selectedInStock ? "CÒN HÀNG" : "HẾT HÀNG";
+        buy.classList.toggle("out-of-stock", !selectedInStock);
       }else{
         price.textContent="Liên hệ";
         status.textContent="";
@@ -576,9 +571,6 @@ function render(){
 
     buy.addEventListener("click",()=>{
       variantsList.classList.toggle("open");
-      buy.textContent=variantsList.classList.contains("open")
-        ? "ẨN PHIÊN BẢN"
-        : "XEM PHIÊN BẢN";
     });
 
     body.append(title,attributeArea,price,buy,status,variantsList);

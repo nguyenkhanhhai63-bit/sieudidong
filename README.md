@@ -247,3 +247,11 @@ Khi bỏ tick:
 - Tên màu đang chọn hiển thị dạng note bên cạnh, ví dụ `(Xanh)`.
 - Dung lượng vẫn hiển thị bằng nút chữ như cũ.
 - Bấm màu vẫn đổi đúng giá/biến thể.
+
+
+## V19 - Luôn hiển thị đầy đủ
+- Đã bỏ hoàn toàn checkbox `Chỉ hiện hàng còn tồn`.
+- Website luôn hiển thị tất cả sản phẩm đang kinh doanh.
+- Sản phẩm hết hàng vẫn xuất hiện và ghi `Hết hàng`.
+- Các màu và dung lượng của sản phẩm hết hàng vẫn được giữ để khách xem.
+- Sản phẩm đã ngừng kinh doanh vẫn được loại theo dữ liệu API.

@@ -1114,3 +1114,19 @@ body.dark{
     min-height:30px;
   }
 }
+
+
+/* ===== V19 - Luôn hiển thị toàn bộ sản phẩm ===== */
+.stock-filter,
+.only-stock,
+.onlyStock,
+label[for="onlyStock"]{
+  display:none !important;
+}
+
+
+/* V20 - Nút trạng thái tồn kho */
+.buy-btn.out-of-stock{
+  background:#9ca3af;
+  cursor:pointer;
+}
