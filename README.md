@@ -228,3 +228,22 @@ Khi bỏ tick:
 - Bấm màu hoặc dung lượng sẽ đổi giá theo đúng tổ hợp.
 - Tổ hợp không tồn tại hoặc hết hàng sẽ tự ẩn.
 - Nút "XEM PHIÊN BẢN" vẫn cho xem danh sách tất cả biến thể còn hàng.
+
+
+## V17 - Vẫn hiển thị sản phẩm hết hàng
+- Sản phẩm đang kinh doanh nhưng hết toàn bộ vẫn xuất hiện trên website.
+- Card sẽ hiện trạng thái `Hết hàng`.
+- Nếu sản phẩm còn ít nhất một biến thể có hàng và bật "Chỉ hiện hàng còn tồn":
+  chỉ các biến thể còn hàng được hiển thị.
+- Nếu sản phẩm hết toàn bộ:
+  vẫn hiện card + thuộc tính/giá gần nhất để khách biết sản phẩm tồn tại, nhưng trạng thái là `Hết hàng`.
+- Sản phẩm đã ngừng kinh doanh vẫn tiếp tục bị ẩn từ API.
+
+
+## V18 - Màu dạng ô swatch
+- Thuộc tính Màu không còn hiển thị bằng chữ trong từng nút.
+- Mỗi màu là một ô màu trực quan.
+- Màu đang chọn có viền cam + dấu tick.
+- Tên màu đang chọn hiển thị dạng note bên cạnh, ví dụ `(Xanh)`.
+- Dung lượng vẫn hiển thị bằng nút chữ như cũ.
+- Bấm màu vẫn đổi đúng giá/biến thể.

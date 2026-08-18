@@ -244,13 +244,44 @@ function renderCategoryFilters(){
   });
 }
 
+
+function colorHex(name){
+  const s=String(name||"").trim().toLowerCase();
+
+  const map=[
+    [["đen","black"], "#202124"],
+    [["trắng","white"], "#f5f5f5"],
+    [["xanh dương","blue","xanh biển"], "#6f8fe8"],
+    [["xanh lá","green"], "#75b84f"],
+    [["xanh"], "#70a7d9"],
+    [["đỏ","red"], "#d84a4a"],
+    [["hồng","pink"], "#e8a7bb"],
+    [["tím","purple"], "#9a79d6"],
+    [["bạc","silver"], "#c9ced4"],
+    [["titan","titanium"], "#8a8a86"],
+    [["xám","gray","grey"], "#8a8f98"],
+    [["cam","orange"], "#e58a4a"],
+    [["vàng","gold","yellow"], "#d8b15c"],
+    [["nâu","brown"], "#8b6a55"],
+    [["be","cream"], "#d8c8ae"]
+  ];
+
+  for(const [keys,hex] of map){
+    if(keys.some(k=>s.includes(k))) return hex;
+  }
+
+  return "#d9dde3";
+}
+
 function render(){
   const q=searchInput.value.trim().toLowerCase();
   let items=flattenProducts(PRODUCTS);
 
-  if(onlyStock.checked){
-    items=items.filter(x=>x.onHand>0);
-  }
+  // Không lọc bỏ toàn bộ sản phẩm hết hàng ở đây.
+  // Khi bật "Chỉ hiện hàng còn tồn":
+  // - sản phẩm còn hàng: chỉ hiện các biến thể còn hàng
+  // - sản phẩm hết toàn bộ: vẫn giữ card và báo "Hết hàng"
+  
 
   if(ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
@@ -266,10 +297,8 @@ function render(){
   const groups=groupItems(items);
   grid.innerHTML="";
 
-  const visibleGroups=groups.filter(g=>{
-    if(!onlyStock.checked) return true;
-    return g.items.some(v=>Number(v.onHand||0)>0);
-  });
+  // Luôn hiển thị tất cả model đang kinh doanh, kể cả hết hàng.
+  const visibleGroups=[...groups];
 
   const totalVariants=visibleGroups.reduce((sum,g)=>{
     const variants=onlyStock.checked
@@ -286,8 +315,14 @@ function render(){
   }
 
   visibleGroups.forEach(group=>{
-    const variants=onlyStock.checked
-      ? group.items.filter(v=>Number(v.onHand||0)>0)
+    const inStockVariants=group.items.filter(v=>Number(v.onHand||0)>0);
+    const isProductOutOfStock=inStockVariants.length===0;
+
+    // Nếu model còn ít nhất 1 biến thể có hàng và checkbox đang bật,
+    // chỉ hiện các biến thể còn hàng.
+    // Nếu model hết toàn bộ, vẫn dùng toàn bộ biến thể để hiện thông tin + báo Hết hàng.
+    const variants=(onlyStock.checked && !isProductOutOfStock)
+      ? inStockVariants
       : [...group.items];
 
     if(!variants.length) return;
@@ -377,7 +412,7 @@ function render(){
     price.className="shop-price";
 
     const status=document.createElement("div");
-    status.className="shop-status";
+    status.className="shop-status" + (isProductOutOfStock ? " out" : "");
 
     const buy=document.createElement("button");
     buy.className="buy-btn";
@@ -444,7 +479,10 @@ function render(){
         selectedMemory=selected.memory || selectedMemory;
 
         price.textContent=money(selected.price);
-        status.textContent=selected.onHand>0 ? "✓ Còn hàng" : "Hết hàng";
+        status.textContent=isProductOutOfStock
+          ? "Hết hàng"
+          : (selected.onHand>0 ? "✓ Còn hàng" : "Hết hàng");
+        status.classList.toggle("out", isProductOutOfStock || !(selected.onHand>0));
       }else{
         price.textContent="Liên hệ";
         status.textContent="";
@@ -454,6 +492,10 @@ function render(){
         btn.classList.toggle("active",color===selectedColor);
       });
 
+      if(typeof colorNote!=="undefined"){
+        colorNote.textContent=selectedColor ? `(${selectedColor})` : "";
+      }
+
       memoryButtons.forEach((btn,mem)=>{
         btn.classList.toggle("active",mem===selectedMemory);
       });
@@ -462,11 +504,21 @@ function render(){
       renderVariantList();
     }
 
+    const colorNote=document.createElement("span");
+    colorNote.className="color-note";
+
     uniqueColors.forEach(color=>{
       const btn=document.createElement("button");
       btn.type="button";
-      btn.className="shop-attr-btn";
-      btn.textContent=color;
+      btn.className="color-swatch";
+      btn.setAttribute("aria-label",color);
+      btn.title=color;
+
+      const dot=document.createElement("span");
+      dot.className="color-swatch-dot";
+      dot.style.background=colorHex(color);
+
+      btn.appendChild(dot);
 
       btn.addEventListener("click",()=>{
         if(btn.classList.contains("disabled")) return;
@@ -485,6 +537,8 @@ function render(){
       colorButtons.set(color,btn);
       colorOptions.appendChild(btn);
     });
+
+    colorOptions.appendChild(colorNote);
 
     uniqueMemories.forEach(mem=>{
       const btn=document.createElement("button");
