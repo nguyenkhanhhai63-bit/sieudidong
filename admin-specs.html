@@ -363,6 +363,25 @@
     }
 
   </style>
+
+<style id="login-success-toast-style">
+.login-success-toast{
+  position:fixed; top:22px; left:50%; transform:translate(-50%,-12px);
+  z-index:99999; display:flex; align-items:center; gap:10px;
+  padding:12px 18px; border-radius:12px;
+  background:#ecfdf3; border:1px solid #86efac; color:#166534;
+  font:600 15px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  opacity:0; pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.login-success-toast.show{opacity:1;transform:translate(-50%,0)}
+.login-success-toast .check{
+  width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  background:#22c55e;color:#fff;font-size:14px;font-weight:800;
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <header class="top">
@@ -761,6 +780,7 @@ loginForm.addEventListener("submit",async(e)=>{
     if(!r.ok) throw new Error(data.error||"Đăng nhập thất bại");
     password.value="";
     loginMessage.textContent="";
+    showLoginSuccess();
     await loadAdmin();
   }catch(e){
     loginMessage.textContent=e.message;
@@ -791,6 +811,20 @@ setTimeout(()=>{
     analyticsCard.style.display="none";
   }
 },4000);
+
+
+function showLoginSuccess(){
+  let el=document.getElementById("loginSuccessToast");
+  if(!el){
+    el=document.createElement("div");
+    el.id="loginSuccessToast";
+    el.className="login-success-toast";
+    el.innerHTML='<span class="check">✓</span><span>Mật khẩu chính xác — đăng nhập thành công!</span>';
+    document.body.appendChild(el);
+  }
+  requestAnimationFrame(()=>el.classList.add("show"));
+  setTimeout(()=>el.classList.remove("show"),2200);
+}
 
 </script>
 </body>

@@ -745,3 +745,8 @@ V81:
 - Mỗi lệnh Redis timeout sau 2.5 giây và trả dữ liệu dự phòng.
 - Trang admin tự thử kết nối API tối đa 3 lần.
 - Giữ nguyên đường dẫn quản trị `/admin`.
+
+## V93 - Thông báo đăng nhập thành công
+- Khi nhập đúng mật khẩu quản trị, hiện thông báo xanh: “Mật khẩu chính xác — đăng nhập thành công!”
+- Thông báo tự ẩn sau khoảng 2,2 giây.
+- Không thay đổi cơ chế xác thực, session, thống kê hoặc Redis.
