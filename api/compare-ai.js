@@ -69,7 +69,7 @@ function extractResponseText(data){
 
 function isRetriableGeminiError(status,data){
   const message=String(data?.error?.message||"").toLowerCase();
-  return status===429 || status===503 || status===500 ||
+  return status===400 || status===404 || status===429 || status===503 || status===500 ||
     message.includes("high demand") ||
     message.includes("resource exhausted") ||
     message.includes("temporarily") ||
@@ -100,9 +100,11 @@ async function callGeminiModel(model,apiKey,input,systemInstruction){
         }],
         generationConfig:{
           maxOutputTokens:1600,
-          thinkingConfig:{
-            thinkingLevel:"low"
-          }
+          // Gemini 2.5 không hỗ trợ thinkingLevel.
+          // Dùng thinkingBudget cho 2.5; Gemini 3+ dùng thinkingLevel.
+          thinkingConfig: model.startsWith("gemini-2.5")
+            ? { thinkingBudget: 0 }
+            : { thinkingLevel: "LOW" }
         }
       })
     });
@@ -148,9 +150,9 @@ export default async function handler(req,res){
 
   const need=clean(req.body?.need,100) || "Cân bằng";
   const configuredModel=String(process.env.GEMINI_COMPARE_MODEL||"").trim();
-  const fallbackModels=String(process.env.GEMINI_FALLBACK_MODELS||"gemini-2.5-flash,gemini-2.0-flash")
+  const fallbackModels=String(process.env.GEMINI_FALLBACK_MODELS||"gemini-2.5-flash-lite,gemini-2.5-flash,gemini-3.1-flash-lite")
     .split(",").map(x=>x.trim()).filter(Boolean);
-  const modelCandidates=[configuredModel||"gemini-2.5-flash",...fallbackModels]
+  const modelCandidates=[configuredModel||"gemini-2.5-flash-lite",...fallbackModels]
     .filter((x,i,a)=>x && a.indexOf(x)===i);
 
   const productText=products.map((p,i)=>{
@@ -224,10 +226,14 @@ Hãy phân tích đủ 4 phần bắt buộc. Ưu tiên kết luận rõ máy n�
         continue;
       }
 
+      const publicMessage = r.status===429
+        ? "AI đang bận do lượng truy cập cao. Vui lòng thử lại sau ít phút."
+        : r.status===400 || r.status===404
+          ? "Model Gemini hiện tại không khả dụng. Hệ thống đã thử model dự phòng nhưng chưa thành công."
+          : "AI tạm thời chưa thể phân tích. Vui lòng thử lại.";
       return res.status(r.status===429 ? 429 : 502).json({
-        error:r.status===429
-          ? "AI đang bận do lượng truy cập cao. Vui lòng thử lại sau ít phút."
-          : "AI tạm thời chưa thể phân tích. Vui lòng thử lại."
+        error: publicMessage,
+        code: `GEMINI_${r.status}`
       });
     }
 
