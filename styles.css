@@ -704,3 +704,259 @@ body.dark{
     padding:11px;
   }
 }
+
+
+/* ===== V15 - Giao diện dạng shop/grid ===== */
+:root{
+  --shop-orange:#ff6a00;
+  --shop-orange-dark:#f15a00;
+}
+
+.page,
+.header-inner{
+  width:min(1500px, calc(100% - 28px));
+}
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:0;
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+  background:var(--card);
+}
+
+.shop-card{
+  min-width:0;
+  background:var(--card);
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+}
+
+.shop-media{
+  height:230px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  overflow:hidden;
+}
+
+.shop-media .product-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:12px;
+}
+
+.shop-media .image-placeholder{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.shop-body{
+  padding:10px 10px 12px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+
+.shop-title{
+  min-height:44px;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:700;
+  color:var(--text);
+}
+
+.shop-specs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  min-height:26px;
+  margin-top:6px;
+}
+
+.shop-chip{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:3px 6px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--soft);
+  color:var(--muted);
+  font-size:10px;
+}
+
+.shop-price{
+  margin-top:8px;
+  color:#d90000;
+  font-size:16px;
+  font-weight:700;
+}
+
+.buy-btn{
+  width:100%;
+  height:30px;
+  margin-top:10px;
+  border:0;
+  border-radius:5px;
+  background:linear-gradient(180deg,var(--shop-orange),var(--shop-orange-dark));
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.shop-status{
+  margin-top:8px;
+  color:var(--success);
+  font-size:11px;
+  font-weight:700;
+}
+
+.quick-variants{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  margin-top:8px;
+}
+
+.quick-variants.open{
+  display:flex;
+}
+
+.quick-variant{
+  width:100%;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+  padding:6px 7px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--card);
+  color:var(--text);
+  text-align:left;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  cursor:pointer;
+}
+
+.quick-variant strong{
+  color:#d90000;
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.quick-variant.active{
+  border-color:var(--shop-orange);
+  box-shadow:0 0 0 1px var(--shop-orange) inset;
+}
+
+/* Thanh lọc hãng nhìn giống menu ngang */
+.category-filters{
+  padding-top:8px;
+  padding-bottom:4px;
+  border-bottom:1px solid var(--line);
+}
+
+.category-btn{
+  border:0;
+  background:transparent;
+  color:#d97a00;
+  border-radius:0;
+  padding:5px 8px;
+}
+
+.category-btn.active{
+  background:transparent;
+  color:var(--text);
+  font-weight:700;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+/* Gọn phần title/search để giống trang bán hàng */
+.page-title{
+  margin-bottom:10px;
+}
+.page-title h1{
+  font-size:22px;
+}
+.toolbar{
+  top:64px;
+  padding-top:6px;
+}
+
+@media(max-width:1250px){
+  .product-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@media(max-width:980px){
+  .product-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+@media(max-width:720px){
+  .page,
+  .header-inner{
+    width:100%;
+  }
+
+  .page{
+    padding-left:6px;
+    padding-right:6px;
+  }
+
+  .product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .shop-media{
+    height:180px;
+  }
+
+  .shop-title{
+    min-height:40px;
+    font-size:13px;
+  }
+
+  .shop-price{
+    font-size:14px;
+  }
+}
+
+@media(max-width:420px){
+  .product-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .shop-media{
+    height:155px;
+  }
+
+  .shop-body{
+    padding:8px;
+  }
+
+  .shop-title{
+    min-height:38px;
+    font-size:12px;
+  }
+
+  .shop-price{
+    font-size:13px;
+  }
+
+  .buy-btn{
+    font-size:10px;
+  }
+}

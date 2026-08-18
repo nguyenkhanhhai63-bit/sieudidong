@@ -211,3 +211,11 @@ Khi bỏ tick:
 - Card sản phẩm trải ngang, giảm khoảng trống 2 bên.
 - Ảnh sản phẩm và khu vực thông tin được cân đối lại.
 - Tablet/mobile vẫn responsive như cũ.
+
+
+## V15 - Giao diện dạng shop/grid
+- Desktop: 5 sản phẩm mỗi hàng giống trang thương mại điện tử.
+- Ảnh lớn phía trên, tên sản phẩm, thuộc tính, giá, nút xem phiên bản.
+- Bấm "XEM PHIÊN BẢN" để mở nhanh màu/dung lượng và đổi giá.
+- Menu hãng dạng ngang.
+- Responsive 4 / 3 / 2 cột tùy màn hình.
