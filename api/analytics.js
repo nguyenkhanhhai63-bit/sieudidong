@@ -36,7 +36,13 @@ export default async function handler(req,res){
         await redisCommand(["PFADD","analytics:visitors:all",vid]);
         await redisCommand(["PFADD",`analytics:visitors:day:${day}`,vid]); await exp(`analytics:visitors:day:${day}`);
       }
-      await redisCommand(["HINCRBY","analytics:devices:all",device,"1"]);
+      if(vid){
+        // Mỗi visitor chỉ được tính 1 lần vào thống kê thiết bị.
+        const isNewDevice=await redisCommand(["SADD","analytics:device_visitors:all",vid]);
+        if(Number(isNewDevice)===1){
+          await redisCommand(["HINCRBY","analytics:devices:all",device,"1"]);
+        }
+      }
     }
     if(type==="product_view" && product){
       await redisCommand(["ZINCRBY","analytics:product_views:all","1",product]);

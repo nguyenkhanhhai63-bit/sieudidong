@@ -27,16 +27,21 @@ const categoryFilters = document.getElementById("categoryFilters");
 const inlineProductDetail = document.getElementById("inlineProductDetail");
 
 
-const ANALYTICS_VISITOR_KEY="sdd-analytics-visitor-v1";
+const ANALYTICS_VISITOR_KEY="sdd-analytics-visitor-v2";
 function analyticsVisitorId(){
   try{
-    let id=localStorage.getItem(ANALYTICS_VISITOR_KEY);
-    if(!id){
-      id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
-      localStorage.setItem(ANALYTICS_VISITOR_KEY,id);
+    const cookieName="sdd_vid";
+    const cookieMatch=document.cookie.match(new RegExp("(?:^|; )"+cookieName+"=([^;]+)"));
+    let id=localStorage.getItem(ANALYTICS_VISITOR_KEY) || (cookieMatch ? decodeURIComponent(cookieMatch[1]) : "");
+    if(!/^[A-Za-z0-9_-]{8,80}$/.test(id)){
+      id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,14);
     }
+    localStorage.setItem(ANALYTICS_VISITOR_KEY,id);
+    document.cookie=cookieName+"="+encodeURIComponent(id)+"; Max-Age=31536000; Path=/; SameSite=Lax; Secure";
     return id;
-  }catch(_){ return "v_"+Math.random().toString(36).slice(2,14); }
+  }catch(_){
+    return "v_"+Math.random().toString(36).slice(2,14);
+  }
 }
 function analyticsDevice(){
   const ua=navigator.userAgent||"", w=window.innerWidth||0;

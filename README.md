@@ -792,3 +792,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Mặc định mở Thống kê sau khi đăng nhập.
 - Thứ tự tab: Thống kê → Link thông số → SEO.
 - Thay tab Sitemap bằng bảng SEO có kiểm tra Sitemap, robots.txt và số URL.
+
+## V98 - Thống kê khách duy nhất
+- Sau khi đăng nhập `/admin`, tab Thống kê được mở mặc định.
+- `Lượt xem` vẫn tính mọi lần mở/tải trang.
+- `Khách` dùng visitor ID ổn định: cùng một trình duyệt/thiết bị truy cập nhiều lần vẫn chỉ tính 1 khách trong ngày/khoảng thời gian.
+- Visitor ID được giữ bằng localStorage + cookie 1 năm để ổn định hơn.
+- Thống kê loại thiết bị chuyển sang đếm khách duy nhất thay vì đếm số lần tải trang.
+- Không dùng IP làm định danh khách.
