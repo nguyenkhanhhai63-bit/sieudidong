@@ -6,8 +6,10 @@ const onlyStock = document.getElementById("onlyStock");
 const updatedAt = document.getElementById("updatedAt");
 const darkMode = document.getElementById("darkMode");
 const summary = document.getElementById("summary");
+const categoryFilters = document.getElementById("categoryFilters");
 
 let PRODUCTS = [];
+let ACTIVE_CATEGORY = "Tất cả";
 
 function money(v){
   return new Intl.NumberFormat("vi-VN").format(Number(v || 0)) + " đ";
@@ -52,7 +54,9 @@ function flattenProducts(raw){
         color:extractColor(v.name || p.name || ""),
         price:Number(v.price || 0),
         onHand:Number(v.onHand || 0),
-        image:v.image || p.image || ""
+        image:v.image || p.image || "",
+        categoryName:p.categoryName || "Khác",
+        rootCategoryName:p.rootCategoryName || p.categoryName || "Khác"
       });
     });
   });
@@ -70,6 +74,8 @@ function groupItems(items){
       map.set(key,{
         name:key,
         image:item.image || "",
+        categoryName:item.categoryName || "Khác",
+        rootCategoryName:item.rootCategoryName || "Khác",
         items:[]
       });
     }
@@ -83,8 +89,7 @@ function groupItems(items){
     group.items.push(item);
   });
 
-  return [...map.values()]
-    .sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"vi"));
 }
 
 function imageHTML(group){
@@ -105,8 +110,38 @@ function imageHTML(group){
 }
 
 function variantLabel(v){
-  const parts=[v.color,v.memory].filter(Boolean);
-  return parts.length ? parts.join(" • ") : "Phiên bản";
+  return [v.color,v.memory].filter(Boolean).join(" • ") || "Phiên bản";
+}
+
+function renderCategoryFilters(){
+  const categories = [...new Set(
+    PRODUCTS
+      .map(p => p.rootCategoryName || p.categoryName)
+      .filter(Boolean)
+  )].sort((a,b)=>a.localeCompare(b,"vi"));
+
+  const all = ["Tất cả", ...categories];
+
+  if(ACTIVE_CATEGORY !== "Tất cả" && !categories.includes(ACTIVE_CATEGORY)){
+    ACTIVE_CATEGORY = "Tất cả";
+  }
+
+  categoryFilters.innerHTML = "";
+
+  all.forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="category-btn" + (cat===ACTIVE_CATEGORY ? " active" : "");
+    btn.textContent=cat;
+
+    btn.addEventListener("click",()=>{
+      ACTIVE_CATEGORY=cat;
+      renderCategoryFilters();
+      render();
+    });
+
+    categoryFilters.appendChild(btn);
+  });
 }
 
 function render(){
@@ -115,6 +150,10 @@ function render(){
 
   if(onlyStock.checked){
     items=items.filter(x=>x.onHand>0);
+  }
+
+  if(ACTIVE_CATEGORY!=="Tất cả"){
+    items=items.filter(x=>x.rootCategoryName===ACTIVE_CATEGORY);
   }
 
   if(q){
@@ -146,6 +185,10 @@ function render(){
     const body=document.createElement("div");
     body.className="product-body";
 
+    const category=document.createElement("div");
+    category.className="category-label";
+    category.textContent=group.categoryName || group.rootCategoryName || "";
+
     const title=document.createElement("div");
     title.className="product-name";
     title.textContent=group.name;
@@ -163,7 +206,6 @@ function render(){
         row.className="variant";
 
         const info=document.createElement("div");
-        info.className="variant-info";
 
         const main=document.createElement("div");
         main.className="variant-main";
@@ -183,7 +225,7 @@ function render(){
         variants.appendChild(row);
       });
 
-    body.append(title,variants);
+    body.append(category,title,variants);
     card.append(media,body);
     grid.appendChild(card);
   });
@@ -201,12 +243,14 @@ async function load(){
     PRODUCTS=data.products || [];
 
     updatedAt.textContent="Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
+
+    renderCategoryFilters();
     render();
 
   }catch(err){
     console.error(err);
     updatedAt.textContent="Không thể cập nhật";
-    grid.innerHTML='<div class="empty">Không tải được dữ liệu KiotViet.</div>';
+    grid.innerHTML='<div class="empty">Không tải được bảng giá. Vui lòng thử lại sau.</div>';
   }
 }
 

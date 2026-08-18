@@ -88,7 +88,65 @@ function firstImage(obj) {
   return obj.image || obj.Image || "";
 }
 
-function normalizeProduct(item) {
+
+async function getCategories() {
+  const pageSize = 100;
+  let currentItem = 0;
+  const all = [];
+
+  for (let page = 0; page < 20; page++) {
+    const data = await kvFetch(
+      `/categories?pageSize=${pageSize}&currentItem=${currentItem}&hierachicalData=false`
+    );
+
+    const items = Array.isArray(data.data) ? data.data : [];
+
+    if (!items.length) break;
+
+    all.push(...items);
+
+    if (items.length < pageSize) break;
+
+    currentItem += pageSize;
+  }
+
+  return all;
+}
+
+function buildCategoryMap(categories) {
+  const map = new Map();
+
+  categories.forEach(c => {
+    map.set(Number(c.categoryId), {
+      id: Number(c.categoryId),
+      parentId: c.parentId == null ? null : Number(c.parentId),
+      name: c.categoryName || "Khác"
+    });
+  });
+
+  return map;
+}
+
+function categoryPath(categoryId, categoryMap) {
+  const current = categoryMap.get(Number(categoryId));
+  if (!current) return { name: "Khác", rootName: "Khác" };
+
+  let root = current;
+  const seen = new Set();
+
+  while (root.parentId && categoryMap.has(root.parentId) && !seen.has(root.id)) {
+    seen.add(root.id);
+    root = categoryMap.get(root.parentId);
+  }
+
+  return {
+    name: current.name || "Khác",
+    rootName: root.name || current.name || "Khác"
+  };
+}
+
+function normalizeProduct(item, categoryMap) {
+  const cat = categoryPath(item.categoryId, categoryMap);
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
   const branches = inventories.map(i => ({
     branchId: i.branchId,
@@ -129,6 +187,8 @@ function normalizeProduct(item) {
     code: item.code,
     name: item.fullName || item.name || item.code,
     categoryId: item.categoryId,
+    categoryName: cat.name,
+    rootCategoryName: cat.rootName,
     basePrice: Number(item.basePrice || 0),
     image: parentImage,
     variants
@@ -166,10 +226,13 @@ export default async function handler(req, res) {
       currentItem += pageSize;
     }
 
+    const categories = await getCategories();
+    const categoryMap = buildCategoryMap(categories);
+
     const products = all
       .filter(p => !p.isDeleted)
       .filter(p => p.isActive !== false)
-      .map(normalizeProduct);
+      .map(p => normalizeProduct(p, categoryMap));
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
 

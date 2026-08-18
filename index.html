@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Siêu Di Động - Bảng giá</title>
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
-  <link rel="stylesheet" href="/styles.css?v=5">
+  <link rel="stylesheet" href="/styles.css?v=8">
 </head>
 <body>
   <header class="site-header">
@@ -13,7 +13,6 @@
       <div class="brand">
         <img class="brand-logo-wide" src="/assets/logo-wide.jpg" alt="Siêu Di Động">
         <img class="brand-logo-square" src="/assets/logo-square.jpg" alt="Siêu Di Động">
-      </div>
       </div>
 
       <label class="theme-toggle">
@@ -24,10 +23,10 @@
   </header>
 
   <main class="page">
-    <section class="hero">
+    <section class="page-title">
       <div>
-        <h1>Chọn máy dễ hơn, xem giá nhanh hơn</h1>
-        <p>Giá bán và tình trạng hàng được đồng bộ trực tiếp từ hệ thống KiotViet.</p>
+        <h1>Bảng giá Siêu Di Động</h1>
+        <p>Giá bán và tình trạng hàng được cập nhật thường xuyên.</p>
       </div>
       <div id="updatedAt" class="updated">Đang cập nhật...</div>
     </section>
@@ -37,6 +36,8 @@
         <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy..." autocomplete="off">
         <button id="clearSearch" class="clear-btn" type="button">Xóa</button>
       </div>
+
+      <div id="categoryFilters" class="category-filters"></div>
 
       <div class="filter-row">
         <label class="only-stock">
@@ -48,7 +49,7 @@
     </section>
 
     <section id="productGrid" class="product-grid">
-      <div class="loading">Đang tải dữ liệu KiotViet...</div>
+      <div class="loading">Đang tải bảng giá...</div>
     </section>
 
     <footer class="footer">
@@ -56,11 +57,11 @@
         <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
         <span>SIÊU DI ĐỘNG</span>
       </div>
-      <div>Giá bán được đồng bộ trực tiếp từ hệ thống KiotViet.</div>
+      <div>Thông tin sản phẩm và giá bán được cập nhật thường xuyên.</div>
       <div>© 2026 Siêu Di Động</div>
     </footer>
   </main>
 
-  <script src="/app.js?v=5"></script>
+  <script src="/app.js?v=8"></script>
 </body>
 </html>

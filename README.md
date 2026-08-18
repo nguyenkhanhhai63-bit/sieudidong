@@ -145,3 +145,13 @@ Ngoài ra backend còn lọc thêm:
 `p.isActive !== false`
 
 Vì vậy các sản phẩm đã chuyển sang trạng thái ngừng kinh doanh trong KiotViet sẽ không xuất hiện trên website.
+
+
+## V7 - Font cơ bản + phân loại sản phẩm
+
+- Font toàn website chuyển về Arial / Helvetica / sans-serif để dễ đọc.
+- Lấy danh sách Nhóm hàng trực tiếp từ KiotViet API `/categories`.
+- Mỗi sản phẩm được gắn `categoryName` và nhóm cha `rootCategoryName`.
+- Website tự tạo các nút lọc nhóm hàng từ dữ liệu KiotViet.
+- Không cần tự gõ danh mục trong code.
+- Vẫn chỉ lấy hàng đang kinh doanh (`isActive=true`).
