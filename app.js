@@ -67,6 +67,63 @@ function trackSearchQuery(){
 
 
 
+
+function setMeta(selector,attr,value){
+  let el=document.querySelector(selector);
+  if(!el){
+    el=document.createElement("meta");
+    if(selector.includes('property=')){
+      const m=selector.match(/property="([^"]+)"/); if(m) el.setAttribute("property",m[1]);
+    }else{
+      const m=selector.match(/name="([^"]+)"/); if(m) el.setAttribute("name",m[1]);
+    }
+    document.head.appendChild(el);
+  }
+  el.setAttribute(attr,value);
+}
+function updateSeoForHome(){
+  document.title="Siêu Di Động | Điện thoại & sản phẩm công nghệ";
+  const canonical=document.querySelector('link[rel="canonical"]');
+  if(canonical) canonical.href="https://sieudidong.vn/";
+  setMeta('meta[name="description"]',"content","Siêu Di Động Quy Nhơn - điện thoại, máy tính bảng và sản phẩm công nghệ. Giá và tình trạng hàng được cập nhật thường xuyên.");
+  setMeta('meta[property="og:title"]',"content",document.title);
+  setMeta('meta[property="og:url"]',"content","https://sieudidong.vn/");
+  const productLd=document.getElementById("seoProductJsonLd");
+  if(productLd) productLd.textContent="";
+}
+function updateSeoForProduct(group,variant){
+  const name=String(group?.name||variant?.baseName||"Sản phẩm");
+  const price=Number(variant?.price||0);
+  const image=String(variant?.image||variant?.images?.[0]||"");
+  const url="https://sieudidong.vn"+productUrl(name);
+  document.title=`${name} | Siêu Di Động`;
+  const canonical=document.querySelector('link[rel="canonical"]');
+  if(canonical) canonical.href=url;
+  const desc=`${name} tại Siêu Di Động Quy Nhơn. Xem giá, màu sắc, dung lượng và tình trạng hàng cập nhật.`;
+  setMeta('meta[name="description"]',"content",desc);
+  setMeta('meta[property="og:title"]',"content",document.title);
+  setMeta('meta[property="og:description"]',"content",desc);
+  setMeta('meta[property="og:url"]',"content",url);
+  if(image) setMeta('meta[property="og:image"]',"content",image);
+  const ld={
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name":name,
+    "image":image ? [image] : undefined,
+    "brand":{"@type":"Brand","name":String(variant?.brand||"")},
+    "offers":{
+      "@type":"Offer",
+      "priceCurrency":"VND",
+      "price":price || undefined,
+      "availability":Number(variant?.onHand||0)>0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "url":url
+    }
+  };
+  const el=document.getElementById("seoProductJsonLd");
+  if(el) el.textContent=JSON.stringify(ld);
+}
+
+
 let PRODUCTS = [];
 const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
 const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -230,6 +287,7 @@ function renderPriceFilters(){
 
     btn.addEventListener("click",()=>{
       ACTIVE_PRICE_FILTER=item.label;
+      sendAnalytics("filter_click",{action:"Giá: "+item.label});
       renderPriceFilters();
       render();
       updateUrlFromState();
@@ -721,6 +779,7 @@ function renderCategoryFilters(){
 
     btn.addEventListener("click",()=>{
       ACTIVE_CATEGORY=filter;
+      sendAnalytics("filter_click",{action:"Hãng: "+filter});
       renderCategoryFilters();
       render();
       updateUrlFromState();
@@ -1020,6 +1079,8 @@ function openProductFromUrl(){
 function openInlineProductDetail(group,initialVariant,options={}){
   
   sendAnalytics("product_view",{product:String(group?.name||"")});
+  sendAnalytics("detail_click",{product:String(group?.name||"")});
+  updateSeoForProduct(group,initialVariant || group?.items?.[0]);
 if(!inlineProductDetail) return;
 
   if(options.updateUrl !== false){
@@ -1560,6 +1621,7 @@ if(sortSelect){
   sortSelect.value=ACTIVE_SORT;
   sortSelect.addEventListener("change",()=>{
     ACTIVE_SORT=sortSelect.value || "default";
+    sendAnalytics("filter_click",{action:"Sắp xếp: "+ACTIVE_SORT});
     render();
     updateUrlFromState();
   });
@@ -1569,3 +1631,13 @@ if(sortSelect){
 if(searchInput) searchInput.addEventListener("input",trackSearchQuery);
 const analyticsZaloButton=document.getElementById("zaloConsultBtn");
 if(analyticsZaloButton) analyticsZaloButton.addEventListener("click",()=>sendAnalytics("zalo_click"));
+
+if(!location.pathname.startsWith("/san-pham/")) updateSeoForHome();
+
+
+sendAnalytics("heartbeat");
+setInterval(()=>sendAnalytics("heartbeat"),60000);
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible") sendAnalytics("heartbeat");
+});
+

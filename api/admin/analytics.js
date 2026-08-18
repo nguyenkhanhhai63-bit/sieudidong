@@ -83,7 +83,7 @@ export default async function handler(req,res){
 
     const [
       dailyViews,dailyZalo,todayVisitors,visitors7,visitors30,
-      totalViews,totalVisitors,zaloAll,devices,topProducts,topSearches
+      totalViews,totalVisitors,zaloAll,devices,topProducts,topSearches,onlineNow,detailClicks,filters
     ]=await Promise.all([
       mget(d30.map(d=>`analytics:pageviews:day:${d}`)),
       mget(d30.map(d=>`analytics:zalo:day:${d}`)),
@@ -95,7 +95,14 @@ export default async function handler(req,res){
       getNum("analytics:zalo:all"),
       hash("analytics:devices:all"),
       top("analytics:product_views:all"),
-      top("analytics:searches:all")
+      top("analytics:searches:all"),
+      (async()=>{
+        const now=Date.now();
+        await safeCommand(["ZREMRANGEBYSCORE","analytics:online","0",String(now-5*60*1000)],0);
+        return n(await safeCommand(["ZCOUNT","analytics:online",String(now-5*60*1000),"+inf"],0));
+      })(),
+      getNum("analytics:detail_clicks:all"),
+      hash("analytics:filters:all")
     ]);
 
     const daily=d30.map((date,i)=>({
@@ -121,12 +128,15 @@ export default async function handler(req,res){
         todayZalo:daily.at(-1)?.zalo||0,
         zalo7:sum(last7,"zalo"),
         zalo30:sum(daily,"zalo"),
-        zaloAll
+        zaloAll,
+        onlineNow,
+        detailClicks
       },
       daily,
       devices,
       topProducts,
-      topSearches
+      topSearches,
+      filters
     });
   }catch(err){
     console.error("Analytics fatal:",err);

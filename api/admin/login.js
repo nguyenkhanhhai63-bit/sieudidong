@@ -1,3 +1,5 @@
+import { redisCommand } from "../../lib/redis.js";
+
 
 async function sha256(text) {
   const data = new TextEncoder().encode(String(text));
@@ -31,6 +33,32 @@ async function isAdmin(req) {
   return sig === expected;
 }
 
+
+function clientIp(req){
+  const fwd=String(req.headers["x-forwarded-for"]||"").split(",")[0].trim();
+  return fwd || String(req.socket?.remoteAddress||"unknown");
+}
+async function loginRateState(req){
+  const raw=clientIp(req);
+  const key=`admin:login:fail:${raw}`;
+  try{
+    const count=Number(await redisCommand(["GET",key])||0);
+    return {key,count};
+  }catch(_){
+    return {key,count:0};
+  }
+}
+async function recordLoginFailure(key){
+  try{
+    const count=Number(await redisCommand(["INCR",key])||1);
+    if(count===1) await redisCommand(["EXPIRE",key,"900"]);
+    return count;
+  }catch(_){ return 1; }
+}
+async function clearLoginFailures(key){
+  try{ await redisCommand(["DEL",key]); }catch(_){}
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -46,11 +74,25 @@ export default async function handler(req, res) {
     });
   }
 
+  const rate=await loginRateState(req);
+  if(rate.count>=5){
+    res.setHeader("Retry-After","900");
+    return res.status(429).json({error:"Đã nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút."});
+  }
+
   const password = String(req.body?.password || "");
 
   if (password !== expected) {
-    return res.status(401).json({ error: "Mật khẩu không đúng" });
+    const failures=await recordLoginFailure(rate.key);
+    const remaining=Math.max(0,5-failures);
+    return res.status(401).json({
+      error: remaining>0
+        ? `Mật khẩu không đúng. Còn ${remaining} lần thử.`
+        : "Đã nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút."
+    });
   }
+
+  await clearLoginFailures(rate.key);
 
   const ts = Date.now();
   const sig = await sha256(`${secret}|${ts}`);

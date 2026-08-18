@@ -41,7 +41,7 @@
     .admin-tab{height:38px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:700;cursor:pointer}
     .admin-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
     .panel{display:none}.panel.active{display:block!important}
-    .analytics-shell{padding:18px}.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .analytics-shell{padding:18px}.metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     .metric{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}.metric small{display:block;color:var(--muted);font-size:11px}
     .metric strong{display:block;margin-top:5px;font-size:24px}.metric em{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-style:normal}
     .analytics-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:14px}.abox{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
@@ -439,12 +439,15 @@
           <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
           <div class="metric"><small>Lượt xem 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng: 0</em></div>
           <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
+          <div class="metric"><small>Khách đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
+          <div class="metric"><small>Lượt mở chi tiết</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
         </div>
         <div class="analytics-grid">
           <div class="abox"><h2>Lượt truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
           <div class="abox"><h2>Thiết bị truy cập</h2><div id="deviceList"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
         </div>
       </div>
     </div>
@@ -712,6 +715,8 @@ async function loadAnalytics(){
     mTodayVisitors.textContent=fmt(o.todayVisitors); mVisitors30.textContent=`30 ngày: ${fmt(o.visitors30)}`;
     mViews30.textContent=fmt(o.views30); mTotalViews.textContent=`Tổng: ${fmt(o.totalViews)}`;
     mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
+    mOnlineNow.textContent=fmt(o.onlineNow);
+    mDetailClicks.textContent=fmt(o.detailClicks);
     const chart=document.getElementById("trafficChart"); chart.innerHTML="";
     const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
@@ -719,6 +724,8 @@ async function loadAnalytics(){
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
+    const filterList=Object.entries(d.filters||{}).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value).slice(0,12);
+    renderRank("filterRanks",filterList);
 
     if(!(d.daily||[]).some(x=>Number(x.views||0)>0) && Number(o.totalViews||0)===0){
       const note=document.createElement("div");

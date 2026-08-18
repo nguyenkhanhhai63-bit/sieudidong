@@ -750,3 +750,25 @@ V81:
 - Khi nhập đúng mật khẩu quản trị, hiện thông báo xanh: “Mật khẩu chính xác — đăng nhập thành công!”
 - Thông báo tự ẩn sau khoảng 2,2 giây.
 - Không thay đổi cơ chế xác thực, session, thống kê hoặc Redis.
+
+
+## V94 - SEO + bảo mật admin + thống kê nâng cao
+
+### SEO
+- Meta description, canonical, Open Graph.
+- Product JSON-LD khi mở chi tiết sản phẩm.
+- `robots.txt`.
+- Sitemap động tại `/sitemap.xml`.
+
+### Bảo mật admin
+- Giới hạn 5 lần nhập sai / 15 phút theo IP.
+- Đúng mật khẩu sẽ xóa bộ đếm sai.
+- `/admin` và API admin có header no-cache / noindex / anti-frame.
+
+### Thống kê nâng cao
+- Khách đang online trong 5 phút gần nhất.
+- Tổng lượt mở chi tiết sản phẩm.
+- Theo dõi mức giá / hãng / sắp xếp được dùng nhiều.
+- Vẫn giữ lượt xem, khách, Zalo, sản phẩm xem nhiều, từ khóa và thiết bị.
+
+Không cần thêm biến môi trường mới; dùng Redis hiện tại.

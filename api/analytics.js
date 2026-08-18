@@ -26,6 +26,7 @@ export default async function handler(req,res){
     const product=clean(req.body?.product,180);
     const query=clean(req.body?.query,100).toLowerCase();
     const device=["mobile","desktop","tablet"].includes(req.body?.device) ? req.body.device : "other";
+    const action=clean(req.body?.action,80);
     const day=vnDay();
 
     if(type==="page_view"){
@@ -47,6 +48,20 @@ export default async function handler(req,res){
     if(type==="search" && query.length>=2){
       await redisCommand(["ZINCRBY","analytics:searches:all","1",query]);
     }
+
+    if(type==="heartbeat" && vid){
+      const now=Date.now();
+      await redisCommand(["ZADD","analytics:online",String(now),vid]);
+      await redisCommand(["ZREMRANGEBYSCORE","analytics:online","0",String(now-5*60*1000)]);
+    }
+    if(type==="detail_click"){
+      await redisCommand(["INCR","analytics:detail_clicks:all"]);
+      await redisCommand(["INCR",`analytics:detail_clicks:day:${day}`]); await exp(`analytics:detail_clicks:day:${day}`);
+    }
+    if(type==="filter_click" && action){
+      await redisCommand(["HINCRBY","analytics:filters:all",action,"1"]);
+    }
+
     res.setHeader("Cache-Control","no-store");
     return res.status(200).json({ok:true});
   }catch(err){
