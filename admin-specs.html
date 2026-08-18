@@ -638,6 +638,10 @@
 }
 </style>
 
+
+<style>
+#seoCard .seo-editor{display:block!important;visibility:visible!important;opacity:1!important}
+</style>
 </head>
 <body class="auth-pending">
 <header class="top">
@@ -1477,5 +1481,15 @@ async function loadSeoStatus(){
 if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
 
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  const seo=document.getElementById("seoCard");
+  const editor=seo && seo.querySelector(".seo-editor");
+  const pad=seo && seo.querySelector('div[style*="padding:24px"]');
+  if(editor && pad) pad.insertBefore(editor,pad.firstChild);
+});
+</script>
+
 </body>
 </html>
