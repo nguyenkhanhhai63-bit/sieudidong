@@ -7195,3 +7195,147 @@ body.modal-open #zaloConsultBtn{
     text-align:center;
   }
 }
+
+
+/* =========================================================
+   V107 - AI phân tích trong So sánh sản phẩm
+   ========================================================= */
+.compare-ai-box{
+  margin:18px 20px 4px;
+  overflow:hidden;
+  border:1px solid #ffd6c2;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fffaf7 0%,#fff 100%);
+}
+
+.compare-ai-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 18px;
+  border-bottom:1px solid #ffe5d7;
+}
+
+.compare-ai-title-wrap{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.compare-ai-title-wrap strong{
+  color:#161616;
+  font-size:17px;
+  font-weight:850;
+}
+.compare-ai-title-wrap span{
+  margin-top:4px;
+  color:#707782;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.compare-ai-controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+
+.compare-ai-select{
+  min-height:40px;
+  max-width:210px;
+  padding:0 34px 0 11px;
+  border:1px solid #dfe3e8;
+  border-radius:9px;
+  background:#fff;
+  color:#333;
+  font-size:12px;
+  font-weight:650;
+}
+
+.compare-ai-btn{
+  min-height:40px;
+  padding:0 15px;
+  border:1px solid #ff5a00;
+  border-radius:9px;
+  background:#ff5a00;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.compare-ai-btn:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+
+.compare-ai-result{
+  padding:16px 18px 18px;
+  color:#24272c;
+  font-size:13px;
+  line-height:1.6;
+}
+.compare-ai-placeholder,
+.compare-ai-wait{
+  color:#787f89;
+}
+.compare-ai-line{
+  margin:5px 0;
+  white-space:pre-line;
+}
+.compare-ai-line.heading{
+  margin-top:12px;
+  color:#111827;
+  font-weight:850;
+}
+.compare-ai-line.heading:first-child{
+  margin-top:0;
+}
+.compare-ai-line.bullet{
+  padding-left:2px;
+}
+.compare-ai-error{
+  padding:10px 12px;
+  border:1px solid #fecaca;
+  border-radius:9px;
+  background:#fff5f5;
+  color:#b42318;
+  font-weight:650;
+}
+
+@media(max-width:720px){
+  .compare-ai-box{
+    margin:12px 10px 2px;
+    border-radius:12px;
+  }
+  .compare-ai-top{
+    align-items:stretch;
+    flex-direction:column;
+    padding:13px;
+    gap:11px;
+  }
+  .compare-ai-title-wrap strong{
+    font-size:16px;
+  }
+  .compare-ai-controls{
+    display:grid;
+    grid-template-columns:1fr auto;
+    width:100%;
+  }
+  .compare-ai-select{
+    width:100%;
+    max-width:none;
+    min-width:0;
+    font-size:11px;
+  }
+  .compare-ai-btn{
+    padding:0 12px;
+    font-size:11px;
+  }
+  .compare-ai-result{
+    padding:13px;
+    font-size:12px;
+    line-height:1.55;
+  }
+}

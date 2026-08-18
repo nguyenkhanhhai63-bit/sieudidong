@@ -845,3 +845,23 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bỏ khối `Thông tin phiên bản` vì màu và dung lượng đã chọn trực tiếp phía trên.
 - Chỉ giữ một dòng lưu ý ngắn trước phần `Thông Số Kỹ Thuật`.
 - Tình trạng còn hàng vẫn hiển thị ở phần đầu trang.
+
+
+## V107 - AI phân tích khi so sánh
+- Trong cửa sổ So sánh có khối `AI phân tích`.
+- Khách chọn nhu cầu: Cân bằng / Game / Camera / Pin / Giá-hiệu năng.
+- AI chỉ được gửi tên, giá, tồn kho và các thông số `/api/specs` của những máy khách đang so sánh.
+- API key chỉ nằm server-side, không đưa ra trình duyệt.
+- Giới hạn khoảng 12 lần AI / IP / giờ để giảm lạm dụng và chi phí.
+- Cần thêm Environment Variable trên Vercel:
+  `OPENAI_API_KEY`
+- Có thể thêm `OPENAI_COMPARE_MODEL`; mặc định dùng `gpt-5.6`.
+
+
+## V108 - Chuyển AI so sánh sang Google Gemini
+- Bỏ OpenAI khỏi tính năng phân tích so sánh.
+- Backend gọi Gemini API; API key vẫn nằm server-side.
+- Vercel Environment Variables:
+  - `GEMINI_API_KEY`: bắt buộc.
+  - `GEMINI_COMPARE_MODEL`: tùy chọn, mặc định `gemini-3.6-flash`.
+- Sau khi thêm/chỉnh Environment Variables trên Vercel, Redeploy Production.

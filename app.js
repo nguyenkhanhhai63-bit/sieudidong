@@ -963,6 +963,79 @@ async function fetchCompareSpecs(group){
   return [];
 }
 
+
+function renderAiCompareText(container,text){
+  container.innerHTML="";
+  const chunks=String(text||"").split(/\n+/).map(x=>x.trim()).filter(Boolean);
+
+  chunks.forEach(line=>{
+    const p=document.createElement("div");
+    p.className="compare-ai-line";
+
+    // Hỗ trợ tiêu đề/bullet đơn giản nhưng render bằng textContent để an toàn.
+    if(/^#{1,3}\s+/.test(line)){
+      p.classList.add("heading");
+      line=line.replace(/^#{1,3}\s+/,"");
+    }else if(/^(Nhận xét nhanh|Điểm mạnh|Máy phù hợp nhất|Kết luận|Lưu ý)\s*[:：]?/i.test(line)){
+      p.classList.add("heading");
+    }else if(/^[-•*]\s+/.test(line)){
+      p.classList.add("bullet");
+      line="• "+line.replace(/^[-•*]\s+/,"");
+    }
+
+    p.textContent=line;
+    container.appendChild(p);
+  });
+}
+
+function aiComparePayload(groups,specs){
+  return groups.map((group,index)=>{
+    const variant=getDefaultVariantForGroup(group);
+    return {
+      name:group.name,
+      price:Number(variant?.price||0),
+      inStock:Boolean(variant && Number(variant.onHand||0)>0),
+      specs:Array.isArray(specs[index]) ? specs[index] : []
+    };
+  });
+}
+
+async function runAiCompare(groups,specs,need,button,result){
+  button.disabled=true;
+  const old=button.textContent;
+  button.textContent="Gemini đang phân tích...";
+  result.classList.add("loading");
+  result.innerHTML='<div class="compare-ai-wait">Gemini đang đọc cấu hình và đối chiếu các máy...</div>';
+
+  try{
+    const r=await fetch("/api/compare-ai",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        need,
+        products:aiComparePayload(groups,specs)
+      })
+    });
+
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"Không phân tích được.");
+
+    result.classList.remove("loading");
+    renderAiCompareText(result,data.text);
+  }catch(err){
+    result.classList.remove("loading");
+    result.innerHTML="";
+    const error=document.createElement("div");
+    error.className="compare-ai-error";
+    error.textContent=err?.message||"Gemini đang tạm thời không sử dụng được.";
+    result.appendChild(error);
+  }finally{
+    button.disabled=false;
+    button.textContent=old;
+  }
+}
+
+
 function specMap(rows){
   const map=new Map();
   (rows||[]).forEach(r=>{
@@ -1011,6 +1084,56 @@ async function openCompareModal(){
   const groups=[...COMPARE_ITEMS];
   const specs=await Promise.all(groups.map(fetchCompareSpecs));
   const maps=specs.map(specMap);
+
+  const aiBox=document.createElement("section");
+  aiBox.className="compare-ai-box";
+
+  const aiTop=document.createElement("div");
+  aiTop.className="compare-ai-top";
+
+  const aiTitleWrap=document.createElement("div");
+  aiTitleWrap.className="compare-ai-title-wrap";
+  aiTitleWrap.innerHTML=`
+    <strong>Gemini AI phân tích</strong>
+    <span>AI đọc đúng các thông số đang hiển thị để gợi ý máy phù hợp.</span>`;
+
+  const aiControls=document.createElement("div");
+  aiControls.className="compare-ai-controls";
+
+  const needSelect=document.createElement("select");
+  needSelect.className="compare-ai-select";
+  needSelect.setAttribute("aria-label","Nhu cầu sử dụng");
+  [
+    ["Cân bằng","Nhu cầu: Cân bằng"],
+    ["Chơi game / hiệu năng","Ưu tiên: Chơi game"],
+    ["Chụp ảnh / camera","Ưu tiên: Camera"],
+    ["Pin lâu / sử dụng nhiều","Ưu tiên: Pin lâu"],
+    ["Giá / hiệu năng","Ưu tiên: Giá / hiệu năng"]
+  ].forEach(([value,label])=>{
+    const op=document.createElement("option");
+    op.value=value;
+    op.textContent=label;
+    needSelect.appendChild(op);
+  });
+
+  const aiBtn=document.createElement("button");
+  aiBtn.type="button";
+  aiBtn.className="compare-ai-btn";
+  aiBtn.textContent="✨ Gemini phân tích";
+
+  aiControls.append(needSelect,aiBtn);
+  aiTop.append(aiTitleWrap,aiControls);
+
+  const aiResult=document.createElement("div");
+  aiResult.className="compare-ai-result";
+  aiResult.innerHTML='<div class="compare-ai-placeholder">Chọn nhu cầu rồi bấm “AI phân tích” để nhận gợi ý.</div>';
+
+  aiBtn.addEventListener("click",()=>{
+    runAiCompare(groups,specs,needSelect.value,aiBtn,aiResult);
+  });
+
+  aiBox.append(aiTop,aiResult);
+  dialog.appendChild(aiBox);
 
   const preferred=[
     "Màn hình","Hệ điều hành","Camera sau","Camera trước",
@@ -1537,7 +1660,7 @@ if(!inlineProductDetail) return;
     try{ sendAnalyticsEvent("zalo_click",{source:"product_detail",product:group.name}); }catch(_){}
   });
 
-  detailActions.append(detailCompareBtn,buyZaloBtn);
+  detailActions.append(buyZaloBtn,detailCompareBtn);
 
   const infoBox=document.createElement("div");
   infoBox.className="detail-info-box";
