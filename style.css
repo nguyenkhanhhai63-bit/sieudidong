@@ -109,3 +109,22 @@
   .zalo-float__icon{width:52px;height:52px;flex-basis:52px;font-size:14px}
   .zalo-float__text{font-size:13px;padding:6px 8px}
 }
+
+/* V74 force visible */
+#zaloConsultBtn.zalo-float{
+  display:flex !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:fixed !important;
+  left:18px !important;
+  right:auto !important;
+  bottom:22px !important;
+  z-index:2147483647 !important;
+}
+@media(max-width:640px){
+  #zaloConsultBtn.zalo-float{
+    left:12px !important;
+    right:auto !important;
+    bottom:16px !important;
+  }
+}
