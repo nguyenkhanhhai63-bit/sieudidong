@@ -568,3 +568,16 @@ Chỉ lấy và hiển thị đúng các dòng:
 - Bỏ các thông số phụ khác.
 - Ưu tiên bản nội dung chi tiết hơn nếu nguồn có trường trùng.
 - Đổi cache thông số để không dùng dữ liệu cũ.
+
+
+## V62 - Fix parser thiếu Màn hình / Camera / Pin
+Nguyên nhân V61: hàm chuẩn hóa tên sản phẩm cũ loại bỏ các từ `màn`, `camera`, `pin`,
+nên parser vô tình làm mất chính nhãn thông số kỹ thuật.
+
+V62:
+- Tách riêng `normalizeSpecLabel()` cho nhãn thông số.
+- Không còn loại bỏ `màn hình`, `camera`, `pin`.
+- Nhận thêm các nhãn nguồn như `Công nghệ màn hình`, `Camera chính`,
+  `Camera selfie`, `Vi xử lý`, `Chất liệu`, `Khung viền`.
+- Vẫn chỉ hiển thị đúng 10 nhóm thông số chính.
+- Đổi cache namespace để bỏ dữ liệu lỗi cũ.

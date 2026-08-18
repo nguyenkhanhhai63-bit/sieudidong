@@ -432,17 +432,32 @@ async function findProductPage(productName) {
   return null;
 }
 
-function wantedLabel(label="") {
-  const n = normalized(label);
 
-  const exactOrStarts = [
+function normalizeSpecLabel(str="") {
+  return removeVietnameseMarks(String(str))
+    .toLowerCase()
+    .replace(/[:：]\s*$/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function wantedLabel(label="") {
+  const n = normalizeSpecLabel(label);
+
+  const prefixes = [
     "man hinh",
+    "cong nghe man hinh",
+    "loai man hinh",
     "he dieu hanh",
     "camera sau",
+    "camera chinh",
     "camera truoc",
+    "camera selfie",
     "cpu",
     "chip",
     "chipset",
+    "vi xu ly",
     "ram",
     "bo nho trong",
     "rom",
@@ -450,10 +465,12 @@ function wantedLabel(label="") {
     "sim",
     "dung luong pin",
     "pin",
-    "thiet ke"
+    "thiet ke",
+    "chat lieu",
+    "khung vien"
   ];
 
-  return exactOrStarts.some(x => n === x || n.startsWith(x + " "));
+  return prefixes.some(x => n === x || n.startsWith(x + " "));
 }
 
 function extractSpecs(html) {
@@ -518,7 +535,7 @@ function extractSpecs(html) {
   // Deduplicate by normalized label, prefer richer value.
   const map = new Map();
   for (const row of rows) {
-    const key = normalized(row.label);
+    const key = normalizeSpecLabel(row.label);
     const old = map.get(key);
     if (!old || row.value.length > old.value.length) map.set(key,row);
   }
@@ -528,20 +545,36 @@ function extractSpecs(html) {
 
 
 function canonicalSpecLabel(label="") {
-  const n = normalized(label);
+  const n = normalizeSpecLabel(label);
 
-  if (n === "man hinh" || n.startsWith("man hinh ")) return "Màn hình";
-  if (n === "he dieu hanh" || n.startsWith("he dieu hanh ")) return "Hệ điều hành";
-  if (n === "camera sau" || n.startsWith("camera sau ")) return "Camera sau";
-  if (n === "camera truoc" || n.startsWith("camera truoc ")) return "Camera trước";
+  if (
+    n === "man hinh" || n.startsWith("man hinh ") ||
+    n === "cong nghe man hinh" || n.startsWith("cong nghe man hinh ") ||
+    n === "loai man hinh" || n.startsWith("loai man hinh ")
+  ) return "Màn hình";
+
+  if (n === "he dieu hanh" || n.startsWith("he dieu hanh "))
+    return "Hệ điều hành";
+
+  if (
+    n === "camera sau" || n.startsWith("camera sau ") ||
+    n === "camera chinh" || n.startsWith("camera chinh ")
+  ) return "Camera sau";
+
+  if (
+    n === "camera truoc" || n.startsWith("camera truoc ") ||
+    n === "camera selfie" || n.startsWith("camera selfie ")
+  ) return "Camera trước";
 
   if (
     n === "cpu" || n.startsWith("cpu ") ||
     n === "chip" || n.startsWith("chip ") ||
-    n === "chipset" || n.startsWith("chipset ")
+    n === "chipset" || n.startsWith("chipset ") ||
+    n === "vi xu ly" || n.startsWith("vi xu ly ")
   ) return "CPU";
 
-  if (n === "ram" || n.startsWith("ram ")) return "RAM";
+  if (n === "ram" || n.startsWith("ram "))
+    return "RAM";
 
   if (
     n === "bo nho trong" || n.startsWith("bo nho trong ") ||
@@ -558,7 +591,11 @@ function canonicalSpecLabel(label="") {
     n === "pin" || n.startsWith("pin ")
   ) return "Dung lượng pin";
 
-  if (n === "thiet ke" || n.startsWith("thiet ke ")) return "Thiết kế";
+  if (
+    n === "thiet ke" || n.startsWith("thiet ke ") ||
+    n === "chat lieu" || n.startsWith("chat lieu ") ||
+    n === "khung vien" || n.startsWith("khung vien ")
+  ) return "Thiết kế";
 
   return "";
 }
