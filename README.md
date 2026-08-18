@@ -597,3 +597,23 @@ V62:
 - Nếu không tìm thấy bảng kỹ thuật thật sự, trả về trống thay vì lấy đại đoạn văn.
 - Vẫn chỉ giữ đúng 10 nhóm thông số chính.
 - Đổi cache namespace để loại dữ liệu sai cũ.
+
+
+## V65 - Fix font giá
+- Giảm font-weight giá từ 800 xuống 700.
+- Tắt synthetic bold để chữ `đ` không bị thô/méo.
+- Cân lại letter-spacing và line-height.
+- Giữ màu đỏ và độ nổi bật của giá.
+
+
+## V66 - Lọc sản phẩm theo giá
+Thêm bộ lọc:
+- Tất cả giá
+- Dưới 5 triệu
+- 5 - 10 triệu
+- 10 - 15 triệu
+- 15 - 20 triệu
+- Trên 20 triệu
+
+Bộ lọc dùng đúng mức giá đang hiển thị trên card sản phẩm và kết hợp được với hãng, Bán chạy và ô tìm kiếm.
+Mobile có thể kéo ngang các mức giá.

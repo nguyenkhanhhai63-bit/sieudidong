@@ -38,6 +38,67 @@ function loadProductCache(){
   }
 }
 let ACTIVE_CATEGORY = "Tất cả";
+let ACTIVE_PRICE_FILTER = "Tất cả giá";
+
+const PRICE_FILTERS = [
+  { label:"Tất cả giá", min:0, max:Infinity },
+  { label:"Dưới 5 triệu", min:0, max:5000000 },
+  { label:"5 - 10 triệu", min:5000000, max:10000000 },
+  { label:"10 - 15 triệu", min:10000000, max:15000000 },
+  { label:"15 - 20 triệu", min:15000000, max:20000000 },
+  { label:"Trên 20 triệu", min:20000000, max:Infinity }
+];
+
+function priceFilterConfig(){
+  return PRICE_FILTERS.find(x=>x.label===ACTIVE_PRICE_FILTER) || PRICE_FILTERS[0];
+}
+
+function getDefaultVariantForGroup(group){
+  const variants=[...(group?.items || [])];
+  if(!variants.length) return null;
+
+  return variants.sort((a,b)=>{
+    const stockDiff=(b.onHand>0)-(a.onHand>0);
+    if(stockDiff!==0) return stockDiff;
+    return Number(a.price||0)-Number(b.price||0);
+  })[0] || null;
+}
+
+function groupMatchesPrice(group){
+  if(ACTIVE_PRICE_FILTER==="Tất cả giá") return true;
+
+  const variant=getDefaultVariantForGroup(group);
+  const price=Number(variant?.price || 0);
+  if(price<=0) return false;
+
+  const cfg=priceFilterConfig();
+
+  if(cfg.max===Infinity) return price >= cfg.min;
+  return price >= cfg.min && price < cfg.max;
+}
+
+function renderPriceFilters(){
+  const host=document.getElementById("priceFilters");
+  if(!host) return;
+
+  host.innerHTML="";
+
+  PRICE_FILTERS.forEach(item=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="price-filter-btn" + (item.label===ACTIVE_PRICE_FILTER ? " active" : "");
+    btn.textContent=item.label;
+
+    btn.addEventListener("click",()=>{
+      ACTIVE_PRICE_FILTER=item.label;
+      renderPriceFilters();
+      render();
+    });
+
+    host.appendChild(btn);
+  });
+}
+
 
 let BEST_SELLER_PRODUCT_IDS = [];
 let BEST_SELLER_READY = false;
@@ -330,6 +391,7 @@ function renderMainCategoryMenu(){
     btn.addEventListener("click",()=>{
       ACTIVE_MAIN_CATEGORY=cat.name;
       ACTIVE_CATEGORY="Tất cả";
+      ACTIVE_PRICE_FILTER="Tất cả giá";
 
       const wrap=document.querySelector(".commerce-category-menu");
       const toggle=document.getElementById("commerceCategoryBtn");
@@ -524,6 +586,8 @@ function renderCategoryFilters(){
 
     categoryFilters.appendChild(btn);
   });
+
+  renderPriceFilters();
 }
 
 function colorHex(name){
@@ -574,7 +638,9 @@ function render(){
     );
   }
 
-  const groups=groupItems(items);
+  let groups=groupItems(items);
+  groups=groups.filter(groupMatchesPrice);
+
   grid.innerHTML="";
 
   const totalVariants=groups.reduce((sum,g)=>sum+g.items.length,0);
@@ -589,11 +655,7 @@ function render(){
     const variants=[...group.items];
     if(!variants.length) return;
 
-    const defaultVariant=[...variants].sort((a,b)=>{
-      const stockDiff=(b.onHand>0)-(a.onHand>0);
-      if(stockDiff!==0) return stockDiff;
-      return Number(a.price||0)-Number(b.price||0);
-    })[0];
+    const defaultVariant=getDefaultVariantForGroup(group);
 
     const card=document.createElement("article");
     card.className="compact-product-card";
