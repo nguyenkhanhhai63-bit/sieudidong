@@ -1,0 +1,66 @@
+
+
+/* ===== V71: Nút Zalo tư vấn ===== */
+.zalo-consult-btn{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:9998;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:54px;
+  padding:8px 14px 8px 8px;
+  border:1px solid #e3e8ef;
+  border-radius:999px;
+  background:#fff;
+  color:#111827;
+  text-decoration:none;
+  box-shadow:0 8px 28px rgba(15,23,42,.16);
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.zalo-consult-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 32px rgba(15,23,42,.20);
+}
+.zalo-consult-icon{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#0068ff;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:-.3px;
+}
+.zalo-consult-text{
+  display:flex;
+  flex-direction:column;
+  line-height:1.15;
+}
+.zalo-consult-text strong{
+  font-size:14px;
+  font-weight:800;
+}
+.zalo-consult-text small{
+  margin-top:3px;
+  color:#667085;
+  font-size:11px;
+}
+@media (max-width: 640px){
+  .zalo-consult-btn{
+    right:14px;
+    bottom:18px;
+    min-height:50px;
+    padding:6px 12px 6px 6px;
+    gap:8px;
+  }
+  .zalo-consult-icon{
+    width:38px;
+    height:38px;
+  }
+  .zalo-consult-text strong{font-size:13px}
+  .zalo-consult-text small{font-size:10px}
+}

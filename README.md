@@ -649,3 +649,10 @@ Có thể copy URL gửi khách; khi mở lại web sẽ giữ nguyên trạng t
 ## V70
 - Đổi nút `← Quay lại danh sách` thành `← Về trang chủ`.
 - Khi bấm sẽ chuyển thẳng về `/`, không giữ URL sản phẩm hoặc bộ lọc cũ.
+
+## V71 - Nút liên hệ Zalo
+- Thêm nút Zalo nổi ở góc dưới bên phải trên desktop và mobile.
+- Nội dung: `Chat Zalo / Nhân viên tư vấn`.
+- Để gắn Zalo thật, mở `app.js` và sửa:
+  `const SIEUDIDONG_ZALO_URL = "https://zalo.me/";`
+  thành link Zalo của shop/nhân viên.

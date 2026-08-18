@@ -1,3 +1,21 @@
+
+/* V71 - Link Zalo tư vấn.
+   Thay link bên dưới bằng link Zalo của shop/nhân viên, ví dụ:
+   https://zalo.me/84901234567
+*/
+const SIEUDIDONG_ZALO_URL = "https://zalo.me/0353105423";
+
+function initZaloConsultButton(){
+  const btn = document.getElementById("zaloConsultBtn");
+  if (!btn) return;
+  btn.href = SIEUDIDONG_ZALO_URL;
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initZaloConsultButton);
+} else {
+  initZaloConsultButton();
+}
+
 const grid = document.getElementById("productGrid");
 const searchInput = document.getElementById("searchInput");
 const clearSearch = document.getElementById("clearSearch");
