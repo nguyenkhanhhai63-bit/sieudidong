@@ -5763,3 +5763,17 @@ textarea{
     font-size:.72rem;
   }
 }
+
+
+/* V67 - Bỏ phần hero "Sản phẩm nổi bật" để tiết kiệm diện tích */
+.catalog-overview{
+  padding-top:16px !important;
+}
+.catalog-nav-row{
+  margin-top:0 !important;
+}
+@media(max-width:720px){
+  .catalog-overview{
+    padding-top:11px !important;
+  }
+}
