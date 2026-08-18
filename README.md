@@ -408,3 +408,29 @@ Nguyên nhân:
 - Validate trang sản phẩm trước khi lấy thông số để tránh ghép sai model.
 - Parser thông số đọc được table, dt/dd và các block label:value.
 - Đổi cache client từ specs-v1 sang specs-v2 để bỏ cache lỗi của bản V35.
+
+
+## V37 - Ghép thông số theo model nghiêm ngặt
+- Không còn chỉ dựa vào độ giống tên.
+- Bắt buộc hãng phải khớp.
+- Các mã model như Z11, 15T, X300, K90... phải trùng.
+- Các hậu tố quan trọng Pro / Pro Max / Ultra / Max / Mini / Plus / Turbo / RT... phải khớp tuyệt đối.
+- Nếu không xác minh chắc chắn đúng model, không lấy thông số.
+- Cache thông số đổi sang namespace mới để loại toàn bộ dữ liệu ghép sai của V35/V36.
+- Màu, dung lượng, giá và tồn kho vẫn lấy từ dữ liệu cửa hàng, không lấy từ nguồn thông số.
+
+
+## V38 - Chỉ hiển thị thông số chính
+Chỉ giữ 10 nhóm thông số:
+1. Màn hình
+2. Hệ điều hành
+3. Camera sau
+4. Camera trước
+5. CPU
+6. RAM
+7. Bộ nhớ trong
+8. Thẻ SIM
+9. Dung lượng pin
+10. Thiết kế
+
+Các thông số phụ khác từ nguồn sẽ không hiển thị.

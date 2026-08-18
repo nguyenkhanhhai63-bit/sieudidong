@@ -223,19 +223,92 @@ function candidateTextFromHref(href="") {
   }
 }
 
+
+const MODEL_QUALIFIERS = [
+  "pro max","pro+","pro plus","pro","ultra","max","mini","plus",
+  "turbo","rt","se","fe","lite","air","fold","flip","neo","note"
+];
+
+function words(text="") {
+  return normalized(text).split(" ").filter(Boolean);
+}
+
+function extractModelIdentity(text="") {
+  const n = normalized(modelCore(text));
+  const tokens = words(n);
+
+  const brand = detectBrand(n);
+
+  // Keep alpha-numeric model tokens such as z11, 15t, x300, ace6, k90...
+  const modelTokens = tokens.filter(t =>
+    /[a-z]/.test(t) && /\d/.test(t)
+  );
+
+  const qualifiers = MODEL_QUALIFIERS.filter(q => {
+    const qTokens = q.split(" ");
+    return qTokens.every(x => tokens.includes(x));
+  });
+
+  // For series without digits, preserve distinctive words after brand.
+  const distinctive = tokens.filter(t =>
+    ![
+      brand,"dien","thoai","5g","4g","chinh","hang",
+      "snapdragon","dimensity","pin","mah","gb","tb"
+    ].includes(t)
+  );
+
+  return {
+    brand,
+    modelTokens:[...new Set(modelTokens)],
+    qualifiers:[...new Set(qualifiers)],
+    distinctive:[...new Set(distinctive)]
+  };
+}
+
+function identityMatches(targetName, candidateName) {
+  const a = extractModelIdentity(targetName);
+  const b = extractModelIdentity(candidateName);
+
+  if (a.brand && b.brand && a.brand !== b.brand) return false;
+
+  // All target model tokens must exist in candidate.
+  for (const token of a.modelTokens) {
+    if (!b.modelTokens.includes(token)) return false;
+  }
+
+  // Critical qualifiers must match exactly both ways.
+  const critical = ["pro max","pro+","pro plus","pro","ultra","max","mini","plus","turbo","rt","se","fe","lite","air","fold","flip"];
+  for (const q of critical) {
+    const aHas = a.qualifiers.includes(q);
+    const bHas = b.qualifiers.includes(q);
+    if (aHas !== bHas) return false;
+  }
+
+  // Require at least 2 distinctive common words when no alpha-numeric model token exists.
+  if (!a.modelTokens.length) {
+    const common = a.distinctive.filter(x => b.distinctive.includes(x));
+    if (common.length < Math.min(2, a.distinctive.length)) return false;
+  }
+
+  return true;
+}
+
 async function pageLooksLikeProduct(url, productName) {
   try {
     const html = await fetchText(url);
-    const title = extractTitle(html);
-    const score = similarity(productName, title || candidateTextFromHref(url));
+    const title = extractTitle(html) || candidateTextFromHref(url);
 
-    // Also require specs-ish content so category/news pages do not pass.
-    const specHint = /th[oô]ng s[oố] k[yỹ] thu[aậ]t|camera sau|dung l[uư][oợ]ng pin|chipset|b[oộ] nh[oớ] trong/i.test(
-      stripTags(html).slice(0, 120000)
-    );
+    if (!identityMatches(productName, title)) {
+      return null;
+    }
 
-    if (score >= 0.40 && specHint) {
-      return { href:url, text:title || candidateTextFromHref(url), score, html };
+    const score = similarity(productName, title);
+
+    const text = stripTags(html).slice(0, 150000);
+    const specHint = /th[oô]ng s[oố] k[yỹ] thu[aậ]t|camera sau|dung l[uư][oợ]ng pin|chipset|b[oộ] nh[oớ] trong|cpu|ram/i.test(text);
+
+    if (score >= 0.32 && specHint) {
+      return { href:url, text:title, score, html };
     }
   } catch (_) {}
 
@@ -293,7 +366,7 @@ async function findProductPage(productName) {
 
   // Validate the best few pages instead of trusting anchor text alone.
   for (const c of ranked) {
-    if (c.score < 0.30) continue;
+    if (c.score < 0.25) continue;
     const validated = await pageLooksLikeProduct(c.href, productName);
     if (validated) return validated;
   }
@@ -301,11 +374,29 @@ async function findProductPage(productName) {
   return null;
 }
 
-function wantedLabel(label) {
+function wantedLabel(label="") {
   const n = normalized(label);
-  return SPEC_LABELS.some(x => n.includes(normalized(x)));
-}
 
+  const allowed = [
+    "man hinh",
+    "he dieu hanh",
+    "camera sau",
+    "camera truoc",
+    "cpu",
+    "chip",
+    "chipset",
+    "ram",
+    "bo nho trong",
+    "rom",
+    "the sim",
+    "sim",
+    "dung luong pin",
+    "pin",
+    "thiet ke"
+  ];
+
+  return allowed.some(x => n === x || n.startsWith(x + " "));
+}
 
 function extractSpecs(html) {
   const rows = [];
@@ -377,6 +468,52 @@ function extractSpecs(html) {
   return [...map.values()];
 }
 
+function canonicalSpecLabel(label="") {
+  const n = normalized(label);
+
+  if (n.startsWith("man hinh")) return "Màn hình";
+  if (n.startsWith("he dieu hanh")) return "Hệ điều hành";
+  if (n.startsWith("camera sau")) return "Camera sau";
+  if (n.startsWith("camera truoc")) return "Camera trước";
+  if (n === "cpu" || n.startsWith("cpu ") || n === "chip" || n.startsWith("chip ") || n.startsWith("chipset")) return "CPU";
+  if (n === "ram" || n.startsWith("ram ")) return "RAM";
+  if (n.startsWith("bo nho trong") || n === "rom" || n.startsWith("rom ")) return "Bộ nhớ trong";
+  if (n.startsWith("the sim") || n === "sim" || n.startsWith("sim ")) return "Thẻ SIM";
+  if (n.startsWith("dung luong pin") || n === "pin" || n.startsWith("pin ")) return "Dung lượng pin";
+  if (n.startsWith("thiet ke")) return "Thiết kế";
+  return "";
+}
+
+function coreSpecsOnly(specs=[]) {
+  const order = [
+    "Màn hình",
+    "Hệ điều hành",
+    "Camera sau",
+    "Camera trước",
+    "CPU",
+    "RAM",
+    "Bộ nhớ trong",
+    "Thẻ SIM",
+    "Dung lượng pin",
+    "Thiết kế"
+  ];
+
+  const map = new Map();
+
+  for (const row of specs) {
+    const label = canonicalSpecLabel(row.label);
+    if (!label || !row.value) continue;
+
+    const old = map.get(label);
+    // Prefer the richer entry if synonyms are duplicated.
+    if (!old || String(row.value).length > String(old.value).length) {
+      map.set(label, {label, value:row.value});
+    }
+  }
+
+  return order.filter(x => map.has(x)).map(x => map.get(x));
+}
+
 function extractTitle(html) {
   const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   if (h1) return stripTags(h1[1]);
@@ -411,7 +548,7 @@ export default async function handler(req, res) {
     }
 
     const html = found.html || await fetchText(found.href);
-    const specs = extractSpecs(html);
+    const specs = coreSpecsOnly(extractSpecs(html));
 
     if (!specs.length) {
       return res.status(404).json({
@@ -426,7 +563,8 @@ export default async function handler(req, res) {
       sourceName: extractTitle(html) || found.text,
       sourceUrl: found.href,
       matchScore: Math.round(found.score * 100) / 100,
-      parserVersion: "v36",
+      parserVersion: "v38-core-specs",
+      verifiedModel: true,
       specs,
       fetchedAt: new Date().toISOString()
     };
