@@ -1002,6 +1002,108 @@ async function fetchCompareSpecs(group){
 }
 
 
+
+let compareSpeechUtterance=null;
+let compareSpeechText="";
+let compareSpeechButton=null;
+
+function cleanSpeechText(text=""){
+  return String(text)
+    .replace(/[#*_`>-]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function stopCompareSpeech(){
+  try{
+    speechSynthesis.cancel();
+  }catch(_){}
+  compareSpeechUtterance=null;
+  if(compareSpeechButton){
+    compareSpeechButton.classList.remove("speaking");
+    compareSpeechButton.textContent="🔊 Nghe tư vấn";
+  }
+}
+
+function speakCompareAdvice(text,button){
+  if(!("speechSynthesis" in window)){
+    showCompareNotice("Trình duyệt này chưa hỗ trợ đọc văn bản.");
+    return;
+  }
+
+  const normalized=cleanSpeechText(text);
+  if(!normalized){
+    showCompareNotice("Chưa có nội dung AI để đọc.");
+    return;
+  }
+
+  // Nếu đang đọc cùng nội dung => dừng.
+  if(speechSynthesis.speaking && compareSpeechText===normalized){
+    stopCompareSpeech();
+    return;
+  }
+
+  stopCompareSpeech();
+
+  compareSpeechText=normalized;
+  compareSpeechButton=button;
+
+  const utter=new SpeechSynthesisUtterance(normalized);
+  utter.lang="vi-VN";
+  utter.rate=1.02;
+  utter.pitch=1;
+  utter.volume=1;
+
+  const voices=speechSynthesis.getVoices?.()||[];
+  const viVoice=voices.find(v=>/^vi(-|_)/i.test(v.lang)) || voices.find(v=>/Vietnam/i.test(v.name));
+  if(viVoice) utter.voice=viVoice;
+
+  utter.onstart=()=>{
+    button.classList.add("speaking");
+    button.textContent="⏹ Dừng đọc";
+  };
+  utter.onend=stopCompareSpeech;
+  utter.onerror=stopCompareSpeech;
+
+  compareSpeechUtterance=utter;
+  try{
+    speechSynthesis.speak(utter);
+  }catch(_){
+    stopCompareSpeech();
+    showCompareNotice("Không phát được giọng đọc trên thiết bị này.");
+  }
+}
+
+function mountAiVoiceButton(result,text){
+  let bar=result.parentElement?.querySelector(".compare-ai-voicebar");
+  if(!bar){
+    bar=document.createElement("div");
+    bar.className="compare-ai-voicebar";
+
+    const hint=document.createElement("span");
+    hint.textContent="Lười đọc? Nghe AI tư vấn";
+
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="compare-ai-voice-btn";
+    btn.textContent="🔊 Nghe tư vấn";
+
+    bar.append(hint,btn);
+    result.parentElement?.insertBefore(bar,result);
+
+    btn.addEventListener("click",()=>{
+      speakCompareAdvice(btn.dataset.text||"",btn);
+    });
+  }
+
+  const btn=bar.querySelector(".compare-ai-voice-btn");
+  if(btn){
+    btn.dataset.text=String(text||"");
+    btn.disabled=!String(text||"").trim();
+  }
+}
+
+
 function renderAiCompareText(container,text){
   container.innerHTML="";
   const chunks=String(text||"").split(/\n+/).map(x=>x.trim()).filter(Boolean);
@@ -1039,6 +1141,7 @@ function aiComparePayload(groups,specs){
 }
 
 async function runAiCompare(groups,specs,need,button,result){
+  stopCompareSpeech();
   button.disabled=true;
   delete button.dataset.retried;
   const requestId="cmp_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);
@@ -1103,6 +1206,7 @@ async function runAiCompare(groups,specs,need,button,result){
           if(!rr.ok) throw new Error(rd.error||message);
           result.classList.remove("loading");
           renderAiCompareText(result,rd.text);
+          mountAiVoiceButton(result,rd.text);
           return;
         }finally{
           clearTimeout(retryTimer);
@@ -1113,6 +1217,7 @@ async function runAiCompare(groups,specs,need,button,result){
 
     result.classList.remove("loading");
     renderAiCompareText(result,data.text);
+    mountAiVoiceButton(result,data.text);
   }catch(err){
     result.classList.remove("loading");
     result.innerHTML="";
@@ -1168,6 +1273,7 @@ async function openCompareModal(){
   document.body.classList.add("modal-open");
 
   const close=()=>{
+    stopCompareSpeech();
     modal.classList.remove("open");
     document.body.classList.remove("modal-open");
   };

@@ -919,3 +919,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Cấu hình lưu trong Redis, áp dụng ngay cho các lần phân tích mới.
 - Có nút khôi phục mặc định.
 - Đây là prompt/instruction tuning, không phải fine-tune model Gemini.
+
+## V116 - Phát loa lời AI tư vấn
+- Sau khi Gemini phân tích xong, hiện nút `🔊 Nghe tư vấn`.
+- Dùng Web Speech API của trình duyệt để đọc tiếng Việt.
+- Tự chọn voice `vi-VN` nếu thiết bị có.
+- Bấm lần nữa khi đang đọc sẽ dừng.
+- Đóng popup hoặc chạy phân tích mới sẽ tự dừng giọng đọc.
+- Không cần thêm API key hay chi phí TTS.

@@ -7397,3 +7397,59 @@ body.modal-open #zaloConsultBtn{
     width:100%;
   }
 }
+
+
+/* =========================================================
+   V116 - Phát loa lời AI tư vấn
+   ========================================================= */
+.compare-ai-voicebar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  border-top:1px solid #ffe5d7;
+  border-bottom:1px solid #ffe5d7;
+  background:#fffdfb;
+}
+.compare-ai-voicebar span{
+  color:#6b7280;
+  font-size:12px;
+  font-weight:700;
+}
+.compare-ai-voice-btn{
+  min-height:36px;
+  padding:0 12px;
+  border:1px solid #ff5a00;
+  border-radius:9px;
+  background:#fff;
+  color:#e34e00;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.compare-ai-voice-btn:hover{
+  background:#fff4ed;
+}
+.compare-ai-voice-btn.speaking{
+  background:#ff5a00;
+  color:#fff;
+}
+.compare-ai-voice-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+@media(max-width:720px){
+  .compare-ai-voicebar{
+    padding:10px 13px;
+  }
+  .compare-ai-voicebar span{
+    font-size:11px;
+  }
+  .compare-ai-voice-btn{
+    min-height:34px;
+    padding:0 10px;
+    font-size:11px;
+  }
+}
