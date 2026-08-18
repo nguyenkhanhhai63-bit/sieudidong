@@ -256,13 +256,105 @@ function normalizeProductBaseName(fullName, color, memory){
 }
 
 
-let ACTIVE_MAIN_CATEGORY="Điện thoại";
-window.addEventListener("sdd:main-category",(e)=>{
-  ACTIVE_MAIN_CATEGORY=e.detail?.category || "Điện thoại";
-  ACTIVE_CATEGORY="Tất cả";
-  renderCategoryFilters();
-  render();
-});
+
+let ACTIVE_MAIN_CATEGORY = "";
+let MAIN_CATEGORIES = [];
+
+function normalizeCategoryName(text=""){
+  return String(text || "").trim();
+}
+
+function categoryKey(text=""){
+  return normalizeCategoryName(text).toLowerCase();
+}
+
+function buildMainCategories(){
+  const flat = flattenProducts(PRODUCTS);
+
+  const counts = new Map();
+
+  flat.forEach(p=>{
+    const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
+    if(!root) return;
+
+    const key = categoryKey(root);
+    const old = counts.get(key) || {name:root,count:0};
+    old.count += 1;
+    counts.set(key,old);
+  });
+
+  MAIN_CATEGORIES = [...counts.values()]
+    .sort((a,b)=>{
+      if(b.count !== a.count) return b.count - a.count;
+      return a.name.localeCompare(b.name,"vi");
+    });
+
+  if(!ACTIVE_MAIN_CATEGORY && MAIN_CATEGORIES.length){
+    const phone = MAIN_CATEGORIES.find(x=>/điện thoại|phone|smartphone/i.test(x.name));
+    ACTIVE_MAIN_CATEGORY = phone ? phone.name : MAIN_CATEGORIES[0].name;
+  }
+}
+
+function renderMainCategoryMenu(){
+  const menu = document.getElementById("commerceCategoryDropdown");
+  if(!menu) return;
+
+  buildMainCategories();
+
+  menu.innerHTML="";
+
+  if(!MAIN_CATEGORIES.length){
+    menu.innerHTML='<div class="category-menu-loading">Chưa có danh mục.</div>';
+    return;
+  }
+
+  MAIN_CATEGORIES.forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.dataset.mainCategory=cat.name;
+
+    const icon=document.createElement("span");
+    icon.className="category-menu-icon";
+    icon.textContent=/máy tính bảng|tablet|ipad/i.test(cat.name) ? "▭" : "▯";
+
+    const text=document.createElement("span");
+
+    const strong=document.createElement("strong");
+    strong.textContent=cat.name;
+
+    const small=document.createElement("small");
+    small.textContent=`${cat.count} sản phẩm`;
+
+    text.append(strong,small);
+    btn.append(icon,text);
+
+    btn.addEventListener("click",()=>{
+      ACTIVE_MAIN_CATEGORY=cat.name;
+      ACTIVE_CATEGORY="Tất cả";
+
+      const wrap=document.querySelector(".commerce-category-menu");
+      const toggle=document.getElementById("commerceCategoryBtn");
+
+      if(wrap) wrap.classList.remove("open");
+      if(toggle) toggle.setAttribute("aria-expanded","false");
+
+      renderCategoryFilters();
+      render();
+
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+
+    menu.appendChild(btn);
+  });
+}
+
+function productMatchesMainCategory(p){
+  if(!ACTIVE_MAIN_CATEGORY) return true;
+
+  const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
+  return categoryKey(root) === categoryKey(ACTIVE_MAIN_CATEGORY);
+}
+
 function flattenProducts(raw){
   const items=[];
 
@@ -356,11 +448,7 @@ function variantLabel(v){
 
 
 function renderCategoryFilters(){
-  const flat = flattenProducts(PRODUCTS).filter(p=>{
-    const root=String(p.rootCategoryName||p.categoryName||"").toLowerCase();
-    if(ACTIVE_MAIN_CATEGORY==="Máy tính bảng") return /máy tính bảng|tablet|ipad/.test(root);
-    return !/máy tính bảng|tablet|ipad/.test(root);
-  });
+  const flat = flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
 
   const brands = [...new Set(
     flat.map(p => p.brand).filter(Boolean)
@@ -436,7 +524,7 @@ function colorHex(name){
 
 function render(){
   const q=searchInput.value.trim().toLowerCase();
-  let items=flattenProducts(PRODUCTS);
+  let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
 
   if(ACTIVE_CATEGORY==="Bán chạy"){
     const bestNames = typeof getBestSellerBaseNames==="function"
@@ -1133,6 +1221,7 @@ async function load(){
       ? "Đang hiển thị dữ liệu gần nhất"
       : "Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
 
+    renderMainCategoryMenu();
     renderCategoryFilters();
     render();
 
@@ -1168,6 +1257,7 @@ loadBestSellerCache();
 // Hiện cache sản phẩm ngay nếu có, rồi cập nhật nền.
 if(loadProductCache()){
   updatedAt.textContent="Đang cập nhật...";
+  renderMainCategoryMenu();
   renderCategoryFilters();
   render();
 
@@ -1189,4 +1279,24 @@ clearSearch.addEventListener("click",()=>{
   searchInput.focus();
   render();
 });
+
+
+
+const commerceCategoryBtn=document.getElementById("commerceCategoryBtn");
+const commerceCategoryMenu=document.querySelector(".commerce-category-menu");
+
+if(commerceCategoryBtn && commerceCategoryMenu){
+  commerceCategoryBtn.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    const open=commerceCategoryMenu.classList.toggle("open");
+    commerceCategoryBtn.setAttribute("aria-expanded",open ? "true":"false");
+  });
+
+  document.addEventListener("click",(e)=>{
+    if(!commerceCategoryMenu.contains(e.target)){
+      commerceCategoryMenu.classList.remove("open");
+      commerceCategoryBtn.setAttribute("aria-expanded","false");
+    }
+  });
+}
 

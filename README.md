@@ -534,3 +534,11 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Không dùng font ngoài nên không bị lỗi tải font.
 - Giảm letter-spacing ở các nhãn nhỏ.
 - Cân lại font-weight và line-height cho desktop/mobile.
+
+
+## V55 - Danh mục lấy trực tiếp từ KiotViet
+- Không hardcode `Điện thoại` và `Máy tính bảng`.
+- Menu Danh mục được tạo từ `rootCategoryName/categoryName` của dữ liệu sản phẩm KiotViet.
+- Hiển thị số sản phẩm trong từng danh mục.
+- Khi KiotViet thêm/bớt/đổi tên danh mục, web tự cập nhật theo dữ liệu API.
+- Chọn danh mục sẽ lọc sản phẩm theo đúng root category từ KiotViet.

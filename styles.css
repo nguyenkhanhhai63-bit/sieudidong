@@ -5184,3 +5184,19 @@ textarea{
     width:auto;
   }
 }
+
+
+/* V55 - Danh mục lấy trực tiếp từ dữ liệu KiotViet */
+.category-menu-loading{
+  padding:14px 12px;
+  color:#777;
+  font-size:12px;
+}
+
+.commerce-category-dropdown button.active{
+  background:#fff3eb;
+}
+
+.commerce-category-dropdown small{
+  color:#8a9099;
+}
