@@ -6584,3 +6584,52 @@ a[href*="zalo.me"]{
     top:72% !important;
   }
 }
+
+
+/* =========================================================
+   V89 - Căn lại Zalo riêng cho giao diện máy tính
+   ========================================================= */
+@media(min-width:721px){
+  #zaloConsultBtn.zalo-float{
+    position:fixed !important;
+    top:auto !important;
+    bottom:28px !important;
+    right:28px !important;
+    left:auto !important;
+    transform:none !important;
+    z-index:999 !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  #zaloConsultBtn.zalo-float:hover{
+    transform:translateY(-2px) !important;
+  }
+
+  #zaloConsultBtn .zalo-float__icon{
+    width:54px !important;
+    height:54px !important;
+    flex:0 0 54px !important;
+  }
+
+  #zaloConsultBtn .zalo-float__label{
+    min-height:38px !important;
+    padding:0 13px !important;
+    display:flex !important;
+    align-items:center !important;
+    border-radius:10px !important;
+    font-size:13px !important;
+    font-weight:650 !important;
+    white-space:nowrap !important;
+    box-shadow:0 4px 14px rgba(15,23,42,.12) !important;
+  }
+}
+
+/* Laptop/desktop màn hình thấp: vẫn sát góc và không che sản phẩm */
+@media(min-width:721px) and (max-height:760px){
+  #zaloConsultBtn.zalo-float{
+    bottom:20px !important;
+    right:22px !important;
+  }
+}
