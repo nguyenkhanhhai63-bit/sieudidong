@@ -290,3 +290,12 @@ Khi bỏ tick:
 - Refresh API lỗi sẽ không còn xóa bảng đang hiển thị.
 - Nếu mở web lúc API lỗi, trình duyệt sẽ dùng dữ liệu gần nhất đã lưu.
 - Bán chạy vẫn dùng `bestsellers.js`, không gọi API hóa đơn.
+
+
+## V25 - Fix lỗi render không hiện sản phẩm
+Nguyên nhân:
+- `render()` vẫn gọi `colorHex(color)` để vẽ ô màu.
+- Trong bản V24, helper `colorHex()` bị thiếu.
+- JavaScript dừng ngay sau khi cập nhật số lượng sản phẩm, nên màn hình hiện số mẫu nhưng không render card.
+
+Bản V25 khôi phục `colorHex()` và giữ nguyên API ổn định của V24.

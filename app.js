@@ -305,6 +305,35 @@ function renderCategoryFilters(){
   });
 }
 
+
+function colorHex(name){
+  const s=String(name||"").trim().toLowerCase();
+
+  const map=[
+    [["đen","black"], "#202124"],
+    [["trắng","white"], "#f5f5f5"],
+    [["xanh dương","blue","xanh biển"], "#6f8fe8"],
+    [["xanh lá","green"], "#75b84f"],
+    [["xanh"], "#70a7d9"],
+    [["đỏ","red"], "#d84a4a"],
+    [["hồng","pink"], "#e8a7bb"],
+    [["tím","purple"], "#9a79d6"],
+    [["bạc","silver"], "#c9ced4"],
+    [["titan","titanium"], "#8a8a86"],
+    [["xám","gray","grey"], "#8a8f98"],
+    [["cam","orange"], "#e58a4a"],
+    [["vàng","gold","yellow"], "#d8b15c"],
+    [["nâu","brown"], "#8b6a55"],
+    [["be","cream"], "#d8c8ae"]
+  ];
+
+  for(const [keys,hex] of map){
+    if(keys.some(k=>s.includes(k))) return hex;
+  }
+
+  return "#d9dde3";
+}
+
 function render(){
   const q=searchInput.value.trim().toLowerCase();
   let items=flattenProducts(PRODUCTS);
