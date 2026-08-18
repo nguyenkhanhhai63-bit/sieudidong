@@ -41,7 +41,7 @@ function loadProductCache(){
     return false;
   }
 }
-let ACTIVE_CATEGORY = "Bán chạy";
+let ACTIVE_CATEGORY = "Tất cả";
 
 let BEST_SELLER_PRODUCT_IDS = [];
 let BEST_SELLER_READY = false;
@@ -159,20 +159,22 @@ function getColor(attrs, name){
   if(byAttr) return byAttr;
 
   const colors = [
+    "Xanh Dương","Xanh Lá","Xanh Biển","Xanh Ngọc","Xanh Mint",
+    "Đen Bạc","Đen Xám","Trắng Bạc","Titan Xám","Titan Đen","Titan Trắng",
     "Đen","Trắng","Xanh","Đỏ","Hồng","Tím","Bạc","Titan",
     "Cam","Vàng","Green","Blue","Black","White","Silver"
   ];
 
   const text = String(name || "");
 
-  for(const c of colors){
-    const re = new RegExp(`(?:^|\\s-\\s)${c}(?:\\s-\\s|$)`,"i");
+  // Prefer longer compound names first.
+  for(const c of colors.sort((a,b)=>b.length-a.length)){
+    const re = new RegExp(`(?:^|\\s-\\s)${escapeRegExp(c)}(?:\\s-\\s|$)`,"i");
     if(re.test(text)) return c;
   }
 
   return "";
 }
-
 function extractMemory(name){
   const m = String(name || "").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
   return m ? `${m[1]}/${m[2]}` : "";
@@ -217,6 +219,45 @@ function detectBrand(name){
   return "Khác";
 }
 
+
+function escapeRegExp(text){
+  return String(text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeProductBaseName(fullName, color, memory){
+  let s = String(fullName || "").trim();
+
+  // Remove exact memory suffix if present.
+  if(memory){
+    const m = escapeRegExp(memory);
+    s = s.replace(new RegExp(`\\s*-\\s*${m}\\s*$`, "i"), "");
+    s = s.replace(new RegExp(`\\s+${m}\\s*$`, "i"), "");
+  }
+
+  // Remove exact detected color suffix if present.
+  // Supports "Xanh Dương", "Đen Bạc", "Titan Xám"... not only one-word colors.
+  if(color){
+    const c = escapeRegExp(color);
+    s = s.replace(new RegExp(`\\s*-\\s*${c}\\s*$`, "i"), "");
+    s = s.replace(new RegExp(`\\s+${c}\\s*$`, "i"), "");
+  }
+
+  // Some product names end with both attributes in either order.
+  if(memory){
+    const m = escapeRegExp(memory);
+    s = s.replace(new RegExp(`\\s*-\\s*${m}\\s*$`, "i"), "");
+  }
+  if(color){
+    const c = escapeRegExp(color);
+    s = s.replace(new RegExp(`\\s*-\\s*${c}\\s*$`, "i"), "");
+  }
+
+  // Final cleanup.
+  s = s.replace(/\s+-\s*$/g, "").replace(/\s{2,}/g, " ").trim();
+
+  return s;
+}
+
 function flattenProducts(raw){
   const items=[];
 
@@ -227,13 +268,15 @@ function flattenProducts(raw){
         : (p.attributes || []);
 
       const fullName = v.name || p.name || "";
+      const memory = getMemory(attrs, fullName);
+      const color = getColor(attrs, fullName);
 
       items.push({
         id:v.id || p.id,
         fullName,
-        baseName:cleanBaseName(fullName),
-        memory:getMemory(attrs, fullName),
-        color:getColor(attrs, fullName),
+        baseName:normalizeProductBaseName(fullName, color, memory),
+        memory,
+        color,
         attributes:attrs,
         price:Number(v.price || 0),
         onHand:Number(v.onHand || 0),
@@ -247,7 +290,6 @@ function flattenProducts(raw){
 
   return items;
 }
-
 function groupItems(items){
   const map=new Map();
 
@@ -321,9 +363,9 @@ function renderCategoryFilters(){
   if(hasOther) brands.push("Khác");
 
   const all = [
-    ...(BEST_SELLER_READY ? ["Bán chạy"] : []),
     "Tất cả",
-    ...brands
+    ...brands,
+    ...(BEST_SELLER_READY ? ["Bán chạy"] : [])
   ];
 
   // Khi mới mở trang mà cache Bán chạy đang được tải,
@@ -459,6 +501,22 @@ function render(){
   });
 }
 
+
+function relatedProductGroups(currentGroup, limit=3){
+  const flat=flattenProducts(PRODUCTS);
+  const allGroups=groupItems(flat);
+
+  const currentBrand=currentGroup.items[0]?.brand || "";
+
+  return allGroups
+    .filter(g=>g.name!==currentGroup.name)
+    .filter(g=>{
+      const brand=g.items[0]?.brand || "";
+      return currentBrand && brand===currentBrand;
+    })
+    .slice(0,limit);
+}
+
 function openProductModal(group,initialVariant){
   if(!productModal || !productModalContent) return;
 
@@ -469,53 +527,212 @@ function openProductModal(group,initialVariant){
 
   productModalContent.innerHTML="";
 
-  const wrap=document.createElement("div");
-  wrap.className="modal-product-layout";
+  const shell=document.createElement("div");
+  shell.className="detail-page";
 
-  const left=document.createElement("div");
-  left.className="modal-product-image";
-  left.innerHTML=imageHTML(group);
+  // Breadcrumb
+  const breadcrumb=document.createElement("div");
+  breadcrumb.className="detail-breadcrumb";
+  const brand=group.items[0]?.brand || "Điện thoại";
+  breadcrumb.textContent=`Điện thoại  ›  ${brand}`;
 
-  const right=document.createElement("div");
-  right.className="modal-product-info";
+  const heading=document.createElement("div");
+  heading.className="detail-heading";
 
   const title=document.createElement("h2");
   title.textContent=group.name;
 
+  const statusTop=document.createElement("div");
+  statusTop.className="detail-status-top";
+
+  heading.append(title,statusTop);
+
+  // Main layout: image | info | related
+  const main=document.createElement("div");
+  main.className="detail-main";
+
+  const gallery=document.createElement("div");
+  gallery.className="detail-gallery";
+
+  const imageBox=document.createElement("div");
+  imageBox.className="detail-image-box";
+  imageBox.innerHTML=imageHTML(group);
+
+  const imageCaption=document.createElement("div");
+  imageCaption.className="detail-image-caption";
+  imageCaption.textContent="Hình ảnh sản phẩm";
+
+  gallery.append(imageBox,imageCaption);
+
+  const info=document.createElement("div");
+  info.className="detail-info";
+
   const price=document.createElement("div");
-  price.className="modal-product-price";
+  price.className="detail-price";
 
-  const stock=document.createElement("div");
-  stock.className="modal-product-stock";
+  const chooseText=document.createElement("div");
+  chooseText.className="detail-choose-text";
+  chooseText.textContent="Chọn phiên bản để xem giá và tình trạng hàng:";
 
-  const colorBlock=document.createElement("div");
-  colorBlock.className="modal-attr-block";
-
+  const colorRow=document.createElement("div");
+  colorRow.className="detail-option-row";
   const colorLabel=document.createElement("div");
-  colorLabel.className="modal-attr-label";
+  colorLabel.className="detail-option-label";
   colorLabel.textContent="Màu sắc";
-
   const colorOptions=document.createElement("div");
-  colorOptions.className="modal-color-options";
-
+  colorOptions.className="detail-color-options";
   const colorNote=document.createElement("span");
-  colorNote.className="modal-color-note";
+  colorNote.className="detail-color-note";
+  colorRow.append(colorLabel,colorOptions);
 
-  const memoryBlock=document.createElement("div");
-  memoryBlock.className="modal-attr-block";
-
+  const memoryRow=document.createElement("div");
+  memoryRow.className="detail-option-row";
   const memoryLabel=document.createElement("div");
-  memoryLabel.className="modal-attr-label";
+  memoryLabel.className="detail-option-label";
   memoryLabel.textContent="Dung lượng";
-
   const memoryOptions=document.createElement("div");
-  memoryOptions.className="modal-memory-options";
+  memoryOptions.className="detail-memory-options";
+  memoryRow.append(memoryLabel,memoryOptions);
+
+  const infoBox=document.createElement("div");
+  infoBox.className="detail-info-box";
+  infoBox.innerHTML=`
+    <div class="detail-info-box-title">Thông tin sản phẩm</div>
+    <div class="detail-info-line"><span>Hãng</span><strong>${brand}</strong></div>
+    <div class="detail-info-line"><span>Số phiên bản</span><strong>${variants.length}</strong></div>
+    <div class="detail-info-line"><span>Tình trạng</span><strong class="js-stock-text"></strong></div>
+  `;
+
+  const actions=document.createElement("div");
+  actions.className="detail-actions";
+
+  const primary=document.createElement("button");
+  primary.type="button";
+  primary.className="detail-action-primary";
+  primary.textContent="LIÊN HỆ TƯ VẤN";
+
+  const secondary=document.createElement("button");
+  secondary.type="button";
+  secondary.className="detail-action-secondary";
+  secondary.textContent="XEM SẢN PHẨM KHÁC";
+
+  secondary.addEventListener("click",()=>{
+    closeProductModal();
+    window.scrollTo({top:0,behavior:"smooth"});
+    searchInput.focus();
+  });
+
+  actions.append(primary,secondary);
+
+  info.append(price,chooseText);
+  if(variants.some(v=>v.color)) info.appendChild(colorRow);
+  if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
+  info.append(infoBox,actions);
+
+  const related=document.createElement("aside");
+  related.className="detail-related";
+
+  const relatedTitle=document.createElement("div");
+  relatedTitle.className="detail-related-title";
+  relatedTitle.textContent="Sản phẩm tương tự";
+  related.appendChild(relatedTitle);
+
+  const relatedGroups=relatedProductGroups(group,3);
+
+  if(!relatedGroups.length){
+    const empty=document.createElement("div");
+    empty.className="detail-related-empty";
+    empty.textContent="Chưa có sản phẩm tương tự.";
+    related.appendChild(empty);
+  }else{
+    relatedGroups.forEach(rg=>{
+      const rv=[...rg.items].sort((a,b)=>{
+        const stockDiff=(b.onHand>0)-(a.onHand>0);
+        if(stockDiff!==0) return stockDiff;
+        return Number(a.price||0)-Number(b.price||0);
+      })[0];
+
+      const item=document.createElement("button");
+      item.type="button";
+      item.className="detail-related-item";
+
+      const thumb=document.createElement("div");
+      thumb.className="detail-related-thumb";
+      thumb.innerHTML=imageHTML(rg);
+
+      const text=document.createElement("div");
+      text.className="detail-related-text";
+
+      const name=document.createElement("div");
+      name.className="detail-related-name";
+      name.textContent=rg.name;
+
+      const p=document.createElement("div");
+      p.className="detail-related-price";
+      p.textContent=rv ? money(rv.price) : "Liên hệ";
+
+      text.append(name,p);
+      item.append(thumb,text);
+
+      item.addEventListener("click",()=>{
+        openProductModal(rg,rv);
+      });
+
+      related.appendChild(item);
+    });
+  }
+
+  main.append(gallery,info,related);
+
+  // Lower section similar to the reference site's technical block
+  const lower=document.createElement("div");
+  lower.className="detail-lower";
+
+  const specs=document.createElement("section");
+  specs.className="detail-specs";
+
+  const specsTitle=document.createElement("div");
+  specsTitle.className="detail-section-title";
+  specsTitle.textContent="Thông tin phiên bản";
+
+  const specsBody=document.createElement("div");
+  specsBody.className="detail-specs-body";
+
+  const rowBrand=document.createElement("div");
+  rowBrand.className="detail-spec-row";
+  rowBrand.innerHTML=`<span>Hãng</span><strong>${brand}</strong>`;
+
+  const rowColors=document.createElement("div");
+  rowColors.className="detail-spec-row";
+  rowColors.innerHTML=`<span>Màu sắc</span><strong>${[...new Set(variants.map(v=>v.color).filter(Boolean))].join(", ") || "Đang cập nhật"}</strong>`;
+
+  const rowMem=document.createElement("div");
+  rowMem.className="detail-spec-row";
+  rowMem.innerHTML=`<span>Dung lượng</span><strong>${[...new Set(variants.map(v=>v.memory).filter(Boolean))].join(", ") || "Đang cập nhật"}</strong>`;
+
+  specsBody.append(rowBrand,rowColors,rowMem);
+  specs.append(specsTitle,specsBody);
+
+  const note=document.createElement("section");
+  note.className="detail-note";
+  const noteTitle=document.createElement("div");
+  noteTitle.className="detail-section-title";
+  noteTitle.textContent="Lưu ý";
+  const noteBody=document.createElement("div");
+  noteBody.className="detail-note-body";
+  noteBody.textContent="Giá và tình trạng hàng được cập nhật thường xuyên. Vui lòng chọn đúng màu sắc và dung lượng để xem giá của từng phiên bản.";
+  note.append(noteTitle,noteBody);
+
+  lower.append(specs,note);
+
+  shell.append(breadcrumb,heading,main,lower);
+  productModalContent.appendChild(shell);
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
-
   const colorButtons=new Map();
   const memoryButtons=new Map();
+  const stockText=infoBox.querySelector(".js-stock-text");
 
   function findVariant(){
     let matches=variants.filter(v=>{
@@ -565,11 +782,18 @@ function openProductModal(group,initialVariant){
       selectedMemory=selected.memory || selectedMemory;
 
       price.textContent=money(selected.price);
-      stock.textContent=Number(selected.onHand||0)>0 ? "✓ Còn hàng" : "Hết hàng";
-      stock.classList.toggle("out",!(Number(selected.onHand||0)>0));
+
+      const inStock=Number(selected.onHand||0)>0;
+      const stockLabel=inStock ? "✓ Còn hàng" : "Hết hàng";
+
+      statusTop.textContent=stockLabel;
+      statusTop.classList.toggle("out",!inStock);
+      stockText.textContent=inStock ? "Còn hàng" : "Hết hàng";
+      stockText.classList.toggle("out",!inStock);
     }else{
       price.textContent="Liên hệ";
-      stock.textContent="";
+      statusTop.textContent="";
+      stockText.textContent="";
     }
 
     colorButtons.forEach((btn,color)=>{
@@ -581,14 +805,13 @@ function openProductModal(group,initialVariant){
     });
 
     colorNote.textContent=selectedColor ? `(${selectedColor})` : "";
-
     updateAvailability();
   }
 
   colors.forEach(color=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="modal-color-swatch";
+    btn.className="detail-color-swatch";
     btn.title=color;
 
     const swatch=document.createElement("span");
@@ -604,7 +827,6 @@ function openProductModal(group,initialVariant){
       if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
         selectedMemory=compatible.find(v=>v.memory)?.memory || "";
       }
-
       updateUI();
     });
 
@@ -614,13 +836,12 @@ function openProductModal(group,initialVariant){
 
   if(colors.length){
     colorOptions.appendChild(colorNote);
-    colorBlock.append(colorLabel,colorOptions);
   }
 
   memories.forEach(mem=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="modal-memory-btn";
+    btn.className="detail-memory-btn";
     btn.textContent=mem;
 
     btn.addEventListener("click",()=>{
@@ -632,7 +853,6 @@ function openProductModal(group,initialVariant){
       if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
         selectedColor=compatible.find(v=>v.color)?.color || "";
       }
-
       updateUI();
     });
 
@@ -640,25 +860,12 @@ function openProductModal(group,initialVariant){
     memoryOptions.appendChild(btn);
   });
 
-  if(memories.length){
-    memoryBlock.append(memoryLabel,memoryOptions);
-  }
-
-  right.append(title,price,stock);
-
-  if(colors.length) right.appendChild(colorBlock);
-  if(memories.length) right.appendChild(memoryBlock);
-
-  wrap.append(left,right);
-  productModalContent.appendChild(wrap);
-
   productModal.classList.add("open");
   productModal.setAttribute("aria-hidden","false");
   document.body.classList.add("modal-open");
 
   updateUI();
 }
-
 function closeProductModal(){
   if(!productModal) return;
   productModal.classList.remove("open");

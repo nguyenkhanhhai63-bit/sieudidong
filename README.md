@@ -342,3 +342,25 @@ Nguyên nhân:
 - Đưa app.js xuống cuối body, sau toàn bộ HTML popup.
 - Khi JavaScript chạy, popup đã tồn tại trong DOM.
 - Bấm card mở popup chi tiết bình thường.
+
+
+## V31 - Popup chi tiết đẹp hơn
+- Bố cục gần với trang sản phẩm mẫu: breadcrumb, ảnh trái, thông tin chính giữa, sản phẩm tương tự bên phải.
+- Giá lớn, trạng thái rõ.
+- Màu sắc dạng ô màu, dung lượng dạng nút.
+- Có khối thông tin sản phẩm và khối thông tin phiên bản phía dưới.
+- Sản phẩm tương tự lấy từ cùng hãng trong dữ liệu hiện có.
+- Responsive cho tablet/mobile.
+- Mặc định tab Tất cả; Bán chạy ở cuối nhóm lọc.
+
+
+## V32 - Fix tách một model thành nhiều card
+Nguyên nhân:
+- Tên biến thể có màu ghép như `Xanh Dương` không bị hàm cũ loại khỏi tên model.
+- Vì vậy `Honor WIN RT (...)` và `Honor WIN RT (...) - Xanh Dương` bị coi là hai sản phẩm khác nhau.
+
+Đã sửa:
+- Xác định Màu + Dung lượng trước.
+- Tên model được chuẩn hóa bằng cách loại đúng thuộc tính của từng biến thể.
+- Hỗ trợ màu nhiều từ như Xanh Dương, Xanh Lá, Titan Xám, Đen Bạc...
+- Các biến thể cùng model sẽ gom lại thành một card và chỉ tách trong popup chi tiết.
