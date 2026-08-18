@@ -152,7 +152,7 @@ export default async function handler(req, res) {
 
     for (let page = 0; page < 20; page++) {
       const data = await kvFetch(
-        `/products?pageSize=${pageSize}&currentItem=${currentItem}&includeInventory=true&includePricebook=true`
+        `/products?pageSize=${pageSize}&currentItem=${currentItem}&includeInventory=true&includePricebook=true&isActive=true`
       );
 
       const items = data.data || data.items || [];
@@ -168,6 +168,7 @@ export default async function handler(req, res) {
 
     const products = all
       .filter(p => !p.isDeleted)
+      .filter(p => p.isActive !== false)
       .map(normalizeProduct);
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");

@@ -132,3 +132,16 @@ Thay đổi:
 - `assets/logo-square.jpg`: logo vuông dùng trên mobile, favicon và footer.
 
 Upload toàn bộ thư mục `assets` cùng các file frontend.
+
+
+## V6 - Ẩn sản phẩm ngừng kinh doanh
+
+API KiotViet được gọi với:
+
+`isActive=true`
+
+Ngoài ra backend còn lọc thêm:
+
+`p.isActive !== false`
+
+Vì vậy các sản phẩm đã chuyển sang trạng thái ngừng kinh doanh trong KiotViet sẽ không xuất hiện trên website.
