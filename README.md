@@ -513,3 +513,9 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Bộ lọc hãng chuyển thành pill nhỏ, gọn và giống website e-commerce hơn.
 - Cập nhật thời gian thành badge trạng thái riêng.
 - Mobile kéo ngang hãng, không vỡ layout.
+
+
+## V50 - Fix logo mobile
+- Desktop giữ logo ngang Siêu Di Động.
+- Mobile đổi sang logo vuông riêng, không crop logo ngang nữa.
+- Căn lại kích thước header mobile để logo không méo hoặc bị cắt.

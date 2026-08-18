@@ -4976,3 +4976,45 @@ body.detail-view-active .catalog-overview{
     display:none;
   }
 }
+
+
+/* =========================================================
+   V50 - Fix logo mobile
+   ========================================================= */
+
+.commerce-logo-wide{
+  display:block;
+}
+
+.commerce-logo-mobile{
+  display:none !important;
+}
+
+@media(max-width:720px){
+  .commerce-header-inner{
+    grid-template-columns:52px minmax(0,1fr) !important;
+    gap:9px !important;
+  }
+
+  .commerce-logo{
+    width:52px !important;
+    height:52px !important;
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .commerce-logo-wide{
+    display:none !important;
+  }
+
+  .commerce-logo-mobile{
+    display:block !important;
+    width:48px !important;
+    height:48px !important;
+    max-height:none !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:11px !important;
+  }
+}
