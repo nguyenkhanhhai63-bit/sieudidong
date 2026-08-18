@@ -5200,3 +5200,435 @@ textarea{
 .commerce-category-dropdown small{
   color:#8a9099;
 }
+
+
+/* =========================================================
+   V63 - Tăng font + polish giao diện toàn site
+   ========================================================= */
+
+:root{
+  --ui-text:#171717;
+  --ui-muted:#6f7680;
+  --ui-line:#e7e9ee;
+  --ui-card:#ffffff;
+  --ui-bg:#f5f6f8;
+  --ui-orange:#ff5a00;
+}
+
+/* Base typography */
+html{
+  font-size:17px;
+}
+
+body{
+  font-size:1rem;
+  line-height:1.5;
+  background:var(--ui-bg);
+  color:var(--ui-text);
+}
+
+body,
+button,
+input,
+select,
+textarea{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+button,
+input,
+select,
+textarea{
+  font-size:.95rem;
+}
+
+/* Header */
+.commerce-header-inner{
+  min-height:78px;
+}
+
+.commerce-logo img{
+  max-height:50px;
+}
+
+.commerce-search input{
+  height:46px;
+  font-size:.95rem;
+}
+
+.commerce-category-btn{
+  height:46px;
+  font-size:.9rem;
+}
+
+/* Catalog area */
+.catalog-overview{
+  border-radius:18px;
+}
+
+.catalog-overview-head{
+  padding:24px 24px 20px;
+}
+
+.catalog-title-wrap h1{
+  font-size:2rem;
+  line-height:1.18;
+  font-weight:800;
+}
+
+.catalog-title-wrap p{
+  margin-top:7px;
+  font-size:.9rem;
+  line-height:1.55;
+}
+
+.catalog-eyebrow{
+  font-size:.7rem;
+}
+
+.catalog-update-box{
+  padding:12px 14px;
+}
+
+.catalog-update-box small{
+  font-size:.72rem;
+}
+
+.catalog-update-box strong{
+  font-size:.8rem;
+}
+
+.catalog-nav-row{
+  padding:15px 24px;
+}
+
+.catalog-brand-label{
+  font-size:.72rem;
+}
+
+.catalog-overview .category-btn{
+  min-height:38px;
+  padding:7px 16px;
+  font-size:.82rem;
+}
+
+.catalog-meta-row{
+  min-height:48px;
+  padding:0 24px;
+}
+
+.catalog-meta-row .summary,
+.catalog-meta-note{
+  font-size:.74rem;
+}
+
+/* Product grid */
+.product-grid{
+  gap:16px;
+}
+
+.compact-product-card{
+  border-radius:14px;
+  box-shadow:0 5px 18px rgba(20,24,32,.05);
+}
+
+.compact-product-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(20,24,32,.09);
+}
+
+.compact-product-media{
+  height:255px;
+}
+
+.compact-product-body{
+  padding:15px 15px 16px;
+}
+
+.compact-product-title{
+  min-height:48px;
+  font-size:.98rem;
+  line-height:1.38;
+  font-weight:750;
+}
+
+.compact-product-price{
+  margin-top:10px;
+  font-size:1.1rem;
+  font-weight:800;
+}
+
+.compact-stock{
+  font-size:.72rem;
+}
+
+.compact-detail-btn{
+  min-height:34px;
+  padding:0 13px;
+  font-size:.72rem;
+}
+
+/* Detail page */
+.detail-heading h2{
+  font-size:1.7rem;
+  line-height:1.25;
+}
+
+.detail-breadcrumb{
+  font-size:.8rem;
+}
+
+.detail-price{
+  font-size:2rem;
+  font-weight:800;
+}
+
+.detail-choose-text{
+  font-size:.9rem;
+}
+
+.detail-option-label{
+  font-size:.88rem;
+}
+
+.detail-memory-btn{
+  font-size:.82rem;
+}
+
+.detail-color-note{
+  font-size:.8rem;
+}
+
+.detail-info-box-title{
+  font-size:.9rem;
+  font-weight:800;
+}
+
+.detail-info-line{
+  font-size:.84rem;
+}
+
+.detail-related-title{
+  font-size:.9rem;
+  font-weight:800;
+}
+
+.detail-related-name{
+  font-size:.84rem;
+}
+
+.detail-related-price{
+  font-size:.88rem;
+}
+
+/* Lower detail boxes */
+.detail-section-title{
+  font-size:1rem;
+  font-weight:800;
+}
+
+.detail-spec-row{
+  font-size:.88rem;
+}
+
+.detail-note-body{
+  font-size:.88rem;
+  line-height:1.65;
+}
+
+/* Technical spec table */
+.technical-spec-title{
+  padding:15px 17px;
+  font-size:1.08rem;
+  font-weight:800;
+}
+
+.tech-spec-row{
+  grid-template-columns:220px minmax(0,1fr);
+}
+
+.tech-spec-label{
+  padding:14px 16px;
+  font-size:.88rem;
+  font-weight:800;
+  line-height:1.45;
+}
+
+.tech-spec-value{
+  padding:14px 16px;
+  font-size:.9rem;
+  line-height:1.58;
+}
+
+/* Admin-friendly readability */
+.footer{
+  font-size:.8rem;
+}
+
+/* Tablet */
+@media(max-width:980px){
+  html{
+    font-size:16px;
+  }
+
+  .compact-product-media{
+    height:225px;
+  }
+
+  .detail-main{
+    gap:18px;
+  }
+
+  .tech-spec-row{
+    grid-template-columns:180px minmax(0,1fr);
+  }
+}
+
+/* Mobile */
+@media(max-width:720px){
+  html{
+    font-size:16px;
+  }
+
+  body{
+    line-height:1.5;
+  }
+
+  .commerce-header-inner{
+    min-height:66px;
+  }
+
+  .commerce-search input{
+    height:44px;
+    font-size:.86rem;
+  }
+
+  .catalog-overview-head{
+    padding:16px 15px 14px;
+  }
+
+  .catalog-title-wrap h1{
+    font-size:1.45rem;
+  }
+
+  .catalog-title-wrap p{
+    font-size:.8rem;
+  }
+
+  .catalog-nav-row{
+    padding:11px 13px;
+  }
+
+  .catalog-overview .category-btn{
+    min-height:34px;
+    padding:6px 12px;
+    font-size:.76rem;
+  }
+
+  .product-grid{
+    gap:9px;
+  }
+
+  .compact-product-media{
+    height:175px;
+  }
+
+  .compact-product-body{
+    padding:10px 10px 12px;
+  }
+
+  .compact-product-title{
+    min-height:42px;
+    font-size:.82rem;
+    line-height:1.35;
+  }
+
+  .compact-product-price{
+    font-size:.95rem;
+  }
+
+  .compact-product-meta{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+
+  .compact-stock{
+    width:fit-content;
+    font-size:.68rem;
+  }
+
+  .compact-detail-btn{
+    width:100%;
+    min-height:32px;
+    font-size:.7rem;
+  }
+
+  .detail-heading h2{
+    font-size:1.35rem;
+  }
+
+  .detail-price{
+    font-size:1.65rem;
+  }
+
+  .detail-option-label,
+  .detail-choose-text{
+    font-size:.8rem;
+  }
+
+  .detail-related-name{
+    font-size:.78rem;
+  }
+
+  .detail-related-price{
+    font-size:.82rem;
+  }
+
+  .detail-section-title{
+    font-size:.95rem;
+  }
+
+  .detail-spec-row,
+  .detail-note-body{
+    font-size:.8rem;
+  }
+
+  .technical-spec-title{
+    font-size:1rem;
+  }
+
+  .tech-spec-row{
+    grid-template-columns:118px minmax(0,1fr);
+  }
+
+  .tech-spec-label{
+    padding:11px 10px;
+    font-size:.74rem;
+  }
+
+  .tech-spec-value{
+    padding:11px;
+    font-size:.78rem;
+    line-height:1.5;
+  }
+}
+
+/* Very small mobile */
+@media(max-width:390px){
+  .catalog-title-wrap h1{
+    font-size:1.35rem;
+  }
+
+  .compact-product-media{
+    height:160px;
+  }
+
+  .compact-product-title{
+    font-size:.78rem;
+  }
+
+  .tech-spec-row{
+    grid-template-columns:108px minmax(0,1fr);
+  }
+}

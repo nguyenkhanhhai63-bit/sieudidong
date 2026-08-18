@@ -581,3 +581,11 @@ V62:
   `Camera selfie`, `Vi xử lý`, `Chất liệu`, `Khung viền`.
 - Vẫn chỉ hiển thị đúng 10 nhóm thông số chính.
 - Đổi cache namespace để bỏ dữ liệu lỗi cũ.
+
+
+## V63 - Tăng font và tối ưu giao diện
+- Tăng font tổng thể nhẹ để dễ đọc hơn.
+- Tăng rõ font card sản phẩm, giá, chi tiết và bảng thông số.
+- Tăng khoảng trắng, bo góc và shadow để giao diện bớt thô.
+- Bảng thông số desktop rộng label hơn, mobile vẫn giữ gọn.
+- CTA card rõ hơn trên mobile.
