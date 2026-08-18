@@ -1,3 +1,42 @@
+window.SIEUDIDONG_SPEC_SOURCE_MODE = "manual";
+
+/* ===== V57: MANUAL SPEC SOURCE LINKS ===== */
+function normalizeSpecModelName(value){
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/\b(rom|ram)\b.*$/i,"")
+    .replace(/\b(8|12|16|24)\s*\/\s*(128|256|512|1024)\b/gi," ")
+    .replace(/\b(128|256|512)\s*gb\b/gi," ")
+    .replace(/\b(1|2)\s*tb\b/gi," ")
+    .replace(/\b(den|trang|bac|xanh|do|vang|tim|titan|hong)\b/gi," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function getManualSpecSource(productName){
+  const map = window.SIEUDIDONG_SPEC_LINKS || {};
+  const target = normalizeSpecModelName(productName);
+  let best = null;
+  let bestLen = -1;
+
+  Object.entries(map).forEach(([model,url])=>{
+    if(!url) return;
+    const key = normalizeSpecModelName(model);
+    if(!key) return;
+    if(target === key || target.includes(key) || key.includes(target)){
+      if(key.length > bestLen){
+        best = { model, url };
+        bestLen = key.length;
+      }
+    }
+  });
+  return best;
+}
+
+window.getManualSpecSource = getManualSpecSource;
+
 
 const grid = document.getElementById("productGrid");
 const searchInput = document.getElementById("searchInput");
@@ -1333,3 +1372,9 @@ if(commerceCategoryBtn && commerceCategoryMenu){
   });
 }
 
+
+
+window.resolveSpecSourceUrl = function(productName){
+  const found = getManualSpecSource(productName);
+  return found ? found.url : "";
+};
