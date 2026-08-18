@@ -6804,3 +6804,70 @@ a[href*="zalo.me"]{
   .compare-row{grid-template-columns:130px repeat(3,minmax(190px,1fr))}
   .compare-row>div{padding:12px 10px}
 }
+
+
+/* =========================================================
+   V102 - Nút So sánh ngay trong trang chi tiết
+   ========================================================= */
+.detail-heading{
+  position:relative;
+}
+
+.detail-compare-btn{
+  margin-left:auto;
+  min-height:38px;
+  padding:0 14px;
+  border:1px solid #ff5a00;
+  border-radius:9px;
+  background:#fff;
+  color:#e34e00;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.15s ease;
+}
+
+.detail-compare-btn:hover{
+  background:#fff3ec;
+}
+
+.detail-compare-btn.active{
+  background:#ff5a00;
+  color:#fff;
+}
+
+.detail-compare-hint{
+  margin-top:8px;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.45;
+}
+
+@media(max-width:720px){
+  .detail-heading{
+    display:grid !important;
+    grid-template-columns:1fr auto;
+    gap:10px;
+    align-items:start;
+  }
+
+  .detail-heading h2{
+    grid-column:1 / -1;
+  }
+
+  .detail-status-top{
+    grid-column:1;
+  }
+
+  .detail-compare-btn{
+    grid-column:2;
+    min-height:34px;
+    padding:0 10px;
+    font-size:10px;
+  }
+
+  .detail-compare-hint{
+    font-size:11px;
+  }
+}

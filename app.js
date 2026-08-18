@@ -1411,7 +1411,19 @@ if(!inlineProductDetail) return;
   const statusTop=document.createElement("div");
   statusTop.className="detail-status-top";
 
-  heading.append(title,statusTop);
+  const detailCompareBtn=document.createElement("button");
+  detailCompareBtn.type="button";
+  detailCompareBtn.className="detail-compare-btn" + (isCompared(group) ? " active" : "");
+  detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "⇄ So sánh sản phẩm";
+  detailCompareBtn.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    if(toggleCompare(group)){
+      detailCompareBtn.classList.toggle("active",isCompared(group));
+      detailCompareBtn.textContent=isCompared(group) ? "✓ Đã chọn so sánh" : "⇄ So sánh sản phẩm";
+    }
+  });
+
+  heading.append(title,statusTop,detailCompareBtn);
 
   const main=document.createElement("div");
   main.className="detail-main";
@@ -1434,6 +1446,10 @@ if(!inlineProductDetail) return;
   const chooseText=document.createElement("div");
   chooseText.className="detail-choose-text";
   chooseText.textContent="Chọn phiên bản để xem giá và tình trạng hàng:";
+
+  const compareHint=document.createElement("div");
+  compareHint.className="detail-compare-hint";
+  compareHint.textContent="Muốn so cấu hình với máy khác? Bấm “So sánh sản phẩm” phía trên.";
 
   const colorRow=document.createElement("div");
   colorRow.className="detail-option-row";

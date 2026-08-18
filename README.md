@@ -821,3 +821,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bấm `So sánh` mở bảng đối chiếu giá, tồn kho và thông số kỹ thuật.
 - Thông số được lấy từ chính `/api/specs` và link nguồn đã gắn trong quản trị.
 - Hỗ trợ desktop/mobile.
+
+
+## V102 - Hiện nút So sánh ở trang chi tiết
+- Nút `⇄ So sánh sản phẩm` hiển thị ngay trên trang chi tiết.
+- Bấm để thêm/bỏ sản phẩm khỏi danh sách so sánh.
+- Khi đã chọn, nút đổi thành `✓ Đã chọn so sánh`.
+- Giữ nguyên thanh so sánh nổi phía dưới và bảng so sánh tối đa 3 sản phẩm.
+- Có dòng gợi ý bên dưới giá để khách dễ nhận ra tính năng.
