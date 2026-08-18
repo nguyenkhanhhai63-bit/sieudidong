@@ -7137,3 +7137,61 @@ body.modal-open #zaloConsultBtn{
     font-size:11px;
   }
 }
+
+
+/* =========================================================
+   V105 - Hành động ngay trong khu vực chọn phiên bản
+   ========================================================= */
+.detail-actions{
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  margin-top:18px;
+  width:100%;
+}
+
+.detail-actions .detail-compare-btn,
+.detail-buy-zalo-btn{
+  min-height:44px;
+  padding:0 18px;
+  border-radius:10px;
+  font:inherit;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+
+.detail-actions .detail-compare-btn{
+  position:static;
+  margin:0;
+  flex:1 1 0;
+}
+
+.detail-buy-zalo-btn{
+  flex:1 1 0;
+  border:1px solid #ff5a00;
+  background:#ff5a00;
+  color:#fff;
+}
+
+.detail-buy-zalo-btn:hover{
+  filter:brightness(.96);
+}
+
+@media(max-width:720px){
+  .detail-actions{
+    gap:8px;
+    margin-top:14px;
+  }
+  .detail-actions .detail-compare-btn,
+  .detail-buy-zalo-btn{
+    min-height:43px;
+    padding:0 10px;
+    font-size:13px;
+    text-align:center;
+  }
+}

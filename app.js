@@ -1476,7 +1476,7 @@ if(!inlineProductDetail) return;
     }
   });
 
-  heading.append(title,statusTop,detailCompareBtn);
+  heading.append(title,statusTop);
 
   const main=document.createElement("div");
   main.className="detail-main";
@@ -1524,6 +1524,21 @@ if(!inlineProductDetail) return;
   memoryOptions.className="detail-memory-options";
   memoryRow.append(memoryLabel,memoryOptions);
 
+  const detailActions=document.createElement("div");
+  detailActions.className="detail-actions";
+
+  const buyZaloBtn=document.createElement("a");
+  buyZaloBtn.className="detail-buy-zalo-btn";
+  buyZaloBtn.href=SIEUDIDONG_ZALO_URL;
+  buyZaloBtn.target="_blank";
+  buyZaloBtn.rel="noopener noreferrer";
+  buyZaloBtn.textContent="Liên hệ mua hàng";
+  buyZaloBtn.addEventListener("click",()=>{
+    try{ sendAnalyticsEvent("zalo_click",{source:"product_detail",product:group.name}); }catch(_){}
+  });
+
+  detailActions.append(detailCompareBtn,buyZaloBtn);
+
   const infoBox=document.createElement("div");
   infoBox.className="detail-info-box";
   infoBox.innerHTML=`
@@ -1536,6 +1551,7 @@ if(!inlineProductDetail) return;
   info.append(price,chooseText);
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
+  info.appendChild(detailActions);
 
   const related=document.createElement("aside");
   related.className="detail-related";
