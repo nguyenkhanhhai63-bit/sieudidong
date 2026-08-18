@@ -882,3 +882,13 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Đã chuyển khai báo `dialog`/`loading` lên đúng vị trí.
 - Giữ nguyên Gemini, timeout 5 giây cho thông số và nút thử lại của V109.
 - Thêm fallback để lỗi tải thông số không làm popup đứng.
+
+## V111 - Gemini nhanh hơn + phân tích đầy đủ hơn
+- Mặc định chuyển sang `gemini-3.7-flash`.
+- Dùng `thinkingLevel: low` để giảm độ trễ nhưng vẫn giữ khả năng phân tích.
+- Tăng output tối đa lên 1600 token để tránh kết luận bị cụt.
+- Prompt bắt buộc đủ 4 phần: Nhận xét nhanh → Từng máy → Theo nhu cầu → Kết luận.
+- Backend chờ tối đa 30 giây; frontend chờ tối đa 35 giây.
+- Trong lúc chờ có trạng thái tiến trình rõ ràng.
+- Nếu Gemini trả 429 hoặc lỗi API, giao diện báo nguyên nhân rõ hơn.
+- Nếu Vercel đã có `GEMINI_COMPARE_MODEL`, hãy đổi thành `gemini-3.7-flash` hoặc xóa biến đó để dùng mặc định mới.

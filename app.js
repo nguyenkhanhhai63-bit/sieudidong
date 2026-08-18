@@ -1045,9 +1045,19 @@ async function runAiCompare(groups,specs,need,button,result){
   result.classList.add("loading");
   result.innerHTML='<div class="compare-ai-wait">Gemini đang đọc cấu hình và đối chiếu các máy...</div>';
 
+  const waitNode=()=>result.querySelector(".compare-ai-wait");
+  const statusTimer1=setTimeout(()=>{
+    const el=waitNode();
+    if(el) el.textContent="Gemini đang cân nhắc điểm mạnh, điểm yếu và mức giá...";
+  },6000);
+  const statusTimer2=setTimeout(()=>{
+    const el=waitNode();
+    if(el) el.textContent="Gemini đang hoàn thiện kết luận phù hợp với nhu cầu của bạn...";
+  },14000);
+
   try{
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),20000);
+    const timer=setTimeout(()=>controller.abort(),35000);
 
     let r;
     try{
@@ -1074,9 +1084,11 @@ async function runAiCompare(groups,specs,need,button,result){
     result.innerHTML="";
     const error=document.createElement("div");
     error.className="compare-ai-error";
-    error.textContent=err?.name==="AbortError" ? "Gemini phản hồi quá lâu. Vui lòng thử lại." : (err?.message||"Gemini đang tạm thời không sử dụng được.");
+    error.textContent=err?.name==="AbortError" ? "Gemini mất hơn 35 giây để phản hồi. Hãy thử lại hoặc chọn nhu cầu khác." : (err?.message||"Gemini đang tạm thời không sử dụng được.");
     result.appendChild(error);
   }finally{
+    clearTimeout(statusTimer1);
+    clearTimeout(statusTimer2);
     button.disabled=false;
     button.textContent=old;
   }

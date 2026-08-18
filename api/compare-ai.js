@@ -83,7 +83,7 @@ export default async function handler(req,res){
   }
 
   const need=clean(req.body?.need,100) || "Cân bằng";
-  const model=process.env.GEMINI_COMPARE_MODEL || "gemini-3.6-flash";
+  const model=process.env.GEMINI_COMPARE_MODEL || "gemini-3.7-flash";
 
   const productText=products.map((p,i)=>{
     const specText=p.specs.map(s=>`- ${s.label}: ${s.value}`).join("\n");
@@ -95,28 +95,31 @@ export default async function handler(req,res){
     ].join("\n");
   }).join("\n\n");
 
-  const input=`Nhu cầu khách ưu tiên: ${need}
+  const input=`NHU CẦU ƯU TIÊN CỦA KHÁCH: ${need}
 
-Dữ liệu sản phẩm:
+DỮ LIỆU CÁC MÁY ĐANG SO SÁNH:
 ${productText}
 
-Hãy phân tích để khách mua điện thoại dễ quyết định.`;
+Hãy phân tích đủ 4 phần bắt buộc. Ưu tiên kết luận rõ máy nào đáng chọn hơn cho nhu cầu trên.`;
 
   try{
     const systemInstruction=[
-      "Bạn là trợ lý tư vấn điện thoại cho Siêu Di Động Quy Nhơn.",
-      "Chỉ sử dụng dữ liệu sản phẩm được cung cấp, tuyệt đối không tự bịa thêm thông số.",
-      "Nếu dữ liệu thiếu thì nói rõ là chưa có dữ liệu để kết luận.",
-      "Viết tiếng Việt tự nhiên, ngắn gọn, dễ hiểu, không quảng cáo quá đà.",
-      "So sánh điểm mạnh/yếu thực tế giữa các máy, xét cả giá nếu có.",
-      "Kết luận máy nào phù hợp nhất với nhu cầu khách đã chọn.",
-      "Cấu trúc: Nhận xét nhanh; Điểm mạnh từng máy; Máy phù hợp nhất; Lưu ý.",
-      "Không dùng bảng markdown."
+      "Bạn là chuyên viên tư vấn smartphone của Siêu Di Động Quy Nhơn.",
+      "CHỈ được dùng dữ liệu sản phẩm được gửi trong yêu cầu; không tự thêm thông số bên ngoài.",
+      "Nếu một thông số thiếu, ghi rõ 'chưa có dữ liệu', không suy đoán.",
+      "Mục tiêu là giúp khách chọn máy nhanh, không viết lan man.",
+      "BẮT BUỘC trả lời đủ 4 phần theo đúng thứ tự:",
+      "1. NHẬN XÉT NHANH: 2-3 câu so sánh tổng quan.",
+      "2. TỪNG MÁY: mỗi máy nêu 2-4 ưu điểm và 1-2 điểm hạn chế dựa trên dữ liệu.",
+      "3. THEO NHU CẦU: nói máy nào hơn về nhu cầu khách chọn và lý do cụ thể.",
+      "4. KẾT LUẬN: chọn 1 máy phù hợp nhất; nếu hai máy quá sát nhau thì nêu điều kiện chọn từng máy.",
+      "Phải xét giá bán nếu có. Không dùng bảng Markdown. Không lặp lại toàn bộ thông số kỹ thuật.",
+      "Viết tiếng Việt tự nhiên, rõ ràng, khoảng 250-450 từ."
     ].join(" ");
 
     const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),18000);
+    const timer=setTimeout(()=>controller.abort(),30000);
 
     let r;
     try{
@@ -136,8 +139,10 @@ Hãy phân tích để khách mua điện thoại dễ quyết định.`;
             parts:[{text:input}]
           }],
           generationConfig:{
-            maxOutputTokens:900,
-            temperature:0.35
+            maxOutputTokens:1600,
+            thinkingConfig:{
+              thinkingLevel:"low"
+            }
           }
         })
       });
@@ -149,8 +154,11 @@ Hãy phân tích để khách mua điện thoại dễ quyết định.`;
 
     if(!r.ok){
       console.error("Gemini compare error:",r.status,data);
+      const googleMessage=String(data?.error?.message||"").slice(0,180);
       return res.status(502).json({
-        error:"Gemini đang bận hoặc cấu hình API chưa đúng. Vui lòng thử lại."
+        error: r.status===429
+          ? "Gemini đang giới hạn lượt dùng. Vui lòng thử lại sau ít phút."
+          : (googleMessage ? `Gemini lỗi: ${googleMessage}` : "Gemini đang bận. Vui lòng thử lại.")
       });
     }
 
@@ -162,6 +170,6 @@ Hãy phân tích để khách mua điện thoại dễ quyết định.`;
     return res.status(200).json({ok:true,text,model});
   }catch(err){
     console.error("AI compare:",err);
-    return res.status(502).json({error:err?.name==="AbortError" ? "Gemini phản hồi quá lâu. Vui lòng thử lại." : "Không kết nối được Gemini. Vui lòng thử lại."});
+    return res.status(502).json({error:err?.name==="AbortError" ? "Gemini mất hơn 30 giây để phản hồi. Vui lòng thử lại." : "Không kết nối được Gemini. Vui lòng thử lại."});
   }
 }
