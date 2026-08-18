@@ -708,3 +708,10 @@ V81:
 - Chỉ hiện `Link thông số / Thống kê` sau khi xác thực admin thành công.
 - Nếu chưa đăng nhập chỉ hiện form đăng nhập.
 - Không còn cảnh form đăng nhập và khung Link thông số cùng xuất hiện khi reload.
+
+
+## V84 - Không hiện form đăng nhập trong lúc kiểm tra session
+- Khi reload `/admin-specs`, form đăng nhập không còn lóe lên 1-2 giây.
+- Trong thời gian kiểm tra cookie/session chỉ hiện `Đang kiểm tra phiên đăng nhập...`.
+- Nếu session còn hợp lệ: vào thẳng trang quản trị.
+- Nếu session hết hạn: mới hiện form đăng nhập.

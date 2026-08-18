@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quản trị thông số | Siêu Di Động</title>
-  <!-- V83 auth flash fix -->
+  <!-- V84 hide login during session check -->
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
   <style>
     :root{
@@ -306,6 +306,42 @@
     /* =========================================================
        V83 - Không nháy giao diện admin khi vừa load trang
        ========================================================= */
+    .auth-loading{
+      display:none;
+      min-height:340px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .auth-loading-box{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:16px 18px;
+      color:#6b7280;
+      font-size:13px;
+    }
+
+    .auth-spinner{
+      width:22px;
+      height:22px;
+      border:3px solid #e5e7eb;
+      border-top-color:var(--orange);
+      border-radius:50%;
+      animation:authSpin .75s linear infinite;
+    }
+
+    @keyframes authSpin{
+      to{transform:rotate(360deg)}
+    }
+
+    body.auth-pending #authLoading{
+      display:flex !important;
+    }
+
+    /* Quan trọng V84: lúc đang kiểm tra session, ẩn cả form đăng nhập
+       lẫn toàn bộ nội dung admin để không bị flash 1-2 giây. */
+    body.auth-pending #loginCard,
     body.auth-pending #adminTabs,
     body.auth-pending #adminCard,
     body.auth-pending #analyticsCard,
@@ -313,10 +349,12 @@
       display:none !important;
     }
 
+    body.authenticated #authLoading,
     body.authenticated #loginCard{
       display:none !important;
     }
 
+    body:not(.authenticated):not(.auth-pending) #authLoading,
     body:not(.authenticated):not(.auth-pending) #adminTabs,
     body:not(.authenticated):not(.auth-pending) #adminCard,
     body:not(.authenticated):not(.auth-pending) #analyticsCard,
@@ -335,7 +373,15 @@
 </header>
 
 <main class="wrap">
-  <section id="loginCard" class="card login">
+  
+  <section id="authLoading" class="auth-loading">
+    <div class="auth-loading-box">
+      <div class="auth-spinner"></div>
+      <strong>Đang kiểm tra phiên đăng nhập...</strong>
+    </div>
+  </section>
+
+<section id="loginCard" class="card login">
     <h1>Đăng nhập quản trị</h1>
     <p>Chỉ quản trị viên mới có thể xem và sửa link thông số.</p>
     <form id="loginForm">
@@ -388,6 +434,7 @@
 </main>
 
 <script>
+const authLoading=document.getElementById("authLoading");
 const loginCard=document.getElementById("loginCard");
 const adminCard=document.getElementById("adminCard");
 const loginForm=document.getElementById("loginForm");
@@ -426,6 +473,7 @@ function baseModelName(name=""){
 function setLoggedIn(value){
   document.body.classList.remove("auth-pending");
   document.body.classList.toggle("authenticated", value);
+  if(authLoading) authLoading.style.display="none";
 
   loginCard.classList.toggle("hidden", value);
   adminTabs.classList.toggle("hidden", !value);
@@ -724,6 +772,7 @@ setTimeout(()=>{
   if(document.body.classList.contains("auth-pending")){
     document.body.classList.remove("auth-pending");
     document.body.classList.remove("authenticated");
+    if(authLoading) authLoading.style.display="none";
     loginCard.classList.remove("hidden");
     adminTabs.style.display="none";
     logoutBtn.style.display="none";
