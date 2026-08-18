@@ -25,19 +25,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-body.dark{
-  --bg:#111827;
-  --card:#182235;
-  --text:#f3f4f6;
-  --muted:#a8b1c0;
-  --line:#2b3950;
-  --soft:#1f2a3c;
-  --accent:#ff7a33;
-  --accent-soft:#402315;
-  --price:#ff6675;
-  --success:#51cf7a;
-  --shadow:none;
-}
+
 
 .site-header{
   position:sticky;
@@ -2586,34 +2574,11 @@ body.detail-view-active .inline-detail-page{
 }
 
 /* Dark mode detail compatibility */
-body.dark.detail-view-active{
-  background:#111827;
-}
-body.dark .detail-main,
-body.dark .detail-specs,
-body.dark .detail-note,
-body.dark .technical-spec-section,
-body.dark .detail-related,
-body.dark .inline-back-btn{
-  background:#182235;
-  border-color:#2b3950;
-}
-body.dark .detail-image-box{
-  background:#111827;
-}
-body.dark .detail-info-box,
-body.dark .detail-info-box-title,
-body.dark .detail-section-title,
-body.dark .technical-spec-title,
-body.dark .tech-spec-label{
-  background:#1f2a3c;
-  border-color:#2b3950;
-}
-body.dark .detail-heading h2,
-body.dark .detail-option-label,
-body.dark .detail-choose-text{
-  color:#f3f4f6;
-}
+
+
+
+
+
 
 /* Responsive */
 @media(max-width:1100px){
@@ -3380,5 +3345,78 @@ body{
     margin-top:10px;
     padding-top:9px;
     font-size:11px;
+  }
+}
+
+
+/* =========================================================
+   V43 - Website light only / bỏ giao diện tối
+   ========================================================= */
+
+/* Chỉ dùng giao diện sáng */
+html, body{
+  color-scheme: light;
+}
+
+body{
+  background:#f4f6f8 !important;
+  color:#171717 !important;
+}
+
+.site-header,
+.catalog-shell,
+.compact-product-card,
+.detail-main,
+.detail-specs,
+.detail-note,
+.technical-spec-section,
+.detail-related,
+.inline-back-btn,
+.toolbar,
+.search,
+.clear-btn{
+  background:#fff !important;
+  color:#171717;
+}
+
+/* Ẩn mọi control dark mode nếu còn markup cũ */
+.theme-toggle,
+.dark-toggle,
+.dark-mode,
+label[for="darkMode"],
+label[for="darkToggle"],
+label[for="themeToggle"],
+#darkMode,
+#darkToggle,
+#themeToggle{
+  display:none !important;
+}
+
+/* Tinh chỉnh hero title theo phong cách website */
+.page-title h1{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-.45px;
+}
+
+.page-title p{
+  max-width:680px;
+  color:#737983;
+  font-size:13px;
+}
+
+/* Nhấn mạnh cảm giác website bán hàng */
+.catalog-shell{
+  border-radius:18px;
+}
+
+@media(max-width:720px){
+  .page-title h1{
+    font-size:22px;
+  }
+
+  .page-title p{
+    font-size:12px;
+    line-height:1.5;
   }
 }

@@ -4,7 +4,6 @@ const searchInput = document.getElementById("searchInput");
 const clearSearch = document.getElementById("clearSearch");
 const onlyStock = { checked: false, addEventListener: ()=>{} };
 const updatedAt = document.getElementById("updatedAt");
-const darkMode = document.getElementById("darkMode");
 const summary = document.getElementById("summary");
 const categoryFilters = document.getElementById("categoryFilters");
 
@@ -1041,23 +1040,8 @@ setInterval(load,60000);
 setInterval(loadBestSellers,60*60*1000);
 
 searchInput.addEventListener("input",render);
-onlyStock.addEventListener("change",render);
-
-clearSearch.addEventListener("click",()=>{
-  searchInput.value="";
-  searchInput.focus();
-  render();
-});
-
-const savedTheme=localStorage.getItem("kv-theme");
-
-if(savedTheme==="dark"){
-  document.body.classList.add("dark");
-  darkMode.checked=true;
+darkMode.checked=true;
 }
 
-darkMode.addEventListener("change",()=>{
-  document.body.classList.toggle("dark",darkMode.checked);
-  localStorage.setItem("kv-theme",darkMode.checked ? "dark" : "light");
 });
 

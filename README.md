@@ -463,3 +463,12 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Tab active dùng màu cam thương hiệu.
 - Bán chạy tách nhẹ bằng tông vàng/cam.
 - Mobile cho phép kéo ngang danh sách hãng, không vỡ layout.
+
+
+## V43 - Chuyển hẳn sang giao diện website
+- Bỏ hoàn toàn nút `Giao diện tối`.
+- Chỉ giữ light mode.
+- Đổi tiêu đề `Bảng giá Siêu Di Động` thành `Sản phẩm nổi bật`.
+- Đổi mô tả thành phong cách website bán hàng.
+- Title trình duyệt đổi thành `Siêu Di Động | Điện thoại & sản phẩm công nghệ`.
+- Giữ nguyên toàn bộ logic sản phẩm, giá, tồn kho, bán chạy và thông số kỹ thuật.
