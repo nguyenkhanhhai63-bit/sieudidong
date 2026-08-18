@@ -411,9 +411,9 @@
   </section>
 
   <div id="adminTabs" class="admin-tabs hidden" style="display:none">
-    <button class="admin-tab active" data-tab="specs" type="button">Link thông số</button>
-    <button class="admin-tab" data-tab="analytics" type="button">Thống kê</button>
-    <button class="admin-tab" data-tab="sitemap" type="button">Sitemap</button>
+    <button class="admin-tab active" data-tab="analytics" type="button">Thống kê</button>
+    <button class="admin-tab" data-tab="specs" type="button">Link thông số</button>
+    <button class="admin-tab" data-tab="seo" type="button">SEO</button>
   </div>
   <section id="adminCard" class="card panel active" data-panel="specs" style="display:none">
     <div class="head">
@@ -456,25 +456,25 @@
 
 </main>
 
-  <section id="sitemapCard" class="card panel" data-panel="sitemap" style="display:none">
+  <section id="seoCard" class="card panel" data-panel="seo" style="display:none">
     <div class="head">
-      <div>
-        <h1>Sitemap website</h1>
-        <p>Link sitemap dùng để Google và các công cụ tìm kiếm thu thập danh sách trang sản phẩm.</p>
-      </div>
+      <div><h1>SEO website</h1><p>Kiểm tra Sitemap, robots.txt và số URL đang gửi cho công cụ tìm kiếm.</p></div>
+      <button id="refreshSeo" class="secondary" type="button">Kiểm tra lại</button>
     </div>
     <div style="padding:24px">
-      <div style="max-width:900px;border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff">
-        <div style="font-size:13px;color:#6b7280;margin-bottom:8px">Đường dẫn Sitemap</div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <input id="sitemapUrl" class="field" type="text" readonly value="https://sieudidong.vn/sitemap.xml" style="flex:1;min-width:280px;font-weight:700">
-          <button id="copySitemapBtn" class="secondary" type="button">Sao chép</button>
-          <a class="primary" href="/sitemap.xml" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center">Mở Sitemap</a>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px">
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">Sitemap</div><div id="seoSitemapStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">/sitemap.xml</div></div>
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">URL trong Sitemap</div><div id="seoUrlCount" style="font-size:28px;font-weight:800;margin-top:8px">—</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Trang chủ + sản phẩm</div></div>
+        <div style="border:1px solid #e5e7eb;border-radius:14px;padding:18px;background:#fff"><div style="font-size:13px;color:#6b7280">robots.txt</div><div id="seoRobotsStatus" style="font-size:22px;font-weight:800;margin-top:8px">Đang kiểm tra...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">Quyền Google thu thập dữ liệu</div></div>
+      </div>
+      <div style="border:1px solid #e5e7eb;border-radius:14px;padding:20px;background:#fff">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px">Công cụ SEO</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="secondary" href="/sitemap.xml" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Mở Sitemap</a>
+          <a class="secondary" href="/robots.txt" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Mở robots.txt</a>
+          <a class="primary" href="https://search.google.com/search-console" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Google Search Console</a>
         </div>
-        <div id="sitemapCopyMessage" style="margin-top:10px;font-size:13px;color:#15803d;min-height:18px"></div>
-        <p style="margin:12px 0 0;color:#6b7280;font-size:13px;line-height:1.55">
-          Sitemap hiện được tạo tự động và gom các màu/dung lượng của cùng một model thành một URL.
-        </p>
+        <div id="seoMessage" style="margin-top:14px;font-size:13px;color:#6b7280">Sitemap được tạo tự động khi dữ liệu sản phẩm thay đổi.</div>
       </div>
     </div>
   </section>
@@ -492,10 +492,12 @@ const stats=document.getElementById("stats");
 const search=document.getElementById("search");
 const adminTabs=document.getElementById("adminTabs");
 const analyticsCard=document.getElementById("analyticsCard");
-const sitemapCard=document.getElementById("sitemapCard");
-const copySitemapBtn=document.getElementById("copySitemapBtn");
-const sitemapUrl=document.getElementById("sitemapUrl");
-const sitemapCopyMessage=document.getElementById("sitemapCopyMessage");
+const seoCard=document.getElementById("seoCard");
+const refreshSeo=document.getElementById("refreshSeo");
+const seoSitemapStatus=document.getElementById("seoSitemapStatus");
+const seoUrlCount=document.getElementById("seoUrlCount");
+const seoRobotsStatus=document.getElementById("seoRobotsStatus");
+const seoMessage=document.getElementById("seoMessage");
 const refreshAnalytics=document.getElementById("refreshAnalytics");
 let analyticsLoaded=false;
 
@@ -534,11 +536,11 @@ function setLoggedIn(value){
     logoutBtn.style.display="";
     adminCard.style.display="";
     analyticsCard.style.display="none";
-    sitemapCard.style.display="none";
+    seoCard.style.display="none";
 
     adminCard.classList.add("active");
     analyticsCard.classList.remove("active");
-    sitemapCard.classList.remove("active");
+    seoCard.classList.remove("active");
 
     adminTabs.querySelectorAll(".admin-tab").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.tab==="specs");
@@ -548,7 +550,7 @@ function setLoggedIn(value){
     logoutBtn.style.display="none";
     adminCard.style.display="none";
     analyticsCard.style.display="none";
-    sitemapCard.style.display="none";
+    seoCard.style.display="none";
   }
 }
 
@@ -793,36 +795,21 @@ adminTabs.addEventListener("click",e=>{
 
   const showSpecs = tab==="specs";
   const showAnalytics = tab==="analytics";
-  const showSitemap = tab==="sitemap";
+  const showSeo = tab==="seo";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
-  sitemapCard.classList.toggle("active", showSitemap);
+  seoCard.classList.toggle("active", showSeo);
 
   adminCard.style.display = showSpecs ? "" : "none";
   analyticsCard.style.display = showAnalytics ? "" : "none";
-  sitemapCard.style.display = showSitemap ? "" : "none";
+  seoCard.style.display = showSeo ? "" : "none";
 
-  if(showAnalytics){
-    loadAnalytics();
-  }
+  if(showAnalytics){ loadAnalytics(); }
+  if(showSeo){ loadSeoStatus(); }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
 
-if(copySitemapBtn){
-  copySitemapBtn.addEventListener("click",async()=>{
-    const value=sitemapUrl.value;
-    try{
-      await navigator.clipboard.writeText(value);
-      sitemapCopyMessage.textContent="✓ Đã sao chép link Sitemap";
-    }catch(_){
-      sitemapUrl.select();
-      document.execCommand("copy");
-      sitemapCopyMessage.textContent="✓ Đã sao chép link Sitemap";
-    }
-    setTimeout(()=>{ sitemapCopyMessage.textContent=""; },2200);
-  });
-}
 
 
 loginForm.addEventListener("submit",async(e)=>{
@@ -884,6 +871,43 @@ function showLoginSuccess(){
   requestAnimationFrame(()=>el.classList.add("show"));
   setTimeout(()=>el.classList.remove("show"),2200);
 }
+
+
+async function loadSeoStatus(){
+  seoSitemapStatus.textContent="Đang kiểm tra...";
+  seoRobotsStatus.textContent="Đang kiểm tra...";
+  seoUrlCount.textContent="—";
+  try{
+    const sm=await fetch("/sitemap.xml",{cache:"no-store"});
+    if(!sm.ok) throw new Error("Sitemap HTTP "+sm.status);
+    const xml=new DOMParser().parseFromString(await sm.text(),"application/xml");
+    const count=xml.querySelectorAll("url > loc").length;
+    seoSitemapStatus.textContent="✓ Hoạt động";
+    seoSitemapStatus.style.color="#15803d";
+    seoUrlCount.textContent=count.toLocaleString("vi-VN");
+
+    const rb=await fetch("/robots.txt",{cache:"no-store"});
+    if(rb.ok){
+      const txt=await rb.text();
+      const blocked=/User-agent:\s*\*[\s\S]*?Disallow:\s*\/\s*(?:\r?\n|$)/i.test(txt);
+      seoRobotsStatus.textContent=blocked?"⚠ Đang chặn":"✓ Hoạt động";
+      seoRobotsStatus.style.color=blocked?"#c2410c":"#15803d";
+      seoMessage.textContent=blocked
+        ?"robots.txt có dấu hiệu chặn toàn bộ website. Cần kiểm tra lại."
+        :`SEO cơ bản đang hoạt động. Sitemap hiện có ${count.toLocaleString("vi-VN")} URL.`;
+    }else{
+      seoRobotsStatus.textContent="Không tìm thấy";
+      seoRobotsStatus.style.color="#c2410c";
+      seoMessage.textContent="Sitemap hoạt động nhưng robots.txt chưa tải được.";
+    }
+  }catch(e){
+    seoSitemapStatus.textContent="✕ Có lỗi";
+    seoSitemapStatus.style.color="#b91c1c";
+    seoRobotsStatus.textContent="—";
+    seoMessage.textContent="Không kiểm tra được SEO: "+(e.message||"Lỗi không xác định");
+  }
+}
+if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
 
 </script>
 </body>

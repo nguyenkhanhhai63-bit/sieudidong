@@ -786,3 +786,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Thêm tab `Sitemap` tại `/admin`.
 - Hiển thị `https://sieudidong.vn/sitemap.xml`.
 - Có nút Sao chép và Mở Sitemap.
+
+
+## V97
+- Mặc định mở Thống kê sau khi đăng nhập.
+- Thứ tự tab: Thống kê → Link thông số → SEO.
+- Thay tab Sitemap bằng bảng SEO có kiểm tra Sitemap, robots.txt và số URL.
