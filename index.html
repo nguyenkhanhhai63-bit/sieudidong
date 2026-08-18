@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bảng giá Siêu Di Động</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>BẢNG GIÁ SIÊU DI ĐỘNG</h1>
+        <div id="updatedAt" class="muted">Đang cập nhật...</div>
+      </div>
+      <label class="theme-toggle">
+        <input id="darkMode" type="checkbox">
+        <span>Giao diện tối</span>
+      </label>
+    </header>
+
+    <section class="toolbar">
+      <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy, mã hàng..." autocomplete="off">
+      <label class="only-stock">
+        <input id="onlyStock" type="checkbox" checked>
+        <span>Chỉ hiện hàng còn tồn</span>
+      </label>
+    </section>
+
+    <section id="productGrid" class="grid">
+      <div class="loading">Đang tải dữ liệu KiotViet...</div>
+    </section>
+
+    <footer class="footer">
+      <div>Giá bán được đồng bộ từ hệ thống KiotViet.</div>
+      <div>© 2026 Siêu Di Động</div>
+    </footer>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

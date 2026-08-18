@@ -1,0 +1,44 @@
+
+:root{
+  --bg:#f7f9fc;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --accent:#2563eb;
+  --price:#ef233c;
+  --success:#15803d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body.dark{--bg:#111827;--card:#182235;--text:#f8fafc;--muted:#a8b1c0;--line:#2b3950}
+.page{width:min(1180px,calc(100% - 24px));margin:auto;padding:20px 0 30px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.topbar h1{margin:0;font-size:24px}
+.muted{color:var(--muted);font-size:12px;margin-top:6px}
+.theme-toggle,.only-stock{display:flex;align-items:center;gap:6px;font-size:13px}
+.toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0}
+.search{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;padding:0 14px;background:var(--card);color:var(--text);font-size:14px}
+.only-stock{margin-top:8px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card-head{padding:12px 14px;border-bottom:1px solid var(--line)}
+.card-title{font-weight:700;font-size:16px}
+.card-code{font-size:11px;color:var(--muted);margin-top:4px}
+.variants{display:grid;grid-template-columns:1fr}
+.variant{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:10px 14px;border-top:1px solid var(--line);align-items:center}
+.variant:first-child{border-top:0}
+.variant-name{font-size:13px}
+.stock{font-size:12px;color:var(--muted)}
+.stock.in{color:var(--success);font-weight:700}
+.price{font-size:15px;font-weight:700;color:var(--price);white-space:nowrap}
+.loading,.empty{grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px;line-height:1.6}
+@media(max-width:780px){
+  .grid{grid-template-columns:1fr}
+  .page{width:100%;padding:12px 8px 22px}
+  .topbar h1{font-size:20px}
+  .variant{grid-template-columns:1fr auto}
+  .stock{grid-column:1}
+  .price{grid-column:2;grid-row:1 / span 2}
+}
