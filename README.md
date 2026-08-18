@@ -87,3 +87,14 @@ KIOTVIET_CLIENT_SECRET=<Mã bảo mật mới của bạn>
 ```
 
 Không ghi Client Secret trực tiếp vào source code hoặc commit lên GitHub.
+
+
+## Giao diện V2
+
+Bản V2 nhóm các màu/dung lượng của cùng một model vào chung một khối để dễ xem hơn:
+- 1 model = 1 card
+- phiên bản màu/dung lượng nằm bên trong
+- ô tìm kiếm sticky
+- hiển thị số mẫu và số phiên bản
+- mobile tối ưu 1 cột
+- có thể thu gọn từng model

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Bảng giá Siêu Di Động</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=2">
 </head>
 <body>
   <main class="page">
@@ -20,23 +20,30 @@
     </header>
 
     <section class="toolbar">
-      <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy, mã hàng..." autocomplete="off">
-      <label class="only-stock">
-        <input id="onlyStock" type="checkbox" checked>
-        <span>Chỉ hiện hàng còn tồn</span>
-      </label>
+      <div class="search-row">
+        <input id="searchInput" class="search" type="search" placeholder="Tìm tên máy, mã hàng..." autocomplete="off">
+        <button id="clearSearch" class="clear-btn" type="button">Xóa</button>
+      </div>
+
+      <div class="filter-row">
+        <label class="only-stock">
+          <input id="onlyStock" type="checkbox" checked>
+          <span>Chỉ hiện hàng còn tồn</span>
+        </label>
+        <div id="summary" class="summary"></div>
+      </div>
     </section>
 
-    <section id="productGrid" class="grid">
+    <section id="productGrid" class="product-list">
       <div class="loading">Đang tải dữ liệu KiotViet...</div>
     </section>
 
     <footer class="footer">
-      <div>Giá bán được đồng bộ từ hệ thống KiotViet.</div>
+      <div>Giá bán được đồng bộ trực tiếp từ hệ thống KiotViet.</div>
       <div>© 2026 Siêu Di Động</div>
     </footer>
   </main>
 
-  <script src="/app.js"></script>
+  <script src="/app.js?v=2"></script>
 </body>
 </html>
