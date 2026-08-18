@@ -6054,3 +6054,69 @@ textarea{
     display:none !important;
   }
 }
+
+
+/* =========================================================
+   V76 - Icon Zalo người dùng cung cấp + hiệu ứng thu hút
+   ========================================================= */
+#zaloConsultBtn .zalo-float__icon{
+  position:relative !important;
+  width:72px !important;
+  height:72px !important;
+  flex:0 0 72px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  animation:zaloAttention 2.2s ease-in-out infinite !important;
+}
+
+#zaloConsultBtn .zalo-float__icon img{
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  filter:drop-shadow(0 5px 10px rgba(0,0,0,.16)) !important;
+}
+
+/* Vòng sáng nháy nhẹ phía sau icon */
+#zaloConsultBtn .zalo-float__icon::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:8px !important;
+  z-index:-1 !important;
+  border-radius:50% !important;
+  background:rgba(0,104,255,.18) !important;
+  animation:zaloPulse 2.2s ease-out infinite !important;
+}
+
+@keyframes zaloAttention{
+  0%, 72%, 100% { transform:scale(1) rotate(0deg); }
+  76% { transform:scale(1.10) rotate(-5deg); }
+  80% { transform:scale(1.05) rotate(5deg); }
+  84% { transform:scale(1.10) rotate(-4deg); }
+  88% { transform:scale(1) rotate(0deg); }
+}
+
+@keyframes zaloPulse{
+  0%, 55% { transform:scale(.85); opacity:0; }
+  65% { opacity:.65; }
+  100% { transform:scale(1.55); opacity:0; }
+}
+
+@media(max-width:720px){
+  #zaloConsultBtn .zalo-float__icon{
+    width:64px !important;
+    height:64px !important;
+    flex-basis:64px !important;
+  }
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của thiết bị */
+@media(prefers-reduced-motion:reduce){
+  #zaloConsultBtn .zalo-float__icon,
+  #zaloConsultBtn .zalo-float__icon::before{
+    animation:none !important;
+  }
+}
