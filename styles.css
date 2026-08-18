@@ -6551,3 +6551,36 @@ a[href*="zalo.me"]{
     bottom:14px !important;
   }
 }
+
+
+/* =========================================================
+   V88 - FIX THẬT SỰ vị trí Zalo
+   Rule cũ dùng top:50% + bottom:auto nên V87 không di chuyển.
+   Hạ từ giữa màn hình xuống khoảng 68% chiều cao.
+   ========================================================= */
+#zaloConsultBtn.zalo-float{
+  top:68% !important;
+  bottom:auto !important;
+  right:18px !important;
+  left:auto !important;
+  transform:translateY(-50%) !important;
+}
+
+#zaloConsultBtn.zalo-float:hover{
+  transform:translateY(-50%) scale(1.03) !important;
+}
+
+@media(max-width:720px){
+  #zaloConsultBtn.zalo-float{
+    top:70% !important;
+    right:10px !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+  }
+}
+
+@media(max-width:390px){
+  #zaloConsultBtn.zalo-float{
+    top:72% !important;
+  }
+}
