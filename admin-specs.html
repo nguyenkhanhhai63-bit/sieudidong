@@ -84,7 +84,21 @@ let products=[];
 let links={};
 
 function normalizeModel(name=""){
-  return String(name).trim();
+  return String(name).trim().replace(/\s+/g," ");
+}
+
+function baseModelName(name=""){
+  let s=normalizeModel(name);
+  s=s.replace(/\s*\([^)]*\)\s*/g," ");
+  s=s.replace(/\b(?:rom\s*)?tiếng\s*việt\b/gi," ");
+  s=s.replace(/\blike\s*new\b/gi," ");
+  s=s.replace(/\bchính\s*hãng\b/gi," ");
+  s=s.replace(/\bquốc\s*tế\b/gi," ");
+  s=s.replace(/\bnội\s*địa\b/gi," ");
+  s=s.replace(/(?:^|\s*-\s*)\d+\s*\/\s*(?:\d+|1\s*T|2\s*T)(?:\s*GB|\s*TB)?\b/gi," ");
+  s=s.replace(/\b(?:8|12|16|24)\s*GB\s*[-+/]\s*(?:128|256|512|1024)\s*GB\b/gi," ");
+  s=s.replace(/\s*-\s*(?:Đen|Trắng|Bạc|Xám|Đỏ|Vàng|Cam|Hồng|Tím|Titan(?:\s+Xám|\s+Đen|\s+Trắng)?|Xanh(?:\s+Dương|\s+Lá|\s+Biển|\s+Ngọc|\s+Mint)?)\b/gi," ");
+  return s.replace(/\s*-\s*-+/g," - ").replace(/^\s*-\s*|\s*-\s*$/g,"").replace(/\s+/g," ").trim();
 }
 
 function setLoggedIn(value){
@@ -126,7 +140,8 @@ function render(){
 
     const meta=document.createElement("div");
     meta.className="model";
-    meta.innerHTML=`<strong>${model}</strong><small>${saved?.url ? '<span class="ok">✓ Đã gắn link</span>' : 'Chưa có link'}</small>`;
+    const variantCount=window.PRODUCT_MODEL_META?.get(model)?.variants?.size || 1;
+    meta.innerHTML=`<strong>${model}</strong><small>${variantCount} phiên bản • ${saved?.url ? '<span class="ok">✓ Đã gắn link</span>' : 'Chưa có link'}</small>`;
 
     const input=document.createElement("input");
     input.className="url";
@@ -211,7 +226,7 @@ function render(){
   });
 
   const linked=products.filter(p=>mapItem(p)?.url).length;
-  stats.textContent=`${products.length} model • ${linked} đã có link • ${products.length-linked} chưa có link`;
+  stats.textContent=`${products.length} model gốc • ${linked} đã có link • ${products.length-linked} chưa có link`;
 }
 
 async function loadAdmin(){
@@ -230,11 +245,19 @@ async function loadAdmin(){
   const pr=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
   const pd=await pr.json();
 
-  const names=(pd.products||[])
-    .map(p=>normalizeModel(p.name))
-    .filter(Boolean);
+  const grouped=new Map();
 
-  products=[...new Set(names)].sort((a,b)=>a.localeCompare(b,"vi"));
+  (pd.products||[]).forEach(p=>{
+    const raw=normalizeModel(p.name);
+    const base=baseModelName(raw);
+    if(!base) return;
+    const item=grouped.get(base) || {name:base, variants:new Set()};
+    item.variants.add(raw);
+    grouped.set(base,item);
+  });
+
+  window.PRODUCT_MODEL_META=grouped;
+  products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
   setLoggedIn(true);
   render();
 }

@@ -57,3 +57,10 @@ KV_REST_API_TOKEN=...
 5. Link được lưu server-side.
 6. Khách mở sản phẩm → `/api/specs` tìm link model đã lưu → lấy 10 thông số chính → cache.
 7. Nếu model chưa có link, trang khách chỉ hiện trạng thái đang cập nhật, không tự đoán model khác.
+
+
+## V60 - Gộp biến thể thành model gốc
+- Trang admin không còn liệt kê riêng từng màu/RAM/dung lượng.
+- Ví dụ Honor WIN 5G Đen và Trắng chỉ còn 1 dòng `Honor WIN 5G`.
+- Một link nguồn dùng chung cho mọi biến thể của cùng model.
+- Mỗi dòng hiển thị số phiên bản đã được gộp.
