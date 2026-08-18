@@ -392,6 +392,9 @@
 </header>
 
 <main class="wrap">
+  <div id="adminBootLoading" style="min-height:320px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:14px">
+    Đang tải trang quản trị...
+  </div>
   
   <section id="authLoading" class="auth-loading">
     <div class="auth-loading-box">
@@ -491,6 +494,8 @@ const rows=document.getElementById("rows");
 const stats=document.getElementById("stats");
 const search=document.getElementById("search");
 const adminTabs=document.getElementById("adminTabs");
+const adminBootLoading=document.getElementById("adminBootLoading");
+
 const analyticsCard=document.getElementById("analyticsCard");
 const seoCard=document.getElementById("seoCard");
 const refreshSeo=document.getElementById("refreshSeo");
@@ -523,6 +528,7 @@ function baseModelName(name=""){
 }
 
 function setLoggedIn(value){
+  if(adminBootLoading) adminBootLoading.style.display="none";
   document.body.classList.remove("auth-pending");
   document.body.classList.toggle("authenticated", value);
   if(authLoading) authLoading.style.display="none";

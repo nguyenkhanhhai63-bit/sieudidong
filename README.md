@@ -800,3 +800,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Visitor ID được giữ bằng localStorage + cookie 1 năm để ổn định hơn.
 - Thống kê loại thiết bị chuyển sang đếm khách duy nhất thay vì đếm số lần tải trang.
 - Không dùng IP làm định danh khách.
+
+## V99 - Fix nháy Link thông số khi mở Admin
+- Link thông số bị hiện trước vì HTML của panel được render sẵn trước khi JavaScript kiểm tra phiên đăng nhập.
+- Tất cả panel quản trị giờ ẩn ngay từ HTML ban đầu.
+- Trong lúc xác thực chỉ hiện `Đang tải trang quản trị...`.
+- Nếu phiên đăng nhập hợp lệ, panel đầu tiên được render là `Thống kê`.
+- Nếu chưa đăng nhập, mới hiện form đăng nhập.
