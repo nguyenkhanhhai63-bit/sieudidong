@@ -2018,3 +2018,68 @@ body.detail-view-active .inline-detail-page{
 html{
   scroll-behavior:auto;
 }
+
+
+/* ===== V35 - Thông số kỹ thuật tự lấy từ trang nguồn ===== */
+.technical-spec-section{
+  margin-top:22px;
+  border-top:1px solid #ddd;
+  background:#fff;
+}
+
+.technical-spec-title{
+  padding:12px 0 10px;
+  font-size:16px;
+  font-weight:700;
+  border-bottom:1px solid #ddd;
+}
+
+.technical-spec-body{
+  padding-top:10px;
+}
+
+.tech-spec-table{
+  border:1px solid #e1e3e6;
+  border-bottom:0;
+}
+
+.tech-spec-row{
+  display:grid;
+  grid-template-columns:190px minmax(0,1fr);
+  border-bottom:1px solid #e1e3e6;
+}
+
+.tech-spec-label{
+  padding:11px 12px;
+  background:#f7f7f7;
+  font-size:12px;
+  font-weight:700;
+}
+
+.tech-spec-value{
+  padding:11px 13px;
+  white-space:pre-line;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.tech-spec-loading,
+.tech-spec-empty{
+  padding:22px 14px;
+  color:#777;
+  text-align:center;
+  border:1px solid #e1e3e6;
+  font-size:12px;
+}
+
+@media(max-width:720px){
+  .tech-spec-row{
+    grid-template-columns:125px minmax(0,1fr);
+  }
+
+  .tech-spec-label,
+  .tech-spec-value{
+    padding:9px;
+    font-size:11px;
+  }
+}

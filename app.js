@@ -516,6 +516,105 @@ function relatedProductGroups(currentGroup, limit=3){
 }
 
 
+
+const SPEC_CACHE_PREFIX = "sieudidong-specs-v1:";
+const SPEC_CACHE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+
+function specCacheKey(name){
+  return SPEC_CACHE_PREFIX + String(name||"").toLowerCase().trim();
+}
+
+function getCachedSpecs(name){
+  try{
+    const raw=localStorage.getItem(specCacheKey(name));
+    if(!raw) return null;
+
+    const data=JSON.parse(raw);
+    if(!data?.savedAt || !Array.isArray(data?.specs)) return null;
+    if(Date.now()-Number(data.savedAt)>SPEC_CACHE_MAX_AGE) return null;
+
+    return data;
+  }catch(_){
+    return null;
+  }
+}
+
+function saveCachedSpecs(name,data){
+  try{
+    localStorage.setItem(specCacheKey(name),JSON.stringify({
+      savedAt:Date.now(),
+      specs:data.specs || [],
+      sourceName:data.sourceName || "",
+      sourceUrl:data.sourceUrl || ""
+    }));
+  }catch(_){}
+}
+
+function renderTechnicalSpecs(container,data){
+  container.innerHTML="";
+
+  if(!data || !Array.isArray(data.specs) || !data.specs.length){
+    container.innerHTML='<div class="tech-spec-empty">Chưa có thông số kỹ thuật cho sản phẩm này.</div>';
+    return;
+  }
+
+  const table=document.createElement("div");
+  table.className="tech-spec-table";
+
+  data.specs.forEach(row=>{
+    const line=document.createElement("div");
+    line.className="tech-spec-row";
+
+    const label=document.createElement("div");
+    label.className="tech-spec-label";
+    label.textContent=row.label;
+
+    const value=document.createElement("div");
+    value.className="tech-spec-value";
+    value.textContent=row.value;
+
+    line.append(label,value);
+    table.appendChild(line);
+  });
+
+  container.appendChild(table);
+}
+
+async function loadTechnicalSpecs(productName,container){
+  const cached=getCachedSpecs(productName);
+
+  if(cached){
+    renderTechnicalSpecs(container,cached);
+  }else{
+    container.innerHTML='<div class="tech-spec-loading">Đang tải thông số kỹ thuật...</div>';
+  }
+
+  try{
+    const res=await fetch(
+      "/api/specs?name="+encodeURIComponent(productName),
+      {cache:"default"}
+    );
+
+    if(!res.ok) throw new Error("HTTP "+res.status);
+
+    const data=await res.json();
+
+    if(Array.isArray(data.specs) && data.specs.length){
+      saveCachedSpecs(productName,data);
+      renderTechnicalSpecs(container,data);
+    }else if(!cached){
+      renderTechnicalSpecs(container,null);
+    }
+  }catch(err){
+    console.error("Technical specs:",err);
+
+    // Nếu đã có cache thì giữ nguyên cache; không làm ảnh hưởng trang sản phẩm.
+    if(!cached){
+      container.innerHTML='<div class="tech-spec-empty">Thông số kỹ thuật đang được cập nhật.</div>';
+    }
+  }
+}
+
 function openInlineProductDetail(group,initialVariant){
   if(!inlineProductDetail) return;
 
@@ -704,7 +803,19 @@ function openInlineProductDetail(group,initialVariant){
 
   lower.append(specs,note);
 
-  shell.append(topbar,breadcrumb,heading,main,lower);
+  const technical=document.createElement("section");
+  technical.className="technical-spec-section";
+
+  const technicalTitle=document.createElement("div");
+  technicalTitle.className="technical-spec-title";
+  technicalTitle.textContent="Thông số kỹ thuật";
+
+  const technicalBody=document.createElement("div");
+  technicalBody.className="technical-spec-body";
+
+  technical.append(technicalTitle,technicalBody);
+
+  shell.append(topbar,breadcrumb,heading,main,lower,technical);
   inlineProductDetail.appendChild(shell);
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
@@ -843,6 +954,7 @@ function openInlineProductDetail(group,initialVariant){
     history.pushState({view:"detail"},"",location.href);
   }
   updateUI();
+  loadTechnicalSpecs(group.name,technicalBody);
 }
 
 function closeInlineProductDetail(){

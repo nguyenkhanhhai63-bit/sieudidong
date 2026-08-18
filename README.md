@@ -380,3 +380,22 @@ Nguyên nhân:
 - Không dùng popup.
 - Nút quay lại đưa về danh sách.
 - Nút Back của trình duyệt cũng quay về danh sách.
+
+
+## V35 - Tự động lấy thông số kỹ thuật từ MobileCity
+
+### Cơ chế
+- Khi mở trang chi tiết sản phẩm, frontend gọi `/api/specs?name=<tên model>`.
+- API nhận diện hãng, tải trang danh mục tương ứng trên MobileCity và tìm model gần nhất.
+- Sau đó API tải trang sản phẩm và đọc các dòng bảng thông số kỹ thuật.
+- Mỗi model dùng chung một bộ thông số; màu/dung lượng không tạo bộ thông số riêng.
+
+### Cache và an toàn
+- Vercel/CDN cache thông số 7 ngày, stale tối đa 30 ngày.
+- Trình duyệt cache thông số từng model 30 ngày.
+- Nếu MobileCity tạm lỗi nhưng đã từng lấy thành công, web tiếp tục dùng cache.
+- Nếu không tìm thấy model đủ chính xác, API không tự lấy sản phẩm khác để tránh ghép sai thông số.
+- Lỗi thông số không làm ảnh hưởng bảng giá, giá hoặc tồn kho.
+
+### File mới
+`api/specs.js`
