@@ -865,3 +865,13 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
   - `GEMINI_API_KEY`: bắt buộc.
   - `GEMINI_COMPARE_MODEL`: tùy chọn, mặc định `gemini-3.6-flash`.
 - Sau khi thêm/chỉnh Environment Variables trên Vercel, Redeploy Production.
+
+
+## V109 - Fix popup So sánh bị treo ở “Đang tải thông số”
+- Mỗi `/api/specs` timeout sau 5 giây.
+- Một máy lỗi vẫn mở được bảng so sánh; ô thiếu dữ liệu hiện `—`.
+- Hiện cảnh báo và nút `Thử tải lại` nếu có máy chưa tải đủ thông số.
+- Gemini vẫn phân tích phần dữ liệu lấy được.
+- Frontend Gemini timeout sau 20 giây.
+- Backend gọi Gemini timeout sau 18 giây.
+- Không còn popup treo vô hạn.

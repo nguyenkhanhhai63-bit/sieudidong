@@ -7339,3 +7339,61 @@ body.modal-open #zaloConsultBtn{
     line-height:1.55;
   }
 }
+
+
+/* =========================================================
+   V109 - Không để So sánh treo khi thông số lỗi/chậm
+   ========================================================= */
+.compare-spec-warning{
+  margin:14px 20px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  border:1px solid #fed7aa;
+  border-radius:11px;
+  background:#fff7ed;
+}
+.compare-spec-warning-text{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  color:#9a3412;
+  font-size:12px;
+}
+.compare-spec-warning-text strong{
+  color:#7c2d12;
+}
+.compare-spec-warning-text span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.compare-spec-retry-btn{
+  flex:0 0 auto;
+  min-height:34px;
+  padding:0 11px;
+  border:1px solid #fdba74;
+  border-radius:8px;
+  background:#fff;
+  color:#c2410c;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.compare-spec-retry-btn:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+@media(max-width:720px){
+  .compare-spec-warning{
+    margin:10px 10px 0;
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .compare-spec-retry-btn{
+    width:100%;
+  }
+}

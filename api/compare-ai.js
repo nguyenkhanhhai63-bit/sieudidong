@@ -115,26 +115,35 @@ Hãy phân tích để khách mua điện thoại dễ quyết định.`;
     ].join(" ");
 
     const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
-    const r=await fetch(endpoint,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "x-goog-api-key":apiKey
-      },
-      body:JSON.stringify({
-        system_instruction:{
-          parts:[{text:systemInstruction}]
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),18000);
+
+    let r;
+    try{
+      r=await fetch(endpoint,{
+        method:"POST",
+        signal:controller.signal,
+        headers:{
+          "Content-Type":"application/json",
+          "x-goog-api-key":apiKey
         },
-        contents:[{
-          role:"user",
-          parts:[{text:input}]
-        }],
-        generationConfig:{
-          maxOutputTokens:900,
-          temperature:0.35
-        }
-      })
-    });
+        body:JSON.stringify({
+          system_instruction:{
+            parts:[{text:systemInstruction}]
+          },
+          contents:[{
+            role:"user",
+            parts:[{text:input}]
+          }],
+          generationConfig:{
+            maxOutputTokens:900,
+            temperature:0.35
+          }
+        })
+      });
+    }finally{
+      clearTimeout(timer);
+    }
 
     const data=await r.json().catch(()=>({}));
 
@@ -153,6 +162,6 @@ Hãy phân tích để khách mua điện thoại dễ quyết định.`;
     return res.status(200).json({ok:true,text,model});
   }catch(err){
     console.error("AI compare:",err);
-    return res.status(502).json({error:"Không kết nối được AI. Vui lòng thử lại."});
+    return res.status(502).json({error:err?.name==="AbortError" ? "Gemini phản hồi quá lâu. Vui lòng thử lại." : "Không kết nối được Gemini. Vui lòng thử lại."});
   }
 }

@@ -949,18 +949,56 @@ function renderCompareBar(){
 
 async function fetchCompareSpecs(group){
   const cached=getCachedSpecs(group.name);
-  if(cached?.specs?.length) return cached.specs;
+  if(cached?.specs?.length){
+    return {
+      ok:true,
+      specs:cached.specs,
+      source:"cache",
+      error:""
+    };
+  }
+
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),5000);
 
   try{
-    const res=await fetch("/api/specs?v=64&name="+encodeURIComponent(group.name),{cache:"default"});
+    const res=await fetch(
+      "/api/specs?v=109&name="+encodeURIComponent(group.name),
+      {cache:"default",signal:controller.signal}
+    );
+
     if(!res.ok) throw new Error("HTTP "+res.status);
+
     const data=await res.json();
+
     if(Array.isArray(data.specs) && data.specs.length){
       saveCachedSpecs(group.name,data);
-      return data.specs;
+      return {
+        ok:true,
+        specs:data.specs,
+        source:"api",
+        error:""
+      };
     }
-  }catch(_){}
-  return [];
+
+    return {
+      ok:false,
+      specs:[],
+      source:"none",
+      error:"Chưa có dữ liệu thông số"
+    };
+  }catch(err){
+    return {
+      ok:false,
+      specs:[],
+      source:"error",
+      error:err?.name==="AbortError"
+        ? "Tải thông số quá lâu"
+        : (err?.message||"Không tải được thông số")
+    };
+  }finally{
+    clearTimeout(timer);
+  }
 }
 
 
@@ -1008,14 +1046,23 @@ async function runAiCompare(groups,specs,need,button,result){
   result.innerHTML='<div class="compare-ai-wait">Gemini đang đọc cấu hình và đối chiếu các máy...</div>';
 
   try{
-    const r=await fetch("/api/compare-ai",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        need,
-        products:aiComparePayload(groups,specs)
-      })
-    });
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),20000);
+
+    let r;
+    try{
+      r=await fetch("/api/compare-ai",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        signal:controller.signal,
+        body:JSON.stringify({
+          need,
+          products:aiComparePayload(groups,specs)
+        })
+      });
+    }finally{
+      clearTimeout(timer);
+    }
 
     const data=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(data.error||"Không phân tích được.");
@@ -1027,7 +1074,7 @@ async function runAiCompare(groups,specs,need,button,result){
     result.innerHTML="";
     const error=document.createElement("div");
     error.className="compare-ai-error";
-    error.textContent=err?.message||"Gemini đang tạm thời không sử dụng được.";
+    error.textContent=err?.name==="AbortError" ? "Gemini phản hồi quá lâu. Vui lòng thử lại." : (err?.message||"Gemini đang tạm thời không sử dụng được.");
     result.appendChild(error);
   }finally{
     button.disabled=false;
@@ -1082,8 +1129,18 @@ async function openCompareModal(){
   modal.querySelector(".compare-modal-backdrop").addEventListener("click",close);
 
   const groups=[...COMPARE_ITEMS];
-  const specs=await Promise.all(groups.map(fetchCompareSpecs));
-  const maps=specs.map(specMap);
+
+  async function loadCompareData(){
+    const results=await Promise.all(groups.map(fetchCompareSpecs));
+    const specs=results.map(x=>Array.isArray(x?.specs)?x.specs:[]);
+    const maps=specs.map(specMap);
+    return {results,specs,maps};
+  }
+
+  let compareData=await loadCompareData();
+  let specs=compareData.specs;
+  let maps=compareData.maps;
+  let specResults=compareData.results;
 
   const aiBox=document.createElement("section");
   aiBox.className="compare-ai-box";
@@ -1126,7 +1183,10 @@ async function openCompareModal(){
 
   const aiResult=document.createElement("div");
   aiResult.className="compare-ai-result";
-  aiResult.innerHTML='<div class="compare-ai-placeholder">Chọn nhu cầu rồi bấm “AI phân tích” để nhận gợi ý.</div>';
+  const incompleteCount=specResults.filter(x=>!x?.ok).length;
+  aiResult.innerHTML=incompleteCount
+    ? `<div class="compare-ai-placeholder">Có ${incompleteCount} máy chưa có đủ thông số. Gemini vẫn có thể phân tích phần dữ liệu đang có.</div>`
+    : '<div class="compare-ai-placeholder">Chọn nhu cầu rồi bấm “Gemini phân tích” để nhận gợi ý.</div>';
 
   aiBtn.addEventListener("click",()=>{
     runAiCompare(groups,specs,needSelect.value,aiBtn,aiResult);
@@ -1153,6 +1213,59 @@ async function openCompareModal(){
   const dialog=modal.querySelector(".compare-modal-dialog");
   const loading=modal.querySelector(".compare-loading");
   loading.remove();
+
+  const failedIndexes=specResults
+    .map((x,i)=>x?.ok ? -1 : i)
+    .filter(i=>i>=0);
+
+  if(failedIndexes.length){
+    const warn=document.createElement("div");
+    warn.className="compare-spec-warning";
+
+    const names=failedIndexes.map(i=>groups[i]?.name).filter(Boolean);
+    const text=document.createElement("div");
+    text.className="compare-spec-warning-text";
+    text.innerHTML=`<strong>Một số máy chưa tải được đầy đủ thông số.</strong><span>${names.join(", ")}</span>`;
+
+    const retry=document.createElement("button");
+    retry.type="button";
+    retry.className="compare-spec-retry-btn";
+    retry.textContent="Thử tải lại";
+
+    retry.addEventListener("click",async()=>{
+      retry.disabled=true;
+      retry.textContent="Đang tải lại...";
+
+      compareData=await loadCompareData();
+      specs=compareData.specs;
+      maps=compareData.maps;
+      specResults=compareData.results;
+
+      const stillFailed=specResults.some(x=>!x?.ok);
+
+      if(!stillFailed){
+        warn.remove();
+        retry.textContent="Đã tải";
+      }else{
+        retry.disabled=false;
+        retry.textContent="Thử tải lại";
+        const failedNames=specResults
+          .map((x,i)=>x?.ok ? "" : groups[i]?.name)
+          .filter(Boolean);
+        text.innerHTML=`<strong>Vẫn còn máy chưa có đủ thông số.</strong><span>${failedNames.join(", ")}</span>`;
+      }
+
+      // Cập nhật lại nội dung so sánh bằng cách đóng/mở modal.
+      setTimeout(()=>{
+        modal.classList.remove("open");
+        document.body.classList.remove("modal-open");
+        openCompareModal();
+      },150);
+    });
+
+    warn.append(text,retry);
+    dialog.appendChild(warn);
+  }
 
   const wrap=document.createElement("div");
   wrap.className="compare-table-wrap";
