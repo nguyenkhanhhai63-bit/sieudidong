@@ -62,6 +62,32 @@ async function kvFetch(path) {
   return res.json();
 }
 
+function firstImage(obj) {
+  if (!obj) return "";
+
+  // KiotViet Public API documents "images" as an array of image links.
+  if (Array.isArray(obj.images) && obj.images.length) {
+    const first = obj.images[0];
+
+    if (typeof first === "string") return first;
+
+    if (first && typeof first === "object") {
+      return first.image || first.Image || first.url || first.Url || "";
+    }
+  }
+
+  // Be tolerant of other casing/legacy payload shapes.
+  if (Array.isArray(obj.Images) && obj.Images.length) {
+    const first = obj.Images[0];
+    if (typeof first === "string") return first;
+    if (first && typeof first === "object") {
+      return first.image || first.Image || first.url || first.Url || "";
+    }
+  }
+
+  return obj.image || obj.Image || "";
+}
+
 function normalizeProduct(item) {
   const inventories = Array.isArray(item.inventories) ? item.inventories : [];
   const branches = inventories.map(i => ({
@@ -71,6 +97,7 @@ function normalizeProduct(item) {
   }));
 
   const totalOnHand = branches.reduce((sum, b) => sum + b.onHand, 0);
+  const parentImage = firstImage(item);
 
   const children = Array.isArray(item.children) ? item.children : [];
 
@@ -84,7 +111,8 @@ function normalizeProduct(item) {
           code: child.code,
           name: child.fullName || child.name || child.code,
           price: Number(child.basePrice || item.basePrice || 0),
-          onHand
+          onHand,
+          image: firstImage(child) || parentImage
         };
       })
     : [{
@@ -92,7 +120,8 @@ function normalizeProduct(item) {
         code: item.code,
         name: item.fullName || item.name || item.code,
         price: Number(item.basePrice || 0),
-        onHand: totalOnHand
+        onHand: totalOnHand,
+        image: parentImage
       }];
 
   return {
@@ -101,6 +130,7 @@ function normalizeProduct(item) {
     name: item.fullName || item.name || item.code,
     categoryId: item.categoryId,
     basePrice: Number(item.basePrice || 0),
+    image: parentImage,
     variants
   };
 }

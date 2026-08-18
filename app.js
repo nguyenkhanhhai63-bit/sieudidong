@@ -15,13 +15,8 @@ function money(v){
 
 function cleanBaseName(name){
   let s = String(name || "").trim();
-
-  // Bỏ dung lượng ở cuối, ví dụ - 12/256
-  s = s.replace(/\s*-\s*\d+\s*\/\s*\d+\s*$/i, "");
-
-  // Bỏ màu ở cuối
+  s = s.replace(/\s*-\s*\d+\s*\/\s*(?:\d+|1T|2T)\s*$/i, "");
   s = s.replace(/\s*-\s*(Đen|Trắng|Xanh|Đỏ|Hồng|Tím|Bạc|Titan|Cam|Vàng|Green|Blue|Black|White|Silver)\s*$/i, "");
-
   return s.trim();
 }
 
@@ -54,7 +49,8 @@ function flattenProducts(raw){
         memory: extractMemory(v.name || p.name, v.code || p.code),
         color: extractColor(v.name || p.name),
         price: Number(v.price || 0),
-        onHand: Number(v.onHand || 0)
+        onHand: Number(v.onHand || 0),
+        image: v.image || p.image || ""
       });
     });
   });
@@ -67,13 +63,44 @@ function groupItems(items){
 
   items.forEach(item => {
     const key = item.baseName || item.fullName;
+
     if(!map.has(key)){
-      map.set(key, { name:key, items:[] });
+      map.set(key,{
+        name:key,
+        image:item.image || "",
+        items:[]
+      });
     }
-    map.get(key).items.push(item);
+
+    const group = map.get(key);
+
+    if(!group.image && item.image){
+      group.image = item.image;
+    }
+
+    group.items.push(item);
   });
 
   return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+}
+
+function imageHTML(group){
+  if(!group.image){
+    return `<div class="product-image-wrap"><div class="image-placeholder">Chưa có ảnh</div></div>`;
+  }
+
+  return `
+    <div class="product-image-wrap">
+      <img
+        class="product-image"
+        src="${group.image}"
+        alt="${group.name}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;image-placeholder&quot;>Không tải được ảnh</div>'"
+      >
+    </div>
+  `;
 }
 
 function render(){
@@ -110,6 +137,9 @@ function render(){
     const head = document.createElement("div");
     head.className = "group-head";
 
+    const imgWrap = document.createElement("div");
+    imgWrap.innerHTML = imageHTML(group);
+
     const titleWrap = document.createElement("div");
     titleWrap.className = "group-title-wrap";
     titleWrap.innerHTML = `
@@ -121,7 +151,8 @@ function render(){
     chevron.className = "chevron";
     chevron.textContent = "⌄";
 
-    head.append(titleWrap, chevron);
+    // unwrap the generated image wrapper child
+    head.append(imgWrap.firstElementChild, titleWrap, chevron);
     head.addEventListener("click",()=>card.classList.toggle("collapsed"));
 
     const body = document.createElement("div");
@@ -179,6 +210,7 @@ async function load(){
 
 searchInput.addEventListener("input",render);
 onlyStock.addEventListener("change",render);
+
 clearSearch.addEventListener("click",()=>{
   searchInput.value="";
   searchInput.focus();
@@ -186,10 +218,12 @@ clearSearch.addEventListener("click",()=>{
 });
 
 const savedTheme = localStorage.getItem("kv-theme");
+
 if(savedTheme === "dark"){
   document.body.classList.add("dark");
   darkMode.checked = true;
 }
+
 darkMode.addEventListener("change",()=>{
   document.body.classList.toggle("dark",darkMode.checked);
   localStorage.setItem("kv-theme",darkMode.checked ? "dark" : "light");

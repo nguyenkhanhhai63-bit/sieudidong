@@ -98,3 +98,16 @@ Bản V2 nhóm các màu/dung lượng của cùng một model vào chung một 
 - hiển thị số mẫu và số phiên bản
 - mobile tối ưu 1 cột
 - có thể thu gọn từng model
+
+
+## Giao diện V3 - Có ảnh sản phẩm
+
+KiotViet Public API có trường `images` là danh sách link hình ảnh sản phẩm.
+
+Bản V3:
+- lấy ảnh trực tiếp từ KiotViet API
+- ưu tiên ảnh của phiên bản; nếu không có thì dùng ảnh sản phẩm cha
+- ảnh lazy-load để giảm tải
+- nếu sản phẩm không có ảnh thì hiện placeholder
+- desktop ảnh 76x76, mobile 64x64
+- vẫn giữ nhóm model, tìm kiếm, tồn kho và giá
