@@ -682,3 +682,13 @@ Dùng Redis hiện tại qua `REDIS_URL`. Nếu analytics lỗi, website công k
 - Bấm `Link thông số` quay lại đúng panel.
 - Nếu API/Redis lỗi sẽ hiển thị thông báo lỗi cụ thể và nút `Thử lại`.
 - Nếu chưa có dữ liệu sẽ hiện thông báo `Chưa có dữ liệu truy cập`, không để màn hình trắng.
+
+
+## V81 - Fix Thống kê tải mãi
+Nguyên nhân V79/V80 gọi Redis tuần tự quá nhiều lần cho 30 ngày, có thể vượt thời gian xử lý của Vercel/Redis Cloud.
+
+V81:
+- Dùng MGET để lấy 30 ngày chỉ trong 2 lệnh Redis.
+- Các thống kê còn lại chạy song song.
+- Thêm timeout 12 giây trên trang admin.
+- Nếu API lỗi hoặc chậm sẽ hiện lỗi + nút Thử lại, không quay vô hạn.

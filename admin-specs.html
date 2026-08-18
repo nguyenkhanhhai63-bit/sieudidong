@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quản trị thông số | Siêu Di Động</title>
-  <!-- V80 analytics panel visibility fix -->
+  <!-- V81 analytics speed + timeout fix -->
   <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
   <style>
     :root{
@@ -335,7 +335,17 @@ async function loadAnalytics(){
   const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
   loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
   try{
-    const r=await fetch("/api/admin/analytics?ts="+Date.now(),{cache:"no-store"});
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),12000);
+    let r;
+    try{
+      r=await fetch("/api/admin/analytics?ts="+Date.now(),{
+        cache:"no-store",
+        signal:controller.signal
+      });
+    }finally{
+      clearTimeout(timeout);
+    }
     const d=await r.json(); if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
     const o=d.overview||{};
     mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`7 ngày: ${fmt(o.views7)}`;
@@ -344,7 +354,7 @@ async function loadAnalytics(){
     mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
     const chart=document.getElementById("trafficChart"); chart.innerHTML="";
     const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
-    daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem, ${fmt(x.visitors)} khách`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
+    daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
     const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
@@ -360,10 +370,13 @@ async function loadAnalytics(){
   }catch(e){
     console.error("Analytics admin:", e);
     loading.classList.remove("hidden");
+    const message = e?.name==="AbortError"
+      ? "Máy chủ thống kê phản hồi quá lâu. Hãy bấm Thử lại."
+      : String(e.message||e);
     loading.innerHTML = `
       <div style="max-width:560px;margin:auto;padding:18px;border:1px solid #ffd1bf;background:#fff8f4;border-radius:10px;color:#b43d00">
         <strong>Không tải được thống kê</strong>
-        <div style="margin-top:8px;font-size:12px;color:#6b7280">${String(e.message||e)}</div>
+        <div style="margin-top:8px;font-size:12px;color:#6b7280">${message}</div>
         <button id="retryAnalyticsBtn" class="secondary" type="button" style="margin-top:12px">Thử lại</button>
       </div>`;
     const retry=document.getElementById("retryAnalyticsBtn");
