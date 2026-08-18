@@ -738,3 +738,10 @@ V81:
 - Trang quản trị chính: `/admin`
 - Đường dẫn cũ `/admin-specs` tự chuyển sang `/admin`
 - Không đổi các API admin hiện tại.
+
+
+## V92 - Fix thống kê sau khi đổi domain
+- API thống kê không còn treo nếu Redis phản hồi chậm.
+- Mỗi lệnh Redis timeout sau 2.5 giây và trả dữ liệu dự phòng.
+- Trang admin tự thử kết nối API tối đa 3 lần.
+- Giữ nguyên đường dẫn quản trị `/admin`.

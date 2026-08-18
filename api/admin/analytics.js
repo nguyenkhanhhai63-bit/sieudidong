@@ -7,62 +7,70 @@ function vnDay(offset=0){
   d.setUTCDate(d.getUTCDate()+offset);
   return d.toISOString().slice(0,10);
 }
-
 function dates(n){
   return Array.from({length:n},(_,i)=>vnDay(-(n-1-i)));
 }
+function n(v){ return Number(v||0); }
 
-function toNumber(v){
-  return Number(v || 0);
+function timeout(ms){
+  return new Promise((_,reject)=>{
+    setTimeout(()=>reject(new Error("Redis timeout")),ms);
+  });
+}
+
+async function safeCommand(args,fallback){
+  try{
+    const result=await Promise.race([
+      redisCommand(args),
+      timeout(2500)
+    ]);
+    return result ?? fallback;
+  }catch(err){
+    console.warn("Analytics Redis command failed:",args?.[0],err?.message||err);
+    return fallback;
+  }
 }
 
 async function mget(keys){
   if(!keys.length) return [];
-  const values = await redisCommand(["MGET", ...keys]);
-  return Array.isArray(values) ? values.map(toNumber) : [];
+  const a=await safeCommand(["MGET",...keys],[]);
+  return Array.isArray(a) ? a.map(n) : keys.map(()=>0);
 }
-
-async function getNumber(key){
-  return toNumber(await redisCommand(["GET",key]));
+async function getNum(key){
+  return n(await safeCommand(["GET",key],0));
 }
-
-async function pfCount(keys){
+async function pf(keys){
   if(!keys.length) return 0;
-  return toNumber(await redisCommand(["PFCOUNT",...keys]));
+  return n(await safeCommand(["PFCOUNT",...keys],0));
 }
-
-async function topZSet(key,n=10){
-  const raw=await redisCommand(["ZREVRANGE",key,"0",String(n-1),"WITHSCORES"])||[];
+async function top(key,limit=12){
+  const raw=await safeCommand(["ZREVRANGE",key,"0",String(limit-1),"WITHSCORES"],[]);
+  if(!Array.isArray(raw)) return [];
   const out=[];
   for(let i=0;i<raw.length;i+=2){
-    out.push({name:String(raw[i]),value:toNumber(raw[i+1])});
+    out.push({name:String(raw[i]||""),value:n(raw[i+1])});
   }
-  return out;
+  return out.filter(x=>x.name);
 }
-
-async function hGetAll(key){
-  const raw=await redisCommand(["HGETALL",key])||[];
-
-  // node-redis sendCommand thường trả array với HGETALL.
+async function hash(key){
+  const raw=await safeCommand(["HGETALL",key],[]);
   if(Array.isArray(raw)){
     const out={};
-    for(let i=0;i<raw.length;i+=2){
-      out[String(raw[i])]=toNumber(raw[i+1]);
-    }
+    for(let i=0;i<raw.length;i+=2) out[String(raw[i])]=n(raw[i+1]);
     return out;
   }
-
-  // Fallback nếu provider trả object.
-  const out={};
-  for(const [k,v] of Object.entries(raw||{})) out[k]=toNumber(v);
-  return out;
+  if(raw && typeof raw==="object"){
+    return Object.fromEntries(Object.entries(raw).map(([k,v])=>[k,n(v)]));
+  }
+  return {};
 }
 
 export default async function handler(req,res){
+  res.setHeader("Cache-Control","no-store");
+
   if(!(await isAdmin(req))){
     return res.status(401).json({error:"Unauthorized"});
   }
-
   if(req.method!=="GET"){
     res.setHeader("Allow","GET");
     return res.status(405).json({error:"Method not allowed"});
@@ -73,49 +81,34 @@ export default async function handler(req,res){
     const d7=d30.slice(-7);
     const today=d30[d30.length-1];
 
-    // Quan trọng V81:
-    // Không còn gọi Redis tuần tự 60-90 lần như V79/V80.
-    // MGET toàn bộ 30 ngày trong 2 lệnh, các thống kê khác chạy song song.
-    const viewKeys=d30.map(d=>`analytics:pageviews:day:${d}`);
-    const zaloKeys=d30.map(d=>`analytics:zalo:day:${d}`);
-
     const [
-      dailyViews,
-      dailyZalo,
-      todayVisitors,
-      visitors7,
-      visitors30,
-      totalViews,
-      totalVisitors,
-      zaloAll,
-      devices,
-      topProducts,
-      topSearches
+      dailyViews,dailyZalo,todayVisitors,visitors7,visitors30,
+      totalViews,totalVisitors,zaloAll,devices,topProducts,topSearches
     ]=await Promise.all([
-      mget(viewKeys),
-      mget(zaloKeys),
-      pfCount([`analytics:visitors:day:${today}`]),
-      pfCount(d7.map(d=>`analytics:visitors:day:${d}`)),
-      pfCount(d30.map(d=>`analytics:visitors:day:${d}`)),
-      getNumber("analytics:pageviews:all"),
-      pfCount(["analytics:visitors:all"]),
-      getNumber("analytics:zalo:all"),
-      hGetAll("analytics:devices:all"),
-      topZSet("analytics:product_views:all",12),
-      topZSet("analytics:searches:all",12)
+      mget(d30.map(d=>`analytics:pageviews:day:${d}`)),
+      mget(d30.map(d=>`analytics:zalo:day:${d}`)),
+      pf([`analytics:visitors:day:${today}`]),
+      pf(d7.map(d=>`analytics:visitors:day:${d}`)),
+      pf(d30.map(d=>`analytics:visitors:day:${d}`)),
+      getNum("analytics:pageviews:all"),
+      pf(["analytics:visitors:all"]),
+      getNum("analytics:zalo:all"),
+      hash("analytics:devices:all"),
+      top("analytics:product_views:all"),
+      top("analytics:searches:all")
     ]);
 
     const daily=d30.map((date,i)=>({
       date,
-      views:toNumber(dailyViews[i]),
-      zalo:toNumber(dailyZalo[i])
+      views:n(dailyViews[i]),
+      zalo:n(dailyZalo[i])
     }));
 
-    const sum=(arr,key)=>arr.reduce((s,x)=>s+toNumber(x[key]),0);
+    const sum=(arr,key)=>arr.reduce((s,x)=>s+n(x[key]),0);
     const last7=daily.slice(-7);
 
-    res.setHeader("Cache-Control","no-store");
     return res.status(200).json({
+      ok:true,
       overview:{
         todayViews:daily.at(-1)?.views||0,
         views7:sum(last7,"views"),
@@ -135,11 +128,17 @@ export default async function handler(req,res){
       topProducts,
       topSearches
     });
-
   }catch(err){
-    console.error("Admin analytics V81:",err);
-    return res.status(500).json({
-      error:err?.message || "Không tải được thống kê"
+    console.error("Analytics fatal:",err);
+    // Always return JSON so the admin UI never ends in browser-level "Failed to fetch"
+    return res.status(200).json({
+      ok:false,
+      warning:err?.message||"Analytics unavailable",
+      overview:{},
+      daily:dates(30).map(date=>({date,views:0,zalo:0})),
+      devices:{},
+      topProducts:[],
+      topSearches:[]
     });
   }
 }
