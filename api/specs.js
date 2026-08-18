@@ -435,7 +435,7 @@ async function findProductPage(productName) {
 function wantedLabel(label="") {
   const n = normalized(label);
 
-  const allowed = [
+  const exactOrStarts = [
     "man hinh",
     "he dieu hanh",
     "camera sau",
@@ -453,7 +453,7 @@ function wantedLabel(label="") {
     "thiet ke"
   ];
 
-  return allowed.some(x => n === x || n.startsWith(x + " "));
+  return exactOrStarts.some(x => n === x || n.startsWith(x + " "));
 }
 
 function extractSpecs(html) {
@@ -526,20 +526,51 @@ function extractSpecs(html) {
   return [...map.values()];
 }
 
+
 function canonicalSpecLabel(label="") {
   const n = normalized(label);
 
-  if (n.startsWith("man hinh")) return "Màn hình";
-  if (n.startsWith("he dieu hanh")) return "Hệ điều hành";
-  if (n.startsWith("camera sau")) return "Camera sau";
-  if (n.startsWith("camera truoc")) return "Camera trước";
-  if (n === "cpu" || n.startsWith("cpu ") || n === "chip" || n.startsWith("chip ") || n.startsWith("chipset")) return "CPU";
+  if (n === "man hinh" || n.startsWith("man hinh ")) return "Màn hình";
+  if (n === "he dieu hanh" || n.startsWith("he dieu hanh ")) return "Hệ điều hành";
+  if (n === "camera sau" || n.startsWith("camera sau ")) return "Camera sau";
+  if (n === "camera truoc" || n.startsWith("camera truoc ")) return "Camera trước";
+
+  if (
+    n === "cpu" || n.startsWith("cpu ") ||
+    n === "chip" || n.startsWith("chip ") ||
+    n === "chipset" || n.startsWith("chipset ")
+  ) return "CPU";
+
   if (n === "ram" || n.startsWith("ram ")) return "RAM";
-  if (n.startsWith("bo nho trong") || n === "rom" || n.startsWith("rom ")) return "Bộ nhớ trong";
-  if (n.startsWith("the sim") || n === "sim" || n.startsWith("sim ")) return "Thẻ SIM";
-  if (n.startsWith("dung luong pin") || n === "pin" || n.startsWith("pin ")) return "Dung lượng pin";
-  if (n.startsWith("thiet ke")) return "Thiết kế";
+
+  if (
+    n === "bo nho trong" || n.startsWith("bo nho trong ") ||
+    n === "rom" || n.startsWith("rom ")
+  ) return "Bộ nhớ trong";
+
+  if (
+    n === "the sim" || n.startsWith("the sim ") ||
+    n === "sim" || n.startsWith("sim ")
+  ) return "Thẻ SIM";
+
+  if (
+    n === "dung luong pin" || n.startsWith("dung luong pin ") ||
+    n === "pin" || n.startsWith("pin ")
+  ) return "Dung lượng pin";
+
+  if (n === "thiet ke" || n.startsWith("thiet ke ")) return "Thiết kế";
+
   return "";
+}
+
+function cleanSpecValue(value="") {
+  return String(value)
+    .replace(/\r/g, "")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 function coreSpecsOnly(specs=[]) {
@@ -562,14 +593,21 @@ function coreSpecsOnly(specs=[]) {
     const label = canonicalSpecLabel(row.label);
     if (!label || !row.value) continue;
 
+    const value = cleanSpecValue(row.value);
+    if (!value) continue;
+
     const old = map.get(label);
-    // Prefer the richer entry if synonyms are duplicated.
-    if (!old || String(row.value).length > String(old.value).length) {
-      map.set(label, {label, value:row.value});
+
+    // Giữ bản có nội dung chi tiết hơn để giống bảng thông số nguồn.
+    if (!old || value.length > old.value.length) {
+      map.set(label, { label, value });
     }
   }
 
-  return order.filter(x => map.has(x)).map(x => map.get(x));
+  // Chỉ trả về đúng 10 nhóm trên, theo đúng thứ tự.
+  return order
+    .filter(label => map.has(label))
+    .map(label => map.get(label));
 }
 
 function extractTitle(html) {

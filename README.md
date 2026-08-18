@@ -549,3 +549,22 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Nhận diện hãng từ tên sản phẩm, tên danh mục và tên phiên bản.
 - Giữ phân loại chính Điện thoại / Máy tính bảng từ KiotViet.
 - Khi chọn Điện thoại, các nút hãng như HONOR, OPPO, vivo, Xiaomi... xuất hiện theo dữ liệu thực tế.
+
+
+## V61 - Thông số đúng theo mẫu
+Chỉ lấy và hiển thị đúng các dòng:
+1. Màn hình
+2. Hệ điều hành
+3. Camera sau
+4. Camera trước
+5. CPU
+6. RAM
+7. Bộ nhớ trong
+8. Thẻ SIM
+9. Dung lượng pin
+10. Thiết kế
+
+- Giữ nguyên nội dung nhiều dòng từ trang nguồn.
+- Bỏ các thông số phụ khác.
+- Ưu tiên bản nội dung chi tiết hơn nếu nguồn có trường trùng.
+- Đổi cache thông số để không dùng dữ liệu cũ.
