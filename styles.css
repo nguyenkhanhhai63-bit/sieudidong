@@ -6352,3 +6352,178 @@ textarea{
     border-radius:9px !important;
   }
 }
+
+
+/* =========================================================
+   V86 - Header clean: bỏ khối kem + bỏ logo chữ trong ảnh
+   ========================================================= */
+@media(min-width:721px){
+  .commerce-header{
+    background:#fff !important;
+    border-top:3px solid #ff5a00 !important;
+    border-bottom:1px solid #e9edf1 !important;
+    box-shadow:0 3px 14px rgba(15,23,42,.035) !important;
+  }
+
+  .commerce-header-inner{
+    width:min(1280px,calc(100% - 40px)) !important;
+    min-height:72px !important;
+    padding:9px 0 !important;
+    grid-template-columns:188px 118px minmax(380px,1fr) auto !important;
+    gap:14px !important;
+  }
+
+  /* Brand phẳng, không pill, không nền kem */
+  .commerce-brand-block{
+    height:46px !important;
+    padding:0 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    background:transparent !important;
+    display:flex !important;
+    align-items:center !important;
+  }
+
+  .commerce-logo{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    width:auto !important;
+    color:#161616 !important;
+    text-decoration:none !important;
+  }
+
+  .commerce-logo-mark{
+    display:block !important;
+    width:42px !important;
+    height:42px !important;
+    flex:0 0 42px !important;
+    object-fit:cover !important;
+    border-radius:9px !important;
+  }
+
+  .commerce-logo-text{
+    display:block !important;
+    font-family:var(--font-ui) !important;
+    font-size:17px !important;
+    line-height:1 !important;
+    font-weight:800 !important;
+    letter-spacing:-.35px !important;
+    white-space:nowrap !important;
+  }
+
+  .commerce-logo-wide,
+  .commerce-logo-mobile{
+    display:none !important;
+  }
+
+  /* Danh mục: bỏ cảm giác nút cồng kềnh */
+  .commerce-category-btn{
+    width:100% !important;
+    height:44px !important;
+    padding:0 13px !important;
+    border:1px solid #e4e7eb !important;
+    border-radius:10px !important;
+    background:#fff !important;
+    color:#292d32 !important;
+    box-shadow:none !important;
+    gap:8px !important;
+    font-size:13px !important;
+    font-weight:600 !important;
+  }
+
+  .commerce-category-btn span{
+    color:#ff5a00 !important;
+    font-size:17px !important;
+    font-weight:500 !important;
+  }
+
+  .commerce-category-btn strong{
+    color:#292d32 !important;
+    font-size:13px !important;
+    font-weight:600 !important;
+  }
+
+  .commerce-category-btn:hover{
+    background:#fafafa !important;
+    border-color:#d9dde2 !important;
+  }
+
+  /* Search là thành phần chính */
+  .commerce-search{
+    height:44px !important;
+  }
+
+  .commerce-search input{
+    height:44px !important;
+    border:1px solid #dfe3e8 !important;
+    border-radius:10px !important;
+    background:#f7f8fa !important;
+    padding-left:15px !important;
+    font-size:14px !important;
+  }
+
+  .commerce-search input:focus{
+    background:#fff !important;
+    border-color:#ff8f54 !important;
+    box-shadow:0 0 0 3px rgba(255,90,0,.07) !important;
+  }
+
+  .commerce-header-note{
+    font-size:12px !important;
+    font-weight:600 !important;
+    color:#59616b !important;
+  }
+}
+
+/* Màn hình desktop hẹp */
+@media(min-width:721px) and (max-width:980px){
+  .commerce-header-inner{
+    grid-template-columns:166px 108px minmax(260px,1fr) !important;
+  }
+
+  .commerce-logo-mark{
+    width:38px !important;
+    height:38px !important;
+    flex-basis:38px !important;
+  }
+
+  .commerce-logo-text{
+    font-size:15px !important;
+  }
+}
+
+/* Mobile: chỉ dùng icon vuông, không bị dính nền */
+@media(max-width:720px){
+  .commerce-brand-block{
+    display:contents !important;
+  }
+
+  .commerce-logo{
+    width:46px !important;
+    height:46px !important;
+    border:0 !important;
+    background:transparent !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .commerce-logo-mark{
+    display:block !important;
+    width:44px !important;
+    height:44px !important;
+    border-radius:10px !important;
+    object-fit:cover !important;
+  }
+
+  .commerce-logo-text{
+    display:none !important;
+  }
+
+  .commerce-logo-wide,
+  .commerce-logo-mobile{
+    display:none !important;
+  }
+}

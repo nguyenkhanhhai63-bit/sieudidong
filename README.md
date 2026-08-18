@@ -724,3 +724,11 @@ V81:
 - `Tư vấn • Cửa hàng Quy Nhơn` thành phần tử thật, không còn pseudo-element.
 - Desktop dùng layout 4 cột cân đối; desktop hẹp tự ẩn phần ghi chú.
 - Mobile giữ layout gọn nhưng logo hòa với nền header hơn.
+
+
+## V86 - Header clean
+- Bỏ hoàn toàn khối nền kem quanh logo.
+- Không dùng logo-wide dạng ảnh chữ nữa; thay bằng logo vuông + chữ SIÊU DI ĐỘNG bằng HTML.
+- Nút Danh mục chuyển sang nền trắng, viền xám nhẹ, font tự nhiên hơn.
+- Search trở thành thành phần chính, tổng thể giống header web bán hàng hơn.
+- Mobile chỉ hiện icon vuông, không bị nền dư.
