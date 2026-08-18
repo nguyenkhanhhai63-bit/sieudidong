@@ -956,3 +956,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Card KPI có thanh nhấn màu, số lớn dễ quét nhanh.
 - Biểu đồ và các bảng ranking đồng bộ khoảng cách, font, đường viền và responsive.
 - Giữ nguyên logic thống kê V121; V122 chủ yếu tối ưu giao diện để không làm sai dữ liệu.
+
+## V123 - Sắp xếp sản phẩm theo lượt tìm kiếm
+- Khi khách mở trang, chế độ mặc định đổi thành `Tìm nhiều nhất`.
+- Website lấy top từ khóa khách đã tìm từ Redis qua `/api/search-popular`.
+- Sản phẩm khớp từ khóa có lượt tìm cao được đưa lên trước.
+- Query dài/cụ thể được ưu tiên hơn query rất ngắn để tránh từ như `red` lấn át toàn bộ danh sách.
+- Nếu khách tự chọn sắp xếp theo giá hoặc tên thì lựa chọn đó được ưu tiên.
+- Khi khách đang gõ từ khóa tìm kiếm, không áp dụng sắp xếp phổ biến để tránh làm lệch kết quả tìm hiện tại.
+- Có cache 6 giờ trên trình duyệt để trang vào là có thứ tự ngay, sau đó cập nhật nền.

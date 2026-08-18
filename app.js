@@ -161,6 +161,97 @@ let ACTIVE_CATEGORY = "Tất cả";
 let ACTIVE_PRICE_FILTER = "Tất cả giá";
 let ACTIVE_SORT = "default";
 
+let SEARCH_POPULAR_TERMS=[];
+const SEARCH_POPULAR_CACHE_KEY="sdd-search-popularity-v1";
+const SEARCH_POPULAR_CACHE_MAX_AGE=6*60*60*1000;
+
+function normalizeSearchText(value=""){
+  return String(value||"")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d")
+    .replace(/[^a-z0-9]+/g," ")
+    .trim()
+    .replace(/\s+/g," ");
+}
+
+function saveSearchPopularityCache(items){
+  try{
+    localStorage.setItem(SEARCH_POPULAR_CACHE_KEY,JSON.stringify({
+      savedAt:Date.now(),
+      items:Array.isArray(items)?items:[]
+    }));
+  }catch(_){}
+}
+
+function loadSearchPopularityCache(){
+  try{
+    const raw=localStorage.getItem(SEARCH_POPULAR_CACHE_KEY);
+    if(!raw) return false;
+    const cached=JSON.parse(raw);
+    if(!Array.isArray(cached.items)) return false;
+    if(Date.now()-Number(cached.savedAt||0)>SEARCH_POPULAR_CACHE_MAX_AGE) return false;
+    SEARCH_POPULAR_TERMS=cached.items
+      .map(x=>({query:String(x.query||""),count:Number(x.count||0)}))
+      .filter(x=>x.query&&x.count>0);
+    return SEARCH_POPULAR_TERMS.length>0;
+  }catch(_){
+    return false;
+  }
+}
+
+async function loadSearchPopularity(){
+  try{
+    const res=await fetch("/api/search-popular",{cache:"default"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const items=Array.isArray(data.items)?data.items:[];
+    SEARCH_POPULAR_TERMS=items
+      .map(x=>({query:String(x.query||""),count:Number(x.count||0)}))
+      .filter(x=>x.query&&x.count>0);
+    saveSearchPopularityCache(SEARCH_POPULAR_TERMS);
+
+    // Khi khách đang ở chế độ mặc định và chưa gõ từ khóa,
+    // cập nhật lại thứ tự ngay sau khi lấy được dữ liệu tìm kiếm.
+    if(ACTIVE_SORT==="default" && !String(searchInput?.value||"").trim()){
+      render();
+    }
+  }catch(err){
+    console.error("Search popularity:",err);
+    if(!SEARCH_POPULAR_TERMS.length) loadSearchPopularityCache();
+  }
+}
+
+function searchPopularityScore(group){
+  if(!SEARCH_POPULAR_TERMS.length) return 0;
+
+  const name=normalizeSearchText(group?.name||"");
+  if(!name) return 0;
+
+  let score=0;
+
+  SEARCH_POPULAR_TERMS.forEach((item,index)=>{
+    const q=normalizeSearchText(item.query);
+    if(!q) return;
+
+    const count=Math.max(0,Number(item.count||0));
+    if(!count) return;
+
+    // Query dài/cụ thể được ưu tiên hơn query quá ngắn như "red".
+    const specificity=Math.min(2.2,1+q.length/18);
+    const recencyRankWeight=Math.max(.55,1-index*.012);
+
+    if(name===q){
+      score+=count*3*specificity*recencyRankWeight;
+    }else if(name.includes(q)){
+      score+=count*specificity*recencyRankWeight;
+    }
+  });
+
+  return score;
+}
+
 function slugParam(value=""){
   return String(value || "").trim();
 }
@@ -235,6 +326,15 @@ function sortGroups(groups){
 
   if(ACTIVE_SORT === "name-asc"){
     return list.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),"vi"));
+  }
+
+  // Mặc định: ưu tiên sản phẩm khớp các từ khóa khách tìm nhiều nhất.
+  // Nếu hai máy cùng điểm thì giữ thứ tự dữ liệu gốc.
+  if(ACTIVE_SORT === "default" && !String(searchInput?.value||"").trim()){
+    return list
+      .map((group,index)=>({group,index,score:searchPopularityScore(group)}))
+      .sort((a,b)=>(b.score-a.score)||(a.index-b.index))
+      .map(x=>x.group);
   }
 
   return list;
@@ -2355,6 +2455,9 @@ if(loadProductCache()){
   }
 }
 
+// Nạp dữ liệu tìm kiếm phổ biến gần nhất để trang mặc định sắp xếp ngay.
+loadSearchPopularityCache();
+
 // Nạp danh sách bán chạy gần nhất trước để tab mặc định hiển thị ngay.
 loadBestSellerCache();
 
@@ -2374,6 +2477,7 @@ if(loadProductCache()){
 
 load();
 loadBestSellers();
+loadSearchPopularity();
 setInterval(load,60000);
 setInterval(loadBestSellers,60*60*1000);
 
