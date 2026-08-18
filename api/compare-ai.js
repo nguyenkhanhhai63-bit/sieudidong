@@ -13,15 +13,30 @@ function clientIp(req){
     .split(",")[0].trim().slice(0,100);
 }
 
-async function rateLimit(req){
-  const key=`compare-ai:rate:${clientIp(req)}`;
+async function rateLimit(req,requestId=""){
+  const ip=clientIp(req);
+  const requestKey=clean(requestId,120);
+
+  // Nếu frontend retry cùng một lần bấm, requestId giống nhau => không tính thêm lượt.
+  if(requestKey){
+    const seenKey=`compare-ai:req:${ip}:${requestKey}`;
+    try{
+      const seen=Number(await redisCommand(["SET",seenKey,"1","NX","EX","3600"])||0);
+      if(!seen){
+        return {ok:true,counted:false,count:0};
+      }
+    }catch(_){}
+  }
+
+  const key=`compare-ai:rate:${ip}`;
   try{
     const n=Number(await redisCommand(["INCR",key])||1);
     if(n===1) await redisCommand(["EXPIRE",key,"3600"]);
-    return {ok:n<=12,count:n};
+
+    // Nới giới hạn lên 60 lượt / IP / giờ.
+    return {ok:n<=60,counted:true,count:n};
   }catch(_){
-    // Nếu Redis lỗi thì không làm hỏng tính năng.
-    return {ok:true,count:0};
+    return {ok:true,counted:false,count:0};
   }
 }
 
@@ -114,10 +129,11 @@ export default async function handler(req,res){
     });
   }
 
-  const limit=await rateLimit(req);
+  const requestId=clean(req.body?.requestId,120);
+  const limit=await rateLimit(req,requestId);
   if(!limit.ok){
     return res.status(429).json({
-      error:"Bạn đã dùng AI phân tích khá nhiều. Vui lòng thử lại sau."
+      error:"AI đang được sử dụng khá nhiều. Vui lòng thử lại sau ít phút."
     });
   }
 

@@ -1041,6 +1041,7 @@ function aiComparePayload(groups,specs){
 async function runAiCompare(groups,specs,need,button,result){
   button.disabled=true;
   delete button.dataset.retried;
+  const requestId="cmp_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);
   const old=button.textContent;
   button.textContent="Gemini đang phân tích...";
   result.classList.add("loading");
@@ -1067,6 +1068,7 @@ async function runAiCompare(groups,specs,need,button,result){
         headers:{"Content-Type":"application/json"},
         signal:controller.signal,
         body:JSON.stringify({
+          requestId,
           need,
           products:aiComparePayload(groups,specs)
         })
@@ -1092,6 +1094,7 @@ async function runAiCompare(groups,specs,need,button,result){
             headers:{"Content-Type":"application/json"},
             signal:retryController.signal,
             body:JSON.stringify({
+              requestId,
               need,
               products:aiComparePayload(groups,specs)
             })

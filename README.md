@@ -903,3 +903,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Frontend tự retry thêm 1 lần khi backend báo AI đang bận.
 - Không hiển thị nguyên thông báo lỗi tiếng Anh của Google cho khách.
 - Thông báo khách chỉ còn dạng tiếng Việt ngắn gọn.
+
+## V113 - Sửa giới hạn AI phân tích
+- Mỗi lần khách bấm `Gemini phân tích` sinh một `requestId`.
+- Frontend retry lại cùng requestId nên không bị tính thêm lượt.
+- Fallback model trong backend vẫn chỉ tính 1 lần bấm.
+- Nới giới hạn từ 12 lên 60 lượt / IP / giờ.
+- Thông báo rate limit đổi thành tiếng Việt nhẹ nhàng hơn.
