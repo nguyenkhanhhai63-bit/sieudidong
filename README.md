@@ -965,3 +965,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nếu khách tự chọn sắp xếp theo giá hoặc tên thì lựa chọn đó được ưu tiên.
 - Khi khách đang gõ từ khóa tìm kiếm, không áp dụng sắp xếp phổ biến để tránh làm lệch kết quả tìm hiện tại.
 - Có cache 6 giờ trên trình duyệt để trang vào là có thứ tự ngay, sau đó cập nhật nền.
+
+## V124 - Thiết kế rõ cặp máy so sánh
+- Cặp máy không còn hiển thị như một dòng văn bản dài.
+- Tách rõ `MÁY A` và `MÁY B`, có huy hiệu `VS` ở giữa.
+- Số lượt so sánh hiển thị thành badge/metric riêng ở bên phải.
+- Cặp đứng đầu có rank nhấn màu cam.
+- Toàn bộ khối cặp máy trải full-width để dễ đọc.
+- Mobile chuyển sang layout dọc, vẫn giữ cấu trúc đối đầu rõ ràng.

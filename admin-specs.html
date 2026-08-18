@@ -449,6 +449,172 @@
   .devrow{font-size:12px;padding:11px 14px}
 }
 
+
+/* =========================================================
+   V124 - Cặp máy so sánh hiển thị như đối đầu
+   ========================================================= */
+.compare-pairs-box{
+  grid-column:1 / -1 !important;
+}
+.compare-pairs-head{
+  border-bottom:1px solid #e7e9ee;
+  padding:14px 18px 13px;
+}
+.compare-pairs-head h2{
+  min-height:auto;
+  padding:0;
+  border:0;
+}
+.compare-pairs-head p{
+  margin:6px 0 0 13px;
+  color:#98a2b3;
+  font-size:11px;
+  line-height:1.45;
+}
+.compare-pair-list{
+  padding:10px 14px 14px;
+}
+.compare-pair-card{
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 105px;
+  gap:12px;
+  align-items:center;
+  min-height:78px;
+  padding:10px 12px;
+  margin-bottom:9px;
+  border:1px solid #edf0f3;
+  border-radius:12px;
+  background:#fff;
+  transition:.15s ease;
+}
+.compare-pair-card:last-child{
+  margin-bottom:0;
+}
+.compare-pair-card:hover{
+  border-color:#ffd3be;
+  background:#fffaf7;
+  box-shadow:0 5px 16px rgba(17,24,39,.045);
+}
+.compare-pair-rank{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#f2f4f7;
+  color:#667085;
+  font-size:11px;
+  font-weight:900;
+}
+.compare-pair-card:first-child .compare-pair-rank{
+  background:#ffefe6;
+  color:#d94800;
+}
+.compare-pair-matchup{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 46px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+.compare-pair-machine{
+  min-width:0;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #eceff2;
+  background:#fafbfc;
+}
+.compare-pair-machine strong{
+  display:block;
+  margin-top:3px;
+  color:#1d2939;
+  font-size:12px;
+  line-height:1.4;
+  font-weight:750;
+}
+.compare-pair-label{
+  display:block;
+  color:#98a2b3;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.45px;
+}
+.compare-pair-vs{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  justify-self:center;
+  border-radius:50%;
+  background:#ff5a00;
+  color:#fff;
+  font-size:10px;
+  font-weight:950;
+  box-shadow:0 5px 14px rgba(255,90,0,.18);
+}
+.compare-pair-count{
+  text-align:right;
+}
+.compare-pair-count strong{
+  display:block;
+  color:#ff5a00;
+  font-size:20px;
+  line-height:1;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.compare-pair-count span{
+  display:block;
+  margin-top:5px;
+  color:#98a2b3;
+  font-size:9px;
+  white-space:nowrap;
+}
+
+@media(max-width:760px){
+  .compare-pairs-head{
+    padding:12px 13px;
+  }
+  .compare-pairs-head p{
+    margin-left:13px;
+  }
+  .compare-pair-list{
+    padding:8px 10px 10px;
+  }
+  .compare-pair-card{
+    grid-template-columns:30px minmax(0,1fr);
+    gap:8px;
+    padding:9px;
+  }
+  .compare-pair-matchup{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+  .compare-pair-vs{
+    width:30px;
+    height:30px;
+    font-size:9px;
+  }
+  .compare-pair-machine{
+    padding:9px 10px;
+  }
+  .compare-pair-machine strong{
+    font-size:11px;
+  }
+  .compare-pair-count{
+    grid-column:2;
+    display:flex;
+    align-items:baseline;
+    justify-content:flex-end;
+    gap:5px;
+  }
+  .compare-pair-count strong{
+    font-size:17px;
+  }
+  .compare-pair-count span{
+    margin-top:0;
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -542,7 +708,7 @@
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được so sánh nhiều</h2><div id="compareProductRanks" class="ranklist"></div></div>
-          <div class="abox"><h2>Cặp máy được so sánh nhiều</h2><div id="comparePairRanks" class="ranklist"></div></div>
+          <div class="abox compare-pairs-box"><div class="compare-pairs-head"><h2>Cặp máy được so sánh nhiều</h2><p>Nhìn nhanh máy nào thường được khách đặt lên bàn cân với nhau.</p></div><div id="comparePairRanks" class="compare-pair-list"></div></div>
         </div>
       </div>
     </div>
@@ -916,6 +1082,53 @@ function renderRank(id,list){
   if(!list?.length){host.innerHTML='<div class="empty">Chưa có dữ liệu.</div>';return;}
   list.forEach((x,i)=>{const r=document.createElement("div");r.className="rankrow";r.innerHTML=`<span>${i+1}</span><span>${x.name}</span><span class="rankvalue">${fmt(x.value)}</span>`;host.appendChild(r);});
 }
+
+function renderComparePairs(list){
+  const host=document.getElementById("comparePairRanks");
+  host.innerHTML="";
+
+  if(!list?.length){
+    host.innerHTML='<div class="empty">Chưa có dữ liệu so sánh.</div>';
+    return;
+  }
+
+  list.forEach((x,i)=>{
+    const raw=String(x.name||"");
+    const parts=raw.split(/\s*↔\s*/);
+    const left=(parts[0]||raw).trim();
+    const right=(parts.slice(1).join(" ↔ ")||"").trim();
+
+    const row=document.createElement("div");
+    row.className="compare-pair-card";
+
+    const rank=document.createElement("div");
+    rank.className="compare-pair-rank";
+    rank.textContent=i+1;
+
+    const matchup=document.createElement("div");
+    matchup.className="compare-pair-matchup";
+
+    const machineA=document.createElement("div");
+    machineA.className="compare-pair-machine machine-a";
+    machineA.innerHTML=`<span class="compare-pair-label">MÁY A</span><strong>${left||"—"}</strong>`;
+
+    const vs=document.createElement("div");
+    vs.className="compare-pair-vs";
+    vs.textContent="VS";
+
+    const machineB=document.createElement("div");
+    machineB.className="compare-pair-machine machine-b";
+    machineB.innerHTML=`<span class="compare-pair-label">MÁY B</span><strong>${right||"—"}</strong>`;
+
+    const count=document.createElement("div");
+    count.className="compare-pair-count";
+    count.innerHTML=`<strong>${fmt(x.value)}</strong><span>lượt so sánh</span>`;
+
+    matchup.append(machineA,vs,machineB);
+    row.append(rank,matchup,count);
+    host.appendChild(row);
+  });
+}
 async function loadAnalytics(){
   const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
   loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
@@ -960,7 +1173,7 @@ async function loadAnalytics(){
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
     renderRank("compareProductRanks",d.topCompareProducts);
-    renderRank("comparePairRanks",d.topComparePairs);
+    renderComparePairs(d.topComparePairs);
     const filterList=Object.entries(d.filters||{}).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value).slice(0,12);
     renderRank("filterRanks",filterList);
 
