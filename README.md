@@ -444,3 +444,13 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Giảm đường kẻ thô, tăng khoảng trắng và bo góc.
 - Mobile được tối ưu lại riêng.
 - Chỉ thay đổi giao diện; logic giá, tồn kho, thông số và API giữ nguyên.
+
+
+## V41 - Tối ưu mobile
+- Header gọn và sticky.
+- Trang chi tiết full chiều ngang mobile.
+- Ảnh sản phẩm vừa màn hình, không quá cao.
+- Màu/dung lượng dễ bấm hơn.
+- Sản phẩm tương tự chuyển sang layout dọc rõ ràng, không còn chữ bị bó hẹp.
+- Thông tin phiên bản, lưu ý và thông số kỹ thuật xếp dọc.
+- Danh sách ngoài giữ 2 cột nhưng giảm kích thước ảnh/text hợp lý.

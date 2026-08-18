@@ -2750,3 +2750,333 @@ body.dark .detail-choose-text{
     font-weight:700;
   }
 }
+
+
+/* =========================================================
+   V41 - Tối ưu riêng cho mobile
+   ========================================================= */
+@media(max-width:720px){
+
+  html,body{
+    overflow-x:hidden;
+  }
+
+  body{
+    background:#f5f6f8;
+  }
+
+  /* Header gọn */
+  .site-header{
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+
+  .header-inner{
+    min-height:58px;
+    padding:8px 12px;
+  }
+
+  .brand-logo-wide{
+    height:38px;
+  }
+
+  /* Trang chi tiết */
+  body.detail-view-active .inline-detail-page{
+    width:100%;
+    margin:0;
+    padding:0 10px 22px;
+  }
+
+  .inline-detail-topbar{
+    margin:10px 0 8px;
+  }
+
+  .inline-back-btn{
+    height:36px;
+    padding:0 12px;
+    border-radius:8px;
+    font-size:12px;
+  }
+
+  .detail-breadcrumb{
+    margin:0 0 5px;
+    font-size:11px;
+  }
+
+  .detail-heading{
+    margin:0 0 10px;
+    padding:0;
+    display:block;
+  }
+
+  .detail-heading h2{
+    margin:0;
+    font-size:20px;
+    line-height:1.3;
+  }
+
+  .detail-status-top{
+    display:inline-flex;
+    margin-top:8px;
+    padding:5px 9px;
+    font-size:11px;
+  }
+
+  /* Hero card */
+  .detail-main{
+    display:block;
+    margin:0;
+    padding:12px;
+    border-radius:12px;
+    box-shadow:0 4px 16px rgba(20,24,32,.06);
+  }
+
+  .detail-gallery{
+    margin-bottom:12px;
+  }
+
+  .detail-image-box{
+    height:280px;
+    border-radius:10px;
+    background:#fafafa;
+  }
+
+  .detail-image-box .product-image{
+    padding:10px;
+  }
+
+  .detail-info{
+    padding:0;
+  }
+
+  .detail-price{
+    margin-top:2px;
+    font-size:25px;
+  }
+
+  .detail-choose-text{
+    margin:5px 0 12px;
+    font-size:12px;
+  }
+
+  .detail-option-row{
+    display:grid;
+    grid-template-columns:86px minmax(0,1fr);
+    gap:8px;
+    margin:10px 0;
+  }
+
+  .detail-option-label{
+    padding-top:7px;
+    font-size:12px;
+  }
+
+  .detail-color-options,
+  .detail-memory-options{
+    gap:6px;
+  }
+
+  .detail-color-swatch{
+    width:36px;
+    height:36px;
+  }
+
+  .detail-memory-btn{
+    min-height:34px;
+    padding:5px 10px;
+    font-size:11px;
+  }
+
+  .detail-color-note{
+    font-size:11px;
+  }
+
+  .detail-info-box{
+    margin-top:14px;
+  }
+
+  .detail-info-box-title{
+    padding:9px 10px;
+    font-size:12px;
+  }
+
+  .detail-info-line{
+    padding:8px 10px;
+    font-size:11px;
+  }
+
+  /* Sản phẩm tương tự - chuyển thành carousel ngang */
+  .detail-related{
+    display:block !important;
+    width:100%;
+    margin-top:14px;
+    border-radius:10px;
+    overflow:hidden;
+  }
+
+  .detail-related-title{
+    padding:11px 12px;
+    font-size:13px;
+  }
+
+  .detail-related{
+    white-space:normal;
+  }
+
+  .detail-related-item{
+    display:grid;
+    grid-template-columns:76px minmax(0,1fr);
+    width:100%;
+    min-height:92px;
+    padding:9px 10px;
+    gap:10px;
+  }
+
+  .detail-related-thumb{
+    width:76px;
+    height:76px;
+  }
+
+  .detail-related-name{
+    font-size:12px;
+    line-height:1.35;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  .detail-related-price{
+    margin-top:4px;
+    font-size:13px;
+  }
+
+  /* Hai khối dưới xếp dọc, đỡ chiếm diện tích */
+  .detail-lower{
+    display:block;
+    margin:12px 0 0;
+  }
+
+  .detail-specs,
+  .detail-note{
+    margin-bottom:12px;
+    border-radius:10px;
+  }
+
+  .detail-section-title{
+    padding:11px 12px;
+    font-size:14px;
+  }
+
+  .detail-spec-row{
+    grid-template-columns:105px minmax(0,1fr);
+    padding:10px 12px;
+    font-size:12px;
+  }
+
+  .detail-note-body{
+    padding:12px;
+    font-size:12px;
+    line-height:1.55;
+  }
+
+  /* Thông số kỹ thuật */
+  .technical-spec-section{
+    margin:12px 0 0;
+    border-radius:10px;
+  }
+
+  .technical-spec-title{
+    padding:12px;
+    font-size:15px;
+  }
+
+  .tech-spec-row{
+    grid-template-columns:105px minmax(0,1fr);
+  }
+
+  .tech-spec-label{
+    padding:10px 9px;
+    font-size:11px;
+    line-height:1.35;
+  }
+
+  .tech-spec-value{
+    padding:10px;
+    font-size:11px;
+    line-height:1.45;
+  }
+
+  /* Footer */
+  .footer{
+    margin-top:14px;
+    padding-top:14px;
+  }
+
+  /* Danh sách sản phẩm ngoài */
+  .product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    padding:0 8px 10px;
+  }
+
+  .compact-product-card{
+    border-radius:10px;
+  }
+
+  .compact-product-media{
+    height:165px;
+  }
+
+  .compact-product-media .product-image{
+    padding:8px;
+  }
+
+  .compact-product-body{
+    padding:9px 9px 11px;
+  }
+
+  .compact-product-title{
+    min-height:38px;
+    font-size:12px;
+    line-height:1.3;
+  }
+
+  .compact-product-price{
+    margin-top:6px;
+    font-size:14px;
+  }
+}
+
+/* Điện thoại màn hình nhỏ */
+@media(max-width:390px){
+  .detail-image-box{
+    height:245px;
+  }
+
+  .detail-heading h2{
+    font-size:18px;
+  }
+
+  .detail-price{
+    font-size:22px;
+  }
+
+  .detail-option-row{
+    grid-template-columns:78px minmax(0,1fr);
+  }
+
+  .detail-color-swatch{
+    width:34px;
+    height:34px;
+  }
+
+  .product-grid{
+    gap:6px;
+  }
+
+  .compact-product-media{
+    height:150px;
+  }
+}
