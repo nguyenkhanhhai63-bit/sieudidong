@@ -1082,3 +1082,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Vị trí nút được lưu bằng localStorage, lần sau giữ nguyên chỗ khách đã đặt.
 - Sau thao tác kéo sẽ không vô tình mở chat.
 - Vẫn giữ logic AI-first và 2 Serverless Functions.
+
+## V143 - Logo Siêu Di Động cho nút AI + kéo thả đẹp hơn
+- Thay icon chữ `AI` bằng logo vuông Siêu Di Động.
+- Nút hỗ trợ chuyển sang nền trắng, logo cam rõ ràng, gọn hơn trên mobile.
+- Vẫn kéo thả tự do.
+- Sau khi thả, nút tự hít về mép trái/phải gần nhất để không nằm giữa màn hình che sản phẩm.
+- Vị trí cuối cùng tiếp tục được lưu bằng localStorage.
+- Màn hình rất nhỏ chỉ hiện logo tròn để tiết kiệm diện tích.

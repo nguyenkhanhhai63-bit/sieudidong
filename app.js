@@ -3090,6 +3090,7 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
     try{ btn.releasePointerCapture?.(pointerId); }catch(_){}
     if(moved){
       savePos();
+      setTimeout(snapAiSupportToEdge,40);
       // Chặn click phát sinh sau thao tác kéo.
       btn.dataset.dragJustEnded="1";
       setTimeout(()=>delete btn.dataset.dragJustEnded,180);
@@ -3110,4 +3111,30 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
   window.addEventListener("resize",()=>setTimeout(applySaved,80));
   requestAnimationFrame(applySaved);
 })();
+
+
+
+function snapAiSupportToEdge(){
+  const btn=zaloConsultBtn;
+  if(!btn || !window.matchMedia("(max-width:720px)").matches) return;
+  const r=btn.getBoundingClientRect();
+  const margin=10;
+  const targetLeft = r.left + r.width/2 < window.innerWidth/2
+    ? margin
+    : Math.max(margin,window.innerWidth-r.width-margin);
+  const maxTop=Math.max(margin,window.innerHeight-r.height-margin);
+  const targetTop=Math.max(margin,Math.min(maxTop,r.top));
+
+  btn.style.left=targetLeft+"px";
+  btn.style.top=targetTop+"px";
+  btn.style.right="auto";
+  btn.style.bottom="auto";
+
+  try{
+    localStorage.setItem("sdd-ai-support-pos-v1",JSON.stringify({
+      x:Math.round(targetLeft),
+      y:Math.round(targetTop)
+    }));
+  }catch(_){}
+}
 
