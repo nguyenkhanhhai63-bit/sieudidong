@@ -3004,6 +3004,16 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
 });
 
 
+
+function setAiSupportPositionImportant(btn,x,y){
+  if(!btn) return;
+  btn.style.setProperty("left",Math.round(x)+"px","important");
+  btn.style.setProperty("top",Math.round(y)+"px","important");
+  btn.style.setProperty("right","auto","important");
+  btn.style.setProperty("bottom","auto","important");
+  btn.style.setProperty("transform","none","important");
+}
+
 /* V142 - Kéo thả nút hỗ trợ AI trên mobile */
 (function initDraggableAiSupport(){
   const btn=zaloConsultBtn;
@@ -3028,10 +3038,11 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
       if(!raw){
         // Vị trí mặc định: mép phải, thấp vừa đủ để không che thanh điều hướng.
         const r=btn.getBoundingClientRect();
-        btn.style.left=Math.max(10,window.innerWidth-r.width-14)+"px";
-        btn.style.top=Math.max(90,window.innerHeight-r.height-110)+"px";
-        btn.style.right="auto";
-        btn.style.bottom="auto";
+        setAiSupportPositionImportant(
+          btn,
+          Math.max(10,window.innerWidth-r.width-14),
+          Math.max(90,window.innerHeight-r.height-110)
+        );
         return;
       }
       const p=JSON.parse(raw);
@@ -3041,10 +3052,7 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
       const maxX=Math.max(8,window.innerWidth-r.width-8);
       const maxY=Math.max(8,window.innerHeight-r.height-8);
 
-      btn.style.left=clamp(p.x,8,maxX)+"px";
-      btn.style.top=clamp(p.y,8,maxY)+"px";
-      btn.style.right="auto";
-      btn.style.bottom="auto";
+      setAiSupportPositionImportant(btn,clamp(p.x,8,maxX),clamp(p.y,8,maxY));
     }catch(_){}
   }
 
@@ -3085,10 +3093,11 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
     const maxX=Math.max(8,window.innerWidth-r.width-8);
     const maxY=Math.max(8,window.innerHeight-r.height-8);
 
-    btn.style.left=clamp(startLeft+dx,8,maxX)+"px";
-    btn.style.top=clamp(startTop+dy,8,maxY)+"px";
-    btn.style.right="auto";
-    btn.style.bottom="auto";
+    setAiSupportPositionImportant(
+      btn,
+      clamp(startLeft+dx,8,maxX),
+      clamp(startTop+dy,8,maxY)
+    );
   },{passive:false});
 
   function endDrag(e){
@@ -3133,10 +3142,7 @@ function snapAiSupportToEdge(){
   const maxTop=Math.max(margin,window.innerHeight-r.height-margin);
   const targetTop=Math.max(margin,Math.min(maxTop,r.top));
 
-  btn.style.left=targetLeft+"px";
-  btn.style.top=targetTop+"px";
-  btn.style.right="auto";
-  btn.style.bottom="auto";
+  setAiSupportPositionImportant(btn,targetLeft,targetTop);
 
   try{
     localStorage.setItem("sdd-ai-support-pos-v1",JSON.stringify({

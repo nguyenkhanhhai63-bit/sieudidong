@@ -1099,3 +1099,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Vị trí được lưu riêng bằng localStorage.
 - Lần đầu hiện gợi ý `Kéo để di chuyển` trong vài giây.
 - Chạm vào nút vẫn mở box AI chat như cũ.
+
+## V145 - Fix nút tròn bị phóng to
+- Nguyên nhân là CSS Zalo cũ dùng `#zaloConsultBtn` + `!important`, có độ ưu tiên cao hơn CSS nút AI mới.
+- Ghi đè dứt điểm bằng `#zaloConsultBtn.ai-round-float`.
+- Khóa kích thước nút ở 58x58px, logo 50x50px.
+- JS kéo thả giờ set `left/top/right/bottom` bằng inline `!important`, nên CSS cũ không thể kéo nút về vị trí sai.
+- Kéo thả và hít mép vẫn hoạt động.
