@@ -67,6 +67,13 @@ function deviceInfoFromUa(){
   const android=ua.match(/Android\s+([^;)\s]+)/i);
   if(android) os="Android "+android[1];
 
+  if(!os && /Windows NT/i.test(ua)) os="Windows";
+  else if(!os && /Mac OS X\s+([\d_]+)/i.test(ua)){
+    const mac=ua.match(/Mac OS X\s+([\d_]+)/i);
+    os="macOS "+String(mac?.[1]||"").replace(/_/g,".");
+  }else if(!os && /CrOS/i.test(ua)) os="ChromeOS";
+  else if(!os && /Linux/i.test(ua) && !/Android/i.test(ua)) os="Linux";
+
   if(/iPhone/i.test(ua)){
     brand="Apple";
     model="iPhone (không xác định model)";
@@ -107,13 +114,9 @@ async function analyticsDeviceInfo(){
     const uaData=navigator.userAgentData;
     if(uaData?.getHighEntropyValues){
       const high=await uaData.getHighEntropyValues(["model","platformVersion"]);
-      const brands=Array.isArray(uaData.brands)?uaData.brands:[];
-      const brandName=brands
-        .map(x=>String(x.brand||""))
-        .find(x=>x && !/not.a.brand|chromium|google chrome/i.test(x));
-
       return {
-        deviceBrand:normalizeDeviceModelName(fallback.deviceBrand||brandName||""),
+        // navigator.userAgentData.brands là thương hiệu trình duyệt, không phải hãng điện thoại.
+        deviceBrand:normalizeDeviceModelName(fallback.deviceBrand||""),
         deviceModel:normalizeDeviceModelName(high?.model||fallback.deviceModel||""),
         deviceOs:normalizeDeviceModelName(
           uaData.platform
@@ -3325,3 +3328,59 @@ document.addEventListener("DOMContentLoaded",()=>{
     label.setAttribute("aria-hidden","true");
   }
 });
+
+
+/* =========================================================
+   V164 - Header interactions
+   ========================================================= */
+const sddMobileMenuBtn=document.getElementById("sddMobileMenuBtn");
+const sddMobileDrawer=document.getElementById("sddMobileDrawer");
+const sddMobileDrawerClose=document.getElementById("sddMobileDrawerClose");
+const sddConsultAction=document.getElementById("sddConsultAction");
+const sddNavConsultBtn=document.getElementById("sddNavConsultBtn");
+const sddMobileConsultBtn=document.getElementById("sddMobileConsultBtn");
+const sddNavCategoryBtn=document.getElementById("sddNavCategoryBtn");
+
+function openSddMobileDrawer(){
+  if(!sddMobileDrawer) return;
+  sddMobileDrawer.hidden=false;
+  document.documentElement.style.overflow="hidden";
+}
+function closeSddMobileDrawer(){
+  if(!sddMobileDrawer) return;
+  sddMobileDrawer.hidden=true;
+  document.documentElement.style.overflow="";
+}
+sddMobileMenuBtn?.addEventListener("click",openSddMobileDrawer);
+sddMobileDrawerClose?.addEventListener("click",closeSddMobileDrawer);
+sddMobileDrawer?.addEventListener("click",e=>{
+  if(e.target===sddMobileDrawer) closeSddMobileDrawer();
+});
+sddMobileDrawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeSddMobileDrawer));
+
+function openHeaderAiConsult(){
+  try{
+    if(typeof aiChatOpen==="function"){
+      aiChatOpen();
+      return;
+    }
+  }catch(_){}
+  document.getElementById("zaloConsultBtn")?.click();
+}
+sddConsultAction?.addEventListener("click",openHeaderAiConsult);
+sddNavConsultBtn?.addEventListener("click",openHeaderAiConsult);
+sddMobileConsultBtn?.addEventListener("click",()=>{
+  closeSddMobileDrawer();
+  setTimeout(openHeaderAiConsult,80);
+});
+
+sddNavCategoryBtn?.addEventListener("click",()=>{
+  document.getElementById("commerceCategoryBtn")?.click();
+});
+
+/* Search icon behaves like Enter/search: scroll to products after query */
+document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
+  document.getElementById("searchInput")?.dispatchEvent(new Event("input",{bubbles:true}));
+  document.getElementById("products")?.scrollIntoView({behavior:"smooth",block:"start"});
+});
+

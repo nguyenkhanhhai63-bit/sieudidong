@@ -1152,7 +1152,7 @@ body{
 
 
 /* =========================================================
-   V161 - Admin Dashboard redesign kiểu SaaS hiện đại
+   V163 - Admin Dashboard redesign kiểu SaaS hiện đại
    ========================================================= */
 :root{
   --admin-orange:#ff5a00;
@@ -1797,7 +1797,7 @@ body:not(.authenticated) .wrap{
 }
 
 
-/* V161 - Tăng cỡ chữ quản trị, giữ bố cục gọn */
+/* V163 - Tăng cỡ chữ quản trị, giữ bố cục gọn */
 .admin-sidebar{font-size:14px}
 .sidebar-brand strong{font-size:17px!important}
 .sidebar-brand span{font-size:12px!important}
@@ -1850,7 +1850,7 @@ button,.primary,.secondary{font-size:12px!important}
 
 
 /* =========================================================
-   V161 - FIX giao diện quản trị trên mobile
+   V163 - FIX giao diện quản trị trên mobile
    ========================================================= */
 @media(max-width:760px){
   html,body{
@@ -2179,6 +2179,206 @@ button,.primary,.secondary{font-size:12px!important}
   }
 }
 
+
+/* =========================================================
+   V163 - Mobile admin: bỏ sidebar, dùng bottom navigation
+   ========================================================= */
+.mobile-admin-nav{
+  display:none;
+}
+
+@media(max-width:760px){
+  /* Mobile không dùng sidebar nữa để tránh che nội dung */
+  .admin-sidebar{
+    display:none!important;
+    transform:none!important;
+  }
+
+  body.mobile-sidebar-open::after{
+    display:none!important;
+    content:none!important;
+  }
+
+  body.mobile-sidebar-open .admin-sidebar{
+    display:none!important;
+    transform:none!important;
+  }
+
+  /* Nút hamburger không còn cần trên mobile */
+  .sidebar-toggle{
+    display:none!important;
+  }
+
+  .admin-topbar{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    height:62px!important;
+    padding:0 12px!important;
+    border-top-width:3px!important;
+  }
+
+  .admin-topbar-left{
+    min-width:0!important;
+    flex:1!important;
+  }
+
+  .admin-topbar-left h1{
+    max-width:68vw!important;
+    font-size:18px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .admin-topbar-right{
+    flex:0 0 auto!important;
+  }
+
+  .topbar-logout{
+    height:34px!important;
+    padding:0 9px!important;
+    font-size:10px!important;
+  }
+
+  .wrap{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:74px 8px 82px!important;
+    overflow-x:hidden!important;
+  }
+
+  /* Bottom nav */
+  .mobile-admin-nav{
+    position:fixed;
+    left:8px;
+    right:8px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    z-index:10000;
+    height:62px;
+    display:grid!important;
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
+    padding:5px;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 12px 34px rgba(15,23,42,.18);
+    backdrop-filter:blur(14px);
+  }
+
+  .mobile-admin-tab{
+    min-width:0;
+    border:0!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    color:#667085!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    padding:0!important;
+    font-size:15px!important;
+    box-shadow:none!important;
+  }
+
+  .mobile-admin-tab b{
+    font-size:9px!important;
+    font-weight:700!important;
+  }
+
+  .mobile-admin-tab.active{
+    background:#fff2ea!important;
+    color:#ff5a00!important;
+  }
+
+  /* Panel mobile */
+  .card,
+  .panel,
+  #adminCard,
+  #analyticsCard,
+  #aiSettingsCard,
+  #seoCard{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  .dashboard-welcome{
+    margin-bottom:8px!important;
+    padding:13px!important;
+  }
+
+  .dashboard-welcome h2{
+    font-size:18px!important;
+  }
+
+  .welcome-actions{
+    gap:6px!important;
+  }
+
+  .metric-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .metric{
+    min-width:0!important;
+  }
+
+  .analytics-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  .abox,
+  .compare-pairs-box{
+    grid-column:1!important;
+    min-width:0!important;
+    width:100%!important;
+  }
+
+  .ai-settings-shell{
+    padding:7px!important;
+  }
+
+  .ai-settings-grid,
+  .ai-settings-grid[style]{
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;
+  }
+
+  .ai-settings-box{
+    width:100%!important;
+    min-width:0!important;
+    padding:12px!important;
+  }
+
+  .ai-field textarea{
+    min-height:120px!important;
+  }
+
+  .seo-form-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  input,textarea,select,button{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}
+
+
+/* V163 - Device analytics */
+.device-analytics-note{
+  margin:0!important;
+  padding:9px 15px 5px!important;
+  color:#98a2b3!important;
+  font-size:10px!important;
+  line-height:1.45!important;
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -2234,7 +2434,7 @@ button,.primary,.secondary{font-size:12px!important}
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V161</small>
+    <small>Siêu Di Động Admin • V163</small>
   </div>
 </aside>
 
@@ -2330,8 +2530,8 @@ button,.primary,.secondary{font-size:12px!important}
       <div class="analytics-grid">
           <div class="abox"><h2>Xu hướng truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
           <div class="abox"><h2>Loại thiết bị truy cập</h2><div id="deviceList"></div></div>
-          <div class="abox"><h2>Điện thoại khách đang dùng</h2><div id="deviceModelRanks" class="ranklist"></div></div>
-          <div class="abox"><h2>Hệ điều hành thiết bị</h2><div id="deviceOsRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Android thường nhận được model; iPhone có thể chỉ hiện iPhone do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
@@ -3349,7 +3549,7 @@ if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
 
 
 /* =========================================================
-   V161 - Admin shell interactions
+   V163 - Admin shell interactions
    ========================================================= */
 const sidebarToggle=document.getElementById("sidebarToggle");
 const adminPageTitle=document.getElementById("adminPageTitle");
@@ -3417,7 +3617,7 @@ refreshAnalyticsTop?.addEventListener("click",()=>refreshAnalytics?.click());
 syncAdminShell("analytics");
 
 
-/* V161 - mobile sidebar behavior */
+/* V163 - mobile sidebar behavior */
 document.addEventListener("click",e=>{
   if(!window.matchMedia("(max-width:760px)").matches) return;
   if(!document.body.classList.contains("mobile-sidebar-open")) return;
@@ -3433,6 +3633,40 @@ window.addEventListener("resize",()=>{
   }
 });
 
+
+/* V163 - mobile bottom navigation */
+const mobileAdminNav=document.getElementById("mobileAdminNav");
+
+function syncMobileAdminNav(tab){
+  mobileAdminNav?.querySelectorAll("[data-mobile-tab]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.mobileTab===tab);
+  });
+}
+
+mobileAdminNav?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-mobile-tab]");
+  if(!btn) return;
+  const tab=btn.dataset.mobileTab;
+  const target=adminTabs?.querySelector(`[data-tab="${tab}"]`);
+  target?.click();
+  syncMobileAdminNav(tab);
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+adminTabs?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-tab]");
+  if(btn) syncMobileAdminNav(btn.dataset.tab);
+});
+
+/* Luôn xóa trạng thái drawer cũ trên mobile */
+function resetLegacyMobileSidebar(){
+  if(window.matchMedia("(max-width:760px)").matches){
+    document.body.classList.remove("mobile-sidebar-open","sidebar-collapsed");
+  }
+}
+resetLegacyMobileSidebar();
+window.addEventListener("resize",resetLegacyMobileSidebar);
+
 </script>
 
 <script>
@@ -3443,6 +3677,23 @@ document.addEventListener("DOMContentLoaded",function(){
   if(editor && pad) pad.insertBefore(editor,pad.firstChild);
 });
 </script>
+
+
+
+<nav id="mobileAdminNav" class="mobile-admin-nav" aria-label="Điều hướng quản trị mobile">
+  <button type="button" class="mobile-admin-tab active" data-mobile-tab="analytics">
+    <span>▦</span><b>Thống kê</b>
+  </button>
+  <button type="button" class="mobile-admin-tab" data-mobile-tab="specs">
+    <span>⌁</span><b>Thông số</b>
+  </button>
+  <button type="button" class="mobile-admin-tab" data-mobile-tab="ai">
+    <span>✦</span><b>AI</b>
+  </button>
+  <button type="button" class="mobile-admin-tab" data-mobile-tab="seo">
+    <span>⌕</span><b>SEO</b>
+  </button>
+</nav>
 
 </body>
 </html>

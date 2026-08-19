@@ -48,64 +48,104 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=157">
+  <link rel="stylesheet" href="/styles.css?v=164">
 </head>
 <body>
 
-<header class="commerce-header">
-  <div class="commerce-header-inner">
+<header class="commerce-header sdd-header-v164">
+  <div class="sdd-top-strip">
+    <div class="sdd-top-strip-inner">
+      <span class="sdd-top-message">Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span>
+      <div class="sdd-top-benefits">
+        <span>✓ Hỗ trợ tư vấn</span>
+        <span>✓ Bảo hành uy tín</span>
+        <span>✓ Cửa hàng Quy Nhơn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="commerce-header-inner sdd-header-main">
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+
     <div class="commerce-brand-block">
       <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
-        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="">
-        <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <span class="sdd-brand-copy">
+          <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+          <small>Chuyên Android giá tốt</small>
+        </span>
       </a>
     </div>
 
     <div class="commerce-category-menu">
       <button class="commerce-category-btn" id="commerceCategoryBtn" type="button" aria-expanded="false">
-        <span>☰</span>
+        <span class="sdd-menu-icon">☰</span>
         <strong>Danh mục</strong>
+        <span class="sdd-menu-caret">⌄</span>
       </button>
       <div class="commerce-category-dropdown" id="commerceCategoryDropdown">
         <div class="category-menu-loading">Đang tải danh mục...</div>
       </div>
     </div>
 
-    <div class="commerce-location">
-      <span class="commerce-location-icon">⌖</span>
-      <span>
-        <small>Khu vực mua hàng</small>
-        <strong>Quy Nhơn</strong>
-      </span>
-    </div>
-
-    <div class="commerce-search">
+    <div class="commerce-search sdd-header-search">
+      <span class="sdd-search-leading">⌕</span>
       <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
       <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
-      <span class="commerce-search-icon">⌕</span>
+      <button class="sdd-search-submit" type="button" aria-label="Tìm kiếm">⌕</button>
       <div id="searchSuggestions" class="search-suggestions" hidden></div>
     </div>
 
-    <div class="commerce-contact">
-      <span class="commerce-contact-icon">☎</span>
-      <span>
-        <small>Gọi mua hàng</small>
-        <strong>Siêu Di Động</strong>
-      </span>
+    <div class="sdd-header-actions">
+      <button class="sdd-header-action" id="sddConsultAction" type="button">
+        <span class="sdd-action-icon">◉</span>
+        <span><strong>Tư vấn</strong><small>Online</small></span>
+      </button>
+      <a class="sdd-header-action sdd-store-action" href="#products">
+        <span class="sdd-action-icon">⌖</span>
+        <span><strong>Cửa hàng</strong><small>Quy Nhơn</small></span>
+      </a>
     </div>
-
-    <div class="commerce-store">
-      <span class="commerce-store-icon">▣</span>
-      <span>
-        <small>Cửa hàng</small>
-        <strong>Quy Nhơn</strong>
-      </span>
-    </div>
-
-    <div class="commerce-mini-icon" title="Giỏ hàng">🛒</div>
-    <div class="commerce-mini-icon" title="Tài khoản">♙</div>
 
     <div class="commerce-header-note">Tư vấn <span>•</span> Cửa hàng Quy Nhơn</div>
+  </div>
+
+  <div class="sdd-header-nav">
+    <div class="sdd-header-nav-inner">
+      <button class="sdd-nav-category" id="sddNavCategoryBtn" type="button">
+        <span>☰</span>
+        <strong>Danh mục sản phẩm</strong>
+      </button>
+
+      <nav class="sdd-main-nav" aria-label="Điều hướng chính">
+        <a href="/" class="active">Trang chủ</a>
+        <a href="#products">Điện thoại</a>
+        <a href="#products">Máy tính bảng</a>
+        <a href="#products">Phụ kiện</a>
+        <a href="#products">Trả góp</a>
+        <button id="sddNavConsultBtn" type="button">Tư vấn</button>
+      </nav>
+
+      <a class="sdd-nav-store" href="#products">
+        <span>⌖</span>
+        <strong>Cửa hàng Quy Nhơn</strong>
+      </a>
+    </div>
+  </div>
+
+  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+    <div class="sdd-mobile-drawer-head">
+      <strong>Danh mục</strong>
+      <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+    </div>
+    <nav>
+      <a href="/">Trang chủ</a>
+      <a href="#products">Điện thoại</a>
+      <a href="#products">Máy tính bảng</a>
+      <a href="#products">Phụ kiện</a>
+      <a href="#products">Trả góp</a>
+      <button id="sddMobileConsultBtn" type="button">Tư vấn ngay</button>
+    </nav>
   </div>
 </header>
 
@@ -217,6 +257,6 @@
       <span id="aiChatFloatLabel" class="ai-chat-float-label" aria-hidden="true">Tư vấn ngay</span>
     </button>
 
-  <script src="/app.js?v=157"></script>
+  <script src="/app.js?v=164"></script>
 </body>
 </html>

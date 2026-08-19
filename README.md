@@ -1210,3 +1210,26 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Đào tạo AI chuyển đúng 1 cột trên mobile.
 - Form, textarea, select, bảng thống kê và SEO không còn tràn ngang.
 - Fix xung đột trạng thái `sidebar-collapsed` từ desktop khi chuyển sang mobile.
+
+## V162 - Mobile admin navigation mới
+- Bỏ hoàn toàn sidebar/drawer trên mobile vì gây che nội dung và xung đột breakpoint.
+- Thay bằng thanh điều hướng cố định dưới màn hình: Thống kê / Thông số / AI / SEO.
+- Mobile luôn full-width, không còn menu đen tràn vào nội dung.
+- Tự xóa class sidebar cũ khi vào mobile.
+
+## V163 - Fix thống kê điện thoại và hệ điều hành
+- Backend tự parse User-Agent nếu frontend không gửi được model/OS.
+- Dùng bộ key v2 để khách cũ được ghi nhận lại sau khi deploy bản sửa.
+- Model điện thoại được thống kê riêng cho mobile/tablet.
+- Hệ điều hành được ghi độc lập cho cả mobile và desktop.
+- Bổ sung Windows, macOS, ChromeOS, Linux.
+- Lưu ý: iPhone không cho website biết chính xác đời máy trên nhiều trình duyệt, nên có thể chỉ hiện `iPhone (không xác định model)`.
+
+## V164 - Header trang chính mới
+- Thiết kế lại header theo phong cách thương mại điện tử hiện đại giống bản demo đã duyệt.
+- Desktop: thanh thông tin cam, logo lớn, danh mục, search, tư vấn, cửa hàng và menu điều hướng 2 tầng.
+- Tablet: tự rút gọn các phần ít quan trọng.
+- Mobile: logo + menu + search gọn; danh mục mở bằng drawer riêng.
+- Nút `Tư vấn` trên header gọi trực tiếp AI chat hiện có.
+- Giữ nguyên search suggestions và category dropdown hiện tại.
+- Header sticky khi cuộn.
