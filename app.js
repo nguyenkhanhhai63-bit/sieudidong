@@ -2737,6 +2737,7 @@ document.addEventListener("visibilitychange",()=>{
 /* =========================================================
    V137 - AI Chat tư vấn sản phẩm / Siêu Di Động
    ========================================================= */
+window.__AI_CHAT_V138_READY=true;
 const aiChatLauncher=document.getElementById("aiChatLauncher");
 const aiChatPanel=document.getElementById("aiChatPanel");
 const aiChatClose=document.getElementById("aiChatClose");
@@ -2745,6 +2746,9 @@ const aiChatForm=document.getElementById("aiChatForm");
 const aiChatInput=document.getElementById("aiChatInput");
 const aiChatSend=document.getElementById("aiChatSend");
 const aiChatSuggestions=document.getElementById("aiChatSuggestions");
+const aiHumanHandoff=document.getElementById("aiHumanHandoff");
+const aiHumanZaloBtn=document.getElementById("aiHumanZaloBtn");
+const zaloConsultBtn=document.getElementById("zaloConsultBtn");
 
 const AI_CHAT_HISTORY=[];
 let aiChatBusy=false;
@@ -2760,6 +2764,34 @@ function aiChatHide(){
   if(!aiChatPanel) return;
   aiChatPanel.hidden=true;
   aiChatLauncher?.setAttribute("aria-expanded","false");
+}
+
+function aiChatSetHumanHandoff(show,reason=""){
+  if(!aiHumanHandoff) return;
+  aiHumanHandoff.hidden=!show;
+  if(show && reason){
+    const note=aiHumanHandoff.querySelector("span");
+    if(note) note.textContent=reason;
+  }
+}
+
+function aiChatNeedsHuman(reply=""){
+  const s=String(reply||"").toLowerCase();
+  return [
+    "zalo",
+    "nhân viên",
+    "nhan vien",
+    "xác nhận",
+    "xac nhan",
+    "liên hệ",
+    "lien he",
+    "chưa có dữ liệu",
+    "chua co du lieu",
+    "địa chỉ",
+    "dia chi",
+    "giờ mở cửa",
+    "gio mo cua"
+  ].some(k=>s.includes(k));
 }
 function aiChatAppend(role,text){
   const row=document.createElement("div");
@@ -2840,6 +2872,7 @@ async function aiChatAsk(question){
   aiChatInput.disabled=true;
   aiChatSend.disabled=true;
 
+  aiChatSetHumanHandoff(false);
   aiChatAppend("user",text);
   AI_CHAT_HISTORY.push({role:"user",text});
   if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
@@ -2864,9 +2897,13 @@ async function aiChatAsk(question){
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
     aiChatAppend("assistant",reply);
     AI_CHAT_HISTORY.push({role:"assistant",text:reply});
+    if(aiChatNeedsHuman(reply)){
+      aiChatSetHumanHandoff(true,"Phần này nên để nhân viên xác nhận trực tiếp cho chắc. Bạn có thể chuyển sang Zalo.");
+    }
     if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
   }catch(e){
-    aiChatAppend("assistant",e.message||"AI đang bận. Bạn có thể liên hệ Zalo để nhân viên tư vấn ngay.");
+    aiChatAppend("assistant",e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.");
+    aiChatSetHumanHandoff(true,"AI đang chưa xử lý được câu này. Chuyển sang nhân viên tư vấn trực tiếp trên Zalo.");
   }finally{
     aiChatTyping(false);
     aiChatBusy=false;
@@ -2879,6 +2916,11 @@ async function aiChatAsk(question){
 aiChatLauncher?.addEventListener("click",()=>{
   if(aiChatPanel?.hidden) aiChatOpen();
   else aiChatHide();
+});
+
+zaloConsultBtn?.addEventListener("click",()=>{
+  aiChatOpen();
+  aiChatAppend("assistant","Bạn cứ hỏi AI trước nha. Nếu cần xác nhận thêm, tôi sẽ đưa nút chuyển sang nhân viên tư vấn trực tiếp.");
 });
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
@@ -2894,4 +2936,9 @@ aiChatInput?.addEventListener("keydown",e=>{
 aiChatSuggestions?.addEventListener("click",e=>{
   const btn=e.target.closest("[data-ai-question]");
   if(btn) aiChatAsk(btn.dataset.aiQuestion||btn.textContent);
+});
+
+aiHumanZaloBtn?.addEventListener("click",()=>{
+  sendAnalytics("zalo_click");
+  sendAnalytics("filter_click",{action:"ai_chat_handoff_zalo"});
 });

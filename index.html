@@ -48,7 +48,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=137">
+  <link rel="stylesheet" href="/styles.css?v=139">
 </head>
 <body>
 
@@ -160,7 +160,7 @@
 
 </main>
 
-<script src="/app.js?v=137"></script>
+
 
 
 <button id="aiChatLauncher" class="ai-chat-launcher" type="button" aria-label="Mở tư vấn AI" aria-expanded="false">
@@ -198,14 +198,23 @@
     <button id="aiChatSend" type="submit">Gửi</button>
   </form>
 
-  <div class="ai-chat-foot">AI có thể trả lời sai. Giá và tồn kho nên xác nhận lại với nhân viên trước khi mua.</div>
+
+
+  <div id="aiHumanHandoff" class="ai-human-handoff" hidden>
+    <div>
+      <strong>Cần nhân viên tư vấn trực tiếp?</strong>
+      <span>AI sẽ chuyển bạn sang Zalo khi cần xác nhận giá, tồn kho hoặc thông tin cửa hàng.</span>
+    </div>
+    <a id="aiHumanZaloBtn" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Chat Zalo</a>
+  </div>
+  <div class="ai-chat-foot">AI tư vấn trước. Khi cần xác nhận thêm, hệ thống sẽ gợi ý nhân viên hỗ trợ trực tiếp.</div>
 </section>
 
-<a id="zaloConsultBtn" class="zalo-float" href="https://zalo.me/0353105423"
-       target="_blank" rel="noopener noreferrer" aria-label="Chat Zalo với nhân viên tư vấn">
+<button id="zaloConsultBtn" class="zalo-float ai-first-help" type="button" aria-label="Mở tư vấn AI trước">
       <span class="zalo-float__icon" aria-hidden="true"><img src="/assets/zalo-contact-hd.png?v=78" alt=""></span>
       <span class="zalo-float__text">Bạn cần hỗ trợ?</span>
-    </a>
+    </button>
 
+  <script src="/app.js?v=139"></script>
 </body>
 </html>

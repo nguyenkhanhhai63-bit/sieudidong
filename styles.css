@@ -7862,3 +7862,62 @@ body.modal-open #zaloConsultBtn{
     font-size:12px;
   }
 }
+
+
+/* =========================================================
+   V139 - AI tư vấn trước, Zalo chỉ khi cần chuyển người thật
+   ========================================================= */
+.ai-first-help{
+  cursor:pointer;
+}
+.ai-human-handoff{
+  margin:8px 10px 0;
+  padding:10px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid #ffd8c4;
+  border-radius:11px;
+  background:#fff8f4;
+}
+.ai-human-handoff[hidden]{display:none!important}
+.ai-human-handoff div{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.ai-human-handoff strong{
+  font-size:11px;
+  color:#7a2f0a;
+}
+.ai-human-handoff span{
+  font-size:9px;
+  color:#8a5b45;
+  line-height:1.4;
+}
+.ai-human-handoff a{
+  min-width:78px;
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 10px;
+  border-radius:9px;
+  background:#0068ff;
+  color:#fff;
+  text-decoration:none;
+  font-size:10px;
+  font-weight:800;
+}
+.ai-human-handoff a:hover{filter:brightness(.96)}
+
+@media(max-width:720px){
+  .ai-human-handoff{
+    grid-template-columns:1fr;
+  }
+  .ai-human-handoff a{
+    width:100%;
+  }
+}

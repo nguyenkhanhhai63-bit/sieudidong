@@ -1042,3 +1042,17 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khi hỏi thông tin chưa cấu hình như địa chỉ chính xác/giờ mở cửa, AI hướng khách liên hệ Zalo thay vì bịa.
 - Dùng chung `GEMINI_API_KEY`; có thể đặt thêm `GEMINI_CHAT_MODEL` nếu muốn.
 - Không tăng số Serverless Functions: route mới chạy qua `/api/[action].js`.
+
+## V138 - Fix nút AI Chat không bấm được
+- Nguyên nhân: `app.js` chạy trước khi HTML của nút/panel AI Chat được trình duyệt tạo, nên listener không được gắn.
+- Chuyển `app.js` xuống cuối `<body>`, sau toàn bộ HTML AI Chat và Zalo.
+- Giữ nguyên UI và Gemini backend.
+- Thêm marker `window.__AI_CHAT_V138_READY=true` để dễ kiểm tra.
+
+## V139 - AI tư vấn trước, chuyển Zalo khi cần
+- Nút hỗ trợ nổi không còn mở Zalo trực tiếp; bấm vào sẽ mở box AI trước.
+- AI tự tư vấn sản phẩm và thông tin shop trước.
+- Chỉ khi câu trả lời cần xác nhận giá/tồn kho/thông tin cửa hàng hoặc dữ liệu thiếu mới hiện khối `Cần nhân viên tư vấn trực tiếp?`.
+- Khi đó khách mới thấy nút `Chat Zalo`.
+- Có thống kê riêng lượt chuyển từ AI sang Zalo.
+- Giữ nguyên 2 Serverless Functions.
