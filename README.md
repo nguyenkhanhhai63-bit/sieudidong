@@ -1090,3 +1090,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Sau khi thả, nút tự hít về mép trái/phải gần nhất để không nằm giữa màn hình che sản phẩm.
 - Vị trí cuối cùng tiếp tục được lưu bằng localStorage.
 - Màn hình rất nhỏ chỉ hiện logo tròn để tiết kiệm diện tích.
+
+## V144 - Nút AI tròn kéo thả như mẫu
+- Nút hỗ trợ ngoài website đổi thành hình tròn chỉ có logo Siêu Di Động.
+- Bỏ hoàn toàn chữ `Bạn cần hỗ trợ?` trên nút nổi.
+- Kéo thả tự do trên mobile.
+- Sau khi thả vẫn tự hít về mép trái/phải gần nhất.
+- Vị trí được lưu riêng bằng localStorage.
+- Lần đầu hiện gợi ý `Kéo để di chuyển` trong vài giây.
+- Chạm vào nút vẫn mở box AI chat như cũ.

@@ -3009,7 +3009,7 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
   const btn=zaloConsultBtn;
   if(!btn) return;
 
-  const KEY="sdd-ai-support-pos-v1";
+  const KEY="sdd-ai-round-pos-v2";
   let dragging=false;
   let moved=false;
   let startX=0,startY=0,startLeft=0,startTop=0;
@@ -3025,7 +3025,15 @@ aiMobileZaloDirect?.addEventListener("click",()=>{
     if(!isMobile()) return;
     try{
       const raw=localStorage.getItem(KEY);
-      if(!raw) return;
+      if(!raw){
+        // Vị trí mặc định: mép phải, thấp vừa đủ để không che thanh điều hướng.
+        const r=btn.getBoundingClientRect();
+        btn.style.left=Math.max(10,window.innerWidth-r.width-14)+"px";
+        btn.style.top=Math.max(90,window.innerHeight-r.height-110)+"px";
+        btn.style.right="auto";
+        btn.style.bottom="auto";
+        return;
+      }
       const p=JSON.parse(raw);
       if(!Number.isFinite(p?.x)||!Number.isFinite(p?.y)) return;
 
@@ -3137,4 +3145,43 @@ function snapAiSupportToEdge(){
     }));
   }catch(_){}
 }
+
+
+
+(function addAiDragHint(){
+  if(!window.matchMedia("(max-width:720px)").matches) return;
+  const btn=zaloConsultBtn;
+  if(!btn) return;
+  const KEY="sdd-ai-drag-hint-v1";
+  try{
+    if(localStorage.getItem(KEY)) return;
+  }catch(_){}
+
+  const hint=document.createElement("div");
+  hint.className="ai-drag-hint";
+  hint.textContent="Kéo để di chuyển";
+  document.body.appendChild(hint);
+
+  function place(){
+    const r=btn.getBoundingClientRect();
+    const w=hint.offsetWidth||110;
+    let left=r.left+r.width/2-w/2;
+    left=Math.max(8,Math.min(window.innerWidth-w-8,left));
+    let top=r.top-42;
+    if(top<8) top=r.bottom+10;
+    hint.style.left=left+"px";
+    hint.style.top=top+"px";
+  }
+
+  requestAnimationFrame(()=>{
+    place();
+    hint.classList.add("show");
+  });
+
+  setTimeout(()=>{
+    hint.classList.remove("show");
+    setTimeout(()=>hint.remove(),220);
+    try{localStorage.setItem(KEY,"1");}catch(_){}
+  },2600);
+})();
 
