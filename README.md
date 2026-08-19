@@ -1023,3 +1023,22 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Mỗi visitor chỉ tính 1 lần vào thống kê model, tránh reload nhiều lần làm tăng số.
 - Trang quản trị thêm `Điện thoại khách đang dùng` và `Hệ điều hành thiết bị`.
 - Không làm tăng số Serverless Functions; vẫn giữ kiến trúc 2 functions.
+
+## V136 - KPI dashboard compact
+- Desktop rộng: 7 chỉ số nằm trên 1 hàng.
+- Desktop vừa: tự xuống 4 cột.
+- Mobile/tablet: 2 cột.
+- Đổi tên ngắn gọn: Khách hôm nay, Truy cập hôm nay, Đang online, Xem sản phẩm...
+- Toàn bộ số chính dùng cùng màu đen để giao diện thống nhất.
+- Giữ nguyên logic thống kê và dữ liệu.
+
+## V137 - Chat tư vấn bằng Gemini AI
+- Thêm nút `Hỏi AI tư vấn` nổi trên website, nằm phía trên Zalo.
+- Khách có thể hỏi máy theo tầm giá, pin, camera, hàng còn/hết và thông tin cơ bản của Siêu Di Động.
+- AI chỉ nhận danh sách sản phẩm liên quan từ dữ liệu website hiện tại để hạn chế bịa giá/tồn kho.
+- Tối đa 14 sản phẩm liên quan được gửi cho Gemini mỗi câu hỏi.
+- Có lịch sử hội thoại ngắn để khách hỏi tiếp.
+- Có câu hỏi nhanh: dưới 10 triệu, pin trâu, chụp ảnh đẹp, thông tin shop.
+- Khi hỏi thông tin chưa cấu hình như địa chỉ chính xác/giờ mở cửa, AI hướng khách liên hệ Zalo thay vì bịa.
+- Dùng chung `GEMINI_API_KEY`; có thể đặt thêm `GEMINI_CHAT_MODEL` nếu muốn.
+- Không tăng số Serverless Functions: route mới chạy qua `/api/[action].js`.

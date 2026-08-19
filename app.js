@@ -2732,3 +2732,166 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="visible") sendAnalytics("heartbeat");
 });
 
+
+
+/* =========================================================
+   V137 - AI Chat tư vấn sản phẩm / Siêu Di Động
+   ========================================================= */
+const aiChatLauncher=document.getElementById("aiChatLauncher");
+const aiChatPanel=document.getElementById("aiChatPanel");
+const aiChatClose=document.getElementById("aiChatClose");
+const aiChatMessages=document.getElementById("aiChatMessages");
+const aiChatForm=document.getElementById("aiChatForm");
+const aiChatInput=document.getElementById("aiChatInput");
+const aiChatSend=document.getElementById("aiChatSend");
+const aiChatSuggestions=document.getElementById("aiChatSuggestions");
+
+const AI_CHAT_HISTORY=[];
+let aiChatBusy=false;
+
+function aiChatOpen(){
+  if(!aiChatPanel) return;
+  aiChatPanel.hidden=false;
+  aiChatLauncher?.setAttribute("aria-expanded","true");
+  sendAnalytics("filter_click",{action:"ai_chat_open"});
+  setTimeout(()=>aiChatInput?.focus(),80);
+}
+function aiChatHide(){
+  if(!aiChatPanel) return;
+  aiChatPanel.hidden=true;
+  aiChatLauncher?.setAttribute("aria-expanded","false");
+}
+function aiChatAppend(role,text){
+  const row=document.createElement("div");
+  row.className="ai-chat-message "+(role==="user"?"user":"assistant");
+  const bubble=document.createElement("div");
+  bubble.className="ai-chat-bubble";
+  bubble.textContent=String(text||"");
+  row.appendChild(bubble);
+  aiChatMessages.appendChild(row);
+  aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
+  return row;
+}
+function aiChatTyping(show){
+  let el=document.getElementById("aiChatTyping");
+  if(show){
+    if(el) return;
+    el=document.createElement("div");
+    el.id="aiChatTyping";
+    el.className="ai-chat-message assistant";
+    el.innerHTML='<div class="ai-chat-bubble ai-chat-typing"><span></span><span></span><span></span></div>';
+    aiChatMessages.appendChild(el);
+    aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
+  }else{
+    el?.remove();
+  }
+}
+function aiChatPriceFromText(text){
+  const s=String(text||"").toLowerCase();
+  const m=s.match(/(?:dưới|duoi|tầm|tam|khoảng|khoang)?\s*(\d+(?:[.,]\d+)?)\s*(?:triệu|trieu|tr|củ|cu)/i);
+  if(!m) return null;
+  return Math.round(Number(m[1].replace(",","."))*1000000);
+}
+function aiChatProductSnapshot(question){
+  const q=normalizeSearchText(question);
+  const tokens=q.split(" ").filter(x=>x.length>=2);
+  const target=aiChatPriceFromText(question);
+  const groups=groupItems(flattenProducts(PRODUCTS).filter(productMatchesMainCategory));
+
+  return groups.map((group,index)=>{
+    const variants=(group.variants||[]).filter(Boolean);
+    const prices=variants.map(v=>Number(v.price||0)).filter(x=>x>0);
+    const minPrice=prices.length?Math.min(...prices):0;
+    const maxPrice=prices.length?Math.max(...prices):0;
+    const inStock=variants.some(v=>Number(v.onHand||0)>0);
+    const name=String(group.name||"");
+    const normalized=normalizeSearchText(name);
+    let score=0;
+
+    for(const t of tokens){
+      if(normalized.includes(t)) score+=t.length>=5?5:2;
+    }
+
+    const brand=String(group.brand||variants[0]?.brand||"");
+    if(brand&&q.includes(normalizeSearchText(brand))) score+=8;
+
+    if(target&&minPrice){
+      const delta=Math.abs(minPrice-target);
+      score+=Math.max(0,10-delta/1000000);
+      if(/dưới|duoi|không quá|khong qua/i.test(question)&&minPrice<=target) score+=7;
+    }
+
+    if(inStock) score+=1;
+
+    // Khi câu hỏi chung, dùng thứ tự phổ biến hiện tại làm tie-break.
+    score+=Math.max(0,2-index*.02);
+
+    return {name,minPrice,maxPrice,inStock,brand,score};
+  })
+  .sort((a,b)=>b.score-a.score)
+  .slice(0,14)
+  .map(({score,...x})=>x);
+}
+async function aiChatAsk(question){
+  const text=String(question||"").trim();
+  if(!text||aiChatBusy) return;
+
+  aiChatBusy=true;
+  aiChatInput.disabled=true;
+  aiChatSend.disabled=true;
+
+  aiChatAppend("user",text);
+  AI_CHAT_HISTORY.push({role:"user",text});
+  if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+
+  aiChatInput.value="";
+  aiChatTyping(true);
+  sendAnalytics("filter_click",{action:"ai_chat_question"});
+
+  try{
+    const r=await fetch("/api/ai-chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:text,
+        products:aiChatProductSnapshot(text),
+        history:AI_CHAT_HISTORY.slice(-6)
+      })
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"AI chưa thể trả lời.");
+
+    const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
+    aiChatAppend("assistant",reply);
+    AI_CHAT_HISTORY.push({role:"assistant",text:reply});
+    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+  }catch(e){
+    aiChatAppend("assistant",e.message||"AI đang bận. Bạn có thể liên hệ Zalo để nhân viên tư vấn ngay.");
+  }finally{
+    aiChatTyping(false);
+    aiChatBusy=false;
+    aiChatInput.disabled=false;
+    aiChatSend.disabled=false;
+    aiChatInput.focus();
+  }
+}
+
+aiChatLauncher?.addEventListener("click",()=>{
+  if(aiChatPanel?.hidden) aiChatOpen();
+  else aiChatHide();
+});
+aiChatClose?.addEventListener("click",aiChatHide);
+aiChatForm?.addEventListener("submit",e=>{
+  e.preventDefault();
+  aiChatAsk(aiChatInput.value);
+});
+aiChatInput?.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    aiChatAsk(aiChatInput.value);
+  }
+});
+aiChatSuggestions?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-ai-question]");
+  if(btn) aiChatAsk(btn.dataset.aiQuestion||btn.textContent);
+});

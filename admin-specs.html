@@ -1026,6 +1026,83 @@ html,body,button,input,select,textarea {
   white-space:nowrap;
 }
 
+
+/* =========================================================
+   V136 - KPI tổng quan gọn và đồng nhất
+   ========================================================= */
+.metric-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.metric{
+  min-height:112px!important;
+  padding:16px 16px!important;
+  border-radius:14px!important;
+}
+.metric small{
+  min-height:30px;
+  display:flex;
+  align-items:flex-start;
+  font-size:11px!important;
+  line-height:1.35;
+  color:#667085!important;
+  font-weight:800!important;
+}
+.metric strong{
+  margin-top:2px;
+  font-size:30px!important;
+  line-height:1!important;
+  color:#101828!important;
+  font-weight:900!important;
+  letter-spacing:-.6px;
+}
+.metric em{
+  margin-top:8px!important;
+  min-height:16px;
+  font-size:10px!important;
+  line-height:1.3;
+  color:#98a2b3!important;
+}
+.metric:nth-child(n) strong{
+  color:#101828!important;
+}
+.metric:before{
+  width:3px!important;
+  opacity:.9;
+}
+
+@media(max-width:1380px){
+  .metric-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:900px){
+  .metric-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:520px){
+  .metric-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+  .metric{
+    min-height:98px!important;
+    padding:13px 12px!important;
+  }
+  .metric small{
+    min-height:26px;
+    font-size:10px!important;
+  }
+  .metric strong{
+    font-size:26px!important;
+  }
+  .metric em{
+    font-size:9px!important;
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -1111,15 +1188,16 @@ html,body,button,input,select,textarea {
       <div id="analyticsLoading" class="aload">Đang tải thống kê...</div>
       <div id="analyticsContent" class="hidden">
         <div class="metric-grid">
-          <div class="metric"><small>Khách duy nhất hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
-          <div class="metric"><small>Lượt truy cập hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
-          <div class="metric"><small>Khách đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
-          <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
-          <div class="metric"><small>Lượt truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
-          <div class="metric"><small>Lượt mở sản phẩm</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
+          <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
+          <div class="metric"><small>Truy cập hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
+          <div class="metric"><small>Đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
+          <div class="metric"><small>Xem sản phẩm</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
           <div class="metric"><small>So sánh hôm nay</small><strong id="mTodayCompare">0</strong><em id="mCompare30">30 ngày: 0</em></div>
+          <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
+          <div class="metric"><small>Truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
         </div>
-        <div class="analytics-grid">
+      </div>
+      <div class="analytics-grid">
           <div class="abox"><h2>Xu hướng truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
           <div class="abox"><h2>Loại thiết bị truy cập</h2><div id="deviceList"></div></div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><div id="deviceModelRanks" class="ranklist"></div></div>
