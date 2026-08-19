@@ -1074,3 +1074,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nút hỗ trợ bên ngoài tự ẩn khi chat đang mở.
 - Nếu khách gõ yêu cầu gặp nhân viên/tư vấn trực tiếp/Zalo, hệ thống hiện ngay nút `Nhắn Zalo ngay` và không bắt khách hỏi AI tiếp.
 - Nút Zalo mở trực tiếp `https://zalo.me/0353105423`.
+
+## V142 - Mobile Zalo trực tiếp + kéo thả nút AI
+- Trong header box chat mobile có nút `Nhân viên` mở thẳng Zalo 0353105423.
+- Khách không cần gõ yêu cầu mới thấy đường liên hệ trực tiếp.
+- Nút hỗ trợ AI nổi trên mobile có thể kéo thả tự do.
+- Vị trí nút được lưu bằng localStorage, lần sau giữ nguyên chỗ khách đã đặt.
+- Sau thao tác kéo sẽ không vô tình mở chat.
+- Vẫn giữ logic AI-first và 2 Serverless Functions.

@@ -2748,6 +2748,7 @@ const aiChatSuggestions=document.getElementById("aiChatSuggestions");
 const aiHumanHandoff=document.getElementById("aiHumanHandoff");
 const aiHumanZaloBtn=document.getElementById("aiHumanZaloBtn");
 const zaloConsultBtn=document.getElementById("zaloConsultBtn");
+const aiMobileZaloDirect=document.getElementById("aiMobileZaloDirect");
 
 const AI_CHAT_HISTORY=[];
 
@@ -2956,6 +2957,7 @@ async function aiChatAsk(question){
 }
 
 zaloConsultBtn?.addEventListener("click",()=>{
+  if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
   aiChatOpen();
   aiChatAppend("assistant","Bạn cứ hỏi AI trước nha. Nếu cần xác nhận thêm, tôi sẽ đưa nút chuyển sang nhân viên tư vấn trực tiếp.");
 });
@@ -2994,4 +2996,118 @@ function aiChatAdjustForKeyboard(){
 }
 window.visualViewport?.addEventListener("resize",aiChatAdjustForKeyboard);
 window.visualViewport?.addEventListener("scroll",aiChatAdjustForKeyboard);
+
+
+aiMobileZaloDirect?.addEventListener("click",()=>{
+  sendAnalytics("zalo_click");
+  sendAnalytics("filter_click",{action:"ai_chat_mobile_direct_zalo"});
+});
+
+
+/* V142 - Kéo thả nút hỗ trợ AI trên mobile */
+(function initDraggableAiSupport(){
+  const btn=zaloConsultBtn;
+  if(!btn) return;
+
+  const KEY="sdd-ai-support-pos-v1";
+  let dragging=false;
+  let moved=false;
+  let startX=0,startY=0,startLeft=0,startTop=0;
+  let pointerId=null;
+
+  function isMobile(){
+    return window.matchMedia("(max-width:720px)").matches;
+  }
+
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+
+  function applySaved(){
+    if(!isMobile()) return;
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(!raw) return;
+      const p=JSON.parse(raw);
+      if(!Number.isFinite(p?.x)||!Number.isFinite(p?.y)) return;
+
+      const r=btn.getBoundingClientRect();
+      const maxX=Math.max(8,window.innerWidth-r.width-8);
+      const maxY=Math.max(8,window.innerHeight-r.height-8);
+
+      btn.style.left=clamp(p.x,8,maxX)+"px";
+      btn.style.top=clamp(p.y,8,maxY)+"px";
+      btn.style.right="auto";
+      btn.style.bottom="auto";
+    }catch(_){}
+  }
+
+  function savePos(){
+    if(!isMobile()) return;
+    const r=btn.getBoundingClientRect();
+    try{
+      localStorage.setItem(KEY,JSON.stringify({x:Math.round(r.left),y:Math.round(r.top)}));
+    }catch(_){}
+  }
+
+  btn.addEventListener("pointerdown",e=>{
+    if(!isMobile()) return;
+    if(e.button!==undefined && e.button!==0) return;
+
+    const r=btn.getBoundingClientRect();
+    dragging=true;
+    moved=false;
+    pointerId=e.pointerId;
+    startX=e.clientX;
+    startY=e.clientY;
+    startLeft=r.left;
+    startTop=r.top;
+    btn.setPointerCapture?.(e.pointerId);
+    btn.classList.add("is-dragging");
+  });
+
+  btn.addEventListener("pointermove",e=>{
+    if(!dragging || e.pointerId!==pointerId || !isMobile()) return;
+
+    const dx=e.clientX-startX;
+    const dy=e.clientY-startY;
+    if(Math.abs(dx)+Math.abs(dy)>5) moved=true;
+    if(!moved) return;
+
+    e.preventDefault();
+    const r=btn.getBoundingClientRect();
+    const maxX=Math.max(8,window.innerWidth-r.width-8);
+    const maxY=Math.max(8,window.innerHeight-r.height-8);
+
+    btn.style.left=clamp(startLeft+dx,8,maxX)+"px";
+    btn.style.top=clamp(startTop+dy,8,maxY)+"px";
+    btn.style.right="auto";
+    btn.style.bottom="auto";
+  },{passive:false});
+
+  function endDrag(e){
+    if(!dragging) return;
+    dragging=false;
+    btn.classList.remove("is-dragging");
+    try{ btn.releasePointerCapture?.(pointerId); }catch(_){}
+    if(moved){
+      savePos();
+      // Chặn click phát sinh sau thao tác kéo.
+      btn.dataset.dragJustEnded="1";
+      setTimeout(()=>delete btn.dataset.dragJustEnded,180);
+    }
+    pointerId=null;
+  }
+
+  btn.addEventListener("pointerup",endDrag);
+  btn.addEventListener("pointercancel",endDrag);
+
+  btn.addEventListener("click",e=>{
+    if(btn.dataset.dragJustEnded==="1"){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  },true);
+
+  window.addEventListener("resize",()=>setTimeout(applySaved,80));
+  requestAnimationFrame(applySaved);
+})();
 
