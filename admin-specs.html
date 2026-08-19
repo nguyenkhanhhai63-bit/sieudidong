@@ -2379,6 +2379,36 @@ button,.primary,.secondary{font-size:12px!important}
   line-height:1.45!important;
 }
 
+
+/* =========================================================
+   V169 - Fix click/touch thanh điều hướng quản trị mobile
+   ========================================================= */
+@media(max-width:760px){
+  .mobile-admin-nav{
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+  }
+
+  .mobile-admin-tab{
+    position:relative!important;
+    z-index:1!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    cursor:pointer!important;
+    user-select:none!important;
+    -webkit-user-select:none!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+
+  .mobile-admin-tab > *{
+    pointer-events:none!important;
+  }
+
+  .mobile-admin-tab:active{
+    transform:scale(.97)!important;
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -3265,40 +3295,71 @@ async function saveAiSettingsPayload(payload){
   return settings;
 }
 
+
+function currentAiChatTrainingPayload(){
+  return {
+    chatInstructions:aiChatInstructions.value,
+    chatWelcomeMessage:aiChatWelcomeMessage.value,
+    chatStoreFacts:aiChatStoreFacts.value,
+    chatHandoffRules:aiChatHandoffRules.value,
+    chatSuggestions:aiChatSuggestionsInput.value
+  };
+}
+
+function fillAiChatTraining(s={}){
+  if("chatInstructions" in s) aiChatInstructions.value=s.chatInstructions||"";
+  if("chatWelcomeMessage" in s) aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
+  if("chatStoreFacts" in s) aiChatStoreFacts.value=s.chatStoreFacts||"";
+  if("chatHandoffRules" in s) aiChatHandoffRules.value=s.chatHandoffRules||"";
+  if("chatSuggestions" in s) aiChatSuggestionsInput.value=s.chatSuggestions||"";
+}
+
+async function loadAiChatTraining(){
+  const r=await fetch("/api/admin/ai-chat-training?ts="+Date.now(),{
+    cache:"no-store",
+    credentials:"same-origin"
+  });
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(data.error||"Không tải được Đào tạo AI");
+  fillAiChatTraining(data.settings||{});
+  return data.settings||{};
+}
+
 async function persistAiChatSettings(){
   if(!saveAiChatSettings) return;
 
   saveAiChatSettings.disabled=true;
   saveAiChatSettings.textContent="Đang lưu...";
-  aiChatSettingsStatus.textContent="Đang lưu cấu hình AI tư vấn chat...";
+  aiChatSettingsStatus.textContent="Đang lưu Đào tạo AI...";
   aiChatSettingsStatus.style.color="#6b7280";
 
   try{
-    const payload=currentAiSettingsPayload();
-    const saved=await saveAiSettingsPayload(payload);
+    const payload=currentAiChatTrainingPayload();
 
-    // So sánh đúng 4 ô chat để phát hiện trường hợp server không ghi.
-    const checks=[
-      ["Cách AI tư vấn",payload.chatInstructions,saved.chatInstructions],
-      ["Câu chào",payload.chatWelcomeMessage,saved.chatWelcomeMessage],
-      ["Thông tin shop",payload.chatStoreFacts,saved.chatStoreFacts],
-      ["Quy tắc chuyển nhân viên",payload.chatHandoffRules,saved.chatHandoffRules],
-      ["Gợi ý câu hỏi mẫu",payload.chatSuggestions,saved.chatSuggestions]
-    ];
+    const r=await fetch("/api/admin/ai-chat-training",{
+      method:"POST",
+      cache:"no-store",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
 
-    const normText=v=>String(v??"").replace(/\r\n?/g,"\n").trim();
-    const mismatch=checks.find(([,a,b])=>normText(a)!==normText(b));
-    if(mismatch){
-      throw new Error("Server chưa lưu đúng mục: "+mismatch[0]+". Vui lòng thử lại.");
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"Không lưu được Đào tạo AI");
+    if(data.persisted!==true || data.verified!==true){
+      throw new Error("Server chưa xác nhận Redis đã lưu dữ liệu.");
     }
 
-    aiChatSettingsStatus.textContent="✓ Đã lưu AI tư vấn chat thành công vào Redis.";
+    const saved=data.settings||{};
+    fillAiChatTraining(saved);
+
+    aiChatSettingsStatus.textContent="✓ Đã lưu Đào tạo AI thành công.";
     aiChatSettingsStatus.style.color="#15803d";
-    try{showToast("Đã lưu AI tư vấn chat");}catch(_){}
+    try{showToast("Đã lưu Đào tạo AI");}catch(_){}
   }catch(e){
-    aiChatSettingsStatus.textContent=e.message||"Không lưu được AI tư vấn chat.";
+    aiChatSettingsStatus.textContent=e.message||"Không lưu được Đào tạo AI.";
     aiChatSettingsStatus.style.color="#b91c1c";
-    try{showToast(e.message||"Không lưu được AI tư vấn chat","error");}catch(_){}
+    try{showToast(e.message||"Không lưu được Đào tạo AI","error");}catch(_){}
   }finally{
     saveAiChatSettings.disabled=false;
     saveAiChatSettings.textContent="Lưu AI tư vấn chat";
@@ -3313,6 +3374,19 @@ async function persistAiSettings(){
 
   try{
     await saveAiSettingsPayload(currentAiSettingsPayload());
+
+    const chatPayload=currentAiChatTrainingPayload();
+    const chatResponse=await fetch("/api/admin/ai-chat-training",{
+      method:"POST",
+      cache:"no-store",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(chatPayload)
+    });
+    const chatData=await chatResponse.json().catch(()=>({}));
+    if(!chatResponse.ok) throw new Error(chatData.error||"Không lưu được phần AI chat");
+    if(chatData.settings) fillAiChatTraining(chatData.settings);
+
     aiSettingsStatus.textContent="✓ Đã lưu toàn bộ cấu hình AI thành công.";
     aiSettingsStatus.style.color="#15803d";
     if(aiChatSettingsStatus){
@@ -3378,7 +3452,20 @@ adminTabs.addEventListener("click",e=>{
   seoCard.style.display = showSeo ? "" : "none";
 
   if(showAnalytics){ loadAnalytics(); }
-  if(showAi){ loadAiSettings(); }
+  if(showAi){
+    loadAiSettings();
+    loadAiChatTraining().then(()=>{
+      if(aiChatSettingsStatus){
+        aiChatSettingsStatus.textContent="✓ Đã tải Đào tạo AI đang lưu.";
+        aiChatSettingsStatus.style.color="#15803d";
+      }
+    }).catch(e=>{
+      if(aiChatSettingsStatus){
+        aiChatSettingsStatus.textContent=e.message||"Không tải được Đào tạo AI.";
+        aiChatSettingsStatus.style.color="#b91c1c";
+      }
+    });
+  }
   if(showSeo){ loadSeoStatus(); loadSeoSettings(); }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
@@ -3635,38 +3722,74 @@ window.addEventListener("resize",()=>{
 });
 
 
-/* V163 - mobile bottom navigation */
-const mobileAdminNav=document.getElementById("mobileAdminNav");
+/* V169 - mobile bottom navigation: khởi tạo sau khi DOM có nav */
+function initMobileAdminNavigation(){
+  const mobileAdminNav=document.getElementById("mobileAdminNav");
+  if(!mobileAdminNav || mobileAdminNav.dataset.bound==="1") return;
+  mobileAdminNav.dataset.bound="1";
 
-function syncMobileAdminNav(tab){
-  mobileAdminNav?.querySelectorAll("[data-mobile-tab]").forEach(btn=>{
-    btn.classList.toggle("active",btn.dataset.mobileTab===tab);
+  function syncMobileAdminNav(tab){
+    mobileAdminNav.querySelectorAll("[data-mobile-tab]").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.mobileTab===tab);
+    });
+  }
+
+  mobileAdminNav.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-mobile-tab]");
+    if(!btn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const tab=btn.dataset.mobileTab;
+    const target=document.querySelector(`#adminTabs [data-tab="${tab}"]`);
+
+    if(target){
+      target.click();
+    }else{
+      // Fallback trực tiếp nếu tab desktop không tồn tại hoặc đang ẩn.
+      document.querySelectorAll(".panel").forEach(panel=>{
+        const isTarget=panel.dataset.panel===tab;
+        panel.classList.toggle("active",isTarget);
+        panel.style.display=isTarget?"block":"none";
+      });
+    }
+
+    syncMobileAdminNav(tab);
+    document.body.classList.remove("mobile-sidebar-open","sidebar-collapsed");
+    window.scrollTo({top:0,behavior:"smooth"});
   });
+
+  const adminTabsEl=document.getElementById("adminTabs");
+  adminTabsEl?.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-tab]");
+    if(btn) syncMobileAdminNav(btn.dataset.tab);
+  });
+
+  const current=adminTabsEl?.querySelector(".admin-tab.active")?.dataset.tab || "analytics";
+  syncMobileAdminNav(current);
 }
 
-mobileAdminNav?.addEventListener("click",e=>{
-  const btn=e.target.closest("[data-mobile-tab]");
-  if(!btn) return;
-  const tab=btn.dataset.mobileTab;
-  const target=adminTabs?.querySelector(`[data-tab="${tab}"]`);
-  target?.click();
-  syncMobileAdminNav(tab);
-  window.scrollTo({top:0,behavior:"smooth"});
-});
-
-adminTabs?.addEventListener("click",e=>{
-  const btn=e.target.closest("[data-tab]");
-  if(btn) syncMobileAdminNav(btn.dataset.tab);
-});
-
-/* Luôn xóa trạng thái drawer cũ trên mobile */
 function resetLegacyMobileSidebar(){
   if(window.matchMedia("(max-width:760px)").matches){
     document.body.classList.remove("mobile-sidebar-open","sidebar-collapsed");
   }
 }
-resetLegacyMobileSidebar();
-window.addEventListener("resize",resetLegacyMobileSidebar);
+
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",()=>{
+    initMobileAdminNavigation();
+    resetLegacyMobileSidebar();
+  },{once:true});
+}else{
+  initMobileAdminNavigation();
+  resetLegacyMobileSidebar();
+}
+
+window.addEventListener("resize",()=>{
+  resetLegacyMobileSidebar();
+  initMobileAdminNavigation();
+});
 
 </script>
 

@@ -9344,3 +9344,34 @@ input,select,textarea{
   }
 }
 
+
+
+/* =========================================================
+   V170 - Đưa nhân viên hỗ trợ lên đầu chatbox
+   ========================================================= */
+.ai-chat-head + .ai-human-handoff{
+  margin:6px 8px 5px!important;
+}
+
+.ai-human-handoff + .ai-chat-messages{
+  border-top:0!important;
+}
+
+/* Đầu box chat: CTA nhân viên rõ nhưng vẫn gọn */
+.ai-chat-panel .ai-human-handoff.ai-human-handoff-soft{
+  position:relative!important;
+  z-index:2!important;
+  min-height:42px!important;
+  background:#f8fbff!important;
+  border-color:#d7e6ff!important;
+}
+
+/* Mobile: nằm sát header, không chiếm quá nhiều diện tích */
+@media(max-width:720px){
+  .ai-chat-head + .ai-human-handoff{
+    margin:5px 7px 4px!important;
+  }
+  .ai-chat-panel .ai-human-handoff.ai-human-handoff-soft{
+    min-height:40px!important;
+  }
+}

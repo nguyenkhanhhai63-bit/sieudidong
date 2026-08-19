@@ -1254,3 +1254,22 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bỏ mô tả dài để phần cuối chatbox nhẹ hơn.
 - Nút Zalo chuyển sang nền trắng viền xanh, không còn khối xanh quá nặng.
 - Mobile giữ chiều cao khoảng 44px và không chiếm nguyên hàng lớn.
+
+## V168 - Fix thanh menu mobile không click được
+- Nguyên nhân: JavaScript tìm `#mobileAdminNav` trước khi HTML của thanh menu được tạo nên biến nhận `null`.
+- Khởi tạo sự kiện sau `DOMContentLoaded`.
+- Bổ sung fallback chuyển panel trực tiếp.
+- Tăng vùng nhận touch/click và tắt pointer-event trên icon/chữ con để bấm đâu trên nút cũng nhận.
+
+## V169 - Tách riêng lưu Đào tạo AI
+- Tạo endpoint riêng `/api/admin/ai-chat-training` trong catch-all API hiện có, không tăng số Serverless Functions.
+- 5 ô Đào tạo AI lưu vào key riêng `ai:chat:training:v3`.
+- Nút `Lưu AI tư vấn chat` không còn đi qua object cấu hình so sánh AI cũ.
+- Server SET rồi GET lại cùng key trước khi báo thành công.
+- AI chat ngoài website đọc trực tiếp key v3, fallback dữ liệu cũ nếu chưa có.
+- Giải quyết lỗi lặp lại `Thông tin shop` / `Gợi ý câu hỏi mẫu` không lưu.
+
+## V170 - Đưa nhân viên hỗ trợ lên đầu box chat
+- Chuyển khung `Cần nhân viên hỗ trợ? / Nhắn Zalo` lên ngay dưới header của chatbox.
+- Khách nhìn thấy lựa chọn liên hệ nhân viên ngay khi mở chat.
+- Tin nhắn AI, gợi ý câu hỏi và ô nhập nằm phía dưới.
