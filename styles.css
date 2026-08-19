@@ -9694,3 +9694,61 @@ input,select,textarea{
     max-height:66px!important;
   }
 }
+
+
+/* =========================================================
+   V181 - Fix icon chat tròn, không lộ nền vuông/đen
+   ========================================================= */
+#zaloConsultBtn.ai-round-float{
+  border-radius:50%!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  box-shadow:0 6px 18px rgba(15,23,42,.18)!important;
+}
+
+#zaloConsultBtn.ai-round-float .ai-round-logo{
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+#zaloConsultBtn.ai-round-float .ai-round-logo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  background:transparent!important;
+}
+
+/* Nếu ảnh upload có nền vuông tối ở 4 góc, chỉ phần tròn trung tâm mới được hiển thị */
+#zaloConsultBtn.ai-round-float img{
+  -webkit-mask-image:radial-gradient(circle at center,#000 0 70%,transparent 71%)!important;
+  mask-image:radial-gradient(circle at center,#000 0 70%,transparent 71%)!important;
+}
+
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float{
+    width:72px!important;
+    height:72px!important;
+    min-width:72px!important;
+    min-height:72px!important;
+    max-width:72px!important;
+    max-height:72px!important;
+    padding:0!important;
+  }
+}

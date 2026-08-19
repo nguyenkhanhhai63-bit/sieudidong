@@ -1340,3 +1340,15 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Lưu Redis, đổi icon không cần sửa code/GitHub/deploy lại.
 - Website tự tải icon mới từ `/api/ai-chat-icon`.
 - Không tăng số Serverless Functions vì dùng catch-all API hiện có.
+
+## V181 - Fix icon chat tròn
+- Nút chat và ảnh bên trong đều ép `border-radius: 50%`.
+- Thêm `overflow: hidden` để không còn lộ 4 góc ảnh vuông.
+- Thêm mask tròn để cắt phần nền đen/vuông ngoài icon.
+- Preview icon trong quản trị cũng hiển thị dạng tròn giống ngoài website.
+
+## V182 - Hiện rõ chức năng đổi icon trong quản trị
+- Chuyển mục đổi icon vào ngay đầu khung `AI chat tư vấn khách`.
+- Có tiêu đề `Ảnh icon nút chat` và badge `TÙY CHỈNH`.
+- Giữ nguyên chọn ảnh, xem trước, lưu và khôi phục mặc định.
+- Không còn nằm ở một card riêng dễ bị bỏ sót.

@@ -2411,7 +2411,7 @@ button,.primary,.secondary{font-size:12px!important}
 
 
 /* =========================================================
-   V180 - Quản trị icon chat AI
+   V182 - Quản trị icon chat AI
    ========================================================= */
 .ai-chat-icon-admin-body{display:flex;flex-direction:column;gap:14px}
 .ai-chat-icon-preview-wrap{
@@ -2444,6 +2444,83 @@ button,.primary,.secondary{font-size:12px!important}
   .ai-chat-icon-preview-bg img{width:70px;height:70px}
   .ai-chat-icon-actions{display:grid;grid-template-columns:1fr}
   .ai-chat-icon-actions button{width:100%}
+}
+
+
+/* =========================================================
+   V182 - Preview icon chat dạng tròn trong quản trị
+   ========================================================= */
+.ai-chat-icon-preview-bg{
+  border-radius:50%!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  box-shadow:inset 0 0 0 1px #e5e7eb!important;
+}
+.ai-chat-icon-preview-bg img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:50%!important;
+  clip-path:circle(50% at 50% 50%)!important;
+  -webkit-mask-image:radial-gradient(circle at center,#000 0 70%,transparent 71%)!important;
+  mask-image:radial-gradient(circle at center,#000 0 70%,transparent 71%)!important;
+}
+
+
+/* =========================================================
+   V182 - Đưa tùy chỉnh icon vào ngay box AI chat
+   ========================================================= */
+.ai-chat-icon-inline{
+  margin:14px 0 18px;
+  padding:14px;
+  border:1.5px solid #ffb58a;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fffaf7 0%,#fff 100%);
+  box-shadow:0 4px 14px rgba(255,90,0,.06);
+}
+.ai-chat-icon-inline-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.ai-chat-icon-inline-head h3{
+  margin:0;
+  color:#111827;
+  font-size:15px;
+  font-weight:800;
+}
+.ai-chat-icon-inline-head p{
+  margin:4px 0 0!important;
+  color:#667085!important;
+  font-size:11px!important;
+}
+.ai-chat-icon-badge{
+  flex:0 0 auto;
+  padding:5px 8px;
+  border-radius:999px;
+  background:#ff5a00;
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.03em;
+}
+.ai-chat-icon-inline .ai-chat-icon-preview-wrap{
+  margin-bottom:10px;
+}
+.ai-chat-icon-inline .ai-chat-icon-actions{
+  margin-top:2px;
+}
+@media(max-width:720px){
+  .ai-chat-icon-inline{
+    margin:10px 0 14px;
+    padding:11px;
+  }
+  .ai-chat-icon-inline-head h3{
+    font-size:14px;
+  }
 }
 
 </style>
@@ -2680,6 +2757,40 @@ button,.primary,.secondary{font-size:12px!important}
           <h2>AI chat tư vấn khách</h2>
           <p>Đào tạo cách AI nói chuyện với khách, thông tin shop được phép trả lời và lúc nào mới chuyển qua nhân viên.</p>
 
+          <div class="ai-chat-icon-inline">
+            <div class="ai-chat-icon-inline-head">
+              <div>
+                <h3>Ảnh icon nút chat</h3>
+                <p>Đổi ảnh icon AI đang nổi ngoài website ngay tại đây.</p>
+              </div>
+              <span class="ai-chat-icon-badge">TÙY CHỈNH</span>
+            </div>
+
+            <div class="ai-chat-icon-preview-wrap">
+              <div class="ai-chat-icon-preview-bg">
+                <img id="aiChatIconPreview" src="/assets/ai-chat-robot.png?v=179" alt="Xem trước icon chat AI">
+              </div>
+              <div class="ai-chat-icon-preview-copy">
+                <strong>Icon đang dùng</strong>
+                <span>Nên chọn ảnh vuông, chữ lớn và ít chi tiết để nhìn rõ trên mobile.</span>
+              </div>
+            </div>
+
+            <input id="aiChatIconFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+            <div class="ai-chat-icon-actions">
+              <button id="chooseAiChatIcon" class="secondary" type="button">Chọn ảnh mới</button>
+              <button id="saveAiChatIcon" class="primary" type="button" disabled>Lưu icon chat</button>
+              <button id="resetAiChatIcon" class="secondary" type="button">Khôi phục mặc định</button>
+            </div>
+
+            <div class="ai-chat-icon-note">
+              Sau khi lưu, icon mới áp dụng cho website mà không cần sửa code hay deploy lại.
+            </div>
+            <div id="aiChatIconStatus" class="ai-settings-status"></div>
+          </div>
+
+
           <div class="ai-field">
             <label for="aiChatInstructions">Cách AI tư vấn</label>
             <textarea id="aiChatInstructions" maxlength="4000" placeholder="Ví dụ: Nói ngắn gọn, bình dân. Khi khách hỏi máy phải hỏi tầm giá và nhu cầu nếu chưa rõ. Không được bịa giá hoặc tồn kho."></textarea>
@@ -2715,36 +2826,7 @@ button,.primary,.secondary{font-size:12px!important}
             <strong>Nguyên tắc:</strong> AI chat tư vấn trước. Nút Zalo chỉ hiện khi câu hỏi cần nhân viên xác nhận trực tiếp.
           </div>
         </div>
-
-        <div class="ai-settings-box ai-chat-icon-admin">
-          <h2>Icon chat AI</h2>
-          <p>Thay ảnh nút chat nổi ngoài website mà không cần sửa code hay upload lại GitHub.</p>
-
-          <div class="ai-chat-icon-admin-body">
-            <div class="ai-chat-icon-preview-wrap">
-              <div class="ai-chat-icon-preview-bg">
-                <img id="aiChatIconPreview" src="/assets/ai-chat-robot.png?v=179" alt="Xem trước icon chat AI">
-              </div>
-              <div class="ai-chat-icon-preview-copy">
-                <strong>Xem trước icon</strong>
-                <span>Nên dùng ảnh vuông, chữ lớn và ít chi tiết để nhìn rõ trên mobile.</span>
-              </div>
-            </div>
-
-            <input id="aiChatIconFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-
-            <div class="ai-chat-icon-actions">
-              <button id="chooseAiChatIcon" class="secondary" type="button">Chọn ảnh mới</button>
-              <button id="saveAiChatIcon" class="primary" type="button" disabled>Lưu icon chat</button>
-              <button id="resetAiChatIcon" class="secondary" type="button">Khôi phục mặc định</button>
-            </div>
-
-            <div class="ai-chat-icon-note">Ảnh tự thu về 256×256 và nén trước khi lưu. Sau khi lưu, khách truy cập web sẽ dùng icon mới mà không cần deploy.</div>
-            <div id="aiChatIconStatus" class="ai-settings-status"></div>
-          </div>
-        </div>
-
-        <div class="ai-settings-box">
+<div class="ai-settings-box">
           <h2>Cách hoạt động</h2>
           <p>Đây là “đào tạo theo chỉ dẫn”: AI sẽ đọc cấu hình này mỗi lần phân tích. Không cần tạo lại model Gemini.</p>
           <div class="ai-example">
