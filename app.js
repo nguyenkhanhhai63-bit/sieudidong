@@ -2939,7 +2939,10 @@ function aiChatProductSnapshot(question){
     const prices=variants.map(v=>Number(v.price||0)).filter(x=>x>0);
     const minPrice=prices.length?Math.min(...prices):0;
     const maxPrice=prices.length?Math.max(...prices):0;
-    const inStock=variants.some(v=>Number(v.onHand||0)>0);
+    // Tình trạng hàng gửi cho AI phải lấy trực tiếp từ dữ liệu sản phẩm
+    // đang hiển thị trên website: chỉ cần 1 biến thể còn tồn là sản phẩm còn hàng.
+    const stockQty=variants.reduce((sum,v)=>sum+Math.max(0,Number(v.onHand||0)),0);
+    const inStock=stockQty>0;
     const name=String(group.name||"");
     const normalized=normalizeSearchText(name);
     let score=0;
@@ -2962,7 +2965,16 @@ function aiChatProductSnapshot(question){
     // Khi câu hỏi chung, dùng thứ tự phổ biến hiện tại làm tie-break.
     score+=Math.max(0,2-index*.02);
 
-    return {name,minPrice,maxPrice,inStock,brand,score};
+    return {
+      name,
+      minPrice,
+      maxPrice,
+      inStock,
+      stockStatus:inStock?"Còn hàng":"Hết hàng",
+      stockQty,
+      brand,
+      score
+    };
   })
   .sort((a,b)=>b.score-a.score)
   .slice(0,14)

@@ -3296,6 +3296,28 @@ async function saveAiSettingsPayload(payload){
 }
 
 
+const AI_CHAT_LOCAL_BACKUP_KEY="sdd-ai-chat-training-backup-v174";
+
+function saveAiChatLocalBackup(settings){
+  try{
+    localStorage.setItem(AI_CHAT_LOCAL_BACKUP_KEY,JSON.stringify({
+      savedAt:Date.now(),
+      settings:settings||{}
+    }));
+  }catch(_){}
+}
+
+function readAiChatLocalBackup(){
+  try{
+    const raw=localStorage.getItem(AI_CHAT_LOCAL_BACKUP_KEY);
+    if(!raw) return null;
+    const parsed=JSON.parse(raw);
+    return parsed?.settings||null;
+  }catch(_){
+    return null;
+  }
+}
+
 function currentAiChatTrainingPayload(){
   return {
     chatInstructions:aiChatInstructions.value,
@@ -3321,8 +3343,10 @@ async function loadAiChatTraining(){
   });
   const data=await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(data.error||"Không tải được Đào tạo AI");
-  fillAiChatTraining(data.settings||{});
-  return data.settings||{};
+  const settings=data.settings||{};
+  fillAiChatTraining(settings);
+  saveAiChatLocalBackup(settings);
+  return settings;
 }
 
 async function persistAiChatSettings(){
@@ -3352,6 +3376,7 @@ async function persistAiChatSettings(){
 
     const saved=data.settings||{};
     fillAiChatTraining(saved);
+    saveAiChatLocalBackup(saved);
 
     aiChatSettingsStatus.textContent="✓ Đã lưu Đào tạo AI thành công.";
     aiChatSettingsStatus.style.color="#15803d";
@@ -3453,18 +3478,30 @@ adminTabs.addEventListener("click",e=>{
 
   if(showAnalytics){ loadAnalytics(); }
   if(showAi){
-    loadAiSettings();
-    loadAiChatTraining().then(()=>{
-      if(aiChatSettingsStatus){
-        aiChatSettingsStatus.textContent="✓ Đã tải Đào tạo AI đang lưu.";
-        aiChatSettingsStatus.style.color="#15803d";
+    (async()=>{
+      try{
+        // Chạy tuần tự để /ai-settings không thể tải xong sau rồi ghi đè 5 ô chat.
+        await loadAiSettings();
+        await loadAiChatTraining();
+        if(aiChatSettingsStatus){
+          aiChatSettingsStatus.textContent="✓ Đã tải Đào tạo AI đang lưu trên server.";
+          aiChatSettingsStatus.style.color="#15803d";
+        }
+      }catch(e){
+        // Nếu server chập chờn, giữ nguyên nội dung đang có; chỉ dùng bản backup
+        // khi các ô hiện tại thực sự trống. Không bao giờ tự xóa dữ liệu đã nhập.
+        const backup=readAiChatLocalBackup();
+        const current=currentAiChatTrainingPayload();
+        const allBlank=Object.values(current).every(v=>!String(v||"").trim());
+        if(backup && allBlank) fillAiChatTraining(backup);
+        if(aiChatSettingsStatus){
+          aiChatSettingsStatus.textContent=(backup&&allBlank)
+            ?"⚠ Server tải lỗi, đang hiển thị bản lưu gần nhất trên trình duyệt."
+            :(e.message||"Không tải được Đào tạo AI. Nội dung hiện tại được giữ nguyên.");
+          aiChatSettingsStatus.style.color="#b45309";
+        }
       }
-    }).catch(e=>{
-      if(aiChatSettingsStatus){
-        aiChatSettingsStatus.textContent=e.message||"Không tải được Đào tạo AI.";
-        aiChatSettingsStatus.style.color="#b91c1c";
-      }
-    });
+    })();
   }
   if(showSeo){ loadSeoStatus(); loadSeoSettings(); }
 });

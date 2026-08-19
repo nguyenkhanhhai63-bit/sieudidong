@@ -9529,3 +9529,63 @@ input,select,textarea{
     font-weight:600!important;
   }
 }
+
+
+/* =========================================================
+   V175 - Nút chat mobile không bị che chữ ở mép màn hình
+   ========================================================= */
+@media(max-width:720px){
+  .ai-chat-launcher{
+    /* Launcher có thể bị kéo sát hai mép; cho phép label tự đổi phía bằng JS/CSS class */
+    max-width:58px!important;
+    width:58px!important;
+    height:58px!important;
+    padding:0!important;
+    border-radius:50%!important;
+    overflow:visible!important;
+  }
+
+  .ai-chat-launcher .ai-chat-launcher-icon{
+    width:58px!important;
+    height:58px!important;
+    border-radius:50%!important;
+  }
+
+  .ai-chat-launcher .ai-chat-launcher-text{
+    display:none!important;
+  }
+
+  /* Mặc định icon ở bên trái: chữ nằm bên phải */
+  .ai-chat-launcher:not(.chat-near-right) #aiChatFloatLabel,
+  .ai-chat-launcher:not(.chat-near-right) .ai-chat-float-label{
+    left:calc(100% + 8px)!important;
+    right:auto!important;
+  }
+
+  .ai-chat-launcher:not(.chat-near-right) #aiChatFloatLabel::after,
+  .ai-chat-launcher:not(.chat-near-right) .ai-chat-float-label::after{
+    left:-5px!important;
+    right:auto!important;
+    border-top:0!important;
+    border-right:0!important;
+    border-left:1px solid #e5e7eb!important;
+    border-bottom:1px solid #e5e7eb!important;
+  }
+
+  /* Icon ở bên phải: chữ tự chạy sang trái để không tràn khỏi màn hình */
+  .ai-chat-launcher.chat-near-right #aiChatFloatLabel,
+  .ai-chat-launcher.chat-near-right .ai-chat-float-label{
+    right:calc(100% + 8px)!important;
+    left:auto!important;
+  }
+
+  .ai-chat-launcher.chat-near-right #aiChatFloatLabel::after,
+  .ai-chat-launcher.chat-near-right .ai-chat-float-label::after{
+    right:-5px!important;
+    left:auto!important;
+    border-left:0!important;
+    border-bottom:0!important;
+    border-top:1px solid #e5e7eb!important;
+    border-right:1px solid #e5e7eb!important;
+  }
+}

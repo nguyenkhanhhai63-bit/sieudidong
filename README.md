@@ -1285,3 +1285,25 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Tăng chữ thương hiệu/header, nút Danh mục và ô tìm kiếm.
 - Tăng nhẹ chữ Tư vấn/Cửa hàng và thanh cam trên cùng.
 - Chỉ áp dụng desktop để không làm vỡ bố cục mobile.
+
+## V173 - AI lấy tồn kho trực tiếp từ website
+- Tình trạng hàng gửi cho AI lấy trực tiếp từ PRODUCTS đang hiển thị trên web.
+- Sản phẩm được tính `Còn hàng` nếu có ít nhất một biến thể có tồn kho > 0.
+- Khi khách hỏi còn/hết hàng, server trả lời xác định từ dữ liệu web, không cho Gemini suy diễn.
+- Prompt bắt buộc coi giá/tồn kho website là nguồn sự thật ưu tiên cao nhất.
+- Nếu web ghi Còn hàng, AI không được nói Hết hàng hoặc bắt khách xác nhận lại qua Zalo.
+- Chỉ chuyển nhân viên khi website thật sự không có dữ liệu cần hỏi hoặc khách chủ động yêu cầu.
+
+## V174 - Không mất nội dung Đào tạo AI khi load
+- Sửa race condition: cấu hình AI chung và AI chat được tải tuần tự.
+- `ai:chat:training:v3` là nguồn chính duy nhất cho 5 ô AI chat; hash v2 chỉ fallback.
+- Sau khi lưu/đọc thành công, trình duyệt giữ một bản backup cục bộ.
+- Nếu API tải lỗi tạm thời, giao diện không xóa nội dung đang có.
+- Chỉ dùng backup trình duyệt nếu form đang hoàn toàn trống.
+
+## V175 - Fix nhãn nút chat mobile ở mép màn hình
+- Nút chat mobile giữ dạng tròn.
+- Nếu kéo icon sang nửa phải màn hình, chữ `Tư vấn ngay` tự chuyển sang bên trái icon.
+- Nếu kéo icon sang nửa trái, chữ tự chuyển sang bên phải.
+- Không còn tình trạng chữ bị cắt/che khi icon nằm sát mép phải.
+- Giữ nguyên khả năng kéo thả.

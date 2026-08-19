@@ -48,7 +48,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=172">
+  <link rel="stylesheet" href="/styles.css?v=175">
 </head>
 <body>
 
@@ -254,6 +254,38 @@
       <span id="aiChatFloatLabel" class="ai-chat-float-label" aria-hidden="true">Tư vấn ngay</span>
     </button>
 
-  <script src="/app.js?v=172"></script>
+  <script src="/app.js?v=175"></script>
+
+<script>
+/* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */
+(function(){
+  function syncChatLabelSide(){
+    var btn=document.getElementById("aiChatLauncher") || document.querySelector(".ai-chat-launcher");
+    if(!btn || window.innerWidth>720) return;
+    var r=btn.getBoundingClientRect();
+    var center=r.left+r.width/2;
+    btn.classList.toggle("chat-near-right",center>window.innerWidth/2);
+  }
+
+  function init(){
+    var btn=document.getElementById("aiChatLauncher") || document.querySelector(".ai-chat-launcher");
+    if(!btn) return;
+    syncChatLabelSide();
+
+    /* Theo dõi cả kéo thả bằng MutationObserver + pointer/touch */
+    var obs=new MutationObserver(syncChatLabelSide);
+    obs.observe(btn,{attributes:true,attributeFilter:["style","class"]});
+    ["pointermove","pointerup","touchmove","touchend"].forEach(function(ev){
+      btn.addEventListener(ev,syncChatLabelSide,{passive:true});
+    });
+    window.addEventListener("resize",syncChatLabelSide,{passive:true});
+    window.addEventListener("orientationchange",syncChatLabelSide,{passive:true});
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
+  else init();
+})();
+</script>
+
 </body>
 </html>
