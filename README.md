@@ -1273,3 +1273,15 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Chuyển khung `Cần nhân viên hỗ trợ? / Nhắn Zalo` lên ngay dưới header của chatbox.
 - Khách nhìn thấy lựa chọn liên hệ nhân viên ngay khi mở chat.
 - Tin nhắn AI, gợi ý câu hỏi và ô nhập nằm phía dưới.
+
+## V171 - Fix lỗi chatbox V170
+- Nguyên nhân V170: khi di chuyển khung Zalo, HTML bị cắt nhầm ở div lồng nhau nên khung nhân viên bọc luôn vùng tin nhắn.
+- Dựng lại toàn bộ cấu trúc chatbox đúng DOM.
+- Thứ tự chuẩn: Header → Nhân viên/Zalo → Tin nhắn AI → Gợi ý → Ô nhập.
+- Khung Zalo nằm đúng một hàng, không còn kéo dài hoặc lệch sang trái.
+
+## V172 - Tăng font header
+- Tăng chữ menu chính lên khoảng 14px và font-weight 600.
+- Tăng chữ thương hiệu/header, nút Danh mục và ô tìm kiếm.
+- Tăng nhẹ chữ Tư vấn/Cửa hàng và thanh cam trên cùng.
+- Chỉ áp dụng desktop để không làm vỡ bố cục mobile.
