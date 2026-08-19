@@ -1056,3 +1056,21 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khi đó khách mới thấy nút `Chat Zalo`.
 - Có thống kê riêng lượt chuyển từ AI sang Zalo.
 - Giữ nguyên 2 Serverless Functions.
+
+## V140 - Một nút AI + Đào tạo AI chat trong quản trị
+- Xóa nút đen `Hỏi AI tư vấn`; chỉ giữ một nút `Bạn cần hỗ trợ?`.
+- Nút hỗ trợ dùng icon AI, mở AI chat trước; Zalo chỉ xuất hiện trong bước chuyển nhân viên.
+- Tab quản trị đổi thành `Đào tạo AI`.
+- Thêm khu `AI chat tư vấn khách` để chỉnh cách nói, câu chào, thông tin shop và quy tắc chuyển nhân viên.
+- Câu chào public được tải từ cấu hình quản trị.
+- AI chat đọc cấu hình mới trực tiếp từ Redis mỗi lần tư vấn.
+- Không tăng Serverless Functions; vẫn giữ 2 functions.
+
+## V141 - Mobile AI Chat + Zalo trực tiếp
+- Mobile chuyển box chat thành bottom-sheet full width, không còn lơ lửng che thao tác.
+- Khóa scroll nền khi chat mở.
+- Tự điều chỉnh theo bàn phím mobile bằng VisualViewport.
+- Composer Gửi tin nhắn sticky ở đáy, dễ bấm hơn.
+- Nút hỗ trợ bên ngoài tự ẩn khi chat đang mở.
+- Nếu khách gõ yêu cầu gặp nhân viên/tư vấn trực tiếp/Zalo, hệ thống hiện ngay nút `Nhắn Zalo ngay` và không bắt khách hỏi AI tiếp.
+- Nút Zalo mở trực tiếp `https://zalo.me/0353105423`.

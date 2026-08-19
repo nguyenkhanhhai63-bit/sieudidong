@@ -1103,6 +1103,15 @@ html,body,button,input,select,textarea {
   }
 }
 
+
+/* V140 - Khu đào tạo AI */
+.ai-chat-training-box{border-color:#ffd9c5!important}
+@media(min-width:1180px){
+  #aiSettingsCard .ai-settings-grid{
+    grid-template-columns:minmax(0,1.15fr) minmax(0,1.15fr) minmax(280px,.7fr);
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -1164,7 +1173,7 @@ html,body,button,input,select,textarea {
   <div id="adminTabs" class="admin-tabs hidden" style="display:none">
     <button class="admin-tab active" data-tab="analytics" type="button">Thống kê</button>
     <button class="admin-tab" data-tab="specs" type="button">Link thông số</button>
-    <button class="admin-tab" data-tab="ai" type="button">Tùy chỉnh AI</button>
+    <button class="admin-tab" data-tab="ai" type="button">Đào tạo AI</button>
     <button class="admin-tab" data-tab="seo" type="button">SEO & Google</button>
   </div>
   <section id="adminCard" class="card panel" data-panel="specs" style="display:none">
@@ -1216,8 +1225,8 @@ html,body,button,input,select,textarea {
   <section id="aiSettingsCard" class="card panel" data-panel="ai" style="display:none">
     <div class="head">
       <div>
-        <h1>Tùy chỉnh AI phân tích</h1>
-        <p>Thiết lập cách Gemini tư vấn khi khách so sánh sản phẩm. Cấu hình được lưu trên server và áp dụng cho mọi khách.</p>
+        <h1>Đào tạo AI</h1>
+        <p>Điều chỉnh cách Gemini phân tích so sánh và cách AI chat tư vấn khách trên website.</p>
       </div>
       <button id="reloadAiSettings" class="secondary" type="button">Tải lại</button>
     </div>
@@ -1277,6 +1286,35 @@ html,body,button,input,select,textarea {
             <button id="resetAiSettings" class="secondary" type="button">Khôi phục mặc định</button>
           </div>
           <div id="aiSettingsStatus" class="ai-settings-status"></div>
+        </div>
+
+        <div class="ai-settings-box ai-chat-training-box">
+          <h2>AI chat tư vấn khách</h2>
+          <p>Đào tạo cách AI nói chuyện với khách, thông tin shop được phép trả lời và lúc nào mới chuyển qua nhân viên.</p>
+
+          <div class="ai-field">
+            <label for="aiChatInstructions">Cách AI tư vấn</label>
+            <textarea id="aiChatInstructions" maxlength="4000" placeholder="Ví dụ: Nói ngắn gọn, bình dân. Khi khách hỏi máy phải hỏi tầm giá và nhu cầu nếu chưa rõ. Không được bịa giá hoặc tồn kho."></textarea>
+          </div>
+
+          <div class="ai-field">
+            <label for="aiChatWelcomeMessage">Câu chào khi mở chat</label>
+            <textarea id="aiChatWelcomeMessage" maxlength="500" style="min-height:84px" placeholder="Ví dụ: Chào bạn, cần tìm máy tầm giá nào để AI tư vấn nhanh?"></textarea>
+          </div>
+
+          <div class="ai-field">
+            <label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label>
+            <textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:130px" placeholder="Điền địa chỉ, giờ mở cửa, bảo hành, số Zalo... Những gì chưa ghi ở đây AI không được tự bịa."></textarea>
+          </div>
+
+          <div class="ai-field">
+            <label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label>
+            <textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px" placeholder="Ví dụ: Chỉ chuyển nhân viên khi cần xác nhận tồn kho, địa chỉ, chính sách hoặc AI không đủ dữ liệu."></textarea>
+          </div>
+
+          <div class="ai-example" style="background:#f8fafc;border-color:#e5e7eb;color:#475569">
+            <strong>Nguyên tắc:</strong> AI chat tư vấn trước. Nút Zalo chỉ hiện khi câu hỏi cần nhân viên xác nhận trực tiếp.
+          </div>
         </div>
 
         <div class="ai-settings-box">
@@ -1370,6 +1408,10 @@ const saveAiSettings=document.getElementById("saveAiSettings");
 const resetAiSettings=document.getElementById("resetAiSettings");
 const reloadAiSettings=document.getElementById("reloadAiSettings");
 const aiSettingsStatus=document.getElementById("aiSettingsStatus");
+const aiChatInstructions=document.getElementById("aiChatInstructions");
+const aiChatWelcomeMessage=document.getElementById("aiChatWelcomeMessage");
+const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
+const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
 const refreshSeo=document.getElementById("refreshSeo");
 const seoSitemapStatus=document.getElementById("seoSitemapStatus");
 const seoUrlCount=document.getElementById("seoUrlCount");
@@ -1809,6 +1851,10 @@ function fillAiSettings(s={}){
   aiMustWeaknesses.checked=s.mustMentionWeaknesses!==false;
   aiMustPrice.checked=s.mustComparePrice!==false;
   aiAllowTie.checked=s.allowTieRecommendation!==false;
+  aiChatInstructions.value=s.chatInstructions||"";
+  aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
+  aiChatStoreFacts.value=s.chatStoreFacts||"";
+  aiChatHandoffRules.value=s.chatHandoffRules||"";
 }
 
 async function loadAiSettings(force=false){
@@ -1842,7 +1888,11 @@ async function persistAiSettings(){
       salesTone:aiSalesTone.value,
       mustMentionWeaknesses:aiMustWeaknesses.checked,
       mustComparePrice:aiMustPrice.checked,
-      allowTieRecommendation:aiAllowTie.checked
+      allowTieRecommendation:aiAllowTie.checked,
+      chatInstructions:aiChatInstructions.value,
+      chatWelcomeMessage:aiChatWelcomeMessage.value,
+      chatStoreFacts:aiChatStoreFacts.value,
+      chatHandoffRules:aiChatHandoffRules.value
     };
     const r=await fetch("/api/admin/ai-settings",{
       method:"POST",
@@ -1853,7 +1903,7 @@ async function persistAiSettings(){
     if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
     fillAiSettings(data.settings||payload);
     aiSettingsLoaded=true;
-    aiSettingsStatus.textContent="✓ Đã lưu. Các lần phân tích tiếp theo sẽ dùng cấu hình mới.";
+    aiSettingsStatus.textContent="✓ Đã lưu. AI so sánh và AI chat sẽ dùng cấu hình mới ngay từ lần tiếp theo.";
     aiSettingsStatus.style.color="#15803d";
   }catch(e){
     aiSettingsStatus.textContent=e.message;

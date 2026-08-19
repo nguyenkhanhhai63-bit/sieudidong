@@ -7921,3 +7921,15 @@ body.modal-open #zaloConsultBtn{
     width:100%;
   }
 }
+
+/* V140 - Chỉ giữ một nút hỗ trợ AI */
+.ai-chat-launcher{display:none!important}
+.ai-support-icon{
+  display:grid!important;
+  place-items:center;
+  background:#ff5a00!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.ai-support-icon img{display:none!important}

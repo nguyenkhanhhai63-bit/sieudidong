@@ -2738,7 +2738,6 @@ document.addEventListener("visibilitychange",()=>{
    V137 - AI Chat tư vấn sản phẩm / Siêu Di Động
    ========================================================= */
 window.__AI_CHAT_V138_READY=true;
-const aiChatLauncher=document.getElementById("aiChatLauncher");
 const aiChatPanel=document.getElementById("aiChatPanel");
 const aiChatClose=document.getElementById("aiChatClose");
 const aiChatMessages=document.getElementById("aiChatMessages");
@@ -2751,19 +2750,35 @@ const aiHumanZaloBtn=document.getElementById("aiHumanZaloBtn");
 const zaloConsultBtn=document.getElementById("zaloConsultBtn");
 
 const AI_CHAT_HISTORY=[];
+
+let aiChatWelcomeLoaded=false;
+async function aiChatLoadWelcome(){
+  if(aiChatWelcomeLoaded) return;
+  aiChatWelcomeLoaded=true;
+  try{
+    const r=await fetch("/api/ai-chat",{cache:"no-store"});
+    const data=await r.json();
+    const text=String(data?.welcomeMessage||"").trim();
+    if(!r.ok||!text) return;
+    const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
+    if(first) first.textContent=text;
+  }catch(_){}
+}
+
 let aiChatBusy=false;
 
 function aiChatOpen(){
   if(!aiChatPanel) return;
+  aiChatLoadWelcome();
   aiChatPanel.hidden=false;
-  aiChatLauncher?.setAttribute("aria-expanded","true");
+  document.body.classList.add("ai-chat-open");
   sendAnalytics("filter_click",{action:"ai_chat_open"});
   setTimeout(()=>aiChatInput?.focus(),80);
 }
 function aiChatHide(){
   if(!aiChatPanel) return;
   aiChatPanel.hidden=true;
-  aiChatLauncher?.setAttribute("aria-expanded","false");
+  document.body.classList.remove("ai-chat-open");
 }
 
 function aiChatSetHumanHandoff(show,reason=""){
@@ -2773,6 +2788,25 @@ function aiChatSetHumanHandoff(show,reason=""){
     const note=aiHumanHandoff.querySelector("span");
     if(note) note.textContent=reason;
   }
+}
+
+function aiChatCustomerRequestsHuman(text=""){
+  const s=normalizeSearchText(text);
+  const patterns=[
+    "nhan vien",
+    "tu van truc tiep",
+    "nguoi tu van",
+    "gap nhan vien",
+    "noi chuyen nhan vien",
+    "chat zalo",
+    "nhan zalo",
+    "zalo shop",
+    "cho toi gap nguoi",
+    "muon hoi nguoi that",
+    "muon gap nguoi that",
+    "tu van vien"
+  ];
+  return patterns.some(k=>s.includes(k));
 }
 
 function aiChatNeedsHuman(reply=""){
@@ -2868,6 +2902,14 @@ async function aiChatAsk(question){
   const text=String(question||"").trim();
   if(!text||aiChatBusy) return;
 
+  if(aiChatCustomerRequestsHuman(text)){
+    aiChatAppend("user",text);
+    aiChatAppend("assistant","Được, tôi chuyển bạn sang nhân viên tư vấn trực tiếp. Bấm nút Nhắn Zalo ngay bên dưới.");
+    aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
+    sendAnalytics("filter_click",{action:"ai_chat_human_requested"});
+    return;
+  }
+
   aiChatBusy=true;
   aiChatInput.disabled=true;
   aiChatSend.disabled=true;
@@ -2913,11 +2955,6 @@ async function aiChatAsk(question){
   }
 }
 
-aiChatLauncher?.addEventListener("click",()=>{
-  if(aiChatPanel?.hidden) aiChatOpen();
-  else aiChatHide();
-});
-
 zaloConsultBtn?.addEventListener("click",()=>{
   aiChatOpen();
   aiChatAppend("assistant","Bạn cứ hỏi AI trước nha. Nếu cần xác nhận thêm, tôi sẽ đưa nút chuyển sang nhân viên tư vấn trực tiếp.");
@@ -2942,3 +2979,19 @@ aiHumanZaloBtn?.addEventListener("click",()=>{
   sendAnalytics("zalo_click");
   sendAnalytics("filter_click",{action:"ai_chat_handoff_zalo"});
 });
+
+
+function aiChatAdjustForKeyboard(){
+  if(!aiChatPanel || aiChatPanel.hidden) return;
+  const vv=window.visualViewport;
+  if(!vv) return;
+  const isMobile=window.matchMedia("(max-width:720px)").matches;
+  if(!isMobile) return;
+
+  const keyboard=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+  document.documentElement.style.setProperty("--ai-keyboard-offset",keyboard+"px");
+  document.documentElement.style.setProperty("--ai-vv-height",vv.height+"px");
+}
+window.visualViewport?.addEventListener("resize",aiChatAdjustForKeyboard);
+window.visualViewport?.addEventListener("scroll",aiChatAdjustForKeyboard);
+
