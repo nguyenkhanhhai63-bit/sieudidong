@@ -2753,6 +2753,40 @@ const aiMobileZaloDirect=document.getElementById("aiMobileZaloDirect");
 
 const AI_CHAT_HISTORY=[];
 
+function parseAiChatSuggestions(raw=""){
+  return String(raw||"")
+    .split(/\r?\n/)
+    .map(line=>line.trim())
+    .filter(Boolean)
+    .slice(0,8)
+    .map(line=>{
+      const pos=line.indexOf("|");
+      if(pos<0){
+        const text=line.slice(0,80).trim();
+        return {label:text,question:text};
+      }
+      const label=line.slice(0,pos).trim().slice(0,50);
+      const question=line.slice(pos+1).trim().slice(0,300);
+      return {label:label||question,question:question||label};
+    })
+    .filter(x=>x.label&&x.question);
+}
+
+function renderAiChatSuggestions(raw=""){
+  if(!aiChatSuggestions) return;
+  const items=parseAiChatSuggestions(raw);
+  if(!items.length) return;
+
+  aiChatSuggestions.innerHTML="";
+  items.forEach(item=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.dataset.aiQuestion=item.question;
+    btn.textContent=item.label;
+    aiChatSuggestions.appendChild(btn);
+  });
+}
+
 let aiChatWelcomeLoaded=false;
 async function aiChatLoadWelcome(){
   if(aiChatWelcomeLoaded) return;
@@ -2761,9 +2795,10 @@ async function aiChatLoadWelcome(){
     const r=await fetch("/api/ai-chat",{cache:"no-store"});
     const data=await r.json();
     const text=String(data?.welcomeMessage||"").trim();
-    if(!r.ok||!text) return;
+    if(!r.ok) return;
     const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
-    if(first) first.textContent=text;
+    if(text && first) first.textContent=text;
+    renderAiChatSuggestions(data?.suggestions||"");
   }catch(_){}
 }
 

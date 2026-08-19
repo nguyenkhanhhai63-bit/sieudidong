@@ -1168,3 +1168,29 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Đồng bộ weight 400/600/700 để chữ bớt nặng.
 - Tối ưu tên sản phẩm, giá, nút, bộ lọc, form, chat AI và trang quản trị.
 - Mobile dễ đọc hơn với line-height và cỡ chữ cân đối.
+
+## V155 - Fix Redis lưu Đào tạo AI
+- API POST tự SET rồi GET lại Redis ngay trên server.
+- So sánh toàn bộ field sau khi ghi; chỉ trả thành công khi Redis khớp dữ liệu.
+- GET trả nguyên văn text đã lưu, không normalize text lần nữa.
+- Trang quản trị chỉ báo thành công khi API xác nhận `persisted: true`.
+
+## V156 - Đưa khung Zalo lên trên
+- Khối `Muốn nhân viên tư vấn trực tiếp?` được chuyển lên trên phần gợi ý nhanh và ô nhập chat.
+- Khách nhìn thấy nút `Chat Zalo với nhân viên` sớm hơn.
+- Giữ nguyên toàn bộ logic AI, lưu đào tạo AI và giao diện V155.
+
+## V157 - Quản trị gợi ý câu hỏi mẫu AI Chat
+- Thêm mục `Gợi ý câu hỏi mẫu` trong Đào tạo AI > AI chat tư vấn khách.
+- Mỗi dòng theo cú pháp `Tên nút | Câu hỏi gửi cho AI`.
+- Cho phép tối đa 8 gợi ý hiển thị trên chatbox.
+- Sau khi lưu, website tải danh sách gợi ý trực tiếp từ Redis qua `/api/ai-chat`.
+- Không cần sửa code khi muốn đổi nút `Pin trâu`, `Chụp ảnh đẹp`, `Thông tin shop`...
+
+## V158 - Redesign trang quản trị theo giao diện SaaS
+- Sidebar tối bên trái, logo Siêu Di Động và menu dạng dashboard.
+- Topbar trắng với tiêu đề trang, tìm nhanh Ctrl+K, profile và đăng xuất.
+- Dashboard thống kê chuyển sang bố cục card hiện đại, giữ nguyên dữ liệu thật hiện có.
+- Các khu Link thông số, Đào tạo AI và SEO giữ nguyên chức năng nhưng được bọc giao diện mới.
+- Sidebar có chế độ thu gọn trên desktop và trượt mở trên mobile.
+- Không thay đổi API hay số lượng Serverless Functions.

@@ -1140,6 +1140,662 @@ body{
   -moz-osx-font-smoothing:grayscale;
 }
 
+
+/* V157 - Gợi ý câu hỏi mẫu trong quản trị */
+.ai-field-help{
+  display:block;
+  margin-top:6px;
+  color:#667085;
+  font-size:10px;
+  line-height:1.45;
+}
+
+
+/* =========================================================
+   V158 - Admin Dashboard redesign kiểu SaaS hiện đại
+   ========================================================= */
+:root{
+  --admin-orange:#ff5a00;
+  --admin-orange-2:#ff7a00;
+  --admin-sidebar:#151b23;
+  --admin-sidebar-2:#1d2530;
+  --admin-bg:#f5f7fa;
+  --admin-card:#ffffff;
+  --admin-text:#101828;
+  --admin-muted:#667085;
+  --admin-line:#e7eaee;
+  --sidebar-w:232px;
+}
+
+html,body{
+  min-height:100%;
+  background:var(--admin-bg)!important;
+}
+
+body.authenticated{
+  padding:0!important;
+}
+
+/* ---------- Sidebar ---------- */
+.admin-sidebar{
+  position:fixed;
+  inset:0 auto 0 0;
+  width:var(--sidebar-w);
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  padding:16px 12px 14px;
+  background:linear-gradient(180deg,var(--admin-sidebar),#10151c 72%);
+  color:#fff;
+  box-shadow:5px 0 18px rgba(15,23,42,.08);
+  transition:width .2s ease,transform .2s ease;
+}
+
+.sidebar-brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:48px;
+  padding:0 7px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.sidebar-brand img{
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  box-shadow:0 7px 18px rgba(255,90,0,.2);
+}
+.sidebar-brand div{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.sidebar-brand strong{
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+.sidebar-brand span{
+  margin-top:2px;
+  color:#98a2b3;
+  font-size:10px;
+}
+
+.sidebar-section-title{
+  padding:18px 9px 7px;
+  color:#7f8b9c;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+#sidebarNavMount{
+  width:100%;
+}
+.admin-tabs{
+  position:static!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:5px!important;
+  margin:0!important;
+  padding:0!important;
+  background:none!important;
+  overflow:visible!important;
+}
+.admin-tab{
+  width:100%;
+  min-height:42px!important;
+  display:grid!important;
+  grid-template-columns:26px minmax(0,1fr) auto;
+  align-items:center;
+  gap:7px;
+  padding:0 11px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#c7ced8!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  text-align:left;
+}
+.admin-tab:hover{
+  background:rgba(255,255,255,.06)!important;
+  color:#fff!important;
+}
+.admin-tab.active{
+  color:#fff!important;
+  background:linear-gradient(90deg,var(--admin-orange),var(--admin-orange-2))!important;
+  box-shadow:0 8px 18px rgba(255,90,0,.22)!important;
+}
+.nav-icon{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  font-size:15px;
+}
+.nav-new{
+  padding:2px 6px;
+  border-radius:10px;
+  background:#20b15a;
+  color:#fff;
+  font-size:8px;
+}
+
+.sidebar-shortcuts{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.sidebar-shortcut{
+  min-height:39px;
+  display:grid;
+  grid-template-columns:26px minmax(0,1fr) auto;
+  align-items:center;
+  gap:7px;
+  padding:0 11px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#aeb7c4;
+  font-size:11px;
+  font-weight:650;
+  text-align:left;
+  cursor:pointer;
+}
+.sidebar-shortcut:hover{
+  background:rgba(255,255,255,.06);
+  color:#fff;
+}
+.sidebar-shortcut b{
+  padding:2px 6px;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  font-size:8px;
+}
+.shortcut-icon{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+  padding:12px 8px 4px;
+  border-top:1px solid rgba(255,255,255,.08);
+  color:#8994a3;
+}
+.sidebar-bottom small{
+  display:block;
+  margin-top:8px;
+  font-size:8px;
+}
+.system-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:9px;
+}
+.system-status i,
+.live-chip i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 0 3px rgba(34,197,94,.1);
+}
+
+/* ---------- Topbar ---------- */
+.admin-topbar{
+  position:fixed;
+  top:0;
+  left:var(--sidebar-w);
+  right:0;
+  z-index:900;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:0 24px;
+  background:rgba(255,255,255,.96);
+  border-top:3px solid var(--admin-orange);
+  border-bottom:1px solid var(--admin-line);
+  backdrop-filter:blur(10px);
+  transition:left .2s ease;
+}
+.admin-topbar-left,
+.admin-topbar-right{
+  display:flex;
+  align-items:center;
+}
+.admin-topbar-left{
+  gap:12px;
+  min-width:260px;
+}
+.admin-topbar-left h1{
+  margin:0;
+  font-size:19px;
+  line-height:1.15;
+  letter-spacing:-.35px;
+}
+.admin-topbar-left p{
+  margin:4px 0 0;
+  color:#7b8491;
+  font-size:10px;
+}
+.sidebar-toggle{
+  width:36px;
+  height:36px;
+  border:1px solid #e6e9ee;
+  border-radius:9px;
+  background:#f8fafc;
+  color:#344054;
+  font-size:18px;
+  cursor:pointer;
+}
+.admin-topbar-right{
+  gap:10px;
+  margin-left:auto;
+}
+.admin-quick-search{
+  width:280px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 9px;
+  border:1px solid #e4e7ec;
+  border-radius:9px;
+  background:#fff;
+}
+.admin-quick-search > span{
+  color:#667085;
+}
+.admin-quick-search input{
+  min-width:0;
+  flex:1;
+  border:0!important;
+  padding:0!important;
+  box-shadow:none!important;
+  font-size:11px;
+}
+.admin-quick-search kbd{
+  padding:3px 6px;
+  border:1px solid #e4e7ec;
+  border-radius:5px;
+  color:#98a2b3;
+  background:#f9fafb;
+  font-size:8px;
+}
+.topbar-site-link{
+  height:36px;
+  display:flex;
+  align-items:center;
+  padding:0 11px;
+  border:1px solid #e4e7ec;
+  border-radius:8px;
+  color:#344054;
+  background:#fff;
+  text-decoration:none;
+  font-size:10px;
+  font-weight:700;
+}
+.admin-profile{
+  min-width:122px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding-left:6px;
+}
+.admin-avatar{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ff8a33,#ff5a00);
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+}
+.admin-profile div:last-child{
+  display:flex;
+  flex-direction:column;
+}
+.admin-profile strong{
+  font-size:10px;
+}
+.admin-profile span{
+  margin-top:2px;
+  color:#98a2b3;
+  font-size:8px;
+}
+.topbar-logout{
+  height:34px;
+  padding:0 10px;
+  border:1px solid #e4e7ec;
+  border-radius:8px;
+  background:#fff;
+  color:#b42318;
+  font-size:9px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* ---------- Main shell ---------- */
+.wrap{
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:94px 22px 36px calc(var(--sidebar-w) + 22px)!important;
+  transition:padding-left .2s ease;
+}
+.card{
+  border:1px solid var(--admin-line)!important;
+  border-radius:14px!important;
+  box-shadow:0 8px 26px rgba(15,23,42,.035)!important;
+}
+.card .head{
+  padding:17px 18px!important;
+}
+.card .head h1{
+  font-size:18px!important;
+}
+.card .head p{
+  font-size:10px!important;
+}
+
+.dashboard-welcome{
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 20px;
+  border:1px solid #e7eaee;
+  border-radius:14px;
+  background:linear-gradient(135deg,#fff,#fff8f3);
+  box-shadow:0 7px 22px rgba(15,23,42,.03);
+}
+.dashboard-welcome .eyebrow{
+  display:block;
+  margin-bottom:5px;
+  color:var(--admin-orange);
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.11em;
+}
+.dashboard-welcome h2{
+  margin:0;
+  font-size:19px;
+  letter-spacing:-.35px;
+}
+.dashboard-welcome p{
+  margin:5px 0 0;
+  color:#7b8491;
+  font-size:10px;
+}
+.welcome-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.live-chip{
+  height:34px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0 10px;
+  border:1px solid #d9f2e2;
+  border-radius:18px;
+  background:#f0fdf4;
+  color:#15803d;
+  font-size:9px;
+  font-weight:800;
+}
+
+/* ---------- KPI cards ---------- */
+.analytics-shell{
+  padding:15px!important;
+  background:#f8fafc!important;
+}
+.metric-grid{
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.metric{
+  position:relative;
+  min-height:116px!important;
+  padding:16px 14px!important;
+  border:1px solid #e8ebef!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.03)!important;
+  overflow:hidden;
+}
+.metric::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:3px;
+  background:linear-gradient(180deg,#ff5a00,#ff8a33);
+}
+.metric small{
+  min-height:28px;
+  color:#667085!important;
+  font-size:9px!important;
+  font-weight:700!important;
+}
+.metric strong{
+  margin-top:3px;
+  color:#101828!important;
+  font-size:27px!important;
+}
+.metric em{
+  margin-top:9px!important;
+  color:#98a2b3!important;
+  font-size:8px!important;
+}
+
+/* ---------- Dashboard cards ---------- */
+.analytics-grid{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin-top:12px!important;
+}
+.abox{
+  grid-column:span 4;
+  min-height:220px;
+  padding:0!important;
+  border:1px solid #e7eaee!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.025)!important;
+  overflow:hidden;
+}
+.abox > h2,
+.compare-pairs-head{
+  margin:0!important;
+  padding:14px 15px!important;
+  border-bottom:1px solid #eef0f3;
+  font-size:12px!important;
+}
+.abox > :not(h2),
+.compare-pair-list{
+  margin-left:0;
+}
+#trafficChart{
+  padding:10px 14px 14px;
+}
+#deviceList,
+.ranklist,
+.compare-pair-list{
+  padding:6px 14px 12px!important;
+}
+.compare-pairs-box{
+  grid-column:span 8!important;
+}
+
+/* ---------- Specs / AI / SEO ---------- */
+#adminCard,
+#aiSettingsCard,
+#seoCard{
+  overflow:hidden;
+}
+.stats{
+  background:#fff;
+}
+.row{
+  background:#fff!important;
+}
+.row:hover{
+  background:#fff9f5!important;
+}
+.ai-settings-shell{
+  padding:15px!important;
+  background:#f8fafc!important;
+}
+.ai-settings-box{
+  border-radius:13px!important;
+}
+.seo-editor{
+  border-radius:13px!important;
+}
+
+/* ---------- Sidebar collapsed ---------- */
+body.sidebar-collapsed{
+  --sidebar-w:76px;
+}
+body.sidebar-collapsed .sidebar-brand div,
+body.sidebar-collapsed .sidebar-section-title,
+body.sidebar-collapsed .admin-tab > span:not(.nav-icon),
+body.sidebar-collapsed .admin-tab .nav-new,
+body.sidebar-collapsed .sidebar-shortcuts span:not(.shortcut-icon),
+body.sidebar-collapsed .sidebar-shortcuts b,
+body.sidebar-collapsed .sidebar-bottom span,
+body.sidebar-collapsed .sidebar-bottom small{
+  display:none!important;
+}
+body.sidebar-collapsed .sidebar-brand{
+  justify-content:center;
+  padding-left:0;
+  padding-right:0;
+}
+body.sidebar-collapsed .admin-tab,
+body.sidebar-collapsed .sidebar-shortcut{
+  grid-template-columns:1fr!important;
+  justify-items:center;
+  padding:0!important;
+}
+
+/* ---------- Login / auth ---------- */
+body:not(.authenticated) .admin-sidebar,
+body:not(.authenticated) .admin-topbar{
+  display:none!important;
+}
+body:not(.authenticated) .wrap{
+  padding:32px 16px!important;
+  width:min(520px,100%)!important;
+  margin:0 auto!important;
+}
+.login{
+  margin-top:9vh!important;
+}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1380px){
+  .metric-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  .abox{
+    grid-column:span 6;
+  }
+  .compare-pairs-box{
+    grid-column:span 12!important;
+  }
+}
+@media(max-width:1020px){
+  :root{--sidebar-w:76px}
+  .sidebar-brand div,
+  .sidebar-section-title,
+  .admin-tab > span:not(.nav-icon),
+  .admin-tab .nav-new,
+  .sidebar-shortcuts span:not(.shortcut-icon),
+  .sidebar-shortcuts b,
+  .sidebar-bottom span,
+  .sidebar-bottom small{
+    display:none!important;
+  }
+  .sidebar-brand{justify-content:center}
+  .admin-tab,.sidebar-shortcut{
+    grid-template-columns:1fr!important;
+    justify-items:center;
+    padding:0!important;
+  }
+  .admin-quick-search{
+    width:210px;
+  }
+  .admin-profile div:last-child{
+    display:none;
+  }
+}
+@media(max-width:760px){
+  :root{--sidebar-w:0px}
+  .admin-sidebar{
+    width:228px;
+    transform:translateX(-100%);
+  }
+  body.mobile-sidebar-open .admin-sidebar{
+    transform:translateX(0);
+  }
+  .admin-topbar{
+    left:0;
+    height:64px;
+    padding:0 10px;
+  }
+  .wrap{
+    padding:78px 10px 28px!important;
+  }
+  .admin-topbar-left p,
+  .admin-quick-search,
+  .topbar-site-link,
+  .admin-profile{
+    display:none!important;
+  }
+  .admin-topbar-left h1{
+    font-size:17px;
+  }
+  .dashboard-welcome{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:15px;
+  }
+  .welcome-actions{
+    width:100%;
+    justify-content:space-between;
+  }
+  .metric-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .analytics-grid{
+    grid-template-columns:1fr!important;
+  }
+  .abox,
+  .compare-pairs-box{
+    grid-column:1!important;
+  }
+  .ai-settings-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -1166,13 +1822,61 @@ body{
 </style>
 </head>
 <body class="auth-pending">
-<header class="top">
-  <div class="top-inner">
-    <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span><b style="font-size:10px;background:#fff1e8;color:#d94800;border:1px solid #ffd3be;border-radius:6px;padding:3px 6px">V133</b></div>
-    <button id="logoutBtn" class="secondary hidden" type="button">Đăng xuất</button>
+<aside id="adminSidebar" class="admin-sidebar">
+  <div class="sidebar-brand">
+    <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
+    <div>
+      <strong>Siêu Di Động</strong>
+      <span>Quản trị hệ thống</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section-title">QUẢN TRỊ WEBSITE</div>
+  <div id="sidebarNavMount"><div id="adminTabs" class="admin-tabs hidden" style="display:none">
+    <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
+    <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
+    <button class="admin-tab" data-tab="ai" type="button"><span class="nav-icon">✦</span><span>Đào tạo AI</span><b class="nav-new">Mới</b></button>
+    <button class="admin-tab" data-tab="seo" type="button"><span class="nav-icon">⌕</span><span>SEO & Google</span></button>
+  </div></div>
+
+  <div class="sidebar-section-title sidebar-ai-title">AI & TỐI ƯU</div>
+  <div class="sidebar-shortcuts">
+    <button type="button" class="sidebar-shortcut" data-go-tab="ai">
+      <span class="shortcut-icon">✦</span><span>Đào tạo AI</span><b>Mới</b>
+    </button>
+    <button type="button" class="sidebar-shortcut" data-go-tab="seo">
+      <span class="shortcut-icon">⌕</span><span>SEO & Google</span>
+    </button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
+    <small>Siêu Di Động Admin • V158</small>
+  </div>
+</aside>
+
+<header class="admin-topbar">
+  <div class="admin-topbar-left">
+    <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Thu gọn menu">☰</button>
+    <div>
+      <h1 id="adminPageTitle">Tổng quan</h1>
+      <p id="adminPageSubtitle">Theo dõi hoạt động website Siêu Di Động</p>
+    </div>
+  </div>
+  <div class="admin-topbar-right">
+    <div class="admin-quick-search">
+      <span>⌕</span>
+      <input id="adminGlobalSearch" type="search" placeholder="Tìm nhanh...">
+      <kbd>Ctrl K</kbd>
+    </div>
+    <a class="topbar-site-link" href="/" target="_blank" rel="noopener">Xem website</a>
+    <div class="admin-profile">
+      <div class="admin-avatar">Q</div>
+      <div><strong>Quản trị viên</strong><span>admin</span></div>
+    </div>
+    <button id="logoutBtn" class="topbar-logout hidden" type="button">Đăng xuất</button>
   </div>
 </header>
-
 <main class="wrap">
   <div id="adminBootLoading" style="min-height:320px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:14px">
     Đang tải trang quản trị...
@@ -1198,12 +1902,7 @@ body{
     </form>
   </section>
 
-  <div id="adminTabs" class="admin-tabs hidden" style="display:none">
-    <button class="admin-tab active" data-tab="analytics" type="button">Thống kê</button>
-    <button class="admin-tab" data-tab="specs" type="button">Link thông số</button>
-    <button class="admin-tab" data-tab="ai" type="button">Đào tạo AI</button>
-    <button class="admin-tab" data-tab="seo" type="button">SEO & Google</button>
-  </div>
+  
   <section id="adminCard" class="card panel" data-panel="specs" style="display:none">
     <div class="head">
       <div>
@@ -1217,6 +1916,17 @@ body{
   </section>
 
   <section id="analyticsCard" class="card panel active" data-panel="analytics" style="display:none">
+    <div class="dashboard-welcome">
+      <div>
+        <span class="eyebrow">TỔNG QUAN</span>
+        <h2>Chào mừng trở lại, Quản trị viên!</h2>
+        <p>Xem nhanh tình trạng truy cập, hành vi khách hàng và hiệu quả tư vấn trên website.</p>
+      </div>
+      <div class="welcome-actions">
+        <span class="live-chip"><i></i> Dữ liệu trực tiếp</span>
+        <button id="refreshAnalyticsTop" class="secondary" type="button">Làm mới dữ liệu</button>
+      </div>
+    </div>
     <div class="head">
       <div><h1>Thống kê truy cập</h1><p>Lượt truy cập duy nhất, khách truy cập, so sánh sản phẩm và lượt bấm Zalo.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
@@ -1340,6 +2050,12 @@ body{
             <textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px" placeholder="Ví dụ: Chỉ chuyển nhân viên khi cần xác nhận tồn kho, địa chỉ, chính sách hoặc AI không đủ dữ liệu."></textarea>
           </div>
 
+          <div class="ai-field">
+            <label for="aiChatSuggestions">Gợi ý câu hỏi mẫu</label>
+            <textarea id="aiChatSuggestions" maxlength="4000" style="min-height:145px" placeholder="Mỗi dòng theo dạng: Tên nút | Câu hỏi AI sẽ nhận&#10;Ví dụ: Pin trâu | Máy nào pin trâu đang còn hàng?"></textarea>
+            <small class="ai-field-help">Mỗi dòng tạo 1 nút gợi ý. Phần trước dấu | là chữ hiện trên nút, phần sau là câu hỏi gửi cho AI.</small>
+          </div>
+
           <div class="ai-actions ai-chat-save-actions">
             <button id="saveAiChatSettings" class="primary" type="button">Lưu AI tư vấn chat</button>
           </div>
@@ -1445,6 +2161,7 @@ const aiChatInstructions=document.getElementById("aiChatInstructions");
 const aiChatWelcomeMessage=document.getElementById("aiChatWelcomeMessage");
 const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
 const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
+const aiChatSuggestionsInput=document.getElementById("aiChatSuggestions");
 const saveAiChatSettings=document.getElementById("saveAiChatSettings");
 const aiChatSettingsStatus=document.getElementById("aiChatSettingsStatus");
 const refreshSeo=document.getElementById("refreshSeo");
@@ -1890,6 +2607,7 @@ function fillAiSettings(s={}){
   aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
   aiChatStoreFacts.value=s.chatStoreFacts||"";
   aiChatHandoffRules.value=s.chatHandoffRules||"";
+  aiChatSuggestionsInput.value=s.chatSuggestions||"";
 }
 
 async function loadAiSettings(force=false){
@@ -1928,7 +2646,8 @@ function currentAiSettingsPayload(){
     chatInstructions:aiChatInstructions.value,
     chatWelcomeMessage:aiChatWelcomeMessage.value,
     chatStoreFacts:aiChatStoreFacts.value,
-    chatHandoffRules:aiChatHandoffRules.value
+    chatHandoffRules:aiChatHandoffRules.value,
+    chatSuggestions:aiChatSuggestionsInput.value
   };
 }
 
@@ -1944,6 +2663,7 @@ async function saveAiSettingsPayload(payload){
   let data={};
   try{ data=await r.json(); }catch(_){}
   if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
+  if(data.persisted!==true) throw new Error("Server chưa xác nhận dữ liệu đã được ghi vào Redis");
 
   // Xác minh lại từ server để chắc chắn Redis đã ghi thật.
   const verify=await fetch("/api/admin/ai-settings?ts="+Date.now(),{
@@ -1977,7 +2697,8 @@ async function persistAiChatSettings(){
       ["Cách AI tư vấn",payload.chatInstructions,saved.chatInstructions],
       ["Câu chào",payload.chatWelcomeMessage,saved.chatWelcomeMessage],
       ["Thông tin shop",payload.chatStoreFacts,saved.chatStoreFacts],
-      ["Quy tắc chuyển nhân viên",payload.chatHandoffRules,saved.chatHandoffRules]
+      ["Quy tắc chuyển nhân viên",payload.chatHandoffRules,saved.chatHandoffRules],
+      ["Gợi ý câu hỏi mẫu",payload.chatSuggestions,saved.chatSuggestions]
     ];
 
     const mismatch=checks.find(([,a,b])=>String(a||"").trim()!==String(b||"").trim());
@@ -2240,6 +2961,75 @@ async function loadSeoStatus(){
   }
 }
 if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
+
+
+/* =========================================================
+   V158 - Admin shell interactions
+   ========================================================= */
+const sidebarToggle=document.getElementById("sidebarToggle");
+const adminPageTitle=document.getElementById("adminPageTitle");
+const adminPageSubtitle=document.getElementById("adminPageSubtitle");
+const adminGlobalSearch=document.getElementById("adminGlobalSearch");
+const refreshAnalyticsTop=document.getElementById("refreshAnalyticsTop");
+
+const ADMIN_PAGE_META={
+  analytics:["Tổng quan","Theo dõi hoạt động website Siêu Di Động"],
+  specs:["Link thông số","Quản lý nguồn thông số kỹ thuật của sản phẩm"],
+  ai:["Đào tạo AI","Điều chỉnh cách AI so sánh và tư vấn khách"],
+  seo:["SEO & Google","Quản lý nội dung hiển thị trên Google và công cụ SEO"]
+};
+
+function syncAdminShell(tab){
+  const meta=ADMIN_PAGE_META[tab]||ADMIN_PAGE_META.analytics;
+  if(adminPageTitle) adminPageTitle.textContent=meta[0];
+  if(adminPageSubtitle) adminPageSubtitle.textContent=meta[1];
+
+  document.querySelectorAll("[data-go-tab]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.goTab===tab);
+  });
+}
+
+sidebarToggle?.addEventListener("click",()=>{
+  if(window.matchMedia("(max-width:760px)").matches){
+    document.body.classList.toggle("mobile-sidebar-open");
+  }else{
+    document.body.classList.toggle("sidebar-collapsed");
+  }
+});
+
+document.querySelectorAll("[data-go-tab]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const target=adminTabs?.querySelector(`[data-tab="${btn.dataset.goTab}"]`);
+    target?.click();
+    document.body.classList.remove("mobile-sidebar-open");
+  });
+});
+
+adminTabs?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-tab]");
+  if(!btn) return;
+  syncAdminShell(btn.dataset.tab);
+  document.body.classList.remove("mobile-sidebar-open");
+});
+
+adminGlobalSearch?.addEventListener("input",()=>{
+  const active=adminTabs?.querySelector(".admin-tab.active")?.dataset.tab;
+  if(active==="specs" && search){
+    search.value=adminGlobalSearch.value;
+    search.dispatchEvent(new Event("input",{bubbles:true}));
+  }
+});
+
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="k"){
+    e.preventDefault();
+    adminGlobalSearch?.focus();
+  }
+});
+
+refreshAnalyticsTop?.addEventListener("click",()=>refreshAnalytics?.click());
+
+syncAdminShell("analytics");
 
 </script>
 

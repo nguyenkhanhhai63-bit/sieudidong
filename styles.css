@@ -8584,3 +8584,30 @@ input,select,textarea{
     font-weight:600!important;
   }
 }
+
+
+/* =========================================================
+   V156 - Đưa khung nhân viên/Zalo lên trên
+   ========================================================= */
+.ai-human-handoff{
+  order:0;
+  margin:8px 10px 6px!important;
+}
+
+.ai-chat-suggestions{
+  order:1;
+}
+
+.ai-chat-form{
+  order:2;
+}
+
+.ai-chat-foot{
+  order:3;
+}
+
+@media(max-width:720px){
+  .ai-human-handoff{
+    margin:7px 8px 6px!important;
+  }
+}
