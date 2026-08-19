@@ -9637,3 +9637,60 @@ input,select,textarea{
 #zaloConsultBtn .ai-chat-float-label{
   display:none!important;
 }
+
+
+/* =========================================================
+   V179 - Icon chat AI mới: robot + chữ TƯ VẤN NGAY
+   ========================================================= */
+#zaloConsultBtn.ai-round-float{
+  overflow:visible!important;
+}
+#zaloConsultBtn.ai-round-float .ai-round-logo{
+  width:64px!important;
+  height:64px!important;
+  min-width:64px!important;
+  min-height:64px!important;
+  max-width:64px!important;
+  max-height:64px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  overflow:visible!important;
+  background:transparent!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.18)!important;
+}
+#zaloConsultBtn.ai-round-float .ai-round-logo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:0!important;
+}
+
+/* Không hiện thêm chữ bên ngoài vì icon đã có TƯ VẤN NGAY */
+#zaloConsultBtn #aiChatFloatLabel,
+#zaloConsultBtn .ai-chat-float-label,
+#zaloConsultBtn .ai-chat-launcher-text{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float{
+    width:72px!important;
+    height:72px!important;
+    min-width:72px!important;
+    min-height:72px!important;
+    max-width:72px!important;
+    max-height:72px!important;
+    padding:4px!important;
+  }
+  #zaloConsultBtn.ai-round-float .ai-round-logo{
+    width:66px!important;
+    height:66px!important;
+    min-width:66px!important;
+    min-height:66px!important;
+    max-width:66px!important;
+    max-height:66px!important;
+  }
+}

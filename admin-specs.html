@@ -2409,6 +2409,43 @@ button,.primary,.secondary{font-size:12px!important}
   }
 }
 
+
+/* =========================================================
+   V180 - Quản trị icon chat AI
+   ========================================================= */
+.ai-chat-icon-admin-body{display:flex;flex-direction:column;gap:14px}
+.ai-chat-icon-preview-wrap{
+  display:flex;align-items:center;gap:14px;padding:14px;
+  border:1px solid #e5e7eb;border-radius:13px;background:#f8fafc
+}
+.ai-chat-icon-preview-bg{
+  width:92px;height:92px;flex:0 0 92px;display:grid;place-items:center;
+  border-radius:18px;overflow:hidden;
+  background:
+    linear-gradient(45deg,#eef2f6 25%,transparent 25%),
+    linear-gradient(-45deg,#eef2f6 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#eef2f6 75%),
+    linear-gradient(-45deg,transparent 75%,#eef2f6 75%);
+  background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0
+}
+.ai-chat-icon-preview-bg img{width:82px;height:82px;object-fit:contain}
+.ai-chat-icon-preview-copy{min-width:0;display:flex;flex-direction:column;gap:5px}
+.ai-chat-icon-preview-copy strong{font-size:14px;color:#111827}
+.ai-chat-icon-preview-copy span,.ai-chat-icon-note{color:#667085;font-size:11px;line-height:1.5}
+.ai-chat-icon-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ai-chat-icon-actions button{min-height:40px}
+.ai-chat-icon-note{
+  padding:10px 12px;border-radius:10px;background:#fff7ed;
+  border:1px solid #fed7aa;color:#9a3412
+}
+@media(max-width:720px){
+  .ai-chat-icon-preview-wrap{align-items:flex-start}
+  .ai-chat-icon-preview-bg{width:78px;height:78px;flex-basis:78px}
+  .ai-chat-icon-preview-bg img{width:70px;height:70px}
+  .ai-chat-icon-actions{display:grid;grid-template-columns:1fr}
+  .ai-chat-icon-actions button{width:100%}
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -2679,6 +2716,34 @@ button,.primary,.secondary{font-size:12px!important}
           </div>
         </div>
 
+        <div class="ai-settings-box ai-chat-icon-admin">
+          <h2>Icon chat AI</h2>
+          <p>Thay ảnh nút chat nổi ngoài website mà không cần sửa code hay upload lại GitHub.</p>
+
+          <div class="ai-chat-icon-admin-body">
+            <div class="ai-chat-icon-preview-wrap">
+              <div class="ai-chat-icon-preview-bg">
+                <img id="aiChatIconPreview" src="/assets/ai-chat-robot.png?v=179" alt="Xem trước icon chat AI">
+              </div>
+              <div class="ai-chat-icon-preview-copy">
+                <strong>Xem trước icon</strong>
+                <span>Nên dùng ảnh vuông, chữ lớn và ít chi tiết để nhìn rõ trên mobile.</span>
+              </div>
+            </div>
+
+            <input id="aiChatIconFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+            <div class="ai-chat-icon-actions">
+              <button id="chooseAiChatIcon" class="secondary" type="button">Chọn ảnh mới</button>
+              <button id="saveAiChatIcon" class="primary" type="button" disabled>Lưu icon chat</button>
+              <button id="resetAiChatIcon" class="secondary" type="button">Khôi phục mặc định</button>
+            </div>
+
+            <div class="ai-chat-icon-note">Ảnh tự thu về 256×256 và nén trước khi lưu. Sau khi lưu, khách truy cập web sẽ dùng icon mới mà không cần deploy.</div>
+            <div id="aiChatIconStatus" class="ai-settings-status"></div>
+          </div>
+        </div>
+
         <div class="ai-settings-box">
           <h2>Cách hoạt động</h2>
           <p>Đây là “đào tạo theo chỉ dẫn”: AI sẽ đọc cấu hình này mỗi lần phân tích. Không cần tạo lại model Gemini.</p>
@@ -2777,6 +2842,13 @@ const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
 const aiChatSuggestionsInput=document.getElementById("aiChatSuggestions");
 const saveAiChatSettings=document.getElementById("saveAiChatSettings");
 const aiChatSettingsStatus=document.getElementById("aiChatSettingsStatus");
+const aiChatIconFile=document.getElementById("aiChatIconFile");
+const chooseAiChatIcon=document.getElementById("chooseAiChatIcon");
+const saveAiChatIcon=document.getElementById("saveAiChatIcon");
+const resetAiChatIcon=document.getElementById("resetAiChatIcon");
+const aiChatIconPreview=document.getElementById("aiChatIconPreview");
+const aiChatIconStatus=document.getElementById("aiChatIconStatus");
+let pendingAiChatIconDataUrl="";
 const refreshSeo=document.getElementById("refreshSeo");
 const seoSitemapStatus=document.getElementById("seoSitemapStatus");
 const seoUrlCount=document.getElementById("seoUrlCount");
@@ -3429,6 +3501,153 @@ async function persistAiSettings(){
   }
 }
 
+
+async function loadAiChatIconSettings(){
+  if(!aiChatIconPreview) return;
+  try{
+    const r=await fetch("/api/admin/ai-chat-icon?ts="+Date.now(),{
+      cache:"no-store",
+      credentials:"same-origin"
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"Không tải được icon chat");
+
+    aiChatIconPreview.src=data.iconUrl||"/assets/ai-chat-robot.png?v=179";
+    pendingAiChatIconDataUrl="";
+    if(saveAiChatIcon) saveAiChatIcon.disabled=true;
+
+    if(aiChatIconStatus){
+      aiChatIconStatus.textContent=data.custom
+        ?"✓ Đang dùng icon tùy chỉnh đã lưu trên server."
+        :"Đang dùng icon mặc định.";
+      aiChatIconStatus.style.color=data.custom?"#15803d":"#667085";
+    }
+  }catch(e){
+    if(aiChatIconStatus){
+      aiChatIconStatus.textContent=e.message||"Không tải được icon chat.";
+      aiChatIconStatus.style.color="#b91c1c";
+    }
+  }
+}
+
+function compressAiChatIcon(file){
+  return new Promise((resolve,reject)=>{
+    if(!file) return reject(new Error("Chưa chọn ảnh."));
+    if(!/^image\/(png|jpeg|webp)$/i.test(file.type||"")) return reject(new Error("Chỉ hỗ trợ PNG, JPG hoặc WEBP."));
+    if(file.size>8*1024*1024) return reject(new Error("Ảnh gốc quá lớn. Vui lòng chọn ảnh dưới 8MB."));
+
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error("Không đọc được ảnh."));
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error("Ảnh không hợp lệ."));
+      img.onload=()=>{
+        const canvas=document.createElement("canvas");
+        canvas.width=256;
+        canvas.height=256;
+        const ctx=canvas.getContext("2d");
+        ctx.clearRect(0,0,256,256);
+
+        const scale=Math.min(256/img.width,256/img.height);
+        const w=Math.round(img.width*scale);
+        const h=Math.round(img.height*scale);
+        ctx.drawImage(img,Math.round((256-w)/2),Math.round((256-h)/2),w,h);
+
+        let dataUrl=canvas.toDataURL("image/webp",0.86);
+        if(!/^data:image\/webp;base64,/i.test(dataUrl)) dataUrl=canvas.toDataURL("image/png");
+        if(dataUrl.length>480000) dataUrl=canvas.toDataURL("image/webp",0.68);
+        resolve(dataUrl);
+      };
+      img.src=String(reader.result||"");
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+if(chooseAiChatIcon) chooseAiChatIcon.addEventListener("click",()=>aiChatIconFile?.click());
+
+if(aiChatIconFile) aiChatIconFile.addEventListener("change",async()=>{
+  const file=aiChatIconFile.files?.[0];
+  if(!file) return;
+
+  try{
+    aiChatIconStatus.textContent="Đang xử lý ảnh...";
+    aiChatIconStatus.style.color="#667085";
+
+    pendingAiChatIconDataUrl=await compressAiChatIcon(file);
+    aiChatIconPreview.src=pendingAiChatIconDataUrl;
+    saveAiChatIcon.disabled=false;
+
+    aiChatIconStatus.textContent="Ảnh đã sẵn sàng. Bấm Lưu icon chat để áp dụng.";
+    aiChatIconStatus.style.color="#b45309";
+  }catch(e){
+    pendingAiChatIconDataUrl="";
+    saveAiChatIcon.disabled=true;
+    aiChatIconStatus.textContent=e.message||"Không xử lý được ảnh.";
+    aiChatIconStatus.style.color="#b91c1c";
+  }finally{
+    aiChatIconFile.value="";
+  }
+});
+
+if(saveAiChatIcon) saveAiChatIcon.addEventListener("click",async()=>{
+  if(!pendingAiChatIconDataUrl) return;
+
+  saveAiChatIcon.disabled=true;
+  const old=saveAiChatIcon.textContent;
+  saveAiChatIcon.textContent="Đang lưu...";
+
+  try{
+    const r=await fetch("/api/admin/ai-chat-icon",{
+      method:"POST",
+      cache:"no-store",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({iconUrl:pendingAiChatIconDataUrl})
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"Không lưu được icon chat");
+
+    aiChatIconPreview.src=data.iconUrl||pendingAiChatIconDataUrl;
+    pendingAiChatIconDataUrl="";
+    aiChatIconStatus.textContent="✓ Đã lưu icon chat. Website sẽ tự dùng ảnh mới.";
+    aiChatIconStatus.style.color="#15803d";
+    try{showToast("Đã cập nhật icon chat AI");}catch(_){}
+  }catch(e){
+    saveAiChatIcon.disabled=false;
+    aiChatIconStatus.textContent=e.message||"Không lưu được icon chat.";
+    aiChatIconStatus.style.color="#b91c1c";
+  }finally{
+    saveAiChatIcon.textContent=old;
+  }
+});
+
+if(resetAiChatIcon) resetAiChatIcon.addEventListener("click",async()=>{
+  if(!confirm("Khôi phục icon chat mặc định?")) return;
+  resetAiChatIcon.disabled=true;
+
+  try{
+    const r=await fetch("/api/admin/ai-chat-icon",{
+      method:"DELETE",
+      cache:"no-store",
+      credentials:"same-origin"
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"Không khôi phục được icon");
+
+    aiChatIconPreview.src=data.iconUrl||"/assets/ai-chat-robot.png?v=179";
+    pendingAiChatIconDataUrl="";
+    saveAiChatIcon.disabled=true;
+    aiChatIconStatus.textContent="✓ Đã khôi phục icon mặc định.";
+    aiChatIconStatus.style.color="#15803d";
+  }catch(e){
+    aiChatIconStatus.textContent=e.message||"Không khôi phục được icon.";
+    aiChatIconStatus.style.color="#b91c1c";
+  }finally{
+    resetAiChatIcon.disabled=false;
+  }
+});
+
 if(saveAiSettings) saveAiSettings.addEventListener("click",persistAiSettings);
 if(saveAiChatSettings) saveAiChatSettings.addEventListener("click",persistAiChatSettings);
 if(reloadAiSettings) reloadAiSettings.addEventListener("click",()=>loadAiSettings(true));
@@ -3483,6 +3702,7 @@ adminTabs.addEventListener("click",e=>{
         // Chạy tuần tự để /ai-settings không thể tải xong sau rồi ghi đè 5 ô chat.
         await loadAiSettings();
         await loadAiChatTraining();
+        await loadAiChatIconSettings();
         if(aiChatSettingsStatus){
           aiChatSettingsStatus.textContent="✓ Đã tải Đào tạo AI đang lưu trên server.";
           aiChatSettingsStatus.style.color="#15803d";

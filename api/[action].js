@@ -1,5 +1,6 @@
 const handlers = {
   "ai-chat": () => import("../lib/public-api/ai-chat.js"),
+  "ai-chat-icon": () => import("../lib/public-api/ai-chat-icon.js"),
   "analytics": () => import("../lib/public-api/analytics.js"),
   "bestsellers": () => import("../lib/public-api/bestsellers.js"),
   "compare-ai": () => import("../lib/public-api/compare-ai.js"),

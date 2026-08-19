@@ -2754,6 +2754,23 @@ const zaloConsultBtn=document.getElementById("zaloConsultBtn");
 const aiChatFloatLabel=document.getElementById("aiChatFloatLabel");
 const aiMobileZaloDirect=document.getElementById("aiMobileZaloDirect");
 
+const aiChatIconImg=document.querySelector("#zaloConsultBtn .ai-round-logo img");
+
+async function loadPublicAiChatIcon(){
+  if(!aiChatIconImg) return;
+  try{
+    const r=await fetch("/api/ai-chat-icon?ts="+Date.now(),{cache:"no-store"});
+    const data=await r.json().catch(()=>({}));
+    if(r.ok && data.iconUrl) aiChatIconImg.src=data.iconUrl;
+  }catch(_){}
+}
+
+loadPublicAiChatIcon();
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible") loadPublicAiChatIcon();
+});
+
+
 const AI_CHAT_HISTORY=[];
 
 function parseAiChatSuggestions(raw=""){

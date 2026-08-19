@@ -1325,3 +1325,18 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Xóa chữ `Tư vấn ngay` nằm bên ngoài icon chat nổi.
 - Chỉ giữ icon robot AI Boxchat vì nội dung tư vấn đã có sẵn trong icon.
 - Không thay đổi chức năng mở chat và kéo thả.
+
+## V179 - Thay icon chatbox
+- Thay đúng icon nút chat AI ngoài website bằng hình robot `TƯ VẤN NGAY`.
+- Không tạo thêm icon mới trên giao diện.
+- Không thay logo website/header/favicon.
+- Bỏ toàn bộ nhãn chữ bên ngoài icon.
+- Giữ nguyên click mở chatbox và kéo thả trên mobile.
+
+## V180 - Thay icon chat AI trong quản trị
+- Thêm mục `Icon chat AI` trong tab Đào tạo AI.
+- Chọn ảnh, xem trước, lưu và khôi phục mặc định.
+- Ảnh tự thu về 256×256 và nén trước khi lưu.
+- Lưu Redis, đổi icon không cần sửa code/GitHub/deploy lại.
+- Website tự tải icon mới từ `/api/ai-chat-icon`.
+- Không tăng số Serverless Functions vì dùng catch-all API hiện có.
