@@ -2939,10 +2939,12 @@ function aiChatProductSnapshot(question){
     const prices=variants.map(v=>Number(v.price||0)).filter(x=>x>0);
     const minPrice=prices.length?Math.min(...prices):0;
     const maxPrice=prices.length?Math.max(...prices):0;
-    // Tình trạng hàng gửi cho AI phải lấy trực tiếp từ dữ liệu sản phẩm
-    // đang hiển thị trên website: chỉ cần 1 biến thể còn tồn là sản phẩm còn hàng.
-    const stockQty=variants.reduce((sum,v)=>sum+Math.max(0,Number(v.onHand||0)),0);
-    const inStock=stockQty>0;
+    // V176: dùng CHÍNH biến thể mặc định mà card website đang dùng.
+    // Card gọi getDefaultVariantForGroup(group), nên AI cũng phải dùng đúng biến thể đó.
+    // Không cộng tồn của toàn bộ variants vì như vậy có thể lệch trạng thái card.
+    const webVariant=getDefaultVariantForGroup(group);
+    const stockQty=Math.max(0,Number(webVariant?.onHand||0));
+    const inStock=Boolean(webVariant && stockQty>0);
     const name=String(group.name||"");
     const normalized=normalizeSearchText(name);
     let score=0;
@@ -2950,6 +2952,13 @@ function aiChatProductSnapshot(question){
     for(const t of tokens){
       if(normalized.includes(t)) score+=t.length>=5?5:2;
     }
+
+    // Ưu tiên rất mạnh tên máy mà khách vừa gõ, kể cả thiếu chữ/sai nhẹ.
+    const compactName=normalized.replace(/\s+/g,"");
+    const compactQ=q.replace(/\s+/g,"");
+    if(compactQ && (compactName.includes(compactQ) || compactQ.includes(compactName))) score+=40;
+    const matchedTokens=tokens.filter(t=>normalized.includes(t));
+    if(tokens.length>=2 && matchedTokens.length>=Math.ceil(tokens.length*.65)) score+=20;
 
     const brand=String(group.brand||variants[0]?.brand||"");
     if(brand&&q.includes(normalizeSearchText(brand))) score+=8;
@@ -2972,6 +2981,8 @@ function aiChatProductSnapshot(question){
       inStock,
       stockStatus:inStock?"Còn hàng":"Hết hàng",
       stockQty,
+      webVariantId:String(webVariant?.id||webVariant?.productId||""),
+      webVariantName:String(webVariant?.name||webVariant?.fullName||""),
       brand,
       score
     };

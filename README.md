@@ -1307,3 +1307,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nếu kéo icon sang nửa trái, chữ tự chuyển sang bên phải.
 - Không còn tình trạng chữ bị cắt/che khi icon nằm sát mép phải.
 - Giữ nguyên khả năng kéo thả.
+
+## V176 - Đồng bộ tồn kho AI với card website
+- AI không còn tự cộng tồn của tất cả biến thể.
+- AI gọi đúng `getDefaultVariantForGroup(group)` giống hệt card sản phẩm trên trang chính.
+- `inStock` của AI được tính từ đúng `onHand` của biến thể mà card website đang hiển thị.
+- Tăng độ ưu tiên khớp tên máy khách hỏi để tránh lấy nhầm sản phẩm gần giống.
