@@ -1313,3 +1313,15 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - AI gọi đúng `getDefaultVariantForGroup(group)` giống hệt card sản phẩm trên trang chính.
 - `inStock` của AI được tính từ đúng `onHand` của biến thể mà card website đang hiển thị.
 - Tăng độ ưu tiên khớp tên máy khách hỏi để tránh lấy nhầm sản phẩm gần giống.
+
+## V177 - Thay icon nút AI chat bằng robot Siêu Di Động
+- Chỉ thay icon nút chat nổi ngoài website.
+- Logo header, favicon và logo thương hiệu vẫn giữ nguyên.
+- Icon mới: `/assets/ai-chat-robot.png`.
+- Giữ chữ `Tư vấn ngay`, hiệu ứng và chức năng kéo thả.
+- Sửa luôn selector V175 để nhãn tự đổi trái/phải đúng theo vị trí nút chat.
+
+## V178
+- Xóa chữ `Tư vấn ngay` nằm bên ngoài icon chat nổi.
+- Chỉ giữ icon robot AI Boxchat vì nội dung tư vấn đã có sẵn trong icon.
+- Không thay đổi chức năng mở chat và kéo thả.

@@ -9589,3 +9589,51 @@ input,select,textarea{
     border-right:1px solid #e5e7eb!important;
   }
 }
+
+
+/* =========================================================
+   V177 - Icon robot riêng cho nút AI chat
+   ========================================================= */
+#zaloConsultBtn.ai-round-float .ai-round-logo{
+  overflow:hidden!important;
+  background:#fff!important;
+  border-radius:50%!important;
+}
+#zaloConsultBtn.ai-round-float .ai-round-logo img{
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:50%!important;
+}
+
+/* Icon chat nổi lớn hơn nhẹ để robot dễ nhận biết trên điện thoại */
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float{
+    width:62px!important;
+    height:62px!important;
+    min-width:62px!important;
+    min-height:62px!important;
+    max-width:62px!important;
+    max-height:62px!important;
+  }
+  #zaloConsultBtn.ai-round-float .ai-round-logo{
+    width:56px!important;
+    height:56px!important;
+    min-width:56px!important;
+    min-height:56px!important;
+    max-width:56px!important;
+    max-height:56px!important;
+  }
+}
+
+
+/* V178 - Icon robot đã có chữ tư vấn, ẩn nhãn nổi bên ngoài */
+#zaloConsultBtn #aiChatFloatLabel,
+#zaloConsultBtn .ai-chat-float-label{
+  display:none!important;
+}
