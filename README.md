@@ -1194,3 +1194,19 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Các khu Link thông số, Đào tạo AI và SEO giữ nguyên chức năng nhưng được bọc giao diện mới.
 - Sidebar có chế độ thu gọn trên desktop và trượt mở trên mobile.
 - Không thay đổi API hay số lượng Serverless Functions.
+
+## V159
+- Tăng cỡ font toàn bộ trang quản trị để dễ đọc hơn, vẫn giữ bố cục dashboard gọn.
+
+## V160 - Sửa lỗi lưu Đào tạo AI
+- Bỏ lỗi giả do frontend bắt buộc response POST phải có `persisted:true`.
+- Sau khi POST vẫn GET đọc lại cấu hình và so sánh nội dung, nên chỉ báo thành công khi dữ liệu đọc lại đúng.
+- API trả thêm `storage: redis` và `verified: true` sau khi SET + GET Redis thành công.
+
+## V161 - Fix giao diện quản trị mobile
+- Sidebar mặc định ẩn hoàn toàn trên mobile, chỉ mở khi bấm nút menu.
+- Có overlay khi mở menu và tự đóng khi bấm ra ngoài.
+- Nội dung quản trị full width, không còn bị sidebar đè lên form.
+- Đào tạo AI chuyển đúng 1 cột trên mobile.
+- Form, textarea, select, bảng thống kê và SEO không còn tràn ngang.
+- Fix xung đột trạng thái `sidebar-collapsed` từ desktop khi chuyển sang mobile.

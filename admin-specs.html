@@ -1152,7 +1152,7 @@ body{
 
 
 /* =========================================================
-   V158 - Admin Dashboard redesign kiểu SaaS hiện đại
+   V161 - Admin Dashboard redesign kiểu SaaS hiện đại
    ========================================================= */
 :root{
   --admin-orange:#ff5a00;
@@ -1796,6 +1796,389 @@ body:not(.authenticated) .wrap{
   }
 }
 
+
+/* V161 - Tăng cỡ chữ quản trị, giữ bố cục gọn */
+.admin-sidebar{font-size:14px}
+.sidebar-brand strong{font-size:17px!important}
+.sidebar-brand span{font-size:12px!important}
+.sidebar-section-title{font-size:11px!important}
+.admin-tab{font-size:14px!important}
+.sidebar-shortcut{font-size:13px!important}
+.sidebar-bottom small,.system-status{font-size:11px!important}
+
+.admin-topbar-left h1{font-size:22px!important}
+.admin-topbar-left p{font-size:12px!important}
+.admin-quick-search input{font-size:13px!important}
+.topbar-site-link{font-size:12px!important}
+.admin-profile strong{font-size:12px!important}
+.admin-profile span{font-size:10px!important}
+.topbar-logout{font-size:11px!important}
+
+.dashboard-welcome .eyebrow{font-size:10px!important}
+.dashboard-welcome h2{font-size:22px!important}
+.dashboard-welcome p{font-size:12px!important}
+.live-chip{font-size:11px!important}
+
+.card .head h1{font-size:21px!important}
+.card .head p{font-size:12px!important}
+
+.metric small{font-size:11px!important}
+.metric strong{font-size:30px!important}
+.metric em{font-size:10px!important}
+
+.abox > h2,.compare-pairs-head{font-size:14px!important}
+.ranklist,#deviceList,.compare-pair-list{font-size:12px!important}
+
+.ai-settings-box h2{font-size:17px!important}
+.ai-settings-box p{font-size:12px!important}
+.ai-field label{font-size:13px!important}
+.ai-field input,.ai-field textarea,.ai-field select{font-size:13px!important}
+.ai-check{font-size:12px!important}
+
+.seo-editor-title{font-size:17px!important}
+.seo-editor-note,.seo-form-grid label span,.seo-form-grid input,.seo-form-grid textarea{font-size:12px!important}
+
+button,.primary,.secondary{font-size:12px!important}
+.search,.field{font-size:13px!important}
+
+@media(max-width:760px){
+  .admin-topbar-left h1{font-size:19px!important}
+  .dashboard-welcome h2{font-size:19px!important}
+  .metric small{font-size:10px!important}
+  .metric strong{font-size:27px!important}
+}
+
+
+/* =========================================================
+   V161 - FIX giao diện quản trị trên mobile
+   ========================================================= */
+@media(max-width:760px){
+  html,body{
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+
+  body.authenticated{
+    padding:0!important;
+    margin:0!important;
+  }
+
+  /* Sidebar mặc định phải ẩn hoàn toàn trên mobile */
+  .admin-sidebar{
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    bottom:0!important;
+    width:min(82vw,280px)!important;
+    max-width:280px!important;
+    transform:translateX(-105%)!important;
+    transition:transform .22s ease!important;
+    z-index:9999!important;
+    box-shadow:18px 0 40px rgba(15,23,42,.22)!important;
+  }
+
+  body.mobile-sidebar-open .admin-sidebar{
+    transform:translateX(0)!important;
+  }
+
+  /* Overlay nền khi mở menu */
+  body.mobile-sidebar-open::after{
+    content:""!important;
+    position:fixed!important;
+    inset:0!important;
+    background:rgba(15,23,42,.42)!important;
+    z-index:9998!important;
+  }
+
+  .admin-topbar{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    height:64px!important;
+    padding:0 10px!important;
+    box-sizing:border-box!important;
+  }
+
+  .admin-topbar-left{
+    min-width:0!important;
+    flex:1 1 auto!important;
+    gap:9px!important;
+  }
+
+  .admin-topbar-left > div{
+    min-width:0!important;
+  }
+
+  .admin-topbar-left h1{
+    max-width:55vw!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:18px!important;
+  }
+
+  .admin-topbar-left p{
+    display:none!important;
+  }
+
+  .sidebar-toggle{
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 38px!important;
+    width:38px!important;
+    height:38px!important;
+  }
+
+  .admin-topbar-right{
+    margin-left:auto!important;
+    gap:6px!important;
+  }
+
+  .admin-quick-search,
+  .topbar-site-link,
+  .admin-profile{
+    display:none!important;
+  }
+
+  .topbar-logout{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:36px!important;
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+
+  /* Nội dung phải full width */
+  .wrap{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:76px 8px 24px!important;
+    box-sizing:border-box!important;
+    overflow-x:hidden!important;
+  }
+
+  .card,
+  .panel,
+  #adminCard,
+  #analyticsCard,
+  #aiSettingsCard,
+  #seoCard{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  .card .head{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:10px!important;
+    padding:14px!important;
+  }
+
+  .card .head > *{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .card .head h1{
+    font-size:19px!important;
+  }
+
+  .card .head p{
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+
+  .search,
+  .field{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Dashboard */
+  .dashboard-welcome{
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding:14px!important;
+  }
+
+  .metric-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+
+  .metric{
+    min-width:0!important;
+    min-height:105px!important;
+    padding:13px 11px!important;
+  }
+
+  .metric strong{
+    font-size:25px!important;
+  }
+
+  .analytics-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+
+  .abox,
+  .compare-pairs-box{
+    grid-column:1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  /* AI settings: 1 cột thực sự */
+  .ai-settings-shell{
+    width:100%!important;
+    padding:8px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  .ai-settings-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .ai-settings-grid[style]{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  .ai-settings-box{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    padding:13px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  .ai-field{
+    width:100%!important;
+    min-width:0!important;
+  }
+
+  .ai-field textarea,
+  .ai-field input,
+  .ai-field select{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .ai-field textarea{
+    min-height:120px!important;
+    font-size:14px!important;
+    line-height:1.5!important;
+  }
+
+  .ai-check{
+    width:100%!important;
+    min-width:0!important;
+    font-size:12px!important;
+  }
+
+  .ai-actions,
+  .ai-chat-save-actions{
+    width:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+  }
+
+  .ai-actions button,
+  .ai-chat-save-actions button{
+    width:100%!important;
+    min-height:42px!important;
+  }
+
+  /* SEO */
+  #seoCard > div[style],
+  .seo-editor,
+  .seo-form-grid,
+  .seo-preview{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .seo-form-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .seo-wide{
+    grid-column:auto!important;
+  }
+
+  /* Rows/spec links */
+  .rows,
+  .row,
+  .stats{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+
+  .row{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+
+  /* Không cho bất kỳ phần tử form nào kéo chiều ngang */
+  input,textarea,select,button{
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+
+/* Chặn menu desktop bị kẹt ở trạng thái collapsed trên mobile */
+@media(max-width:760px){
+  body.sidebar-collapsed .admin-sidebar{
+    width:min(82vw,280px)!important;
+    transform:translateX(-105%)!important;
+  }
+  body.sidebar-collapsed.mobile-sidebar-open .admin-sidebar{
+    transform:translateX(0)!important;
+  }
+
+  body.sidebar-collapsed .sidebar-brand div,
+  body.sidebar-collapsed .sidebar-section-title,
+  body.sidebar-collapsed .admin-tab > span:not(.nav-icon),
+  body.sidebar-collapsed .admin-tab .nav-new,
+  body.sidebar-collapsed .sidebar-shortcuts span:not(.shortcut-icon),
+  body.sidebar-collapsed .sidebar-shortcuts b,
+  body.sidebar-collapsed .sidebar-bottom span,
+  body.sidebar-collapsed .sidebar-bottom small{
+    display:initial!important;
+  }
+
+  body.sidebar-collapsed .admin-tab,
+  body.sidebar-collapsed .sidebar-shortcut{
+    grid-template-columns:26px minmax(0,1fr) auto!important;
+    justify-items:stretch!important;
+    padding:0 11px!important;
+  }
+
+  body.sidebar-collapsed .sidebar-brand{
+    justify-content:flex-start!important;
+    padding:0 7px 14px!important;
+  }
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -1851,7 +2234,7 @@ body:not(.authenticated) .wrap{
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V158</small>
+    <small>Siêu Di Động Admin • V161</small>
   </div>
 </aside>
 
@@ -2663,8 +3046,10 @@ async function saveAiSettingsPayload(payload){
   let data={};
   try{ data=await r.json(); }catch(_){}
   if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
-  if(data.persisted!==true) throw new Error("Server chưa xác nhận dữ liệu đã được ghi vào Redis");
 
+  // Không phụ thuộc riêng vào cờ persisted của response POST.
+  // Một số deployment/proxy cũ không trả cờ này dù Redis đã SET thành công.
+  // GET ngay sau đây mới là bước xác minh dữ liệu thực tế.
   // Xác minh lại từ server để chắc chắn Redis đã ghi thật.
   const verify=await fetch("/api/admin/ai-settings?ts="+Date.now(),{
     cache:"no-store",
@@ -2964,7 +3349,7 @@ if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
 
 
 /* =========================================================
-   V158 - Admin shell interactions
+   V161 - Admin shell interactions
    ========================================================= */
 const sidebarToggle=document.getElementById("sidebarToggle");
 const adminPageTitle=document.getElementById("adminPageTitle");
@@ -3030,6 +3415,23 @@ document.addEventListener("keydown",e=>{
 refreshAnalyticsTop?.addEventListener("click",()=>refreshAnalytics?.click());
 
 syncAdminShell("analytics");
+
+
+/* V161 - mobile sidebar behavior */
+document.addEventListener("click",e=>{
+  if(!window.matchMedia("(max-width:760px)").matches) return;
+  if(!document.body.classList.contains("mobile-sidebar-open")) return;
+  const sidebar=document.getElementById("adminSidebar");
+  const toggle=document.getElementById("sidebarToggle");
+  if(sidebar?.contains(e.target) || toggle?.contains(e.target)) return;
+  document.body.classList.remove("mobile-sidebar-open");
+});
+
+window.addEventListener("resize",()=>{
+  if(!window.matchMedia("(max-width:760px)").matches){
+    document.body.classList.remove("mobile-sidebar-open");
+  }
+});
 
 </script>
 
