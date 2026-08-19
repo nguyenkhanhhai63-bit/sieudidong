@@ -1161,3 +1161,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nhãn đi theo vị trí nút khi kéo thả vì nằm trong cùng floating control.
 - Mobile có hiệu ứng nhịp nhẹ để khách dễ nhận biết.
 - Khi mở chatbox, nhãn `Tư vấn ngay` được ẩn cùng nút chat.
+
+## V154 - Font web cơ bản hiện đại
+- Toàn bộ website dùng system UI font phổ biến: Segoe UI / Roboto / Helvetica / Arial.
+- Không tải font ngoài nên nhanh và ổn định.
+- Đồng bộ weight 400/600/700 để chữ bớt nặng.
+- Tối ưu tên sản phẩm, giá, nút, bộ lọc, form, chat AI và trang quản trị.
+- Mobile dễ đọc hơn với line-height và cỡ chữ cân đối.
