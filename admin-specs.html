@@ -743,7 +743,7 @@ body{
 .primary,
 .secondary,
 button{
-  font-family:inherit;
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .primary{
@@ -917,6 +917,115 @@ input:focus,textarea:focus,select:focus{
   }
 }
 
+
+/* =========================================================
+   V133 - Login / session UX rõ ràng
+   ========================================================= */
+.auth-loading{
+  min-height:420px!important;
+  padding:28px 16px;
+}
+.auth-loading-card{
+  min-width:min(420px,calc(100vw - 32px));
+  padding:22px 24px!important;
+  border:1px solid #e6e9ef;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 10px 28px rgba(15,23,42,.06);
+}
+.auth-loading-copy{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.auth-loading-copy strong{
+  color:#111827;
+  font-size:14px;
+}
+.auth-loading-copy span{
+  color:#667085;
+  font-size:11px;
+}
+.login{
+  max-width:430px!important;
+  margin:64px auto!important;
+  padding:24px!important;
+  border-radius:16px!important;
+  box-shadow:0 12px 32px rgba(15,23,42,.06)!important;
+}
+.login h1{
+  margin:0;
+  font-size:22px;
+}
+.login p{
+  margin:7px 0 16px;
+  color:#667085;
+  font-size:12px;
+  line-height:1.5;
+}
+.login-status{
+  display:none;
+  margin-top:10px;
+  padding:10px 11px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.4;
+}
+.login-status.show{display:block}
+.login-status.loading{
+  display:block;
+  color:#8a4b16;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+}
+.login-status.success{
+  display:block;
+  color:#166534;
+  background:#ecfdf3;
+  border:1px solid #86efac;
+}
+.login-status.error{
+  display:block;
+  color:#b42318;
+  background:#fef3f2;
+  border:1px solid #fda29b;
+}
+#loginSubmitBtn[disabled]{
+  opacity:.7;
+  cursor:wait;
+}
+.session-warning{
+  max-width:430px;
+  margin:12px auto 0;
+  padding:10px 12px;
+  border-radius:9px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  font-size:11px;
+  font-weight:700;
+}
+
+
+/* V134 - Font web cơ bản, dễ đọc */
+html,body,button,input,select,textarea {
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+
+/* V135 - Thống kê model điện thoại */
+#deviceModelRanks .rankrow,
+#deviceOsRanks .rankrow{
+  grid-template-columns:32px minmax(0,1fr) auto;
+}
+#deviceModelRanks .rankrow span:nth-child(2),
+#deviceOsRanks .rankrow span:nth-child(2){
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -945,7 +1054,7 @@ input:focus,textarea:focus,select:focus{
 <body class="auth-pending">
 <header class="top">
   <div class="top-inner">
-    <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span><b style="font-size:10px;background:#fff1e8;color:#d94800;border:1px solid #ffd3be;border-radius:6px;padding:3px 6px">V132</b></div>
+    <div class="brand"><img src="/assets/logo-square.jpg" alt=""><span>Quản trị Siêu Di Động</span><b style="font-size:10px;background:#fff1e8;color:#d94800;border:1px solid #ffd3be;border-radius:6px;padding:3px 6px">V133</b></div>
     <button id="logoutBtn" class="secondary hidden" type="button">Đăng xuất</button>
   </div>
 </header>
@@ -956,9 +1065,12 @@ input:focus,textarea:focus,select:focus{
   </div>
   
   <section id="authLoading" class="auth-loading">
-    <div class="auth-loading-box">
+    <div class="auth-loading-box auth-loading-card">
       <div class="auth-spinner"></div>
-      <strong>Đang kiểm tra phiên đăng nhập...</strong>
+      <div class="auth-loading-copy">
+        <strong>Đang kiểm tra phiên quản trị...</strong>
+        <span id="authLoadingHint">Vui lòng chờ trong giây lát.</span>
+      </div>
     </div>
   </section>
 
@@ -967,8 +1079,8 @@ input:focus,textarea:focus,select:focus{
     <p>Chỉ quản trị viên mới có thể xem và sửa link thông số.</p>
     <form id="loginForm">
       <input id="password" class="field" type="password" placeholder="Mật khẩu quản trị" autocomplete="current-password">
-      <button class="primary" style="width:100%;margin-top:10px" type="submit">Đăng nhập</button>
-      <div id="loginMessage" class="message"></div>
+      <button id="loginSubmitBtn" class="primary" style="width:100%;margin-top:10px" type="submit">Đăng nhập</button>
+      <div id="loginMessage" class="login-status" aria-live="polite"></div>
     </form>
   </section>
 
@@ -1009,7 +1121,9 @@ input:focus,textarea:focus,select:focus{
         </div>
         <div class="analytics-grid">
           <div class="abox"><h2>Xu hướng truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
-          <div class="abox"><h2>Thiết bị truy cập</h2><div id="deviceList"></div></div>
+          <div class="abox"><h2>Loại thiết bị truy cập</h2><div id="deviceList"></div></div>
+          <div class="abox"><h2>Điện thoại khách đang dùng</h2><div id="deviceModelRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Hệ điều hành thiết bị</h2><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
@@ -1109,7 +1223,7 @@ input:focus,textarea:focus,select:focus{
     </div>
     <div style="padding:24px">
 <div class="seo-editor">
-        <div class="seo-editor-title">Nội dung hiển thị trên Google <span style="font-size:10px;color:#d94800">• V132</span></div>
+        <div class="seo-editor-title">Nội dung hiển thị trên Google <span style="font-size:10px;color:#d94800">• V133</span></div>
         <div class="seo-editor-note">Chỉnh tại đây khi cần đổi tên website, tiêu đề, mô tả hoặc logo nhỏ cạnh tên miền. Không cần sửa code.</div>
         <div class="seo-form-grid">
           <label><span>Tên website</span><input id="seoSiteName" maxlength="80" placeholder="Siêu Di Động"></label>
@@ -1153,6 +1267,8 @@ const adminCard=document.getElementById("adminCard");
 const loginForm=document.getElementById("loginForm");
 const password=document.getElementById("password");
 const loginMessage=document.getElementById("loginMessage");
+const loginSubmitBtn=document.getElementById("loginSubmitBtn");
+const authLoadingHint=document.getElementById("authLoadingHint");
 const logoutBtn=document.getElementById("logoutBtn");
 const rows=document.getElementById("rows");
 const stats=document.getElementById("stats");
@@ -1216,6 +1332,22 @@ function baseModelName(name=""){
   return s.replace(/\s*-\s*-+/g," - ").replace(/^\s*-\s*|\s*-\s*$/g,"").replace(/\s+/g," ").trim();
 }
 
+
+function setLoginStatus(message,type=""){
+  if(!loginMessage) return;
+  loginMessage.textContent=String(message||"");
+  loginMessage.className="login-status"+(type?" "+type:"");
+  if(message) loginMessage.classList.add("show");
+}
+
+function setLoginBusy(busy){
+  if(loginSubmitBtn){
+    loginSubmitBtn.disabled=Boolean(busy);
+    loginSubmitBtn.textContent=busy?"Đang đăng nhập...":"Đăng nhập";
+  }
+  if(password) password.disabled=Boolean(busy);
+}
+
 function setLoggedIn(value){
   if(adminBootLoading) adminBootLoading.style.display="none";
   document.body.classList.remove("auth-pending");
@@ -1253,6 +1385,7 @@ function setLoggedIn(value){
     analyticsCard.style.display="none";
     aiSettingsCard.style.display="none";
     seoCard.style.display="none";
+    loginCard.classList.remove("hidden");
   }
 }
 
@@ -1379,36 +1512,64 @@ function render(){
 }
 
 async function loadAdmin(){
-  const r=await fetch("/api/admin/spec-links",{cache:"no-store"});
+  if(authLoadingHint) authLoadingHint.textContent="Đang xác thực phiên đăng nhập...";
 
-  if(r.status===401){
-    setLoggedIn(false);
-    return;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),8000);
+
+  try{
+    const r=await fetch("/api/admin/spec-links",{
+      cache:"no-store",
+      credentials:"same-origin",
+      signal:controller.signal
+    });
+
+    if(r.status===401){
+      setLoggedIn(false);
+      setLoginStatus("Phiên đăng nhập chưa có hoặc đã hết hạn. Vui lòng nhập mật khẩu quản trị.","");
+      return false;
+    }
+
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Không tải được dữ liệu quản trị");
+
+    links=data.links||{};
+
+    if(authLoadingHint) authLoadingHint.textContent="Đang tải danh sách sản phẩm...";
+
+    const pr=await fetch("/api/products?ts="+Date.now(),{
+      cache:"no-store",
+      signal:controller.signal
+    });
+    const pd=await pr.json();
+    if(!pr.ok) throw new Error(pd.error||"Không tải được sản phẩm");
+
+    const grouped=new Map();
+
+    (pd.products||[]).forEach(p=>{
+      const raw=normalizeModel(p.name);
+      const base=baseModelName(raw);
+      if(!base) return;
+      const item=grouped.get(base) || {name:base, variants:new Set()};
+      item.variants.add(raw);
+      grouped.set(base,item);
+    });
+
+    window.PRODUCT_MODEL_META=grouped;
+    products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
+
+    setLoggedIn(true);
+    setLoginStatus("");
+    render();
+    return true;
+  }catch(e){
+    if(e?.name==="AbortError"){
+      throw new Error("Kiểm tra đăng nhập quá lâu. Vui lòng tải lại trang hoặc đăng nhập lại.");
+    }
+    throw e;
+  }finally{
+    clearTimeout(timer);
   }
-
-  const data=await r.json();
-  if(!r.ok) throw new Error(data.error||"Không tải được dữ liệu");
-
-  links=data.links||{};
-
-  const pr=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
-  const pd=await pr.json();
-
-  const grouped=new Map();
-
-  (pd.products||[]).forEach(p=>{
-    const raw=normalizeModel(p.name);
-    const base=baseModelName(raw);
-    if(!base) return;
-    const item=grouped.get(base) || {name:base, variants:new Set()};
-    item.variants.add(raw);
-    grouped.set(base,item);
-  });
-
-  window.PRODUCT_MODEL_META=grouped;
-  products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
-  setLoggedIn(true);
-  render();
 }
 
 
@@ -1527,6 +1688,8 @@ async function loadAnalytics(){
     const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
+    renderRank("deviceModelRanks",d.topDeviceModels);
+    renderRank("deviceOsRanks",d.topDeviceOs);
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
     renderRank("compareProductRanks",d.topCompareProducts);
     renderComparePairs(d.topComparePairs);
@@ -1679,22 +1842,59 @@ refreshAnalytics.addEventListener("click",loadAnalytics);
 
 loginForm.addEventListener("submit",async(e)=>{
   e.preventDefault();
-  loginMessage.textContent="Đang đăng nhập...";
+
+  const pass=String(password.value||"").trim();
+  if(!pass){
+    setLoginStatus("Vui lòng nhập mật khẩu quản trị.","error");
+    password.focus();
+    return;
+  }
+
+  setLoginBusy(true);
+  setLoginStatus("Đang kiểm tra mật khẩu...","loading");
 
   try{
-    const r=await fetch("/api/admin/login",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({password:password.value})
-    });
-    const data=await r.json();
-    if(!r.ok) throw new Error(data.error||"Đăng nhập thất bại");
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),8000);
+
+    let r;
+    try{
+      r=await fetch("/api/admin/login",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"same-origin",
+        signal:controller.signal,
+        body:JSON.stringify({password:pass})
+      });
+    }finally{
+      clearTimeout(timer);
+    }
+
+    let data={};
+    try{ data=await r.json(); }catch(_){}
+
+    if(!r.ok){
+      if(r.status===401) throw new Error("Mật khẩu quản trị không đúng.");
+      if(r.status===429) throw new Error("Bạn thử đăng nhập quá nhiều lần. Vui lòng chờ một lúc.");
+      throw new Error(data.error||"Đăng nhập thất bại.");
+    }
+
+    setLoginStatus("Mật khẩu chính xác. Đang mở trang quản trị...","success");
     password.value="";
-    loginMessage.textContent="";
-    showLoginSuccess();
-    await loadAdmin();
+
+    const ok=await loadAdmin();
+    if(ok){
+      showLoginSuccess();
+      showToast("Đăng nhập quản trị thành công");
+    }
   }catch(e){
-    loginMessage.textContent=e.message;
+    const msg=e?.name==="AbortError"
+      ?"Máy chủ phản hồi chậm. Vui lòng thử lại."
+      :(e.message||"Đăng nhập thất bại.");
+    setLoginStatus(msg,"error");
+    try{showToast(msg,"error");}catch(_){}
+  }finally{
+    setLoginBusy(false);
   }
 });
 
@@ -1706,8 +1906,8 @@ logoutBtn.addEventListener("click",async()=>{
 search.addEventListener("input",render);
 
 loadAdmin().catch(e=>{
-  loginMessage.textContent=e.message;
   setLoggedIn(false);
+  setLoginStatus(e.message||"Không kiểm tra được phiên đăng nhập. Vui lòng đăng nhập lại.","error");
 });
 
 setTimeout(()=>{
@@ -1721,8 +1921,10 @@ setTimeout(()=>{
     adminCard.style.display="none";
     analyticsCard.style.display="none";
     if(aiSettingsCard) aiSettingsCard.style.display="none";
+    if(seoCard) seoCard.style.display="none";
+    setLoginStatus("Không xác minh được phiên đăng nhập. Vui lòng đăng nhập lại.","error");
   }
-},4000);
+},9000);
 
 
 function showLoginSuccess(){
@@ -1731,7 +1933,7 @@ function showLoginSuccess(){
     el=document.createElement("div");
     el.id="loginSuccessToast";
     el.className="login-success-toast";
-    el.innerHTML='<span class="check">✓</span><span>Mật khẩu chính xác — đăng nhập thành công!</span>';
+    el.innerHTML='<span class="check">✓</span><span>Đăng nhập thành công — đang vào trang quản trị.</span>';
     document.body.appendChild(el);
   }
   requestAnimationFrame(()=>el.classList.add("show"));

@@ -49,6 +49,84 @@ function analyticsDevice(){
   if(/Android|iPhone|iPod|Mobile/i.test(ua)||w<720) return "mobile";
   return "desktop";
 }
+
+function normalizeDeviceModelName(value=""){
+  return String(value||"")
+    .replace(/[<>]/g,"")
+    .replace(/\s+/g," ")
+    .trim()
+    .slice(0,100);
+}
+
+function deviceInfoFromUa(){
+  const ua=navigator.userAgent||"";
+  let brand="";
+  let model="";
+  let os="";
+
+  const android=ua.match(/Android\s+([^;)\s]+)/i);
+  if(android) os="Android "+android[1];
+
+  if(/iPhone/i.test(ua)){
+    brand="Apple";
+    model="iPhone (không xác định model)";
+    const ios=ua.match(/OS\s+([\d_]+)/i);
+    if(ios) os="iOS "+ios[1].replace(/_/g,".");
+  }else if(/iPad/i.test(ua)){
+    brand="Apple";
+    model="iPad (không xác định model)";
+    const ios=ua.match(/OS\s+([\d_]+)/i);
+    if(ios) os="iPadOS "+ios[1].replace(/_/g,".");
+  }else if(/Android/i.test(ua)){
+    // Android UA thường có model nằm sau phiên bản Android và trước Build/.
+    const m=ua.match(/Android[^;]*;\s*(?:[a-z]{2}-[A-Z]{2};\s*)?([^;)]+?)(?:\s+Build\/|;|\))/i);
+    if(m) model=normalizeDeviceModelName(m[1]);
+
+    const text=(model+" "+ua).toLowerCase();
+    if(/samsung|sm-[a-z0-9]+/i.test(text)) brand="Samsung";
+    else if(/redmi|xiaomi|mi\s|poco/i.test(text)) brand="Xiaomi/Redmi";
+    else if(/oppo|cph/i.test(text)) brand="OPPO";
+    else if(/vivo|v\d{4}/i.test(text)) brand="vivo";
+    else if(/oneplus|kb\d|le\d/i.test(text)) brand="OnePlus";
+    else if(/honor|bvl-|any-|rea-/i.test(text)) brand="HONOR";
+    else if(/realme|rmx/i.test(text)) brand="realme";
+    else if(/pixel/i.test(text)) brand="Google";
+  }
+
+  return {
+    deviceBrand:normalizeDeviceModelName(brand),
+    deviceModel:normalizeDeviceModelName(model),
+    deviceOs:normalizeDeviceModelName(os)
+  };
+}
+
+async function analyticsDeviceInfo(){
+  const fallback=deviceInfoFromUa();
+
+  try{
+    const uaData=navigator.userAgentData;
+    if(uaData?.getHighEntropyValues){
+      const high=await uaData.getHighEntropyValues(["model","platformVersion"]);
+      const brands=Array.isArray(uaData.brands)?uaData.brands:[];
+      const brandName=brands
+        .map(x=>String(x.brand||""))
+        .find(x=>x && !/not.a.brand|chromium|google chrome/i.test(x));
+
+      return {
+        deviceBrand:normalizeDeviceModelName(fallback.deviceBrand||brandName||""),
+        deviceModel:normalizeDeviceModelName(high?.model||fallback.deviceModel||""),
+        deviceOs:normalizeDeviceModelName(
+          uaData.platform
+            ? `${uaData.platform}${high?.platformVersion?" "+high.platformVersion:""}`
+            : fallback.deviceOs
+        )
+      };
+    }
+  }catch(_){}
+
+  return fallback;
+}
+
 function sendAnalytics(type,extra={}){
   try{
     fetch("/api/analytics",{
@@ -59,7 +137,11 @@ function sendAnalytics(type,extra={}){
     }).catch(()=>{});
   }catch(_){}
 }
-sendAnalytics("page_view");
+
+// Page view được gửi sau khi lấy thông tin thiết bị để thống kê model chính xác hơn.
+analyticsDeviceInfo()
+  .then(info=>sendAnalytics("page_view",info))
+  .catch(()=>sendAnalytics("page_view"));
 
 let analyticsSearchTimer=null;
 function trackSearchQuery(){

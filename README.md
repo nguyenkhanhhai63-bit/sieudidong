@@ -1001,3 +1001,25 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nâng cấp giao diện quản trị: header sticky, tab sticky, card, form, button, khoảng cách và responsive.
 - Tối ưu phần SEO, AI và Analytics nhìn đồng bộ và chuyên nghiệp hơn.
 - Giữ kiến trúc V131: chỉ 2 Serverless Functions.
+
+## V133 - Login UX rõ ràng
+- Trang load admin hiển thị card `Đang kiểm tra phiên quản trị` thay vì màn hình mơ hồ.
+- Phân biệt rõ: chưa có phiên, phiên hết hạn, server chậm, lỗi tải dữ liệu.
+- Nút đăng nhập có trạng thái `Đang đăng nhập...` và khóa khi đang gửi request.
+- Mật khẩu sai hiển thị cảnh báo đỏ ngay dưới form.
+- Mật khẩu đúng hiển thị trạng thái xanh trước khi mở dashboard + toast thành công.
+- Có timeout 8 giây cho đăng nhập/session và fallback rõ ràng sau 9 giây.
+- Giữ kiến trúc 2 Serverless Functions của V131/V132.
+
+## V134 - Font giao diện
+- Đổi giao diện sang font hệ thống phổ biến: Segoe UI / Roboto / Helvetica / Arial.
+- Áp dụng đồng nhất cho trang khách, trang quản trị, nút, ô nhập liệu và dropdown.
+- Không tải Google Font bên ngoài, giúp hiển thị nhanh và ổn định hơn.
+
+## V135 - Thống kê điện thoại khách truy cập
+- Thu thập model điện thoại bằng User-Agent Client Hints khi trình duyệt hỗ trợ.
+- Fallback sang User-Agent truyền thống trên Android.
+- iPhone thường chỉ nhận diện được `iPhone (không xác định model)` do giới hạn của Safari/iOS.
+- Mỗi visitor chỉ tính 1 lần vào thống kê model, tránh reload nhiều lần làm tăng số.
+- Trang quản trị thêm `Điện thoại khách đang dùng` và `Hệ điều hành thiết bị`.
+- Không làm tăng số Serverless Functions; vẫn giữ kiến trúc 2 functions.
