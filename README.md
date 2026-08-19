@@ -1366,3 +1366,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - V184 chuyển sang nháy bằng brightness + box-shadow ngay trên icon.
 - Mobile dùng chu kỳ 1.45 giây để dễ nhận biết hơn.
 - Không dùng transform nên không ảnh hưởng kéo thả.
+
+## V185 - Nháy mạnh + Zoom In/Zoom Out icon chat
+- Icon thu nhỏ xuống 92%, zoom lên tối đa 118%, rồi thu lại.
+- Có 2 nhịp zoom liên tiếp để gây chú ý.
+- Glow màu cam và chớp sáng đồng bộ với zoom.
+- Mobile chạy nhanh hơn (1.55 giây/chu kỳ).
+- Animation nằm trên logo con, không dùng transform của nút cha nên vẫn giữ kéo thả.
