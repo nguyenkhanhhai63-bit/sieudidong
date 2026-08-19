@@ -9819,3 +9819,84 @@ input,select,textarea{
     animation:none!important;
   }
 }
+
+
+/* =========================================================
+   V184 - Pulse rõ ràng, không xung đột kéo thả
+   ========================================================= */
+
+/* Tắt animation V183 dùng transform vì nút kéo thả cũng dùng transform/position */
+#zaloConsultBtn.ai-round-float{
+  animation:none!important;
+}
+
+/* Pseudo ring cũ bị overflow:hidden cắt mất */
+#zaloConsultBtn.ai-round-float::before,
+#zaloConsultBtn.ai-round-float::after{
+  display:none!important;
+  animation:none!important;
+}
+
+/* Nháy trực tiếp trên phần ảnh bên trong nên luôn nhìn thấy */
+#zaloConsultBtn.ai-round-float .ai-round-logo{
+  animation:aiChatVisibleGlow 1.65s ease-in-out infinite!important;
+  will-change:filter,box-shadow,opacity;
+}
+
+/* Tạo vòng sáng bằng box-shadow ngay trên hình tròn, không bị cắt */
+#zaloConsultBtn.ai-round-float .ai-round-logo img{
+  animation:aiChatImageFlash 1.65s ease-in-out infinite!important;
+  will-change:filter,opacity;
+}
+
+@keyframes aiChatVisibleGlow{
+  0%,100%{
+    box-shadow:
+      0 0 0 0 rgba(255,90,0,0),
+      0 5px 16px rgba(15,23,42,.18)!important;
+    filter:brightness(1);
+  }
+  20%{
+    box-shadow:
+      0 0 0 5px rgba(255,90,0,.34),
+      0 0 20px 5px rgba(255,90,0,.28),
+      0 6px 18px rgba(15,23,42,.22)!important;
+    filter:brightness(1.16);
+  }
+  40%{
+    box-shadow:
+      0 0 0 10px rgba(255,90,0,.12),
+      0 0 26px 8px rgba(255,90,0,.16),
+      0 5px 16px rgba(15,23,42,.18)!important;
+    filter:brightness(1.04);
+  }
+  55%,90%{
+    box-shadow:
+      0 0 0 0 rgba(255,90,0,0),
+      0 5px 16px rgba(15,23,42,.18)!important;
+    filter:brightness(1);
+  }
+}
+
+@keyframes aiChatImageFlash{
+  0%,100%{filter:brightness(1) saturate(1);opacity:1}
+  20%{filter:brightness(1.28) saturate(1.18);opacity:1}
+  38%{filter:brightness(1.03) saturate(1.05);opacity:.96}
+  55%,90%{filter:brightness(1) saturate(1);opacity:1}
+}
+
+/* Mobile làm hiệu ứng rõ hơn một chút */
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float .ai-round-logo{
+    animation-duration:1.45s!important;
+  }
+  #zaloConsultBtn.ai-round-float .ai-round-logo img{
+    animation-duration:1.45s!important;
+  }
+}
+
+/* Khi đang hover/touch thì ngừng nháy để dễ thao tác */
+#zaloConsultBtn.ai-round-float:hover .ai-round-logo,
+#zaloConsultBtn.ai-round-float:hover .ai-round-logo img{
+  animation-play-state:paused!important;
+}

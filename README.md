@@ -1359,3 +1359,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Không làm méo icon tròn.
 - Hover sẽ tạm ngừng hiệu ứng để dễ bấm.
 - Tôn trọng `prefers-reduced-motion`.
+
+## V184 - Fix hiệu ứng nháy icon chat
+- V183 dùng transform nên có thể xung đột với logic kéo thả.
+- Vòng pseudo cũ bị `overflow:hidden` cắt mất nên gần như không thấy.
+- V184 chuyển sang nháy bằng brightness + box-shadow ngay trên icon.
+- Mobile dùng chu kỳ 1.45 giây để dễ nhận biết hơn.
+- Không dùng transform nên không ảnh hưởng kéo thả.
