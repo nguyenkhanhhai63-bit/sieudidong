@@ -1146,3 +1146,18 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Zalo được bố trí thành một khối CTA riêng bên dưới ô chat.
 - Nút đổi thành `Chat Zalo với nhân viên`, rõ chức năng hơn.
 - Mobile: nút Zalo chiếm toàn chiều ngang để dễ bấm.
+
+## V152 - Fix lưu nội dung Đào tạo AI tư vấn chat
+- Thêm nút riêng `Lưu AI tư vấn chat` ngay trong khung AI chat, không phải qua nút ở cột bên trái.
+- Sau POST, trang quản trị GET lại cấu hình từ server để xác minh Redis đã lưu thật.
+- Kiểm tra 4 trường: cách AI tư vấn, câu chào, thông tin shop, quy tắc chuyển nhân viên.
+- Nếu server trả khác text vừa nhập, giao diện báo chính xác mục chưa được lưu.
+- Nút `Lưu cấu hình AI` bên trái cũng dùng chung cơ chế lưu + xác minh mới.
+
+## V153 - Fix nút chat nổi
+- Xóa triệt để shortcut/chữ `Nhân viên` trên header chatbox.
+- Nút Zalo với nhân viên chỉ còn ở khu vực hỗ trợ bên trong chatbox.
+- Thêm nhãn `Tư vấn ngay` nằm sát bên nút chat nổi.
+- Nhãn đi theo vị trí nút khi kéo thả vì nằm trong cùng floating control.
+- Mobile có hiệu ứng nhịp nhẹ để khách dễ nhận biết.
+- Khi mở chatbox, nhãn `Tư vấn ngay` được ẩn cùng nút chat.

@@ -3278,3 +3278,15 @@ aiChatInput?.addEventListener("pointerdown",()=>{
 aiChatInput?.addEventListener("touchstart",()=>{
   aiChatInput.removeAttribute("readonly");
 },{passive:true});
+
+/* V153 - floating chat label + remove old header employee shortcut */
+document.addEventListener("DOMContentLoaded",()=>{
+  const oldEmployee=document.getElementById("aiMobileZaloDirect");
+  if(oldEmployee) oldEmployee.remove();
+
+  const label=document.getElementById("aiChatFloatLabel");
+  if(label){
+    label.textContent="Tư vấn ngay";
+    label.setAttribute("aria-hidden","true");
+  }
+});

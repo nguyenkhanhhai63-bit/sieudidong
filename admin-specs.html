@@ -1112,6 +1112,23 @@ html,body,button,input,select,textarea {
   }
 }
 
+
+/* V152 - Lưu riêng AI tư vấn chat */
+.ai-chat-save-actions{
+  margin-top:14px!important;
+  padding-top:12px;
+  border-top:1px solid #eef0f3;
+}
+#saveAiChatSettings{
+  min-width:170px;
+}
+#aiChatSettingsStatus{
+  margin-top:8px;
+  min-height:18px;
+  font-size:11px;
+  font-weight:700;
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -1312,6 +1329,11 @@ html,body,button,input,select,textarea {
             <textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px" placeholder="Ví dụ: Chỉ chuyển nhân viên khi cần xác nhận tồn kho, địa chỉ, chính sách hoặc AI không đủ dữ liệu."></textarea>
           </div>
 
+          <div class="ai-actions ai-chat-save-actions">
+            <button id="saveAiChatSettings" class="primary" type="button">Lưu AI tư vấn chat</button>
+          </div>
+          <div id="aiChatSettingsStatus" class="ai-settings-status"></div>
+
           <div class="ai-example" style="background:#f8fafc;border-color:#e5e7eb;color:#475569">
             <strong>Nguyên tắc:</strong> AI chat tư vấn trước. Nút Zalo chỉ hiện khi câu hỏi cần nhân viên xác nhận trực tiếp.
           </div>
@@ -1412,6 +1434,8 @@ const aiChatInstructions=document.getElementById("aiChatInstructions");
 const aiChatWelcomeMessage=document.getElementById("aiChatWelcomeMessage");
 const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
 const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
+const saveAiChatSettings=document.getElementById("saveAiChatSettings");
+const aiChatSettingsStatus=document.getElementById("aiChatSettingsStatus");
 const refreshSeo=document.getElementById("refreshSeo");
 const seoSitemapStatus=document.getElementById("seoSitemapStatus");
 const seoUrlCount=document.getElementById("seoUrlCount");
@@ -1869,45 +1893,119 @@ async function loadAiSettings(force=false){
     aiSettingsLoaded=true;
     aiSettingsStatus.textContent="✓ Đã tải cấu hình AI đang áp dụng";
     aiSettingsStatus.style.color="#15803d";
+    if(aiChatSettingsStatus){
+      aiChatSettingsStatus.textContent="✓ Đã tải nội dung AI tư vấn chat đang lưu trên server.";
+      aiChatSettingsStatus.style.color="#15803d";
+    }
   }catch(e){
     aiSettingsStatus.textContent=e.message;
     aiSettingsStatus.style.color="#b91c1c";
   }
 }
 
+
+function currentAiSettingsPayload(){
+  return {
+    customInstructions:aiCustomInstructions.value,
+    recommendationStyle:aiRecommendationStyle.value,
+    responseLength:aiResponseLength.value,
+    pricePriority:aiPricePriority.value,
+    salesTone:aiSalesTone.value,
+    mustMentionWeaknesses:aiMustWeaknesses.checked,
+    mustComparePrice:aiMustPrice.checked,
+    allowTieRecommendation:aiAllowTie.checked,
+    chatInstructions:aiChatInstructions.value,
+    chatWelcomeMessage:aiChatWelcomeMessage.value,
+    chatStoreFacts:aiChatStoreFacts.value,
+    chatHandoffRules:aiChatHandoffRules.value
+  };
+}
+
+async function saveAiSettingsPayload(payload){
+  const r=await fetch("/api/admin/ai-settings",{
+    method:"POST",
+    cache:"no-store",
+    credentials:"same-origin",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+
+  let data={};
+  try{ data=await r.json(); }catch(_){}
+  if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
+
+  // Xác minh lại từ server để chắc chắn Redis đã ghi thật.
+  const verify=await fetch("/api/admin/ai-settings?ts="+Date.now(),{
+    cache:"no-store",
+    credentials:"same-origin"
+  });
+  let verified={};
+  try{ verified=await verify.json(); }catch(_){}
+  if(!verify.ok) throw new Error(verified.error||"Đã gửi lưu nhưng không đọc lại được cấu hình");
+
+  const settings=verified.settings||data.settings||payload;
+  fillAiSettings(settings);
+  aiSettingsLoaded=true;
+  return settings;
+}
+
+async function persistAiChatSettings(){
+  if(!saveAiChatSettings) return;
+
+  saveAiChatSettings.disabled=true;
+  saveAiChatSettings.textContent="Đang lưu...";
+  aiChatSettingsStatus.textContent="Đang lưu cấu hình AI tư vấn chat...";
+  aiChatSettingsStatus.style.color="#6b7280";
+
+  try{
+    const payload=currentAiSettingsPayload();
+    const saved=await saveAiSettingsPayload(payload);
+
+    // So sánh đúng 4 ô chat để phát hiện trường hợp server không ghi.
+    const checks=[
+      ["Cách AI tư vấn",payload.chatInstructions,saved.chatInstructions],
+      ["Câu chào",payload.chatWelcomeMessage,saved.chatWelcomeMessage],
+      ["Thông tin shop",payload.chatStoreFacts,saved.chatStoreFacts],
+      ["Quy tắc chuyển nhân viên",payload.chatHandoffRules,saved.chatHandoffRules]
+    ];
+
+    const mismatch=checks.find(([,a,b])=>String(a||"").trim()!==String(b||"").trim());
+    if(mismatch){
+      throw new Error("Server chưa lưu đúng mục: "+mismatch[0]+". Vui lòng thử lại.");
+    }
+
+    aiChatSettingsStatus.textContent="✓ Đã lưu AI tư vấn chat thành công.";
+    aiChatSettingsStatus.style.color="#15803d";
+    try{showToast("Đã lưu AI tư vấn chat");}catch(_){}
+  }catch(e){
+    aiChatSettingsStatus.textContent=e.message||"Không lưu được AI tư vấn chat.";
+    aiChatSettingsStatus.style.color="#b91c1c";
+    try{showToast(e.message||"Không lưu được AI tư vấn chat","error");}catch(_){}
+  }finally{
+    saveAiChatSettings.disabled=false;
+    saveAiChatSettings.textContent="Lưu AI tư vấn chat";
+  }
+}
+
 async function persistAiSettings(){
   saveAiSettings.disabled=true;
   saveAiSettings.textContent="Đang lưu...";
-  aiSettingsStatus.textContent="";
+  aiSettingsStatus.textContent="Đang lưu toàn bộ cấu hình AI...";
+  aiSettingsStatus.style.color="#6b7280";
+
   try{
-    const payload={
-      customInstructions:aiCustomInstructions.value,
-      recommendationStyle:aiRecommendationStyle.value,
-      responseLength:aiResponseLength.value,
-      pricePriority:aiPricePriority.value,
-      salesTone:aiSalesTone.value,
-      mustMentionWeaknesses:aiMustWeaknesses.checked,
-      mustComparePrice:aiMustPrice.checked,
-      allowTieRecommendation:aiAllowTie.checked,
-      chatInstructions:aiChatInstructions.value,
-      chatWelcomeMessage:aiChatWelcomeMessage.value,
-      chatStoreFacts:aiChatStoreFacts.value,
-      chatHandoffRules:aiChatHandoffRules.value
-    };
-    const r=await fetch("/api/admin/ai-settings",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
-    });
-    const data=await r.json();
-    if(!r.ok) throw new Error(data.error||"Không lưu được cấu hình AI");
-    fillAiSettings(data.settings||payload);
-    aiSettingsLoaded=true;
-    aiSettingsStatus.textContent="✓ Đã lưu. AI so sánh và AI chat sẽ dùng cấu hình mới ngay từ lần tiếp theo.";
+    await saveAiSettingsPayload(currentAiSettingsPayload());
+    aiSettingsStatus.textContent="✓ Đã lưu toàn bộ cấu hình AI thành công.";
     aiSettingsStatus.style.color="#15803d";
+    if(aiChatSettingsStatus){
+      aiChatSettingsStatus.textContent="✓ AI tư vấn chat cũng đã được lưu.";
+      aiChatSettingsStatus.style.color="#15803d";
+    }
+    try{showToast("Đã lưu cấu hình AI");}catch(_){}
   }catch(e){
-    aiSettingsStatus.textContent=e.message;
+    aiSettingsStatus.textContent=e.message||"Không lưu được cấu hình AI";
     aiSettingsStatus.style.color="#b91c1c";
+    try{showToast(e.message||"Không lưu được cấu hình AI","error");}catch(_){}
   }finally{
     saveAiSettings.disabled=false;
     saveAiSettings.textContent="Lưu cấu hình AI";
@@ -1915,6 +2013,7 @@ async function persistAiSettings(){
 }
 
 if(saveAiSettings) saveAiSettings.addEventListener("click",persistAiSettings);
+if(saveAiChatSettings) saveAiChatSettings.addEventListener("click",persistAiChatSettings);
 if(reloadAiSettings) reloadAiSettings.addEventListener("click",()=>loadAiSettings(true));
 if(resetAiSettings) resetAiSettings.addEventListener("click",async()=>{
   if(!confirm("Khôi phục toàn bộ cấu hình AI về mặc định?")) return;

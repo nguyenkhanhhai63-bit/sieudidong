@@ -8420,3 +8420,77 @@ body.ai-chat-open .ai-chat-float-label{
     font-size:11px!important;
   }
 }
+
+
+/* =========================================================
+   V153 - Nút chat: bỏ Nhân viên + hiện rõ "Tư vấn ngay"
+   ========================================================= */
+#aiMobileZaloDirect,
+.ai-mobile-zalo-direct{
+  display:none!important;
+  visibility:hidden!important;
+}
+
+/* Label đi cùng nút chat nổi */
+#aiChatFloatLabel,
+.ai-chat-float-label{
+  display:flex!important;
+  position:absolute!important;
+  right:calc(100% + 8px)!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:34px!important;
+  padding:0 12px!important;
+  border:1px solid #e5e7eb!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  color:#111827!important;
+  font-size:12px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  box-shadow:0 5px 18px rgba(15,23,42,.14)!important;
+  pointer-events:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  z-index:2!important;
+}
+
+/* Mũi tên nhỏ hướng vào icon */
+#aiChatFloatLabel::after,
+.ai-chat-float-label::after{
+  content:""!important;
+  position:absolute!important;
+  right:-5px!important;
+  top:50%!important;
+  width:9px!important;
+  height:9px!important;
+  background:#fff!important;
+  border-top:1px solid #e5e7eb!important;
+  border-right:1px solid #e5e7eb!important;
+  transform:translateY(-50%) rotate(45deg)!important;
+}
+
+/* Khi chat đang mở thì ẩn cả nút và nhãn */
+body.ai-chat-open #aiChatFloatLabel,
+body.ai-chat-open .ai-chat-float-label{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  #aiChatFloatLabel,
+  .ai-chat-float-label{
+    min-height:32px!important;
+    padding:0 11px!important;
+    font-size:11px!important;
+    right:calc(100% + 7px)!important;
+    animation:aiAdviceLabelPulse 2.2s ease-in-out infinite!important;
+  }
+}
+
+@keyframes aiAdviceLabelPulse{
+  0%,100%{transform:translateY(-50%) scale(1);opacity:1}
+  50%{transform:translateY(-50%) scale(1.04);opacity:.88}
+}
