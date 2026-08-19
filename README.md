@@ -1136,3 +1136,13 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bàn phím chỉ xuất hiện khi khách chủ động chạm vào ô nhập.
 - Ngay khi chatbox mở đã hiện `Cần nhân viên tư vấn trực tiếp?` cùng nút `Nhắn Zalo ngay`.
 - Khi AI xác định câu hỏi cần nhân viên xác nhận, khối Zalo được nhấn mạnh hơn.
+
+## V150
+- Đổi nhãn cạnh icon chat trên mobile từ `Chat tư vấn` thành `Tư vấn ngay`.
+
+## V151
+- Xóa chữ/link `Nhân viên` khỏi thanh tiêu đề chat.
+- Header chỉ còn thương hiệu AI và nút đóng, gọn hơn.
+- Zalo được bố trí thành một khối CTA riêng bên dưới ô chat.
+- Nút đổi thành `Chat Zalo với nhân viên`, rõ chức năng hơn.
+- Mobile: nút Zalo chiếm toàn chiều ngang để dễ bấm.
