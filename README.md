@@ -1129,3 +1129,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nhãn `Chat tư vấn` có hiệu ứng thở nhẹ.
 - Khi kéo thả, toàn bộ animation tạm dừng để thao tác mượt.
 - Khi chatbox mở, nút và nhãn tiếp tục ẩn hoàn toàn như V147.
+
+## V149 - Mobile không tự bật bàn phím + gợi ý Zalo ngay khi mở chat
+- Chạm icon chat trên mobile chỉ mở chatbox, không tự gọi bàn phím.
+- Trước lúc mở, hệ thống blur phần tử đang focus và tạm khóa textarea 250ms.
+- Bàn phím chỉ xuất hiện khi khách chủ động chạm vào ô nhập.
+- Ngay khi chatbox mở đã hiện `Cần nhân viên tư vấn trực tiếp?` cùng nút `Nhắn Zalo ngay`.
+- Khi AI xác định câu hỏi cần nhân viên xác nhận, khối Zalo được nhấn mạnh hơn.

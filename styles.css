@@ -8314,3 +8314,32 @@ body.ai-chat-open .ai-chat-float-label{
     animation:none!important;
   }
 }
+
+
+/* =========================================================
+   V149 - Không tự bật bàn phím + Zalo gợi ý ngay khi mở chat
+   ========================================================= */
+.ai-human-handoff.ai-human-handoff-soft{
+  border-color:#dbe7ff!important;
+  background:#f8fbff!important;
+}
+.ai-human-handoff.ai-human-handoff-soft strong{
+  color:#174ea6!important;
+}
+.ai-human-handoff.ai-human-handoff-soft span{
+  color:#667085!important;
+}
+.ai-human-handoff.ai-human-handoff-soft.is-priority{
+  border-color:#a9c9ff!important;
+  background:#eef5ff!important;
+  box-shadow:0 4px 12px rgba(0,104,255,.09);
+}
+@media(max-width:720px){
+  .ai-human-handoff.ai-human-handoff-soft{
+    margin-top:5px!important;
+    padding:8px!important;
+  }
+  .ai-human-handoff.ai-human-handoff-soft a{
+    height:38px!important;
+  }
+}

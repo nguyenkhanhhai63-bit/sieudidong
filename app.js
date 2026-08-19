@@ -2771,13 +2771,27 @@ let aiChatBusy=false;
 
 function aiChatOpen(){
   if(!aiChatPanel) return;
+  const isMobile=window.matchMedia("(max-width:720px)").matches;
+
+  // Mobile: mở chatbox nhưng không tự gọi bàn phím.
+  if(isMobile){
+    try{ document.activeElement?.blur?.(); }catch(_){}
+    if(aiChatInput){
+      aiChatInput.blur();
+      aiChatInput.setAttribute("readonly","readonly");
+      setTimeout(()=>aiChatInput.removeAttribute("readonly"),250);
+    }
+  }
+
   aiChatLoadWelcome();
+  aiChatSetHumanHandoff(false);
   aiChatPanel.hidden=false;
   document.body.classList.add("ai-chat-open");
   if(zaloConsultBtn) zaloConsultBtn.style.setProperty("display","none","important");
   if(aiChatFloatLabel) aiChatFloatLabel.style.display="none";
   sendAnalytics("filter_click",{action:"ai_chat_open"});
-  if(!window.matchMedia("(max-width:720px)").matches){
+
+  if(!isMobile){
     setTimeout(()=>aiChatInput?.focus(),80);
   }
 }
@@ -2795,10 +2809,16 @@ function aiChatHide(){
 
 function aiChatSetHumanHandoff(show,reason=""){
   if(!aiHumanHandoff) return;
-  aiHumanHandoff.hidden=!show;
-  if(show && reason){
-    const note=aiHumanHandoff.querySelector("span");
-    if(note) note.textContent=reason;
+
+  // Luôn cho khách lựa chọn nhắn nhân viên ngay khi vào chat.
+  aiHumanHandoff.hidden=false;
+  aiHumanHandoff.classList.toggle("is-priority",Boolean(show));
+
+  const note=aiHumanHandoff.querySelector("span");
+  if(note){
+    note.textContent=(show && reason)
+      ? reason
+      : "Nếu muốn nói chuyện với nhân viên ngay, bạn có thể nhắn Zalo trực tiếp.";
   }
 }
 
@@ -2926,7 +2946,6 @@ async function aiChatAsk(question){
   aiChatInput.disabled=true;
   aiChatSend.disabled=true;
 
-  aiChatSetHumanHandoff(false);
   aiChatAppend("user",text);
   AI_CHAT_HISTORY.push({role:"user",text});
   if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
@@ -3252,3 +3271,10 @@ setTimeout(syncAiChatFloatLabel,500);
     dot.style.display="none";
   });
 })();
+
+aiChatInput?.addEventListener("pointerdown",()=>{
+  aiChatInput.removeAttribute("readonly");
+});
+aiChatInput?.addEventListener("touchstart",()=>{
+  aiChatInput.removeAttribute("readonly");
+},{passive:true});
