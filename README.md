@@ -994,3 +994,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Tổng entrypoint mới chỉ còn 2 Serverless Functions.
 - Thêm `.vercelignore` để Vercel bỏ qua các file API cũ còn sót trong GitHub do cách Upload files không xóa file cũ.
 - Không đổi URL API mà frontend đang gọi.
+
+## V132 - Admin Pro + fix lưu SEO
+- Sửa lỗi `showToast is not defined` khi lưu SEO.
+- Thêm toast thông báo thành công/thất bại dùng chung cho trang quản trị.
+- Nâng cấp giao diện quản trị: header sticky, tab sticky, card, form, button, khoảng cách và responsive.
+- Tối ưu phần SEO, AI và Analytics nhìn đồng bộ và chuyên nghiệp hơn.
+- Giữ kiến trúc V131: chỉ 2 Serverless Functions.
