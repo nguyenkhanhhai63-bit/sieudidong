@@ -9752,3 +9752,70 @@ input,select,textarea{
     padding:0!important;
   }
 }
+
+
+/* =========================================================
+   V183 - Hiệu ứng nháy / pulse cho nút chat AI
+   Nhẹ, giống bong bóng chat: phóng nhẹ + vòng sáng lan ra
+   ========================================================= */
+#zaloConsultBtn.ai-round-float{
+  position:fixed;
+  isolation:isolate;
+  animation:aiChatButtonPulse 2.2s ease-in-out infinite!important;
+}
+
+/* Vòng sáng lan ra phía sau icon */
+#zaloConsultBtn.ai-round-float::before,
+#zaloConsultBtn.ai-round-float::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+  border:2px solid rgba(255,90,0,.55);
+  opacity:0;
+  animation:aiChatRingPulse 2.2s ease-out infinite;
+}
+
+#zaloConsultBtn.ai-round-float::after{
+  animation-delay:1.1s;
+}
+
+@keyframes aiChatButtonPulse{
+  0%,100%{transform:scale(1)}
+  8%{transform:scale(1.08)}
+  16%{transform:scale(1)}
+  24%{transform:scale(1.05)}
+  32%{transform:scale(1)}
+}
+
+@keyframes aiChatRingPulse{
+  0%{
+    transform:scale(.92);
+    opacity:.65;
+  }
+  42%{
+    transform:scale(1.38);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1.38);
+    opacity:0;
+  }
+}
+
+/* Khi rê chuột hoặc đang kéo thì ngừng nháy để thao tác ổn định */
+#zaloConsultBtn.ai-round-float:hover{
+  animation:none!important;
+  transform:scale(1.06);
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của thiết bị */
+@media (prefers-reduced-motion:reduce){
+  #zaloConsultBtn.ai-round-float,
+  #zaloConsultBtn.ai-round-float::before,
+  #zaloConsultBtn.ai-round-float::after{
+    animation:none!important;
+  }
+}

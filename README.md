@@ -1352,3 +1352,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Có tiêu đề `Ảnh icon nút chat` và badge `TÙY CHỈNH`.
 - Giữ nguyên chọn ảnh, xem trước, lưu và khôi phục mặc định.
 - Không còn nằm ở một card riêng dễ bị bỏ sót.
+
+## V183 - Hiệu ứng nút chat AI
+- Icon chat nháy nhẹ theo chu kỳ.
+- Có 2 vòng sáng màu cam lan ra như bong bóng chat.
+- Không làm méo icon tròn.
+- Hover sẽ tạm ngừng hiệu ứng để dễ bấm.
+- Tôn trọng `prefers-reduced-motion`.
