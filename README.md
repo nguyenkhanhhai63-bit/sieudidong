@@ -987,3 +987,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Chuyển toàn bộ panel SEO vào đúng khu vực quản trị.
 - Đổi tên tab thành `SEO & Google` để dễ nhận biết.
 - Khi bấm tab sẽ thấy ngay khối `Nội dung hiển thị trên Google` và phần xem trước.
+
+## V131 - 2 Serverless Functions
+- Toàn bộ API public gom vào `/api/[action].js`.
+- Toàn bộ API admin giữ qua `/api/admin/[action].js`.
+- Tổng entrypoint mới chỉ còn 2 Serverless Functions.
+- Thêm `.vercelignore` để Vercel bỏ qua các file API cũ còn sót trong GitHub do cách Upload files không xóa file cũ.
+- Không đổi URL API mà frontend đang gọi.
