@@ -1233,3 +1233,24 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nút `Tư vấn` trên header gọi trực tiếp AI chat hiện có.
 - Giữ nguyên search suggestions và category dropdown hiện tại.
 - Header sticky khi cuộn.
+
+## V165 - Cân đối lại header desktop
+- Thu gọn thanh cam trên cùng.
+- Cân lại 4 vùng logo / danh mục / search / tư vấn-cửa hàng.
+- Search rộng hơn và nằm đúng trọng tâm.
+- Thu nhỏ icon, text phụ và chiều cao hàng chính.
+- Căn hàng menu dưới thẳng theo cùng lưới với hàng trên.
+- Xóa phần text nhỏ dư gây lệch bố cục.
+
+## V166 - Fix dứt điểm lưu Gợi ý câu hỏi mẫu
+- 5 trường AI chat chuyển sang Redis HASH riêng `ai:chat:settings:v2`.
+- `Gợi ý câu hỏi mẫu` không còn phụ thuộc object cấu hình AI cũ.
+- POST ghi object tổng + hash chat, sau đó đọc lại và xác minh.
+- Public AI chat ưu tiên đọc hash v2, fallback dữ liệu cũ để không mất cấu hình.
+- So sánh textarea chuẩn hóa CRLF/LF để không báo lỗi giả do xuống dòng.
+
+## V167 - Khung nhân viên/Zalo gọn hơn
+- Đổi thành một hàng: `Cần nhân viên hỗ trợ?` + nút `Nhắn Zalo`.
+- Bỏ mô tả dài để phần cuối chatbox nhẹ hơn.
+- Nút Zalo chuyển sang nền trắng viền xanh, không còn khối xanh quá nặng.
+- Mobile giữ chiều cao khoảng 44px và không chiếm nguyên hàng lớn.

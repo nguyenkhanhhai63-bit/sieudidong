@@ -3286,12 +3286,13 @@ async function persistAiChatSettings(){
       ["Gợi ý câu hỏi mẫu",payload.chatSuggestions,saved.chatSuggestions]
     ];
 
-    const mismatch=checks.find(([,a,b])=>String(a||"").trim()!==String(b||"").trim());
+    const normText=v=>String(v??"").replace(/\r\n?/g,"\n").trim();
+    const mismatch=checks.find(([,a,b])=>normText(a)!==normText(b));
     if(mismatch){
       throw new Error("Server chưa lưu đúng mục: "+mismatch[0]+". Vui lòng thử lại.");
     }
 
-    aiChatSettingsStatus.textContent="✓ Đã lưu AI tư vấn chat thành công.";
+    aiChatSettingsStatus.textContent="✓ Đã lưu AI tư vấn chat thành công vào Redis.";
     aiChatSettingsStatus.style.color="#15803d";
     try{showToast("Đã lưu AI tư vấn chat");}catch(_){}
   }catch(e){

@@ -9075,3 +9075,272 @@ input,select,textarea{
     padding-right:7px;
   }
 }
+
+
+/* =========================================================
+   V165 - Cân đối lại header desktop
+   ========================================================= */
+@media(min-width:1081px){
+  .sdd-header-v164{
+    box-shadow:0 3px 12px rgba(15,23,42,.045)!important;
+  }
+
+  /* Thanh cam gọn hơn */
+  .sdd-top-strip-inner{
+    width:min(1280px,calc(100% - 40px))!important;
+    min-height:30px!important;
+    font-size:10px!important;
+  }
+  .sdd-top-benefits{
+    gap:18px!important;
+  }
+
+  /* Hàng chính cân đối lại theo 3 vùng: logo / search / action */
+  .sdd-header-v164 .commerce-header-inner{
+    width:min(1280px,calc(100% - 40px))!important;
+    min-height:74px!important;
+    display:grid!important;
+    grid-template-columns:210px 126px minmax(420px,1fr) 220px!important;
+    align-items:center!important;
+    gap:14px!important;
+    padding:8px 0!important;
+  }
+
+  .sdd-header-v164 .commerce-logo{
+    gap:9px!important;
+  }
+  .sdd-header-v164 .commerce-logo-mark{
+    width:44px!important;
+    height:44px!important;
+    border-radius:11px!important;
+  }
+  .sdd-header-v164 .commerce-logo-text{
+    font-size:17px!important;
+  }
+  .sdd-brand-copy small{
+    font-size:9px!important;
+    margin-top:3px!important;
+  }
+
+  .sdd-header-v164 .commerce-category-btn{
+    width:126px!important;
+    height:44px!important;
+    justify-content:center!important;
+    padding:0 12px!important;
+    gap:7px!important;
+  }
+
+  .sdd-header-search{
+    height:44px!important;
+    grid-template-columns:32px minmax(0,1fr) 30px 44px!important;
+  }
+  .sdd-header-search input{
+    height:42px!important;
+    font-size:12px!important;
+  }
+  .sdd-search-submit{
+    width:44px!important;
+    height:44px!important;
+  }
+
+  .sdd-header-actions{
+    justify-content:flex-end!important;
+    gap:6px!important;
+  }
+  .sdd-header-action{
+    min-width:100px!important;
+    height:42px!important;
+    padding:0 7px!important;
+    gap:7px!important;
+  }
+  .sdd-action-icon{
+    width:28px!important;
+    height:28px!important;
+    font-size:14px!important;
+  }
+  .sdd-header-action strong{
+    font-size:10px!important;
+  }
+  .sdd-header-action small{
+    font-size:8px!important;
+  }
+
+  /* Ẩn dòng chữ nhỏ dư thừa dưới logo */
+  .sdd-header-v164 .commerce-header-note{
+    display:none!important;
+  }
+
+  /* Hàng menu dưới thấp hơn, thẳng hàng */
+  .sdd-header-nav-inner{
+    width:min(1280px,calc(100% - 40px))!important;
+    min-height:48px!important;
+    grid-template-columns:210px minmax(0,1fr) 180px!important;
+    gap:20px!important;
+  }
+
+  .sdd-nav-category{
+    width:210px!important;
+    height:38px!important;
+    justify-content:flex-start!important;
+    padding:0 16px!important;
+  }
+
+  .sdd-main-nav{
+    height:48px!important;
+    gap:24px!important;
+    justify-content:flex-start!important;
+  }
+  .sdd-main-nav a,
+  .sdd-main-nav button{
+    height:48px!important;
+    font-size:11px!important;
+  }
+
+  .sdd-nav-store{
+    width:180px!important;
+    height:36px!important;
+    justify-content:center!important;
+    font-size:10px!important;
+    padding:0 10px!important;
+  }
+}
+
+/* Laptop nhỏ: giảm menu, giữ search là trọng tâm */
+@media(min-width:1081px) and (max-width:1280px){
+  .sdd-header-v164 .commerce-header-inner,
+  .sdd-header-nav-inner,
+  .sdd-top-strip-inner{
+    width:min(1180px,calc(100% - 28px))!important;
+  }
+
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:188px 116px minmax(360px,1fr) 190px!important;
+    gap:10px!important;
+  }
+
+  .sdd-header-actions{
+    gap:2px!important;
+  }
+  .sdd-header-action{
+    min-width:90px!important;
+  }
+
+  .sdd-header-nav-inner{
+    grid-template-columns:188px minmax(0,1fr) 166px!important;
+    gap:15px!important;
+  }
+  .sdd-nav-category{
+    width:188px!important;
+  }
+  .sdd-main-nav{
+    gap:18px!important;
+  }
+  .sdd-nav-store{
+    width:166px!important;
+  }
+}
+
+
+
+/* =========================================================
+   V167 - Khung nhân viên/Zalo gọn hơn
+   ========================================================= */
+.ai-human-handoff.ai-human-handoff-soft{
+  margin:6px 8px!important;
+  min-height:46px!important;
+  padding:6px 8px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:1px solid #dbe7ff!important;
+  border-radius:11px!important;
+  background:#f8fbff!important;
+  box-shadow:none!important;
+}
+
+.ai-human-handoff.ai-human-handoff-soft > div{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+
+.ai-human-handoff.ai-human-handoff-soft strong{
+  margin:0!important;
+  color:#17345f!important;
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+
+.ai-human-handoff.ai-human-handoff-soft span{
+  margin:0!important;
+  color:#7a8699!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
+.ai-human-handoff.ai-human-handoff-soft a{
+  min-width:auto!important;
+  width:auto!important;
+  height:32px!important;
+  padding:0 11px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #a9c9ff!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#0068ff!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+
+.ai-human-handoff.ai-human-handoff-soft a:hover{
+  background:#eef5ff!important;
+}
+
+/* Nếu AI thực sự cần chuyển nhân viên thì chỉ nhấn nhẹ */
+.ai-human-handoff.ai-human-handoff-soft.is-priority{
+  border-color:#9ec3ff!important;
+  background:#f3f8ff!important;
+  box-shadow:0 2px 8px rgba(0,104,255,.07)!important;
+}
+
+/* Mobile giữ đúng 1 hàng, tránh CTA chiếm cả khối */
+@media(max-width:720px){
+  .ai-human-handoff.ai-human-handoff-soft{
+    margin:5px 8px!important;
+    min-height:44px!important;
+    padding:5px 7px!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:6px!important;
+  }
+
+  .ai-human-handoff.ai-human-handoff-soft > div{
+    overflow:hidden!important;
+  }
+
+  .ai-human-handoff.ai-human-handoff-soft strong{
+    font-size:10px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .ai-human-handoff.ai-human-handoff-soft span{
+    display:none!important;
+  }
+
+  .ai-human-handoff.ai-human-handoff-soft a{
+    width:auto!important;
+    height:32px!important;
+    padding:0 10px!important;
+    font-size:10px!important;
+  }
+}
+
