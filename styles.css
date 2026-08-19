@@ -8057,3 +8057,260 @@ body.modal-open #zaloConsultBtn{
     max-height:46px!important;
   }
 }
+
+
+/* =========================================================
+   V146 - Hiệu ứng nháy + nhãn "Chat tư vấn" trên mobile
+   ========================================================= */
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float{
+    overflow:visible!important;
+  }
+
+  #zaloConsultBtn.ai-round-float::before{
+    content:""!important;
+    position:absolute!important;
+    inset:-7px!important;
+    border-radius:50%!important;
+    border:2px solid rgba(255,90,0,.34)!important;
+    box-shadow:0 0 0 0 rgba(255,90,0,.24)!important;
+    animation:aiSupportPulse 1.9s ease-out infinite!important;
+    pointer-events:none!important;
+  }
+
+  #zaloConsultBtn.ai-round-float::after{
+    content:""!important;
+    position:absolute!important;
+    inset:-2px!important;
+    border-radius:50%!important;
+    background:rgba(255,90,0,.08)!important;
+    animation:aiSupportGlow 1.9s ease-in-out infinite!important;
+    pointer-events:none!important;
+  }
+
+  #zaloConsultBtn.ai-round-float.is-dragging::before,
+  #zaloConsultBtn.ai-round-float.is-dragging::after{
+    animation:none!important;
+    opacity:0!important;
+  }
+
+  .ai-chat-float-label{
+    position:fixed;
+    z-index:9989;
+    height:30px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 10px;
+    border-radius:15px;
+    background:#fff;
+    color:#111827;
+    border:1px solid #e5e7eb;
+    box-shadow:0 6px 18px rgba(15,23,42,.12);
+    font-size:10px;
+    font-weight:800;
+    white-space:nowrap;
+    pointer-events:none;
+    animation:aiSupportLabelBlink 2.4s ease-in-out infinite;
+  }
+
+  .ai-chat-float-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 0 3px rgba(34,197,94,.12);
+  }
+
+  body.ai-chat-open .ai-chat-float-label{
+    display:none!important;
+  }
+}
+
+@media(min-width:721px){
+  .ai-chat-float-label{
+    display:none!important;
+  }
+}
+
+@keyframes aiSupportPulse{
+  0%{
+    transform:scale(.92);
+    opacity:.7;
+    box-shadow:0 0 0 0 rgba(255,90,0,.28);
+  }
+  70%{
+    transform:scale(1.18);
+    opacity:0;
+    box-shadow:0 0 0 12px rgba(255,90,0,0);
+  }
+  100%{
+    transform:scale(1.18);
+    opacity:0;
+  }
+}
+
+@keyframes aiSupportGlow{
+  0%,100%{opacity:.25}
+  50%{opacity:.7}
+}
+
+@keyframes aiSupportLabelBlink{
+  0%,100%{opacity:1;transform:translateY(0)}
+  50%{opacity:.72;transform:translateY(-1px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #zaloConsultBtn.ai-round-float::before,
+  #zaloConsultBtn.ai-round-float::after,
+  .ai-chat-float-label{
+    animation:none!important;
+  }
+}
+
+
+/* =========================================================
+   V147 - Mobile chat: không tự bật bàn phím + ẩn icon khi mở chat
+   ========================================================= */
+body.ai-chat-open #zaloConsultBtn.ai-round-float{
+  display:none!important;
+}
+
+body.ai-chat-open .ai-chat-float-label{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  /* Không để hiệu ứng focus cũ làm trình duyệt gọi bàn phím ngoài ý muốn */
+  body.ai-chat-open .ai-chat-form textarea:not(:focus){
+    caret-color:transparent;
+  }
+}
+
+
+/* =========================================================
+   V148 - Hiệu ứng bong bóng chat kiểu Zalo
+   ========================================================= */
+
+/* Nhịp nổi nhẹ, không giật mạnh */
+@keyframes sddChatFloat {
+  0%,100% { transform:translateY(0) scale(1); }
+  50% { transform:translateY(-4px) scale(1.02); }
+}
+
+/* Vòng sóng lan nhẹ quanh bong bóng */
+@keyframes sddChatRing {
+  0% {
+    transform:scale(.86);
+    opacity:.48;
+    box-shadow:0 0 0 0 rgba(255,90,0,.25);
+  }
+  70% {
+    transform:scale(1.28);
+    opacity:0;
+    box-shadow:0 0 0 12px rgba(255,90,0,0);
+  }
+  100% {
+    transform:scale(1.28);
+    opacity:0;
+  }
+}
+
+/* Chấm thông báo nháy nhẹ */
+@keyframes sddNotifyBlink {
+  0%,100% { transform:scale(1); opacity:1; }
+  50% { transform:scale(1.28); opacity:.65; }
+}
+
+/* Nhãn Chat tư vấn nhấp nhẹ đồng bộ */
+@keyframes sddLabelBreath {
+  0%,100% { transform:translateY(0); opacity:1; }
+  50% { transform:translateY(-1px); opacity:.84; }
+}
+
+#zaloConsultBtn.ai-round-float{
+  overflow:visible!important;
+}
+
+#zaloConsultBtn.ai-round-float::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-7px!important;
+  border-radius:50%!important;
+  border:2px solid rgba(255,90,0,.28)!important;
+  background:transparent!important;
+  pointer-events:none!important;
+  animation:sddChatRing 2.1s ease-out infinite!important;
+}
+
+#zaloConsultBtn.ai-round-float::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-2px!important;
+  border-radius:50%!important;
+  background:rgba(255,90,0,.06)!important;
+  pointer-events:none!important;
+  animation:none!important;
+}
+
+.ai-chat-notify-dot{
+  position:absolute;
+  top:1px;
+  right:1px;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#ff3b30;
+  border:2px solid #fff;
+  box-shadow:0 2px 7px rgba(0,0,0,.18);
+  z-index:3;
+  animation:sddNotifyBlink 1.6s ease-in-out infinite;
+}
+
+.ai-chat-float-label{
+  animation:sddLabelBreath 2.2s ease-in-out infinite!important;
+}
+
+/* Hiệu ứng nổi chỉ dùng khi nút đứng yên */
+#zaloConsultBtn.ai-round-float:not(.is-dragging){
+  animation:sddChatFloat 2.8s ease-in-out infinite!important;
+}
+
+/* Khi kéo thì tắt animation để thao tác mượt */
+#zaloConsultBtn.ai-round-float.is-dragging,
+#zaloConsultBtn.ai-round-float.is-dragging::before,
+#zaloConsultBtn.ai-round-float.is-dragging .ai-chat-notify-dot{
+  animation:none!important;
+}
+
+/* Khi chatbox mở thì ẩn toàn bộ bubble/label như V147 */
+body.ai-chat-open #zaloConsultBtn.ai-round-float,
+body.ai-chat-open .ai-chat-float-label{
+  display:none!important;
+}
+
+@media(max-width:720px){
+  #zaloConsultBtn.ai-round-float{
+    animation:sddChatFloat 2.8s ease-in-out infinite!important;
+  }
+}
+
+/* Desktop để yên hơn, không quá gây chú ý */
+@media(min-width:721px){
+  #zaloConsultBtn.ai-round-float{
+    animation:none!important;
+  }
+  #zaloConsultBtn.ai-round-float::before{
+    animation:sddChatRing 2.6s ease-out infinite!important;
+  }
+}
+
+/* Tôn trọng thiết lập giảm chuyển động của hệ điều hành */
+@media(prefers-reduced-motion:reduce){
+  #zaloConsultBtn.ai-round-float,
+  #zaloConsultBtn.ai-round-float::before,
+  .ai-chat-notify-dot,
+  .ai-chat-float-label{
+    animation:none!important;
+  }
+}

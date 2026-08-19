@@ -1106,3 +1106,26 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khóa kích thước nút ở 58x58px, logo 50x50px.
 - JS kéo thả giờ set `left/top/right/bottom` bằng inline `!important`, nên CSS cũ không thể kéo nút về vị trí sai.
 - Kéo thả và hít mép vẫn hoạt động.
+
+## V146 - Mobile chat dễ nhận biết hơn
+- Nút tròn logo Siêu Di Động có hiệu ứng pulse/nháy nhẹ để thu hút chú ý.
+- Thêm nhãn `Chat tư vấn` nằm cạnh nút trên mobile.
+- Nhãn tự chạy theo vị trí nút khi kéo thả và tự đổi sang bên trái/phải để không tràn màn hình.
+- Khi mở box chat, nhãn tự ẩn.
+- Hiệu ứng tắt tự động nếu thiết bị bật `prefers-reduced-motion`.
+
+## V147 - Mobile chat focus fix
+- Trên mobile, mở chat không tự bật bàn phím.
+- Sau khi AI trả lời xong, ô nhập không tự focus lại nên bàn phím không tự bật lên.
+- Khách muốn nhập câu tiếp theo thì tự chạm vào ô nhập.
+- Khi chatbox đang mở, ẩn hoàn toàn nút tròn chat nổi và nhãn `Chat tư vấn`.
+- Khi đóng chatbox, nút tròn xuất hiện lại đúng vị trí đã kéo trước đó.
+
+## V148 - Hiệu ứng bong bóng chat kiểu Zalo
+- Nút chat tròn nổi lên/xuống nhẹ theo nhịp.
+- Có vòng sóng lan nhẹ quanh logo để thu hút chú ý.
+- Thêm chấm đỏ thông báo nhỏ ở góc trên như bubble chat.
+- Chấm đỏ tự ẩn sau khi khách mở chat lần đầu trong phiên.
+- Nhãn `Chat tư vấn` có hiệu ứng thở nhẹ.
+- Khi kéo thả, toàn bộ animation tạm dừng để thao tác mượt.
+- Khi chatbox mở, nút và nhãn tiếp tục ẩn hoàn toàn như V147.

@@ -2748,6 +2748,7 @@ const aiChatSuggestions=document.getElementById("aiChatSuggestions");
 const aiHumanHandoff=document.getElementById("aiHumanHandoff");
 const aiHumanZaloBtn=document.getElementById("aiHumanZaloBtn");
 const zaloConsultBtn=document.getElementById("zaloConsultBtn");
+const aiChatFloatLabel=document.getElementById("aiChatFloatLabel");
 const aiMobileZaloDirect=document.getElementById("aiMobileZaloDirect");
 
 const AI_CHAT_HISTORY=[];
@@ -2773,13 +2774,23 @@ function aiChatOpen(){
   aiChatLoadWelcome();
   aiChatPanel.hidden=false;
   document.body.classList.add("ai-chat-open");
+  if(zaloConsultBtn) zaloConsultBtn.style.setProperty("display","none","important");
+  if(aiChatFloatLabel) aiChatFloatLabel.style.display="none";
   sendAnalytics("filter_click",{action:"ai_chat_open"});
-  setTimeout(()=>aiChatInput?.focus(),80);
+  if(!window.matchMedia("(max-width:720px)").matches){
+    setTimeout(()=>aiChatInput?.focus(),80);
+  }
 }
 function aiChatHide(){
   if(!aiChatPanel) return;
   aiChatPanel.hidden=true;
   document.body.classList.remove("ai-chat-open");
+  if(zaloConsultBtn){
+    zaloConsultBtn.style.removeProperty("display");
+  }
+  setTimeout(()=>{
+    syncAiChatFloatLabel();
+  },60);
 }
 
 function aiChatSetHumanHandoff(show,reason=""){
@@ -2952,7 +2963,12 @@ async function aiChatAsk(question){
     aiChatBusy=false;
     aiChatInput.disabled=false;
     aiChatSend.disabled=false;
-    aiChatInput.focus();
+    // Mobile: không tự bật lại bàn phím sau khi AI trả lời.
+    if(!window.matchMedia("(max-width:720px)").matches){
+      aiChatInput.focus();
+    }else{
+      aiChatInput.blur();
+    }
   }
 }
 
@@ -3012,6 +3028,31 @@ function setAiSupportPositionImportant(btn,x,y){
   btn.style.setProperty("right","auto","important");
   btn.style.setProperty("bottom","auto","important");
   btn.style.setProperty("transform","none","important");
+}
+
+
+function syncAiChatFloatLabel(){
+  if(!aiChatFloatLabel || !zaloConsultBtn) return;
+
+  if(!window.matchMedia("(max-width:720px)").matches){
+    aiChatFloatLabel.style.display="none";
+    return;
+  }
+
+  aiChatFloatLabel.style.display="flex";
+  const r=zaloConsultBtn.getBoundingClientRect();
+  const lw=aiChatFloatLabel.offsetWidth||92;
+  const lh=aiChatFloatLabel.offsetHeight||30;
+
+  const preferLeft = r.left > window.innerWidth/2;
+  let left = preferLeft ? r.left-lw-8 : r.right+8;
+  left=Math.max(8,Math.min(window.innerWidth-lw-8,left));
+
+  let top=r.top+(r.height-lh)/2;
+  top=Math.max(8,Math.min(window.innerHeight-lh-8,top));
+
+  aiChatFloatLabel.style.left=Math.round(left)+"px";
+  aiChatFloatLabel.style.top=Math.round(top)+"px";
 }
 
 /* V142 - Kéo thả nút hỗ trợ AI trên mobile */
@@ -3098,6 +3139,7 @@ function setAiSupportPositionImportant(btn,x,y){
       clamp(startLeft+dx,8,maxX),
       clamp(startTop+dy,8,maxY)
     );
+    syncAiChatFloatLabel();
   },{passive:false});
 
   function endDrag(e){
@@ -3107,7 +3149,7 @@ function setAiSupportPositionImportant(btn,x,y){
     try{ btn.releasePointerCapture?.(pointerId); }catch(_){}
     if(moved){
       savePos();
-      setTimeout(snapAiSupportToEdge,40);
+      setTimeout(()=>{snapAiSupportToEdge();syncAiChatFloatLabel();},40);
       // Chặn click phát sinh sau thao tác kéo.
       btn.dataset.dragJustEnded="1";
       setTimeout(()=>delete btn.dataset.dragJustEnded,180);
@@ -3125,8 +3167,8 @@ function setAiSupportPositionImportant(btn,x,y){
     }
   },true);
 
-  window.addEventListener("resize",()=>setTimeout(applySaved,80));
-  requestAnimationFrame(applySaved);
+  window.addEventListener("resize",()=>setTimeout(()=>{applySaved();syncAiChatFloatLabel();},80));
+  requestAnimationFrame(()=>{applySaved();setTimeout(syncAiChatFloatLabel,60);});
 })();
 
 
@@ -3191,3 +3233,22 @@ function snapAiSupportToEdge(){
   },2600);
 })();
 
+
+window.addEventListener("load",()=>setTimeout(syncAiChatFloatLabel,150));
+setTimeout(syncAiChatFloatLabel,500);
+
+(function initChatNotifyDot(){
+  const dot=document.querySelector(".ai-chat-notify-dot");
+  if(!dot || !zaloConsultBtn) return;
+
+  try{
+    if(sessionStorage.getItem("sdd-chat-seen")==="1"){
+      dot.style.display="none";
+    }
+  }catch(_){}
+
+  zaloConsultBtn.addEventListener("click",()=>{
+    try{sessionStorage.setItem("sdd-chat-seen","1");}catch(_){}
+    dot.style.display="none";
+  });
+})();
