@@ -1663,3 +1663,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Chuyển nút Trang chủ sang bên trái.
 - Chuyển logo/thương hiệu Siêu Di Động sang bên phải.
 - Giữ nguyên kích thước và giao diện hiện tại.
+
+## V229 - Thu gọn khối AI/Zalo trên mobile
+- Giảm chiều cao header AI, logo và nút đóng.
+- Bỏ khung xanh lớn của khu vực hỗ trợ nhân viên.
+- Đưa CTA Zalo thành hàng gọn liền mạch ngay dưới header.
+- Nút Nhắn Zalo nền xanh, nhỏ gọn; giữ mô tả hỗ trợ trực tiếp.
