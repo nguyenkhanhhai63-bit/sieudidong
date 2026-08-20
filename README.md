@@ -1568,3 +1568,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Server gọi trực tiếp `lookupWarrantyByPhone()` và trả kết quả vào chatbox.
 - Gemini không được nhận tin nhắn SĐT này nên không thể tự nói `chưa tích hợp` hoặc đẩy khách sang Zalo.
 - Sau khi trả kết quả, `warrantyPending=false` và `warrantyCompleted=true`.
+
+## V214 - Giữ trạng thái tra cứu bảo hành từ frontend đến server
+- Sửa trường hợp frontend gửi lịch sử bằng `sender: bot` thay vì `role: assistant`.
+- Khi AI xin SĐT, frontend lưu `warrantyPending=true`.
+- Tin nhắn SĐT kế tiếp gửi cờ này lên server và bị ép chạy thẳng `lookupWarrantyByPhone()`.
+- Không cho AI chung trả các câu giả như `hệ thống đang kiểm tra`, `vui lòng chờ`, hoặc đẩy sang Zalo.
+- Khi có kết quả thật, server trả `warrantyCompleted=true` và frontend xóa trạng thái chờ.

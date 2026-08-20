@@ -1,3 +1,4 @@
+let sddWarrantyPending=false;
 
 /* V71 - Link Zalo tư vấn.
    Thay link bên dưới bằng link Zalo của shop/nhân viên, ví dụ:
@@ -2819,6 +2820,8 @@ async function aiChatLoadWelcome(){
   try{
     const r=await fetch("/api/ai-chat",{cache:"no-store"});
     const data=await r.json();
+      if(data && (data.needsPhone===true || data.warrantyPending===true)) sddWarrantyPending=true;
+      if(data && (data.warrantyCompleted===true || data.warrantyPending===false)) sddWarrantyPending=false;
     const text=String(data?.welcomeMessage||"").trim();
     if(!r.ok) return;
     const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
