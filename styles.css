@@ -10002,3 +10002,42 @@ input,select,textarea{
 #zaloConsultBtn.ai-round-float:active .ai-round-logo img{
   animation-play-state:paused!important;
 }
+
+/* =========================================================
+   V186 - HEADER DESKTOP RỘNG HƠN
+   ========================================================= */
+@media (min-width:1081px){
+  .sdd-top-strip-inner,
+  .sdd-header-v164 .commerce-header-inner,
+  .sdd-header-nav-inner{
+    width:calc(100% - 56px)!important;
+    max-width:1600px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:auto auto minmax(460px,1fr) auto!important;
+    gap:18px!important;
+    min-height:78px!important;
+  }
+  .sdd-header-search{width:100%!important;max-width:none!important;}
+  .sdd-header-actions{flex:0 0 auto!important;}
+  .sdd-header-nav-inner{
+    grid-template-columns:230px minmax(0,1fr) auto!important;
+    gap:28px!important;
+  }
+  .sdd-main-nav{justify-content:flex-start!important;gap:32px!important;}
+}
+@media (min-width:1500px){
+  .sdd-top-strip-inner,
+  .sdd-header-v164 .commerce-header-inner,
+  .sdd-header-nav-inner{
+    width:calc(100% - 72px)!important;
+    max-width:1680px!important;
+  }
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:auto auto minmax(600px,1fr) auto!important;
+    gap:20px!important;
+  }
+  .sdd-main-nav{gap:36px!important;}
+}

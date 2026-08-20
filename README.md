@@ -1373,3 +1373,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Glow màu cam và chớp sáng đồng bộ với zoom.
 - Mobile chạy nhanh hơn (1.55 giây/chu kỳ).
 - Animation nằm trên logo con, không dùng transform của nút cha nên vẫn giữ kéo thả.
+
+## V186 - Header desktop rộng hơn
+- Mở rộng header desktop tối đa 1600–1680px.
+- Giảm khoảng trắng hai bên giống bố cục mẫu.
+- Ô tìm kiếm rộng hơn và chiếm phần không gian chính.
+- Thanh menu dưới mở rộng đồng bộ.
+- Mobile giữ nguyên.
