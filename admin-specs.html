@@ -3490,8 +3490,45 @@ function fillAiChatTraining(s={}){
   if("chatSuggestions" in s) aiChatSuggestionsInput.value=s.chatSuggestions||"";
 }
 
+
+async function adminTrainingFetch(url,options={}){
+  const opts={
+    cache:"no-store",
+    credentials:"same-origin",
+    ...options,
+    headers:{
+      ...(options.headers||{})
+    }
+  };
+
+  let r=await fetch(url,opts);
+
+  if(r.status===401){
+    // Xác minh lại phiên bằng endpoint quản trị chung để tránh trạng thái
+    // giao diện vẫn đăng nhập nhưng endpoint lưu AI đã coi cookie là hết hạn.
+    try{
+      const check=await fetch("/api/admin/spec-links?authcheck="+Date.now(),{
+        cache:"no-store",
+        credentials:"same-origin"
+      });
+
+      if(check.ok){
+        r=await fetch(url,{...opts,cache:"no-store"});
+      }
+    }catch(_){}
+  }
+
+  if(r.status===401){
+    setLoggedIn(false);
+    setLoginStatus("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để lưu thay đổi.","error");
+    throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+  }
+
+  return r;
+}
+
 async function loadAiChatTraining(){
-  const r=await fetch("/api/admin/ai-chat-training?ts="+Date.now(),{
+  const r=await adminTrainingFetch("/api/admin/ai-chat-training?ts="+Date.now(),{
     cache:"no-store",
     credentials:"same-origin"
   });
@@ -3502,6 +3539,15 @@ async function loadAiChatTraining(){
   saveAiChatLocalBackup(settings);
   return settings;
 }
+
+
+["input","change"].forEach(evt=>{
+  [aiChatInstructions,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
+    .filter(Boolean)
+    .forEach(el=>el.addEventListener(evt,()=>{
+      try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
+    }));
+});
 
 async function persistAiChatSettings(){
   if(!saveAiChatSettings) return;
@@ -3514,7 +3560,7 @@ async function persistAiChatSettings(){
   try{
     const payload=currentAiChatTrainingPayload();
 
-    const r=await fetch("/api/admin/ai-chat-training",{
+    const r=await adminTrainingFetch("/api/admin/ai-chat-training",{
       method:"POST",
       cache:"no-store",
       credentials:"same-origin",
@@ -3523,7 +3569,10 @@ async function persistAiChatSettings(){
     });
 
     const data=await r.json().catch(()=>({}));
-    if(!r.ok) throw new Error(data.error||"Không lưu được Đào tạo AI");
+    if(!r.ok){
+      if(r.status===401) throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+      throw new Error(data.error||"Không lưu được Đào tạo AI");
+    }
     if(data.persisted!==true || data.verified!==true){
       throw new Error("Server chưa xác nhận Redis đã lưu dữ liệu.");
     }
@@ -3555,7 +3604,7 @@ async function persistAiSettings(){
     await saveAiSettingsPayload(currentAiSettingsPayload());
 
     const chatPayload=currentAiChatTrainingPayload();
-    const chatResponse=await fetch("/api/admin/ai-chat-training",{
+    const chatResponse=await adminTrainingFetch("/api/admin/ai-chat-training",{
       method:"POST",
       cache:"no-store",
       credentials:"same-origin",

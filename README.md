@@ -1500,3 +1500,31 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khi mở sẽ hiển thị thời hạn Mainboard, nguồn/màn hình/camera, phụ kiện, đổi máy 30 ngày và hỗ trợ phần mềm.
 - Có riêng phần `Trường hợp không bảo hành`.
 - Có thể bấm `Thu gọn chính sách` để đóng lại, tránh trang tra cứu quá dài trên mobile.
+
+## V204 - Thiết kế lại header trang bảo hành
+- Đưa logo Siêu Di Động thật vào header thay cho phần chữ đứng riêng.
+- Logo + tên thương hiệu nằm bên trái, cân đối như header website chính.
+- Nút Trang chủ chuyển sang dạng nút nhỏ bên phải.
+- Mobile thu gọn chiều cao và font để không chiếm diện tích.
+- Giữ đường cam thương hiệu phía trên nhưng mảnh hơn.
+
+## V205 - Đồng bộ chữ bộ lọc
+- Bỏ kiểu viết HOA toàn bộ ở các tiêu đề bộ lọc.
+- Đồng bộ thành: `Thương hiệu`, `Mức giá`, `Sắp xếp`.
+- Tên thương hiệu hiển thị thống nhất: `Honor`, `Oppo`, `vivo`, `Xiaomi`.
+- Các nút giá và nút lọc giữ kiểu chữ thường tự nhiên, không tự động uppercase.
+- Desktop và mobile dùng cùng một quy tắc typography.
+
+## V206 - Sửa AI không hiểu `kiểm tra bh`
+- Nhận diện `bh` là viết tắt của `bảo hành`.
+- Hiểu: `kiểm tra bh`, `check bh`, `tra cứu bh`, `còn bh`, `hết bh`, `bao hanh`, `bảo hành`.
+- Với yêu cầu bảo hành chưa có SĐT, AI bắt buộc xin SĐT thay vì đẩy khách sang Zalo.
+- Sau khi AI xin SĐT, khách chỉ cần gửi số điện thoại ở tin nhắn kế tiếp; hệ thống vẫn giữ đúng luồng tra cứu bảo hành.
+- Chỉ khi API tra cứu thực sự lỗi mới báo hệ thống đang tạm bận.
+
+## V207 - Sửa lỗi Unauthorized khi lưu Đào tạo AI
+- Đồng bộ thời hạn phiên quản trị thành 7 ngày.
+- Endpoint Đào tạo AI dùng cùng cơ chế xác thực với các mục quản trị khác.
+- Khi gặp HTTP 401, giao diện kiểm tra lại phiên và thử lại một lần.
+- Nếu phiên thật sự hết hạn, giao diện đưa về đăng nhập và báo rõ `Phiên đăng nhập đã hết hạn` thay vì chỉ hiện `Unauthorized`.
+- Nội dung đang nhập được backup ngay trên trình duyệt để tránh mất dữ liệu khi phiên hết hạn.

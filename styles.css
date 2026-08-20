@@ -11078,3 +11078,195 @@ body.warranty-open{overflow:hidden}
   .warranty-policy-toggle{min-height:34px;font-size:11.5px}
   .warranty-policy-section li{font-size:11px}
 }
+
+
+/* =========================================================
+   V204 - Header trang Tra cứu bảo hành
+   ========================================================= */
+.warranty-page-header{
+  height:auto!important;
+  min-height:74px!important;
+  padding:0!important;
+  border-top:4px solid #ff5a00!important;
+  border-bottom:1px solid #e9edf2!important;
+  background:#fff!important;
+  box-shadow:0 2px 12px rgba(15,23,42,.035)!important;
+}
+
+.warranty-header-inner{
+  width:min(1080px,calc(100% - 32px))!important;
+  min-height:70px!important;
+  margin:0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+}
+
+.warranty-page-brand-link{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  text-decoration:none!important;
+  text-align:left!important;
+  color:#111827!important;
+}
+
+.warranty-page-brand-link img{
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+  object-fit:cover!important;
+  border-radius:12px!important;
+  box-shadow:0 4px 12px rgba(255,90,0,.16)!important;
+}
+
+.warranty-page-brand-link>span{
+  display:block!important;
+  min-width:0!important;
+}
+
+.warranty-page-brand-link strong{
+  display:block!important;
+  font-size:16px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:-.2px!important;
+}
+
+.warranty-page-brand-link small{
+  display:block!important;
+  margin-top:4px!important;
+  color:#7c8798!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+}
+
+.warranty-page-back{
+  min-height:38px!important;
+  padding:0 13px 0 8px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border:1px solid #e5e9ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#344054!important;
+  text-decoration:none!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  box-shadow:0 2px 7px rgba(15,23,42,.04)!important;
+}
+
+.warranty-back-icon{
+  width:25px!important;
+  height:25px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:#fff1e9!important;
+  color:#ff5a00!important;
+  font-size:20px!important;
+  font-weight:500!important;
+  line-height:1!important;
+}
+
+@media(max-width:640px){
+  .warranty-page-header{
+    min-height:64px!important;
+  }
+
+  .warranty-header-inner{
+    width:calc(100% - 24px)!important;
+    min-height:60px!important;
+    gap:10px!important;
+  }
+
+  .warranty-page-brand-link{
+    gap:8px!important;
+  }
+
+  .warranty-page-brand-link img{
+    width:36px!important;
+    height:36px!important;
+    flex-basis:36px!important;
+    border-radius:10px!important;
+  }
+
+  .warranty-page-brand-link strong{
+    font-size:13.5px!important;
+  }
+
+  .warranty-page-brand-link small{
+    margin-top:3px!important;
+    font-size:8.5px!important;
+  }
+
+  .warranty-page-back{
+    order:2!important;
+    min-height:34px!important;
+    padding:0 9px 0 6px!important;
+    gap:4px!important;
+    border-radius:10px!important;
+    font-size:10.5px!important;
+  }
+
+  .warranty-back-icon{
+    width:23px!important;
+    height:23px!important;
+    font-size:18px!important;
+  }
+}
+
+
+/* =========================================================
+   V205 - Đồng bộ kiểu chữ khu vực bộ lọc
+   ========================================================= */
+.filter-label,
+.filter-row > strong,
+.filter-row > label,
+.filters-label,
+.filter-title,
+.filter-section-title{
+  text-transform:none!important;
+  letter-spacing:0!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#667085!important;
+}
+
+.brand-filter button,
+.price-filter button,
+.filter-chips button,
+.filter-chip,
+.filters button,
+.sort-filter select,
+.filter-sort select{
+  text-transform:none!important;
+  letter-spacing:0!important;
+}
+
+/* Mobile: cùng một chuẩn chữ, không có hàng in hoa/hàng viết thường lẫn lộn */
+@media(max-width:768px){
+  .filter-label,
+  .filter-row > strong,
+  .filter-row > label,
+  .filters-label,
+  .filter-title,
+  .filter-section-title{
+    text-transform:none!important;
+    letter-spacing:0!important;
+    font-size:11px!important;
+    font-weight:800!important;
+  }
+
+  .brand-filter button,
+  .price-filter button,
+  .filter-chips button,
+  .filter-chip,
+  .filters button{
+    text-transform:none!important;
+    font-size:11px!important;
+    font-weight:600!important;
+  }
+}
