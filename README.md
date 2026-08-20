@@ -1649,3 +1649,8 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Popup đọc trực tiếp cấu hình từ `/api/installment-settings`.
 - Hiển thị HD SAISON, Mirae Asset, logo, trạng thái bật/tắt và danh sách nhân viên tư vấn từ trang quản trị.
 - Nút Nhắn Zalo hỗ trợ cả số điện thoại và URL Zalo; tối ưu giao diện mobile.
+
+## V225 - Trang trả góp riêng
+- Menu Trả góp desktop/mobile chuyển sang `/tra-gop.html` thay vì popup.
+- Có URL riêng để mở trực tiếp/chia sẻ.
+- Trang trả góp tiếp tục lấy dữ liệu từ `/api/installment-settings` và phần quản trị hiện có.
