@@ -11612,3 +11612,269 @@ body.warranty-open{overflow:hidden}
     font-size:11px!important;
   }
 }
+
+
+/* =========================================================
+   V218 - Giao diện so sánh tối ưu riêng cho 2 máy
+   ========================================================= */
+
+/* Modal gọn lại, không kéo sát 2 mép màn hình */
+.compare-modal{
+  width:min(1180px,calc(100vw - 48px))!important;
+  max-width:1180px!important;
+  height:min(900px,calc(100vh - 34px))!important;
+  border-radius:20px!important;
+  overflow:hidden!important;
+  box-shadow:0 28px 80px rgba(15,23,42,.25)!important;
+}
+
+.compare-modal-head{
+  min-height:86px!important;
+  padding:22px 28px 18px!important;
+  border-bottom:1px solid #edf0f4!important;
+}
+
+.compare-modal-head h2{
+  font-size:24px!important;
+  letter-spacing:-.35px!important;
+}
+
+.compare-modal-head p{
+  margin-top:5px!important;
+  font-size:12px!important;
+  color:#7b8798!important;
+}
+
+.compare-modal-close{
+  width:38px!important;
+  height:38px!important;
+  border-radius:50%!important;
+}
+
+/* Gemini AI: gọn thành thanh công cụ */
+.compare-ai-box{
+  margin:16px 22px 0!important;
+  border:1px solid #ffd2ba!important;
+  border-radius:15px!important;
+  background:#fffaf7!important;
+  overflow:hidden!important;
+}
+
+.compare-ai-top{
+  min-height:66px!important;
+  padding:14px 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+}
+
+.compare-ai-title strong{
+  font-size:15px!important;
+}
+
+.compare-ai-title small{
+  margin-top:3px!important;
+  font-size:11px!important;
+  color:#7d8795!important;
+}
+
+.compare-ai-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  flex:0 0 auto!important;
+}
+
+.compare-ai-actions select{
+  height:38px!important;
+  min-width:178px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+}
+
+.compare-ai-actions button{
+  height:38px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+}
+
+.compare-ai-result{
+  min-height:42px!important;
+  padding:11px 16px!important;
+  border-top:1px solid #ffe2d2!important;
+  background:#fff!important;
+  font-size:11.5px!important;
+}
+
+/* Bảng: cột tên thông số nhỏ, 2 máy chia đều phần còn lại */
+.compare-table-wrap{
+  margin-top:0!important;
+}
+
+.compare-table{
+  width:100%!important;
+  table-layout:fixed!important;
+}
+
+.compare-table th:first-child,
+.compare-table td:first-child{
+  width:145px!important;
+  min-width:145px!important;
+  max-width:145px!important;
+}
+
+.compare-table th:not(:first-child),
+.compare-table td:not(:first-child){
+  width:calc((100% - 145px)/2)!important;
+}
+
+/* Card đầu mỗi máy */
+.compare-product-cell{
+  padding:20px 22px 18px!important;
+  vertical-align:top!important;
+  text-align:center!important;
+  background:#fff!important;
+}
+
+.compare-product-cell img{
+  width:116px!important;
+  height:116px!important;
+  object-fit:contain!important;
+  margin:0 auto 10px!important;
+  padding:5px!important;
+  border-radius:14px!important;
+  background:#f8fafc!important;
+}
+
+.compare-product-cell .compare-product-name{
+  max-width:390px!important;
+  margin:0 auto!important;
+  min-height:auto!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+  font-weight:800!important;
+}
+
+.compare-product-cell .compare-product-price{
+  margin-top:8px!important;
+  font-size:16px!important;
+  font-weight:900!important;
+}
+
+.compare-product-cell .stock-badge{
+  margin-top:8px!important;
+}
+
+/* Hàng thông số dễ quét mắt hơn */
+.compare-table tbody tr:nth-child(even) td{
+  background:#fbfcfd!important;
+}
+
+.compare-table td{
+  padding:13px 16px!important;
+  border-color:#e7ebf0!important;
+  font-size:12px!important;
+  line-height:1.48!important;
+  vertical-align:top!important;
+}
+
+.compare-table td:first-child{
+  padding:13px 14px!important;
+  background:#f7f8fa!important;
+  color:#111827!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+
+.compare-table tr:hover td:not(:first-child){
+  background:#fffaf7!important;
+}
+
+/* đường chia giữa 2 máy rõ vừa đủ */
+.compare-table th:nth-child(3),
+.compare-table td:nth-child(3){
+  border-left:2px solid #eef1f4!important;
+}
+
+/* Desktop rộng: bảng nằm cân giữa */
+@media(min-width:1200px){
+  .compare-modal-body{
+    scrollbar-gutter:stable!important;
+  }
+
+  .compare-product-cell img{
+    width:124px!important;
+    height:124px!important;
+  }
+}
+
+/* Tablet/mobile: vẫn giữ 2 máy cạnh nhau nhưng compact */
+@media(max-width:760px){
+  .compare-modal{
+    width:calc(100vw - 12px)!important;
+    height:calc(100vh - 12px)!important;
+    border-radius:15px!important;
+  }
+
+  .compare-modal-head{
+    min-height:70px!important;
+    padding:16px 16px 13px!important;
+  }
+
+  .compare-modal-head h2{
+    font-size:19px!important;
+  }
+
+  .compare-ai-box{
+    margin:10px 10px 0!important;
+  }
+
+  .compare-ai-top{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:10px!important;
+  }
+
+  .compare-ai-actions{
+    width:100%!important;
+  }
+
+  .compare-ai-actions select{
+    flex:1 1 auto!important;
+    min-width:0!important;
+  }
+
+  .compare-table{
+    min-width:680px!important;
+  }
+
+  .compare-table th:first-child,
+  .compare-table td:first-child{
+    width:112px!important;
+    min-width:112px!important;
+  }
+
+  .compare-product-cell{
+    padding:14px 10px!important;
+  }
+
+  .compare-product-cell img{
+    width:90px!important;
+    height:90px!important;
+  }
+
+  .compare-product-cell .compare-product-name{
+    font-size:11.5px!important;
+  }
+
+  .compare-table td{
+    padding:11px 10px!important;
+    font-size:11px!important;
+  }
+
+  .compare-table td:first-child{
+    font-size:11px!important;
+  }
+}

@@ -1595,3 +1595,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Tất cả tên hãng trong bộ lọc thương hiệu được hiển thị IN HOA.
 - Ví dụ: vivo → VIVO, Xiaomi → XIAOMI.
 - Giữ nguyên `Tất cả` và `Bán chạy`.
+
+## V218 - Thiết kế lại giao diện so sánh cho đúng 2 máy
+- Modal thu gọn còn tối đa 1180px thay vì gần full màn hình.
+- Cột tên thông số cố định 145px; hai cột sản phẩm chia đều không gian còn lại.
+- Ảnh, tên, giá và tình trạng hàng của hai máy được trình bày như 2 card cân xứng.
+- Gemini AI thu gọn thành thanh công cụ phía trên, giảm khoảng trống.
+- Hàng thông số xen kẽ nền nhẹ, đường chia giữa 2 máy rõ hơn.
+- Hover từng hàng giúp đối chiếu dễ hơn.
+- Mobile vẫn giữ hai máy cạnh nhau và cho cuộn ngang bảng khi cần.
