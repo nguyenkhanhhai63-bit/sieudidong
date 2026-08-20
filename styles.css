@@ -12386,3 +12386,53 @@ body.warranty-open{overflow:hidden}
     font-size:10px!important;
   }
 }
+
+
+/* =========================================================
+   V222 - Đưa nút nghe lên ngay dưới nút Gemini phân tích
+   ========================================================= */
+.compare-page-voicebar-inline{
+  width:100%;
+  min-height:38px;
+  padding:6px 0 0;
+  border-top:0;
+  background:transparent;
+}
+.compare-page-voicebar-inline span{
+  font-size:10px;
+}
+.compare-page-voicebar-inline button{
+  min-height:34px;
+  background:#fff;
+}
+
+@media(min-width:721px){
+  .compare-page-ai-actions{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+  .compare-page-voicebar-inline{
+    flex-basis:100%;
+    justify-content:flex-end;
+  }
+  .compare-page-voicebar-inline span{
+    margin-right:auto;
+  }
+}
+
+@media(max-width:720px){
+  .compare-page-voicebar-inline{
+    display:flex!important;
+    min-height:40px!important;
+    padding:2px 0 0!important;
+    align-items:center!important;
+  }
+  .compare-page-voicebar-inline[hidden]{
+    display:none!important;
+  }
+  .compare-page-voicebar-inline button{
+    width:auto!important;
+    min-width:118px!important;
+    height:36px!important;
+  }
+}

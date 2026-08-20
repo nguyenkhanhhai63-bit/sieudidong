@@ -1629,3 +1629,8 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bấm lần nữa để dừng.
 - Nút chỉ xuất hiện sau khi có kết quả AI thật, không chiếm chỗ trước đó.
 - Desktop và mobile đều hỗ trợ.
+
+## V222
+- Chuyển nút `Nghe AI tư vấn` lên ngay dưới nút `Gemini phân tích`.
+- Kết quả phân tích nằm phía dưới nút nghe.
+- Nút nghe vẫn chỉ xuất hiện sau khi Gemini đã trả kết quả.
