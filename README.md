@@ -1380,3 +1380,17 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Ô tìm kiếm rộng hơn và chiếm phần không gian chính.
 - Thanh menu dưới mở rộng đồng bộ.
 - Mobile giữ nguyên.
+
+## V187 - Header chữ lớn và cân đối hơn
+- Tăng font thanh thông tin trên cùng.
+- Tăng chữ logo, Danh mục, ô tìm kiếm.
+- Tăng chữ Tư vấn/Cửa hàng bên phải.
+- Tăng font toàn bộ menu điều hướng.
+- Tăng nhẹ chiều cao 2 hàng header để chữ không bị chật.
+- Giữ nguyên bố cục mobile.
+
+## V188 - Nổi bật tình trạng hàng
+- Còn hàng: badge xanh, chữ đậm, viền xanh nhẹ.
+- Hết hàng: badge xám rõ ràng, chữ đậm hơn.
+- Tăng kích thước badge để khách nhìn trạng thái ngay.
+- Tự nhận diện trạng thái theo chữ hiển thị, không phụ thuộc hoàn toàn vào class cũ.

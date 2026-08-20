@@ -10041,3 +10041,185 @@ input,select,textarea{
   }
   .sdd-main-nav{gap:36px!important;}
 }
+
+
+/* =========================================================
+   V187 - Tăng font header desktop + cân lại tỷ lệ
+   ========================================================= */
+@media (min-width:1081px){
+  /* Thanh cam trên cùng */
+  .sdd-top-strip,
+  .sdd-top-strip a,
+  .sdd-top-strip span{
+    font-size:12px!important;
+    line-height:1.35!important;
+    font-weight:600!important;
+  }
+
+  /* Logo */
+  .sdd-header-v164 .brand-name,
+  .sdd-header-v164 .logo-title,
+  .sdd-header-v164 .brand-title{
+    font-size:19px!important;
+    line-height:1.05!important;
+    font-weight:800!important;
+  }
+
+  .sdd-header-v164 .brand-subtitle,
+  .sdd-header-v164 .logo-subtitle{
+    font-size:10.5px!important;
+    line-height:1.25!important;
+  }
+
+  /* Nút danh mục ở hàng chính */
+  .sdd-header-v164 .category-toggle,
+  .sdd-header-v164 .catalog-toggle,
+  .sdd-header-v164 .header-category-btn{
+    font-size:14px!important;
+    font-weight:700!important;
+  }
+
+  /* Search */
+  .sdd-header-search input,
+  .sdd-header-search input::placeholder{
+    font-size:14px!important;
+  }
+
+  .sdd-header-search{
+    min-height:48px!important;
+  }
+
+  /* Tư vấn / Cửa hàng bên phải */
+  .sdd-header-actions,
+  .sdd-header-actions a,
+  .sdd-header-actions button,
+  .sdd-header-actions strong{
+    font-size:12.5px!important;
+  }
+
+  .sdd-header-actions small,
+  .sdd-header-actions span:not(.icon){
+    font-size:10.5px!important;
+  }
+
+  /* Thanh menu thứ hai */
+  .sdd-header-nav-inner,
+  .sdd-header-nav-inner a,
+  .sdd-main-nav a,
+  .sdd-main-nav button{
+    font-size:13.5px!important;
+    font-weight:650!important;
+  }
+
+  /* Nút Danh mục sản phẩm */
+  .sdd-header-nav-inner .category-button,
+  .sdd-header-nav-inner .catalog-button,
+  .sdd-header-nav-inner > button:first-child{
+    font-size:14px!important;
+    font-weight:750!important;
+  }
+
+  /* Cửa hàng Quy Nhơn phía phải */
+  .sdd-header-nav-inner .store-link,
+  .sdd-header-nav-inner .store-button{
+    font-size:12.5px!important;
+    font-weight:700!important;
+  }
+
+  /* Tăng nhẹ chiều cao để font lớn không bị chật */
+  .sdd-header-v164 .commerce-header-inner{
+    min-height:84px!important;
+  }
+
+  .sdd-header-nav-inner{
+    min-height:54px!important;
+  }
+
+  .sdd-main-nav{
+    gap:36px!important;
+  }
+}
+
+/* Desktop lớn: tăng thêm rất nhẹ, tránh cảm giác chữ bé trên màn 2K */
+@media (min-width:1500px){
+  .sdd-header-search input,
+  .sdd-header-search input::placeholder{
+    font-size:14.5px!important;
+  }
+
+  .sdd-main-nav a,
+  .sdd-main-nav button{
+    font-size:14px!important;
+  }
+
+  .sdd-header-actions,
+  .sdd-header-actions a,
+  .sdd-header-actions button,
+  .sdd-header-actions strong{
+    font-size:13px!important;
+  }
+}
+
+
+/* =========================================================
+   V188 - Làm nổi bật trạng thái CÒN HÀNG / HẾT HÀNG
+   ========================================================= */
+
+/* Badge trạng thái chung */
+.product-card .stock,
+.product-card .stock-status,
+.product-card .availability,
+.product-card [class*="stock"],
+.product-card [class*="status"]{
+  min-height:31px!important;
+  padding:6px 11px!important;
+  border-radius:999px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  letter-spacing:.01em!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+}
+
+/* Các class thường dùng cho CÒN HÀNG */
+.product-card .in-stock,
+.product-card .stock-in,
+.product-card .available,
+.product-card .status-in-stock,
+.product-card [data-stock="in"],
+.product-card [data-status="in-stock"]{
+  color:#07883f!important;
+  background:#e9f9ef!important;
+  border:1px solid #a9e7bd!important;
+  box-shadow:0 2px 7px rgba(16,185,129,.10)!important;
+}
+
+/* Các class thường dùng cho HẾT HÀNG */
+.product-card .out-of-stock,
+.product-card .stock-out,
+.product-card .unavailable,
+.product-card .status-out-of-stock,
+.product-card [data-stock="out"],
+.product-card [data-status="out-of-stock"]{
+  color:#697386!important;
+  background:#eef1f4!important;
+  border:1px solid #d9dee5!important;
+  box-shadow:0 2px 6px rgba(15,23,42,.05)!important;
+}
+
+/* Mobile: badge vẫn rõ nhưng không chiếm quá nhiều chỗ */
+@media(max-width:720px){
+  .product-card .stock,
+  .product-card .stock-status,
+  .product-card .availability,
+  .product-card [class*="stock"],
+  .product-card [class*="status"]{
+    min-height:30px!important;
+    padding:6px 10px!important;
+    font-size:11.5px!important;
+  }
+}

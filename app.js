@@ -3424,3 +3424,27 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
   document.getElementById("products")?.scrollIntoView({behavior:"smooth",block:"start"});
 });
 
+
+
+/* V188: normalize product stock badges by visible text */
+(function(){
+  function enhanceStockBadges(root){
+    var scope=root || document;
+    scope.querySelectorAll('.product-card button, .product-card span, .product-card div, .product-card a').forEach(function(el){
+      if(el.children.length) return;
+      var t=(el.textContent||'').trim().toLowerCase();
+      if(t === 'còn hàng' || t === '✓ còn hàng' || t === '✔ còn hàng'){
+        el.classList.add('stock-status','in-stock');
+      } else if(t === 'hết hàng'){
+        el.classList.add('stock-status','out-of-stock');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded',function(){ enhanceStockBadges(document); });
+  }else{
+    enhanceStockBadges(document);
+  }
+  new MutationObserver(function(){ enhanceStockBadges(document); })
+    .observe(document.documentElement,{childList:true,subtree:true});
+})();
