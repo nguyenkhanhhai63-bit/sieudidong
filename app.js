@@ -3455,72 +3455,93 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
 })();
 
 
-/* V192 - Tra cứu bảo hành KiotViet */
+/* V193 - Tra cứu bảo hành KiotViet: khởi tạo sau khi DOM đã có modal */
 (function(){
-  const modal=document.getElementById("warrantyModal");
-  const form=document.getElementById("warrantyForm");
-  const phone=document.getElementById("warrantyPhone");
-  const result=document.getElementById("warrantyResult");
-  if(!modal||!form||!result) return;
+  function initWarrantyLookup(){
+    const modal=document.getElementById("warrantyModal");
+    const form=document.getElementById("warrantyForm");
+    const phone=document.getElementById("warrantyPhone");
+    const result=document.getElementById("warrantyResult");
+    if(!modal||!form||!phone||!result) return;
 
-  function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-  function open(){
-    modal.hidden=false;
-    document.body.classList.add("warranty-open");
-    setTimeout(()=>phone?.focus(),80);
-  }
-  function close(){
-    modal.hidden=true;
-    document.body.classList.remove("warranty-open");
-  }
-  ["sddWarrantyBtn","sddMobileWarrantyBtn"].forEach(id=>document.getElementById(id)?.addEventListener("click",open));
-  modal.querySelectorAll("[data-warranty-close]").forEach(x=>x.addEventListener("click",close));
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!modal.hidden) close(); });
-
-  form.addEventListener("submit",async e=>{
-    e.preventDefault();
-    const p=(phone.value||"").replace(/\D/g,"");
-    if(p.length<9){
-      result.innerHTML='<div class="warranty-alert error">Vui lòng nhập đúng số điện thoại mua hàng.</div>';
-      return;
+    function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function open(){
+      modal.hidden=false;
+      document.body.classList.add("warranty-open");
+      setTimeout(()=>phone.focus({preventScroll:true}),100);
     }
-    result.innerHTML='<div class="warranty-loading"><span></span> Đang đối chiếu hóa đơn KiotViet...</div>';
-    try{
-      const r=await fetch("/api/warranty-lookup",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({phone:p})
-      });
-      const data=await r.json();
-      if(!r.ok) throw new Error(data.error||"Không thể tra cứu");
-      if(!data.found){
-        result.innerHTML=`<div class="warranty-alert">${esc(data.message||"Không tìm thấy lịch sử mua hàng.")}</div>`;
+    function close(){
+      modal.hidden=true;
+      document.body.classList.remove("warranty-open");
+    }
+
+    ["sddWarrantyBtn","sddMobileWarrantyBtn"].forEach(id=>{
+      const btn=document.getElementById(id);
+      if(btn && !btn.dataset.warrantyBound){
+        btn.dataset.warrantyBound="1";
+        btn.addEventListener("click",open);
+      }
+    });
+
+    modal.querySelectorAll("[data-warranty-close]").forEach(x=>x.addEventListener("click",close));
+    document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!modal.hidden) close(); });
+
+    form.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const p=(phone.value||"").replace(/\D/g,"");
+      if(p.length<9){
+        result.innerHTML='<div class="warranty-alert error">Vui lòng nhập đúng số điện thoại mua hàng.</div>';
         return;
       }
-      result.innerHTML=`
-        <div class="warranty-summary">Tìm thấy <strong>${data.items.length}</strong> sản phẩm đã mua</div>
-        <div class="warranty-items">
-          ${data.items.map(x=>`
-            <article class="warranty-item">
-              <div class="warranty-item-top">
-                <div>
-                  <h3>${esc(x.productName)}</h3>
-                  ${x.productCode?`<small>Mã hàng: ${esc(x.productCode)}</small>`:""}
+      const submit=form.querySelector('button[type="submit"]');
+      if(submit){ submit.disabled=true; submit.textContent="Đang tra cứu..."; }
+      result.innerHTML='<div class="warranty-loading"><span></span> Đang đối chiếu hóa đơn KiotViet...</div>';
+      try{
+        const r=await fetch("/api/warranty-lookup",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({phone:p})
+        });
+        let data={};
+        try{ data=await r.json(); }catch{}
+        if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
+        if(!data.found){
+          result.innerHTML=`<div class="warranty-alert">${esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")}</div>`;
+          return;
+        }
+        result.innerHTML=`
+          <div class="warranty-summary">Tìm thấy <strong>${data.items.length}</strong> sản phẩm đã mua</div>
+          <div class="warranty-items">
+            ${data.items.map(x=>`
+              <article class="warranty-item">
+                <div class="warranty-item-top">
+                  <div>
+                    <h3>${esc(x.productName)}</h3>
+                    ${x.productCode?`<small>Mã hàng: ${esc(x.productCode)}</small>`:""}
+                  </div>
+                  <span class="warranty-state ${x.inWarranty?"active":"expired"}">${x.inWarranty?"Còn bảo hành":"Hết bảo hành"}</span>
                 </div>
-                <span class="warranty-state ${x.inWarranty?"active":"expired"}">${x.inWarranty?"Còn bảo hành":"Hết bảo hành"}</span>
-              </div>
-              <div class="warranty-grid">
-                <div><span>Ngày mua</span><strong>${esc(x.purchaseDate)}</strong></div>
-                <div><span>Bảo hành đến</span><strong>${esc(x.warrantyEnd)}</strong></div>
-                <div><span>Hóa đơn</span><strong>${esc(x.invoiceCode)}</strong></div>
-                <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
-              </div>
-              ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
-              ${x.exchangeEnd?`<div class="warranty-note">Mốc 1 đổi 1 lỗi NSX: đến <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
-            </article>`).join("")}
-        </div>`;
-    }catch(err){
-      result.innerHTML=`<div class="warranty-alert error">${esc(err.message||"Chưa thể tra cứu. Vui lòng thử lại.")}</div>`;
-    }
-  });
+                <div class="warranty-grid">
+                  <div><span>Ngày mua</span><strong>${esc(x.purchaseDate)}</strong></div>
+                  <div><span>Bảo hành đến</span><strong>${esc(x.warrantyEnd)}</strong></div>
+                  <div><span>Hóa đơn</span><strong>${esc(x.invoiceCode)}</strong></div>
+                  <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
+                </div>
+                ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
+                ${x.exchangeEnd?`<div class="warranty-note">Mốc 1 đổi 1 lỗi NSX: đến <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
+              </article>`).join("")}
+          </div>`;
+      }catch(err){
+        result.innerHTML=`<div class="warranty-alert error">${esc(err.message||"Chưa thể tra cứu. Vui lòng thử lại.")}</div>`;
+      }finally{
+        if(submit){ submit.disabled=false; submit.textContent="Tra cứu"; }
+      }
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",initWarrantyLookup,{once:true});
+  }else{
+    initWarrantyLookup();
+  }
 })();

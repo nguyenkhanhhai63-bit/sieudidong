@@ -1426,3 +1426,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Mặc định bảo hành 12 tháng và 1 đổi 1 tháng đầu; có thể đổi bằng `WARRANTY_MONTHS`, `EXCHANGE_MONTHS`.
 - Bắt buộc cấu hình `KIOTVIET_RETAILER`, `KIOTVIET_CLIENT_ID`, `KIOTVIET_CLIENT_SECRET` trên Vercel.
 - Client secret chỉ được sử dụng ở server API, không đưa xuống trình duyệt.
+
+## V193 - Fix nút Tra cứu bảo hành
+- Sửa lỗi nút `Tra cứu BH` bấm không mở được.
+- Nguyên nhân: app.js chạy trước khi HTML của modal bảo hành được tạo nên JS thoát sớm.
+- V193 chờ `DOMContentLoaded` rồi mới gắn sự kiện.
+- Thêm trạng thái `Đang tra cứu...` và hiển thị lỗi API rõ hơn.
+- Giữ nguyên API KiotViet và giao diện tra cứu của V192.
