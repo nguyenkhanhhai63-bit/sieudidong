@@ -1019,14 +1019,24 @@ let COMPARE_ITEMS=[];
 
 function saveCompareItems(){
   try{
-    localStorage.setItem(COMPARE_STORAGE_KEY,JSON.stringify(COMPARE_ITEMS.map(x=>x.name)));
+    const payload=COMPARE_ITEMS.slice(0,2).map(group=>{
+      const variant=getDefaultVariantForGroup(group);
+      return {
+        name:group.name,
+        image:group.image||"",
+        price:Number(variant?.price||0),
+        onHand:Number(variant?.onHand||0)
+      };
+    });
+    localStorage.setItem(COMPARE_STORAGE_KEY,JSON.stringify(payload));
   }catch(_){}
 }
 
 function loadCompareItems(){
   try{
-    const names=JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY)||"[]");
-    if(!Array.isArray(names)) return;
+    const saved=JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY)||"[]");
+    if(!Array.isArray(saved)) return;
+    const names=saved.map(x=>typeof x==="string"?x:x?.name).filter(Boolean);
     const groups=groupItems(flattenProducts(PRODUCTS));
     COMPARE_ITEMS=names
       .map(name=>groups.find(g=>g.name===name))
@@ -1493,302 +1503,20 @@ function specMap(rows){
 
 async function openCompareModal(){
   if(COMPARE_ITEMS.length<2){
-    showCompareNotice("Chọn ít nhất 2 sản phẩm để so sánh.");
+    showCompareNotice("Chọn đủ 2 máy để so sánh.");
     return;
   }
 
-  // Một lượt so sánh = khách thực sự bấm mở bảng so sánh với >= 2 máy.
   try{
     sendAnalytics("compare_create",{
-      products:COMPARE_ITEMS.map(x=>x.name).slice(0,3)
+      products:COMPARE_ITEMS.map(x=>x.name).slice(0,2)
     });
   }catch(_){}
 
-  let modal=document.getElementById("compareModal");
-  if(!modal){
-    modal=document.createElement("div");
-    modal.id="compareModal";
-    modal.className="compare-modal";
-    document.body.appendChild(modal);
-  }
-
-  modal.innerHTML=`
-    <div class="compare-modal-backdrop"></div>
-    <div class="compare-modal-dialog">
-      <button class="compare-modal-close" type="button" aria-label="Đóng">×</button>
-      <div class="compare-modal-head">
-        <div>
-          <h2>So sánh sản phẩm</h2>
-          <p>Đối chiếu giá, tình trạng và thông số kỹ thuật.</p>
-        </div>
-      </div>
-      <div class="compare-loading">Đang tải thông số...</div>
-    </div>`;
-
-  modal.classList.add("open");
-  document.body.classList.add("modal-open");
-
-  const close=()=>{
-    stopCompareSpeech();
-    modal.classList.remove("open");
-    document.body.classList.remove("modal-open");
-  };
-  modal.querySelector(".compare-modal-close").addEventListener("click",close);
-  modal.querySelector(".compare-modal-backdrop").addEventListener("click",close);
-
-  const dialog=modal.querySelector(".compare-modal-dialog");
-  const loading=modal.querySelector(".compare-loading");
-
-  const groups=[...COMPARE_ITEMS];
-
-  async function loadCompareData(){
-    const results=await Promise.all(groups.map(fetchCompareSpecs));
-    const specs=results.map(x=>Array.isArray(x?.specs)?x.specs:[]);
-    const maps=specs.map(specMap);
-    return {results,specs,maps};
-  }
-
-  let compareData;
-  try{
-    compareData=await loadCompareData();
-  }catch(err){
-    compareData={
-      results:groups.map(()=>({ok:false,specs:[],error:err?.message||"Không tải được thông số"})),
-      specs:groups.map(()=>[]),
-      maps:groups.map(()=>new Map())
-    };
-  }
-
-  let specs=compareData.specs;
-  let maps=compareData.maps;
-  let specResults=compareData.results;
-
-  const aiBox=document.createElement("section");
-  aiBox.className="compare-ai-box";
-
-  const aiTop=document.createElement("div");
-  aiTop.className="compare-ai-top";
-
-  const aiTitleWrap=document.createElement("div");
-  aiTitleWrap.className="compare-ai-title-wrap";
-  aiTitleWrap.innerHTML=`
-    <strong>Gemini AI phân tích</strong>
-    <span>AI đọc đúng các thông số đang hiển thị để gợi ý máy phù hợp.</span>`;
-
-  const aiControls=document.createElement("div");
-  aiControls.className="compare-ai-controls";
-
-  const needSelect=document.createElement("select");
-  needSelect.className="compare-ai-select";
-  needSelect.setAttribute("aria-label","Nhu cầu sử dụng");
-  [
-    ["Cân bằng","Nhu cầu: Cân bằng"],
-    ["Chơi game / hiệu năng","Ưu tiên: Chơi game"],
-    ["Chụp ảnh / camera","Ưu tiên: Camera"],
-    ["Pin lâu / sử dụng nhiều","Ưu tiên: Pin lâu"],
-    ["Giá / hiệu năng","Ưu tiên: Giá / hiệu năng"]
-  ].forEach(([value,label])=>{
-    const op=document.createElement("option");
-    op.value=value;
-    op.textContent=label;
-    needSelect.appendChild(op);
-  });
-
-  const aiBtn=document.createElement("button");
-  aiBtn.type="button";
-  aiBtn.className="compare-ai-btn";
-  aiBtn.textContent="✨ Gemini phân tích";
-
-  aiControls.append(needSelect,aiBtn);
-  aiTop.append(aiTitleWrap,aiControls);
-
-  const aiResult=document.createElement("div");
-  aiResult.className="compare-ai-result";
-  const incompleteCount=specResults.filter(x=>!x?.ok).length;
-  aiResult.innerHTML=incompleteCount
-    ? `<div class="compare-ai-placeholder">Có ${incompleteCount} máy chưa có đủ thông số. Gemini vẫn có thể phân tích phần dữ liệu đang có.</div>`
-    : '<div class="compare-ai-placeholder">Chọn nhu cầu rồi bấm “Gemini phân tích” để nhận gợi ý.</div>';
-
-  aiBtn.addEventListener("click",()=>{
-    runAiCompare(groups,specs,needSelect.value,aiBtn,aiResult);
-  });
-
-  aiBox.append(aiTop,aiResult);
-  if(dialog) dialog.appendChild(aiBox);
-
-  const preferred=[
-    "Màn hình","Hệ điều hành","Camera sau","Camera trước",
-    "CPU","RAM","Bộ nhớ trong","Thẻ SIM","Dung lượng pin","Thiết kế"
-  ];
-  const labels=[...new Set(specs.flat().map(x=>String(x.label||"").trim()).filter(Boolean))];
-  labels.sort((a,b)=>{
-    const ai=preferred.indexOf(a), bi=preferred.indexOf(b);
-    if(ai!==-1||bi!==-1){
-      if(ai===-1) return 1;
-      if(bi===-1) return -1;
-      return ai-bi;
-    }
-    return a.localeCompare(b,"vi");
-  });
-
-  if(loading) loading.remove();
-
-  const failedIndexes=specResults
-    .map((x,i)=>x?.ok ? -1 : i)
-    .filter(i=>i>=0);
-
-  if(failedIndexes.length){
-    const warn=document.createElement("div");
-    warn.className="compare-spec-warning";
-
-    const names=failedIndexes.map(i=>groups[i]?.name).filter(Boolean);
-    const text=document.createElement("div");
-    text.className="compare-spec-warning-text";
-    text.innerHTML=`<strong>Một số máy chưa tải được đầy đủ thông số.</strong><span>${names.join(", ")}</span>`;
-
-    const retry=document.createElement("button");
-    retry.type="button";
-    retry.className="compare-spec-retry-btn";
-    retry.textContent="Thử tải lại";
-
-    retry.addEventListener("click",async()=>{
-      retry.disabled=true;
-      retry.textContent="Đang tải lại...";
-
-      compareData=await loadCompareData();
-      specs=compareData.specs;
-      maps=compareData.maps;
-      specResults=compareData.results;
-
-      const stillFailed=specResults.some(x=>!x?.ok);
-
-      if(!stillFailed){
-        warn.remove();
-        retry.textContent="Đã tải";
-      }else{
-        retry.disabled=false;
-        retry.textContent="Thử tải lại";
-        const failedNames=specResults
-          .map((x,i)=>x?.ok ? "" : groups[i]?.name)
-          .filter(Boolean);
-        text.innerHTML=`<strong>Vẫn còn máy chưa có đủ thông số.</strong><span>${failedNames.join(", ")}</span>`;
-      }
-
-      // Cập nhật lại nội dung so sánh bằng cách đóng/mở modal.
-      setTimeout(()=>{
-        modal.classList.remove("open");
-        document.body.classList.remove("modal-open");
-        openCompareModal();
-      },150);
-    });
-
-    warn.append(text,retry);
-    dialog.appendChild(warn);
-  }
-
-  const wrap=document.createElement("div");
-  wrap.className="compare-table-wrap";
-
-  // DESKTOP: bảng đối chiếu truyền thống.
-  const table=document.createElement("div");
-  table.className="compare-table";
-
-  const header=document.createElement("div");
-  header.className="compare-row compare-header-row";
-  const blank=document.createElement("div");
-  blank.className="compare-label";
-  blank.textContent="Sản phẩm";
-  header.appendChild(blank);
-
-  groups.forEach(group=>{
-    const variant=getDefaultVariantForGroup(group);
-    const cell=document.createElement("div");
-    cell.className="compare-product-head";
-    cell.innerHTML=`
-      <div class="compare-product-image">${imageHTML(group)}</div>
-      <strong>${group.name}</strong>
-      <span class="compare-product-price">${variant?money(variant.price):"Liên hệ"}</span>
-      <span class="compare-product-stock ${variant&&Number(variant.onHand||0)>0?"in":"out"}">${variant&&Number(variant.onHand||0)>0?"✓ Còn hàng":"Hết hàng"}</span>`;
-    header.appendChild(cell);
-  });
-  table.appendChild(header);
-
-  labels.forEach(label=>{
-    const row=document.createElement("div");
-    row.className="compare-row";
-
-    const labelCell=document.createElement("div");
-    labelCell.className="compare-label";
-    labelCell.textContent=label;
-    row.appendChild(labelCell);
-
-    maps.forEach(map=>{
-      const cell=document.createElement("div");
-      cell.className="compare-value";
-      cell.textContent=map.get(label)||"—";
-      row.appendChild(cell);
-    });
-    table.appendChild(row);
-  });
-
-  // MOBILE: mỗi thông số là một khối, giá trị từng máy xếp dọc.
-  const mobile=document.createElement("div");
-  mobile.className="compare-mobile";
-
-  const mobileProducts=document.createElement("div");
-  mobileProducts.className="compare-mobile-products";
-  groups.forEach(group=>{
-    const variant=getDefaultVariantForGroup(group);
-    const card=document.createElement("div");
-    card.className="compare-mobile-product-card";
-    card.innerHTML=`
-      <div class="compare-mobile-product-image">${imageHTML(group)}</div>
-      <div class="compare-mobile-product-name">${group.name}</div>
-      <div class="compare-product-price">${variant?money(variant.price):"Liên hệ"}</div>
-      <div class="compare-product-stock ${variant&&Number(variant.onHand||0)>0?"in":"out"}">${variant&&Number(variant.onHand||0)>0?"✓ Còn hàng":"Hết hàng"}</div>`;
-    mobileProducts.appendChild(card);
-  });
-  mobile.appendChild(mobileProducts);
-
-  labels.forEach(label=>{
-    const section=document.createElement("section");
-    section.className="compare-mobile-spec";
-
-    const h=document.createElement("h3");
-    h.textContent=label;
-    section.appendChild(h);
-
-    groups.forEach((group,index)=>{
-      const item=document.createElement("div");
-      item.className="compare-mobile-spec-item";
-
-      const name=document.createElement("div");
-      name.className="compare-mobile-spec-name";
-      name.textContent=group.name;
-
-      const value=document.createElement("div");
-      value.className="compare-mobile-spec-value";
-      value.textContent=maps[index].get(label)||"—";
-
-      item.append(name,value);
-      section.appendChild(item);
-    });
-
-    mobile.appendChild(section);
-  });
-
-  if(!labels.length){
-    const empty=document.createElement("div");
-    empty.className="compare-empty";
-    empty.textContent="Các sản phẩm này chưa có đủ thông số kỹ thuật để so sánh.";
-    wrap.appendChild(empty);
-  }else{
-    wrap.append(table,mobile);
-  }
-
-  dialog.appendChild(wrap);
+  // V219: So sánh mở thành TRANG RIÊNG, không dùng popup/modal.
+  saveCompareItems();
+  window.location.href="/so-sanh.html";
 }
-
 
 function render(){
   const q=searchInput.value.trim().toLowerCase();

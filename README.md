@@ -1604,3 +1604,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Hàng thông số xen kẽ nền nhẹ, đường chia giữa 2 máy rõ hơn.
 - Hover từng hàng giúp đối chiếu dễ hơn.
 - Mobile vẫn giữ hai máy cạnh nhau và cho cuộn ngang bảng khi cần.
+
+## V219 - So sánh mở thành trang riêng
+- Bỏ hoàn toàn popup/modal so sánh.
+- Khi chọn đủ 2 máy và bấm `So sánh 2 máy`, website chuyển sang `/so-sanh.html`.
+- Trang so sánh có header riêng, nút quay lại chọn máy và bảng 2 cột cân đối.
+- Gemini AI phân tích vẫn hoạt động trực tiếp trên trang so sánh.
+- Dữ liệu 2 máy được lưu trong localStorage và trang riêng tự lấy thông số từ API.
+- Mobile dùng trang riêng và cuộn ngang bảng khi cần, không còn cửa sổ nổi che giao diện.
