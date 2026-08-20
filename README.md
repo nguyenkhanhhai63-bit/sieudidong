@@ -1561,3 +1561,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nếu không tìm thấy: báo trực tiếp không tìm thấy lịch sử mua hàng.
 - Nếu API hệ thống tạm lỗi: báo thử lại sau, không đẩy khách sang Zalo.
 - Sau khi trả kết quả, luồng bảo hành được đóng như V209.
+
+## V213 - Bắt buộc SĐT bảo hành đi thẳng vào hệ thống
+- Sửa tận route server, không còn phụ thuộc Gemini hiểu ngữ cảnh.
+- Nếu AI vừa xin SĐT để tra cứu bảo hành và khách gửi một số điện thoại, request được chặn trước luồng AI chung.
+- Server gọi trực tiếp `lookupWarrantyByPhone()` và trả kết quả vào chatbox.
+- Gemini không được nhận tin nhắn SĐT này nên không thể tự nói `chưa tích hợp` hoặc đẩy khách sang Zalo.
+- Sau khi trả kết quả, `warrantyPending=false` và `warrantyCompleted=true`.
