@@ -3,6 +3,7 @@ const handlers = {
   "ai-chat-training": () => import("../../lib/admin-api/ai-chat-training.js"),
   "ai-chat-icon": () => import("../../lib/admin-api/ai-chat-icon.js"),
   "analytics": () => import("../../lib/admin-api/analytics.js"),
+  "installment-settings": () => import("../../lib/admin-api/installment-settings.js"),
   "login": () => import("../../lib/admin-api/login.js"),
   "logout": () => import("../../lib/admin-api/logout.js"),
   "seo-settings": () => import("../../lib/admin-api/seo-settings.js"),

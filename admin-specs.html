@@ -2523,6 +2523,35 @@ button,.primary,.secondary{font-size:12px!important}
   }
 }
 
+
+/* V223 - Quản trị trả góp */
+.installment-admin-shell{padding:20px;display:grid;gap:14px}
+.installment-admin-box,.installment-provider-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px}
+.installment-label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.installment-textarea,.installment-input{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;background:#fff;padding:10px 11px;font:inherit}
+.installment-textarea{min-height:86px;resize:vertical}
+.installment-provider-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.installment-provider-title{display:flex;align-items:center;gap:10px}
+.installment-logo-preview{width:58px;height:42px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;object-fit:contain;padding:4px}
+.installment-provider-title strong{display:block;font-size:16px}
+.installment-provider-title small{display:block;color:var(--muted);margin-top:2px}
+.installment-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.installment-staff-head{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}
+.installment-staff-head strong{font-size:13px}
+.installment-add-staff{height:34px;padding:0 11px;border:1px solid #ffb58c;border-radius:8px;background:#fff;color:#e65300;font-weight:800;cursor:pointer}
+.installment-staff-row{display:grid;grid-template-columns:1fr 160px 1fr 38px;gap:8px;margin-top:8px}
+.installment-remove{border:1px solid #f2c7c7;border-radius:8px;background:#fff;color:#b42318;font-weight:900;cursor:pointer}
+.installment-admin-actions{display:flex;align-items:center;gap:12px}
+#installmentStatus{font-size:12px;font-weight:700}
+.installment-toggle{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700}
+@media(max-width:760px){
+ .installment-admin-shell{padding:12px}
+ .installment-grid{grid-template-columns:1fr}
+ .installment-staff-row{grid-template-columns:1fr 1fr}
+ .installment-staff-row .staff-note{grid-column:1/-1}
+ .installment-remove{height:38px}
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -2564,6 +2593,7 @@ button,.primary,.secondary{font-size:12px!important}
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
     <button class="admin-tab" data-tab="ai" type="button"><span class="nav-icon">✦</span><span>Đào tạo AI</span><b class="nav-new">Mới</b></button>
     <button class="admin-tab" data-tab="seo" type="button"><span class="nav-icon">⌕</span><span>SEO & Google</span></button>
+    <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
   </div></div>
 
   <div class="sidebar-section-title sidebar-ai-title">AI & TỐI ƯU</div>
@@ -2578,7 +2608,7 @@ button,.primary,.secondary{font-size:12px!important}
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V163</small>
+    <small>Siêu Di Động Admin • V223</small>
   </div>
 </aside>
 
@@ -2841,7 +2871,29 @@ button,.primary,.secondary{font-size:12px!important}
     </div>
   </section>
 
-  <section id="seoCard" class="card panel" data-panel="seo" style="display:none">
+  
+<section id="installmentCard" class="card panel" data-panel="installment" style="display:none">
+  <div class="head">
+    <div>
+      <h1>Cấu hình trả góp</h1>
+      <p>Quản lý công ty tài chính, logo và nhân viên Zalo tư vấn trả góp hiển thị trên website.</p>
+    </div>
+    <button id="reloadInstallment" class="secondary" type="button">Tải lại</button>
+  </div>
+  <div class="installment-admin-shell">
+    <div class="installment-admin-box">
+      <label class="installment-label" for="installmentIntro">Nội dung giới thiệu</label>
+      <textarea id="installmentIntro" class="installment-textarea" maxlength="1000"></textarea>
+    </div>
+    <div id="installmentProviders"></div>
+    <div class="installment-admin-actions">
+      <button id="saveInstallment" class="primary" type="button">Lưu thông tin trả góp</button>
+      <span id="installmentStatus"></span>
+    </div>
+  </div>
+</section>
+
+<section id="seoCard" class="card panel" data-panel="seo" style="display:none">
     <div class="head">
       <div><h1>SEO & hiển thị Google</h1><p>Chỉnh tiêu đề, mô tả, tên website, logo nhỏ Google và kiểm tra Sitemap.</p></div>
       <button id="refreshSeo" class="secondary" type="button">Kiểm tra lại</button>
@@ -3815,18 +3867,22 @@ adminTabs.addEventListener("click",e=>{
   const showAnalytics = tab==="analytics";
   const showAi = tab==="ai";
   const showSeo = tab==="seo";
+  const showInstallment = tab==="installment";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
   aiSettingsCard.classList.toggle("active", showAi);
   seoCard.classList.toggle("active", showSeo);
+  installmentCard.classList.toggle("active", showInstallment);
 
   adminCard.style.display = showSpecs ? "" : "none";
   analyticsCard.style.display = showAnalytics ? "" : "none";
   aiSettingsCard.style.display = showAi ? "" : "none";
   seoCard.style.display = showSeo ? "" : "none";
+  installmentCard.style.display = showInstallment ? "" : "none";
 
   if(showAnalytics){ loadAnalytics(); }
+  if(showInstallment){ loadInstallmentSettings(); }
   if(showAi){
     (async()=>{
       try{
@@ -4027,6 +4083,127 @@ if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
 /* =========================================================
    V163 - Admin shell interactions
    ========================================================= */
+
+/* V223 - Installment settings */
+const installmentCard=document.getElementById("installmentCard");
+const installmentIntro=document.getElementById("installmentIntro");
+const installmentProviders=document.getElementById("installmentProviders");
+const saveInstallment=document.getElementById("saveInstallment");
+const reloadInstallment=document.getElementById("reloadInstallment");
+const installmentStatus=document.getElementById("installmentStatus");
+let installmentData=null;
+
+function escInstallment(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function defaultInstallment(){
+  return {intro:"Siêu Di Động hỗ trợ tư vấn trả góp theo hồ sơ và sản phẩm thực tế. Nhân viên sẽ hỗ trợ số tiền trả trước, kỳ hạn và khoản góp dự kiến trước khi đăng ký.",providers:[
+    {id:"hd-saison",name:"HD SAISON",logo:"",enabled:true,staff:[]},
+    {id:"mirae-asset",name:"Mirae Asset",logo:"",enabled:true,staff:[]}
+  ]};
+}
+function renderInstallment(){
+  if(!installmentData) installmentData=defaultInstallment();
+  installmentIntro.value=installmentData.intro||"";
+  installmentProviders.innerHTML=(installmentData.providers||[]).map((p,pi)=>`
+    <div class="installment-provider-card" data-provider="${pi}">
+      <div class="installment-provider-head">
+        <div class="installment-provider-title">
+          <img class="installment-logo-preview" src="${escInstallment(p.logo||"/assets/logo-square.jpg")}" alt="">
+          <div><strong>${escInstallment(p.name)}</strong><small>Công ty tài chính</small></div>
+        </div>
+        <label class="installment-toggle"><input class="provider-enabled" type="checkbox" ${p.enabled!==false?"checked":""}> Hiển thị</label>
+      </div>
+      <div class="installment-grid">
+        <div><label class="installment-label">Tên đơn vị</label><input class="installment-input provider-name" value="${escInstallment(p.name)}"></div>
+        <div><label class="installment-label">Logo (URL ảnh)</label><input class="installment-input provider-logo" value="${escInstallment(p.logo||"")}" placeholder="https://... hoặc /assets/..."></div>
+      </div>
+      <div class="installment-staff-head"><strong>Nhân viên tư vấn Zalo</strong><button class="installment-add-staff" data-add-staff="${pi}" type="button">+ Thêm nhân viên</button></div>
+      <div class="installment-staff-list">
+        ${(p.staff||[]).map((s,si)=>`
+          <div class="installment-staff-row" data-staff="${si}">
+            <input class="installment-input staff-name" value="${escInstallment(s.name||"")}" placeholder="Tên nhân viên">
+            <input class="installment-input staff-zalo" value="${escInstallment(s.zalo||"")}" placeholder="Số Zalo">
+            <input class="installment-input staff-note" value="${escInstallment(s.note||"")}" placeholder="Ghi chú, VD: Tư vấn HD SAISON">
+            <button class="installment-remove" type="button" title="Xóa">×</button>
+          </div>`).join("") || '<div style="color:#98a2b3;font-size:12px;padding:6px 0">Chưa có nhân viên. Bấm “+ Thêm nhân viên”.</div>'}
+      </div>
+    </div>`).join("");
+}
+function collectInstallment(){
+  const providers=[...installmentProviders.querySelectorAll(".installment-provider-card")].map(card=>({
+    id:installmentData.providers[Number(card.dataset.provider)]?.id||"",
+    name:card.querySelector(".provider-name").value.trim(),
+    logo:card.querySelector(".provider-logo").value.trim(),
+    enabled:card.querySelector(".provider-enabled").checked,
+    staff:[...card.querySelectorAll(".installment-staff-row")].map(row=>({
+      name:row.querySelector(".staff-name").value.trim(),
+      zalo:row.querySelector(".staff-zalo").value.trim(),
+      note:row.querySelector(".staff-note").value.trim(),
+      enabled:true
+    })).filter(x=>x.name||x.zalo)
+  }));
+  return {intro:installmentIntro.value.trim(),providers};
+}
+async function loadInstallmentSettings(force=false){
+  if(installmentData && !force){renderInstallment();return}
+  installmentStatus.textContent="Đang tải...";
+  try{
+    const r=await fetch("/api/admin/installment-settings",{cache:"no-store",credentials:"same-origin"});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Không tải được");
+    installmentData=d.settings||defaultInstallment();
+    renderInstallment();
+    installmentStatus.textContent="";
+  }catch(e){
+    installmentStatus.textContent=e.message||"Không tải được";
+    installmentStatus.style.color="#b42318";
+  }
+}
+installmentProviders?.addEventListener("click",e=>{
+  const add=e.target.closest("[data-add-staff]");
+  if(add){
+    installmentData=collectInstallment();
+    const i=Number(add.dataset.addStaff);
+    installmentData.providers[i].staff.push({name:"",zalo:"",note:"",enabled:true});
+    renderInstallment(); return;
+  }
+  const remove=e.target.closest(".installment-remove");
+  if(remove){
+    const card=remove.closest(".installment-provider-card");
+    const row=remove.closest(".installment-staff-row");
+    installmentData=collectInstallment();
+    installmentData.providers[Number(card.dataset.provider)].staff.splice(Number(row.dataset.staff),1);
+    renderInstallment();
+  }
+});
+installmentProviders?.addEventListener("input",e=>{
+  if(e.target.classList.contains("provider-logo")){
+    const card=e.target.closest(".installment-provider-card");
+    const img=card?.querySelector(".installment-logo-preview");
+    if(img) img.src=e.target.value.trim()||"/assets/logo-square.jpg";
+  }
+});
+saveInstallment?.addEventListener("click",async()=>{
+  saveInstallment.disabled=true;
+  installmentStatus.textContent="Đang lưu...";
+  try{
+    const payload=collectInstallment();
+    const r=await fetch("/api/admin/installment-settings",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Không lưu được");
+    installmentData=d.settings;
+    renderInstallment();
+    installmentStatus.textContent="✓ Đã lưu thông tin trả góp";
+    installmentStatus.style.color="#15803d";
+  }catch(e){
+    installmentStatus.textContent=e.message||"Không lưu được";
+    installmentStatus.style.color="#b42318";
+  }finally{saveInstallment.disabled=false}
+});
+reloadInstallment?.addEventListener("click",()=>loadInstallmentSettings(true));
+
+
 const sidebarToggle=document.getElementById("sidebarToggle");
 const adminPageTitle=document.getElementById("adminPageTitle");
 const adminPageSubtitle=document.getElementById("adminPageSubtitle");
@@ -4037,7 +4214,8 @@ const ADMIN_PAGE_META={
   analytics:["Tổng quan","Theo dõi hoạt động website Siêu Di Động"],
   specs:["Link thông số","Quản lý nguồn thông số kỹ thuật của sản phẩm"],
   ai:["Đào tạo AI","Điều chỉnh cách AI so sánh và tư vấn khách"],
-  seo:["SEO & Google","Quản lý nội dung hiển thị trên Google và công cụ SEO"]
+  seo:["SEO & Google","Quản lý nội dung hiển thị trên Google và công cụ SEO"],
+  installment:["Trả góp","Quản lý HD SAISON, Mirae Asset và nhân viên Zalo tư vấn"]
 };
 
 function syncAdminShell(tab){

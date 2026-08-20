@@ -1634,3 +1634,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Chuyển nút `Nghe AI tư vấn` lên ngay dưới nút `Gemini phân tích`.
 - Kết quả phân tích nằm phía dưới nút nghe.
 - Nút nghe vẫn chỉ xuất hiện sau khi Gemini đã trả kết quả.
+
+## V223 - Quản trị trả góp
+- Thêm tab **Trả góp** trong trang quản trị.
+- Mặc định có **HD SAISON** và **Mirae Asset**.
+- Cho chỉnh tên công ty tài chính, URL logo, bật/tắt hiển thị.
+- Mỗi công ty có thể thêm/xóa nhiều nhân viên tư vấn.
+- Mỗi nhân viên có: tên, số Zalo và ghi chú.
+- Dữ liệu được lưu Redis qua API quản trị có xác thực.
+- Có public API `/api/installment-settings` để trang Trả góp đọc dữ liệu sau này.
