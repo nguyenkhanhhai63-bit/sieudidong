@@ -1553,3 +1553,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Giữ `Danh mục sản phẩm` ở thanh menu dưới làm điểm mở danh mục duy nhất trên desktop.
 - Ô tìm kiếm được mở rộng nên header cân và sạch hơn.
 - Mobile vẫn dùng nút hamburger như hiện tại.
+
+## V212 - AI trả kết quả bảo hành trực tiếp
+- Sau khi AI hỏi SĐT, tin nhắn SĐT kế tiếp được bắt buộc chạy qua hệ thống tra cứu bảo hành.
+- Không chuyển khách sang Zalo để kiểm tra bảo hành.
+- Nếu tìm thấy: trả trực tiếp tên máy, ngày mua, hạn bảo hành và thời gian còn lại trong chat.
+- Nếu không tìm thấy: báo trực tiếp không tìm thấy lịch sử mua hàng.
+- Nếu API hệ thống tạm lỗi: báo thử lại sau, không đẩy khách sang Zalo.
+- Sau khi trả kết quả, luồng bảo hành được đóng như V209.
