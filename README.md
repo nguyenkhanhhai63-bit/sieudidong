@@ -1528,3 +1528,28 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khi gặp HTTP 401, giao diện kiểm tra lại phiên và thử lại một lần.
 - Nếu phiên thật sự hết hạn, giao diện đưa về đăng nhập và báo rõ `Phiên đăng nhập đã hết hạn` thay vì chỉ hiện `Unauthorized`.
 - Nội dung đang nhập được backup ngay trên trình duyệt để tránh mất dữ liệu khi phiên hết hạn.
+
+## V208 - Gọn thông tin đổi máy trong kết quả bảo hành
+- Bỏ câu điều kiện `1 đổi 1 trong tháng đầu tiên nếu có lỗi do nhà sản xuất` khỏi từng thẻ sản phẩm.
+- Thẻ sản phẩm chỉ hiển thị mốc `Hỗ trợ đổi máy đến: DD/MM/YYYY`.
+- Điều kiện và phạm vi áp dụng được giữ tập trung trong mục `Chính sách bảo hành` phía dưới.
+- Tránh lặp nội dung và giúp kết quả tra cứu dễ đọc hơn trên mobile.
+
+## V209 - Đóng ngữ cảnh bảo hành sau khi tra cứu
+- Sửa lỗi sau khi tra cứu bảo hành xong, mọi tin nhắn tiếp theo vẫn bị hiểu là đang tra cứu bảo hành.
+- Lịch sử chat không còn tự kích hoạt luồng bảo hành chỉ vì trước đó từng nhắc `bảo hành`.
+- Chỉ giữ ngữ cảnh bảo hành khi AI vừa yêu cầu SĐT và tin nhắn kế tiếp thực sự là một số điện thoại.
+- Sau khi tra cứu xong server trả `warrantyPending:false` và `warrantyCompleted:true`.
+- Tin nhắn như `hihi`, `pin trâu`, `tư vấn máy dưới 10 triệu` sau đó sẽ trở lại AI tư vấn bình thường.
+- Nếu khách muốn kiểm tra lại, chỉ cần hỏi `kiểm tra BH`, `còn bảo hành không`... để mở luồng mới.
+
+## V210 - Đảo vị trí header trang bảo hành
+- Nút Trang chủ chuyển sang bên trái.
+- Logo + tên SIÊU DI ĐỘNG chuyển sang bên phải.
+
+## V211 - Bỏ nút Danh mục dư ở header
+- Xóa nút `Danh mục` ở hàng trên vì trùng chức năng và không còn cần thiết.
+- Hàng trên chỉ còn: Logo Siêu Di Động → ô tìm kiếm lớn → Tư vấn/Cửa hàng.
+- Giữ `Danh mục sản phẩm` ở thanh menu dưới làm điểm mở danh mục duy nhất trên desktop.
+- Ô tìm kiếm được mở rộng nên header cân và sạch hơn.
+- Mobile vẫn dùng nút hamburger như hiện tại.

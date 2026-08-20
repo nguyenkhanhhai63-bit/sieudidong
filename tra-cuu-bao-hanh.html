@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Tra cứu bảo hành | Siêu Di Động</title>
   <meta name="description" content="Tra cứu thông tin bảo hành sản phẩm đã mua tại Siêu Di Động.">
-  <link rel="stylesheet" href="/styles.css?v=204">
+  <link rel="stylesheet" href="/styles.css?v=210">
 </head>
 <body class="warranty-page-body">
   <header class="warranty-page-header">
     <div class="warranty-header-inner">
+      <a href="/" class="warranty-page-back">
+        <span class="warranty-back-icon">‹</span>
+        <span>Trang chủ</span>
+      </a>
+
       <a href="/" class="warranty-page-brand warranty-page-brand-link" aria-label="Về trang chủ Siêu Di Động">
-        <img src="/assets/logo-square.jpg" alt="">
         <span>
           <strong>SIÊU DI ĐỘNG</strong>
           <small>Chuyên Android giá tốt</small>
         </span>
-      </a>
-
-      <a href="/" class="warranty-page-back">
-        <span class="warranty-back-icon">‹</span>
-        <span>Trang chủ</span>
+        <img src="/assets/logo-square.jpg" alt="">
       </a>
     </div>
   </header>
@@ -134,7 +134,7 @@
               <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
             </div>
             ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
-            ${x.exchangeEnd?`<div class="warranty-note"><strong>1 đổi 1 trong tháng đầu tiên nếu có lỗi do nhà sản xuất</strong><br>Áp dụng đến: ${esc(x.exchangeEnd)}</div>`:""}
+            ${x.exchangeEnd?`<div class="warranty-note">Hỗ trợ đổi máy đến: <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
           </article>`).join("")+'</div>';
     }catch(err){
       result.innerHTML='<div class="warranty-alert error">'+esc(err.message||"Chưa thể tra cứu. Vui lòng thử lại.")+'</div>';

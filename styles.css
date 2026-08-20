@@ -11270,3 +11270,80 @@ body.warranty-open{overflow:hidden}
     font-weight:600!important;
   }
 }
+
+/* V210 - Trang chủ bên trái, thương hiệu bên phải */
+.warranty-header-inner{justify-content:space-between!important}
+.warranty-page-back{order:1!important}
+.warranty-page-brand-link{order:2!important;margin-left:auto!important;flex-direction:row!important;text-align:right!important}
+.warranty-page-brand-link>span{text-align:right!important}
+@media(max-width:640px){
+  .warranty-page-back{order:1!important}
+  .warranty-page-brand-link{order:2!important;margin-left:auto!important;gap:7px!important}
+}
+
+
+/* =========================================================
+   V211 - Header: bỏ nút Danh mục thừa ở hàng trên
+   ========================================================= */
+@media(min-width:1081px){
+  /* Hàng chính: Logo | Search | Tư vấn/Cửa hàng */
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:auto minmax(520px,1fr) auto!important;
+    gap:22px!important;
+    min-height:82px!important;
+  }
+
+  .commerce-brand-block{
+    min-width:215px!important;
+  }
+
+  .sdd-header-search{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+  }
+
+  .sdd-header-actions{
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+  }
+
+  /* Nút Danh mục sản phẩm bên dưới là điểm mở danh mục duy nhất */
+  .sdd-nav-category{
+    min-width:230px!important;
+    min-height:42px!important;
+    padding:0 18px!important;
+    border-radius:10px!important;
+    font-size:14px!important;
+    font-weight:800!important;
+  }
+
+  .sdd-header-nav-inner{
+    grid-template-columns:230px minmax(0,1fr) auto!important;
+    gap:28px!important;
+  }
+
+  .sdd-main-nav{
+    gap:34px!important;
+  }
+}
+
+/* Màn hình desktop lớn: cho search rộng hơn nữa */
+@media(min-width:1500px){
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:235px minmax(680px,1fr) auto!important;
+    gap:24px!important;
+  }
+
+  .sdd-main-nav{
+    gap:38px!important;
+  }
+}
+
+/* Mobile vẫn dùng nút hamburger riêng, không ảnh hưởng */
+@media(max-width:1080px){
+  .commerce-category-menu{
+    display:none!important;
+  }
+}
