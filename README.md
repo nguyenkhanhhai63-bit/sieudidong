@@ -1477,3 +1477,19 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Mỗi danh mục có icon, khoảng cách đều và mũi tên điều hướng.
 - Nút Zalo được tách xuống footer, rõ ràng nhưng không chiếm phần danh mục.
 - Menu không còn dạng hộp nổi ngắn, dồn chữ và khó nhìn như bản cũ.
+
+## V201 - Đưa Tra cứu bảo hành vào Danh mục mobile
+- Thêm `Tra cứu bảo hành` thành một mục riêng trong menu Danh mục.
+- Có dòng phụ `Kiểm tra bằng số điện thoại`.
+- Bấm sẽ mở trang riêng `/tra-cuu-bao-hanh.html`.
+- Xóa nút Tra cứu bảo hành nổi riêng ngoài menu trên mobile.
+- Desktop vẫn giữ mục Tra cứu BH trên thanh điều hướng.
+
+## V202 - AI chat tra cứu bảo hành
+- AI nhận biết các câu hỏi như `máy tôi còn bảo hành không`, `tra cứu bảo hành`, `1 đổi 1 còn không`.
+- Nếu khách chưa gửi SĐT, AI chỉ hỏi đúng một câu xin số điện thoại mua hàng.
+- Nếu khách gửi SĐT ở tin nhắn kế tiếp, AI hiểu ngữ cảnh và tự tra cứu.
+- Kết quả lấy trực tiếp từ hệ thống bảo hành dùng chung với trang `/tra-cuu-bao-hanh.html`.
+- AI trả lời máy đã mua, ngày mua, ngày hết bảo hành, số ngày còn lại và mốc 1 đổi 1 nếu còn áp dụng.
+- Dữ liệu bảo hành và số điện thoại KHÔNG được gửi sang Gemini; xử lý xác định hoàn toàn ở server.
+- Nếu một SĐT có nhiều máy, AI liệt kê các máy; nếu câu hỏi có tên máy thì ưu tiên đúng máy đó.

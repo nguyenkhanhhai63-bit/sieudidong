@@ -10979,3 +10979,47 @@ body.warranty-open{overflow:hidden}
     font-weight:500!important;
   }
 }
+
+
+/* =========================================================
+   V201 - Tra cứu bảo hành nằm trong menu Danh mục mobile
+   ========================================================= */
+@media(max-width:768px){
+  /* Không còn nút bảo hành nổi riêng ngoài menu */
+  .sdd-mobile-warranty-quick{
+    display:none!important;
+  }
+
+  .sdd-mobile-warranty-menu-item{
+    margin-top:8px!important;
+    border:1px solid #ffd8c2!important;
+    background:#fff8f4!important;
+  }
+
+  .sdd-mobile-warranty-menu-item .sdd-mobile-nav-icon{
+    background:#ffede2!important;
+    color:#ff5a00!important;
+  }
+
+  .sdd-mobile-warranty-menu-item span:nth-child(2){
+    min-width:0!important;
+    display:block!important;
+  }
+
+  .sdd-mobile-warranty-menu-item strong{
+    display:block!important;
+    color:#172033!important;
+    font-size:13px!important;
+    line-height:1.15!important;
+    font-weight:800!important;
+  }
+
+  .sdd-mobile-warranty-menu-item small{
+    display:block!important;
+    margin-top:3px!important;
+    color:#8a94a3!important;
+    font-size:9.5px!important;
+    line-height:1.15!important;
+    font-weight:500!important;
+  }
+}
