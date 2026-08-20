@@ -9,7 +9,8 @@ const handlers = {
   "seo-settings": () => import("../lib/public-api/seo-settings.js"),
   "sitemap": () => import("../lib/public-api/sitemap.js"),
   "specs": () => import("../lib/public-api/specs.js"),
-  "version": () => import("../lib/public-api/version.js")
+  "version": () => import("../lib/public-api/version.js"),
+  "warranty-lookup": () => import("../lib/public-api/warranty-lookup.js")
 };
 
 export default async function handler(req,res){

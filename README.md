@@ -1409,3 +1409,20 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Hai nút Liên hệ mua hàng / Thêm vào so sánh cân bằng cùng kích thước.
 - Cột sản phẩm tương tự gọn, ảnh và chữ cân hơn.
 - Mobile tự chuyển về 1 cột.
+
+## V191 - Thu gọn phần chi tiết sản phẩm
+- Giảm khoảng trống phía dưới hai nút Liên hệ mua hàng / Thêm vào so sánh.
+- Giảm nhẹ chiều cao vùng ảnh sản phẩm.
+- Thu gọn padding trên/dưới của card.
+- Cột sản phẩm tương tự cũng gọn hơn để ba cột cân chiều cao.
+- Không thay đổi bố cục mobile.
+
+## V192 - Tra cứu bảo hành qua KiotViet
+- Thêm mục `Tra cứu BH` trên menu desktop và `Tra cứu bảo hành` trên mobile.
+- Khách nhập số điện thoại mua hàng.
+- Server tìm khách hàng KiotViet theo `contactNumber`, sau đó lấy hóa đơn theo `customerIds`.
+- Hiển thị máy đã mua, ngày mua, ngày hết bảo hành, số ngày còn lại và IMEI/Serial nếu KiotViet có dữ liệu.
+- Mã hóa đơn được che bớt trên giao diện công khai.
+- Mặc định bảo hành 12 tháng và 1 đổi 1 tháng đầu; có thể đổi bằng `WARRANTY_MONTHS`, `EXCHANGE_MONTHS`.
+- Bắt buộc cấu hình `KIOTVIET_RETAILER`, `KIOTVIET_CLIENT_ID`, `KIOTVIET_CLIENT_SECRET` trên Vercel.
+- Client secret chỉ được sử dụng ở server API, không đưa xuống trình duyệt.

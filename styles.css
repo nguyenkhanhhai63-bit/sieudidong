@@ -10504,3 +10504,91 @@ input,select,textarea{
     font-size:11px!important;
   }
 }
+
+
+/* =========================================================
+   V191 - Thu gọn khoảng trống dưới nút mua hàng / so sánh
+   ========================================================= */
+@media(min-width:981px){
+  /* Không ép cột chi tiết cao theo cột ảnh / sản phẩm tương tự */
+  .product-detail-layout{
+    align-items:start!important;
+  }
+
+  .product-detail-info,
+  .detail-info{
+    align-self:start!important;
+    min-height:0!important;
+    height:auto!important;
+    padding-bottom:0!important;
+  }
+
+  /* Hai nút kết thúc gọn phần thông tin */
+  .detail-actions,
+  .product-detail-actions{
+    margin-top:16px!important;
+    margin-bottom:0!important;
+  }
+
+  /* Giảm chiều cao khung ảnh một chút để tổng card đỡ trống */
+  .product-detail-image,
+  .detail-media{
+    min-height:350px!important;
+    padding-top:16px!important;
+    padding-bottom:16px!important;
+  }
+
+  .product-detail-image img,
+  .detail-media img{
+    max-height:325px!important;
+  }
+
+  /* Card tổng không để khoảng đệm dưới quá lớn */
+  .product-detail-card,
+  .detail-card{
+    padding-top:18px!important;
+    padding-bottom:18px!important;
+  }
+
+  /* Cột sản phẩm tương tự cũng gọn lại */
+  .related-product-item,
+  .similar-product-item{
+    min-height:94px!important;
+    padding-top:8px!important;
+    padding-bottom:8px!important;
+  }
+
+  .related-product-item img,
+  .similar-product-item img{
+    width:64px!important;
+    height:64px!important;
+    flex-basis:64px!important;
+  }
+}
+
+/* V192 - Tra cứu bảo hành */
+.sdd-warranty-nav-btn{color:#0f172a!important}
+.warranty-modal[hidden]{display:none!important}
+.warranty-modal{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:18px}
+.warranty-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(3px)}
+.warranty-panel{position:relative;width:min(680px,100%);max-height:min(760px,90vh);overflow:auto;background:#fff;border-radius:20px;padding:24px;box-shadow:0 24px 70px rgba(15,23,42,.24)}
+.warranty-close{position:absolute;right:16px;top:16px;width:38px;height:38px;border:0;border-radius:50%;background:#f1f5f9;font-size:24px;cursor:pointer}
+.warranty-head{display:flex;align-items:center;gap:13px;padding-right:42px}
+.warranty-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#fff1e8;color:#ff5a00;font-size:22px;font-weight:900}
+.warranty-head h2{margin:0 0 3px;font-size:23px}.warranty-head p{margin:0;color:#64748b;font-size:13px}
+.warranty-form{margin-top:20px;padding:16px;border:1px solid #e5e7eb;border-radius:14px;background:#fafbfc}
+.warranty-form label{display:block;font-weight:800;font-size:13px;margin-bottom:8px}
+.warranty-search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.warranty-search-row input{min-width:0;height:48px;border:1px solid #d7dde5;border-radius:10px;padding:0 14px;font-size:16px;outline:none}
+.warranty-search-row input:focus{border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.1)}
+.warranty-search-row button{border:0;border-radius:10px;background:#ff5a00;color:#fff;padding:0 22px;font-weight:800;cursor:pointer}
+.warranty-form small{display:block;margin-top:8px;color:#94a3b8}
+.warranty-result{margin-top:16px}.warranty-loading,.warranty-alert{padding:15px;border-radius:12px;background:#f8fafc;color:#475569;text-align:center}
+.warranty-alert.error{background:#fff1f2;color:#b42318}.warranty-summary{font-size:13px;color:#475569;margin:0 0 9px}
+.warranty-items{display:grid;gap:10px}.warranty-item{border:1px solid #e5e7eb;border-radius:14px;padding:15px;background:#fff}
+.warranty-item-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.warranty-item h3{margin:0 0 3px;font-size:15px;line-height:1.35}.warranty-item small{color:#64748b}
+.warranty-state{flex:0 0 auto;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800}.warranty-state.active{background:#eaf9ef;color:#07883f;border:1px solid #a9e7bd}.warranty-state.expired{background:#eef1f4;color:#697386;border:1px solid #d9dee5}
+.warranty-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}.warranty-grid>div{padding:9px;background:#f8fafc;border-radius:9px}.warranty-grid span{display:block;color:#64748b;font-size:10px;margin-bottom:3px}.warranty-grid strong{font-size:12px}
+.warranty-imei,.warranty-note{margin-top:9px;font-size:11px;color:#64748b}.warranty-note{padding:8px 10px;border-radius:8px;background:#fff7ed;color:#9a3412}
+body.warranty-open{overflow:hidden}
+@media(max-width:640px){.warranty-modal{padding:10px}.warranty-panel{padding:18px 14px;border-radius:17px;max-height:92vh}.warranty-head h2{font-size:20px}.warranty-search-row{grid-template-columns:1fr}.warranty-search-row button{height:46px}.warranty-grid{grid-template-columns:1fr 1fr}.warranty-item-top{display:block}.warranty-state{display:inline-flex;margin-top:8px}}
