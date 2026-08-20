@@ -12487,3 +12487,158 @@ body.installment-open{overflow:hidden}
     font-size:20px!important;
   }
 }
+
+/* =========================================================
+   V228 - Mobile header 1 hàng: Menu | Logo | Tìm kiếm
+   ========================================================= */
+@media(max-width:720px){
+  .sdd-header-v164{
+    border-top-width:3px!important;
+    background:#fff!important;
+  }
+
+  .sdd-header-v164 .commerce-header-inner.sdd-header-main{
+    width:100%!important;
+    min-height:68px!important;
+    padding:9px 12px!important;
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:42px 48px minmax(0,1fr)!important;
+    grid-template-areas:"menu brand search"!important;
+    align-items:center!important;
+    gap:9px!important;
+  }
+
+  .sdd-mobile-menu-btn{
+    grid-area:menu!important;
+    width:42px!important;
+    height:42px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    padding:0!important;
+    border:1px solid #edf0f3!important;
+    border-radius:11px!important;
+    background:#f6f7f9!important;
+    color:#172033!important;
+    font-size:21px!important;
+    line-height:1!important;
+    box-shadow:none!important;
+  }
+
+  .sdd-header-v164 .commerce-brand-block{
+    grid-area:brand!important;
+    display:block!important;
+    min-width:0!important;
+    width:48px!important;
+    height:48px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  .sdd-header-v164 .commerce-logo{
+    width:48px!important;
+    height:48px!important;
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  .sdd-header-v164 .commerce-logo-mark{
+    width:48px!important;
+    height:48px!important;
+    display:block!important;
+    border-radius:12px!important;
+    object-fit:cover!important;
+    box-shadow:0 5px 14px rgba(255,90,0,.16)!important;
+  }
+
+  .sdd-brand-copy,
+  .sdd-header-v164 .commerce-logo-text{
+    display:none!important;
+  }
+
+  .sdd-header-search{
+    grid-area:search!important;
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    margin:0!important;
+    grid-template-columns:32px minmax(0,1fr) 30px!important;
+    border:1px solid #dfe4ea!important;
+    border-radius:12px!important;
+    background:#f8fafc!important;
+  }
+
+  .sdd-header-search input{
+    min-width:0!important;
+    height:44px!important;
+    padding:0 4px!important;
+    font-size:13px!important;
+  }
+
+  .sdd-header-search input::placeholder{
+    font-size:13px!important;
+    color:#98a2b3!important;
+    opacity:1!important;
+  }
+
+  .sdd-search-leading{
+    display:grid!important;
+    place-items:center!important;
+    font-size:16px!important;
+    color:#98a2b3!important;
+  }
+
+  .sdd-search-submit{
+    display:none!important;
+  }
+
+  .sdd-header-search #clearSearch{
+    width:26px!important;
+    height:26px!important;
+    margin-right:3px!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+    transition:opacity .15s ease!important;
+  }
+
+  .sdd-header-search:has(#searchInput:not(:placeholder-shown)) #clearSearch{
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+
+  .sdd-header-actions,
+  .sdd-header-nav,
+  .sdd-header-v164 .commerce-header-note{
+    display:none!important;
+  }
+}
+
+@media(max-width:390px){
+  .sdd-header-v164 .commerce-header-inner.sdd-header-main{
+    grid-template-columns:40px 44px minmax(0,1fr)!important;
+    gap:7px!important;
+    padding-left:9px!important;
+    padding-right:9px!important;
+  }
+  .sdd-mobile-menu-btn{width:40px!important;height:40px!important}
+  .sdd-header-v164 .commerce-brand-block,
+  .sdd-header-v164 .commerce-logo,
+  .sdd-header-v164 .commerce-logo-mark{
+    width:44px!important;
+    height:44px!important;
+  }
+  .sdd-header-search input,
+  .sdd-header-search input::placeholder{
+    font-size:12px!important;
+  }
+}
