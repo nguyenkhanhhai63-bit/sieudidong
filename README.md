@@ -1612,3 +1612,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Gemini AI phân tích vẫn hoạt động trực tiếp trên trang so sánh.
 - Dữ liệu 2 máy được lưu trong localStorage và trang riêng tự lấy thông số từ API.
 - Mobile dùng trang riêng và cuộn ngang bảng khi cần, không còn cửa sổ nổi che giao diện.
+
+## V220 - Fix trang so sánh mobile
+- Bỏ min-width 700px khiến mobile chỉ thấy một máy.
+- Hai máy luôn hiển thị cạnh nhau trong cùng màn hình.
+- Cột tên thông số thu còn 92px, hai cột máy chia đều phần còn lại.
+- Ảnh, tên máy, giá và trạng thái được thu gọn riêng cho mobile.
+- Nội dung thông số tự xuống dòng, không làm tràn ngang trang.
+- Khối Gemini AI chuyển thành bố cục dọc, nút và dropdown full-width.
+- Header và tiêu đề trang cũng được thu gọn.
