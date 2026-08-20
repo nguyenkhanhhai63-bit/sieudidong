@@ -2552,6 +2552,26 @@ button,.primary,.secondary{font-size:12px!important}
  .installment-remove{height:38px}
 }
 
+
+/* V230 - Thống kê tra cứu bảo hành */
+.warranty-analytics-box{grid-column:1/-1}
+.warranty-analytics-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.warranty-analytics-head p{margin:4px 0 0;color:var(--admin-muted,#667085);font-size:12px}
+.warranty-recent-table{width:100%;border-collapse:collapse;font-size:13px}
+.warranty-recent-table th,.warranty-recent-table td{padding:11px 10px;border-bottom:1px solid var(--admin-line,#e7eaee);text-align:left;vertical-align:middle}
+.warranty-recent-table th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--admin-muted,#667085);font-weight:800;background:#fafbfc}
+.warranty-recent-table tr:last-child td{border-bottom:0}
+.warranty-status{display:inline-flex;align-items:center;min-height:26px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.warranty-status.found{background:#ecfdf3;color:#027a48}
+.warranty-status.not-found{background:#fff7ed;color:#c2410c}
+.warranty-status.error{background:#fef2f2;color:#b42318}
+.warranty-phone{font-weight:800;color:#101828;letter-spacing:.02em}
+.warranty-table-scroll{overflow:auto;border:1px solid var(--admin-line,#e7eaee);border-radius:10px}
+.warranty-empty{padding:24px;text-align:center;color:var(--admin-muted,#667085);font-size:13px}
+@media(max-width:760px){
+  .warranty-recent-table{min-width:620px}
+  .warranty-analytics-head{display:block}
+}
 </style>
 
 <style id="login-success-toast-style">
@@ -2698,6 +2718,9 @@ button,.primary,.secondary{font-size:12px!important}
           <div class="metric"><small>Xem sản phẩm</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
           <div class="metric"><small>So sánh hôm nay</small><strong id="mTodayCompare">0</strong><em id="mCompare30">30 ngày: 0</em></div>
           <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
+          <div class="metric"><small>Tra bảo hành hôm nay</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">30 ngày: 0</em></div>
+          <div class="metric"><small>Khách tra bảo hành</small><strong id="mWarrantyPhonesToday">0</strong><em id="mWarrantyPhones30">30 ngày: 0 SĐT</em></div>
+          <div class="metric"><small>Tìm thấy bảo hành</small><strong id="mTodayWarrantyFound">0</strong><em id="mWarrantyFound30">30 ngày: 0</em></div>
           <div class="metric"><small>Truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
         </div>
       </div>
@@ -2711,6 +2734,13 @@ button,.primary,.secondary{font-size:12px!important}
           <div class="abox"><h2>Bộ lọc được dùng nhiều</h2><div id="filterRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được so sánh nhiều</h2><div id="compareProductRanks" class="ranklist"></div></div>
           <div class="abox compare-pairs-box"><div class="compare-pairs-head"><h2>Cặp máy được so sánh nhiều</h2><p>Nhìn nhanh máy nào thường được khách đặt lên bàn cân với nhau.</p></div><div id="comparePairRanks" class="compare-pair-list"></div></div>
+          <div class="abox warranty-analytics-box">
+            <div class="warranty-analytics-head">
+              <div><h2>Khách tra cứu bảo hành gần đây</h2><p>Ghi nhận tự động khi khách nhập số điện thoại và bấm Tra cứu. Số điện thoại được che bớt trên bảng thống kê.</p></div>
+              <div id="warrantyLookupSummary" class="device-analytics-note"></div>
+            </div>
+            <div id="warrantyRecentList"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3337,6 +3367,34 @@ function renderComparePairs(list){
     host.appendChild(row);
   });
 }
+function renderWarrantyRecent(items=[]){
+  const host=document.getElementById("warrantyRecentList");
+  if(!host) return;
+  if(!Array.isArray(items) || !items.length){
+    host.innerHTML='<div class="warranty-empty">Chưa có khách tra cứu bảo hành.</div>';
+    return;
+  }
+  const statusText={found:"Tìm thấy",not_found:"Không tìm thấy",error:"Lỗi tra cứu"};
+  const statusClass={found:"found",not_found:"not-found",error:"error"};
+  const rows=items.map(x=>{
+    const date=x.ts?new Date(Number(x.ts)):null;
+    const when=date && !Number.isNaN(date.getTime())
+      ? date.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"})
+      : "—";
+    const count=Number(x.itemCount||0);
+    return `<tr>
+      <td>${when}</td>
+      <td class="warranty-phone">${String(x.phone||"—").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}</td>
+      <td><span class="warranty-status ${statusClass[x.status]||"error"}">${statusText[x.status]||"Lỗi tra cứu"}</span></td>
+      <td>${x.status==="found"?fmt(count)+" sản phẩm":"—"}</td>
+    </tr>`;
+  }).join("");
+  host.innerHTML=`<div class="warranty-table-scroll"><table class="warranty-recent-table">
+    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Kết quả</th><th>Sản phẩm</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
 async function loadAnalytics(){
   const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
   loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
@@ -3373,6 +3431,14 @@ async function loadAnalytics(){
     mDetailClicks.textContent=fmt(o.detailClicks);
     document.getElementById("mTodayCompare").textContent=fmt(o.todayCompare);
     document.getElementById("mCompare30").textContent=`30 ngày: ${fmt(o.compare30)}`;
+    document.getElementById("mTodayWarrantyChecks").textContent=fmt(o.todayWarrantyChecks);
+    document.getElementById("mWarrantyChecks30").textContent=`30 ngày: ${fmt(o.warrantyChecks30)}`;
+    document.getElementById("mWarrantyPhonesToday").textContent=fmt(o.warrantyPhonesToday);
+    document.getElementById("mWarrantyPhones30").textContent=`30 ngày: ${fmt(o.warrantyPhones30)} SĐT`;
+    document.getElementById("mTodayWarrantyFound").textContent=fmt(o.todayWarrantyFound);
+    document.getElementById("mWarrantyFound30").textContent=`30 ngày: ${fmt(o.warrantyFound30)}`;
+    const warrantySummary=document.getElementById("warrantyLookupSummary");
+    if(warrantySummary) warrantySummary.textContent=`7 ngày: ${fmt(o.warrantyChecks7)} lượt · Tổng: ${fmt(o.warrantyChecksAll)} lượt`;
     const chart=document.getElementById("trafficChart"); chart.innerHTML="";
     const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
@@ -3386,6 +3452,7 @@ async function loadAnalytics(){
     renderComparePairs(d.topComparePairs);
     const filterList=Object.entries(d.filters||{}).map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value).slice(0,12);
     renderRank("filterRanks",filterList);
+    renderWarrantyRecent(d.warrantyRecent||[]);
 
     if(!(d.daily||[]).some(x=>Number(x.views||0)>0) && Number(o.totalViews||0)===0){
       const note=document.createElement("div");
