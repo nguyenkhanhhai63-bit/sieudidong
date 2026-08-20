@@ -1669,3 +1669,8 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bỏ khung xanh lớn của khu vực hỗ trợ nhân viên.
 - Đưa CTA Zalo thành hàng gọn liền mạch ngay dưới header.
 - Nút Nhắn Zalo nền xanh, nhỏ gọn; giữ mô tả hỗ trợ trực tiếp.
+
+
+## V232
+- Dashboard quản trị tự giãn theo vùng nội dung, bỏ giới hạn 1480/1560px gây trống hai bên trên màn hình rộng.
+- Desktop giữ lề 20–24px; tablet 12px; mobile 8px.

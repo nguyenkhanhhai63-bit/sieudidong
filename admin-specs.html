@@ -2575,9 +2575,9 @@ button,.primary,.secondary{font-size:12px!important}
 
 
 /* =========================================================
-   V231 - Dashboard quản trị dễ nhìn, tối ưu màn hình lớn
+   V232 - Dashboard full-width responsive, giảm khoảng trống hai bên
    ========================================================= */
-#analyticsCard{max-width:1480px;margin-left:auto;margin-right:auto;border-radius:18px}
+#analyticsCard{width:calc(100% - 40px);max-width:none;margin-left:20px;margin-right:20px;border-radius:18px}
 #analyticsCard .dashboard-welcome{padding:22px 26px}
 #analyticsCard .head{padding:18px 26px}
 #analyticsCard .analytics-shell{padding:22px 26px 28px;background:#f6f7f9}
@@ -2604,16 +2604,17 @@ button,.primary,.secondary{font-size:12px!important}
 .warranty-recent-table{font-size:12px}
 .warranty-recent-table th,.warranty-recent-table td{padding:9px 10px}
 @media(min-width:1800px){
-  #analyticsCard{max-width:1560px}
+  #analyticsCard{width:calc(100% - 48px);max-width:none;margin-left:24px;margin-right:24px}
   .metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media(max-width:1100px){
-  #analyticsCard{max-width:none}
+  #analyticsCard{width:calc(100% - 24px);max-width:none;margin-left:12px;margin-right:12px}
   .metric-grid.metric-grid-main,.metric-grid.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))}
   .analytics-grid{grid-template-columns:1fr}
   .analytics-grid>.abox:nth-child(1),.compare-pairs-box,.warranty-analytics-box{grid-column:auto!important}
 }
 @media(max-width:560px){
+  #analyticsCard{width:calc(100% - 16px);margin-left:8px;margin-right:8px}
   #analyticsCard .dashboard-welcome,#analyticsCard .head{padding-left:16px;padding-right:16px}
   #analyticsCard .analytics-shell{padding:14px}
   .analytics-section-title>div{display:block}
