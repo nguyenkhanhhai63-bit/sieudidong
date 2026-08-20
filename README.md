@@ -1583,3 +1583,15 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nút Tra cứu có chiều cao, bo góc và shadow cân đối.
 - Chính sách bảo hành chuyển sang box cam nhạt có thanh nhấn bên trái.
 - Mobile thu gọn khoảng cách và nút Tra cứu chuyển full-width.
+
+## V216 - So sánh tối đa 2 máy
+- Giới hạn chức năng so sánh chỉ 2 sản phẩm.
+- Khi đã chọn đủ 2 máy, không cho thêm máy thứ 3.
+- Thông báo đổi thành `Chỉ có thể so sánh 2 máy cùng lúc`.
+- Thanh so sánh hiển thị `Đã chọn đủ 2 máy • Sẵn sàng so sánh`.
+- Nút hành động đổi thành `So sánh 2 máy`.
+
+## V217 - Viết hoa tên hãng
+- Tất cả tên hãng trong bộ lọc thương hiệu được hiển thị IN HOA.
+- Ví dụ: vivo → VIVO, Xiaomi → XIAOMI.
+- Giữ nguyên `Tất cả` và `Bán chạy`.

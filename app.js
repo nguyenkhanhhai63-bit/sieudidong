@@ -962,7 +962,9 @@ function renderCategoryFilters(){
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="category-btn" + (filter===ACTIVE_CATEGORY ? " active" : "");
-    btn.textContent=filter;
+    btn.textContent=(filter==="Tất cả" || filter==="Bán chạy")
+      ? filter
+      : String(filter).toUpperCase();
 
     if(filter==="Bán chạy"){
       btn.classList.add("best-seller-filter");
@@ -1012,7 +1014,7 @@ function colorHex(name){
 
 
 const COMPARE_STORAGE_KEY="sieudidong-compare-v1";
-const MAX_COMPARE_ITEMS=3;
+const MAX_COMPARE_ITEMS=2;
 let COMPARE_ITEMS=[];
 
 function saveCompareItems(){
@@ -1045,7 +1047,7 @@ function toggleCompare(group){
     COMPARE_ITEMS=COMPARE_ITEMS.filter(x=>x.name!==group.name);
   }else{
     if(COMPARE_ITEMS.length>=MAX_COMPARE_ITEMS){
-      showCompareNotice(`Chỉ có thể so sánh tối đa ${MAX_COMPARE_ITEMS} sản phẩm.`);
+      showCompareNotice("Chỉ có thể so sánh 2 máy cùng lúc.");
       return false;
     }
     COMPARE_ITEMS.push(group);
@@ -1119,14 +1121,14 @@ function renderCompareBar(){
   open.type="button";
   open.className="compare-open-btn";
   open.disabled=COMPARE_ITEMS.length<2;
-  open.textContent=COMPARE_ITEMS.length<2 ? "Chọn thêm 1 máy" : `So sánh ngay (${COMPARE_ITEMS.length})`;
+  open.textContent=COMPARE_ITEMS.length<2 ? "Chọn thêm 1 máy" : "So sánh 2 máy";
   open.addEventListener("click",openCompareModal);
 
   const instruction=document.createElement("div");
   instruction.className="compare-bar-instruction";
   instruction.textContent=COMPARE_ITEMS.length<2
-    ? `Đã chọn ${COMPARE_ITEMS.length}/${MAX_COMPARE_ITEMS} • Chọn thêm ít nhất 1 máy`
-    : `Đã chọn ${COMPARE_ITEMS.length}/${MAX_COMPARE_ITEMS} • Có thể so sánh`;
+    ? `Đã chọn ${COMPARE_ITEMS.length}/2 • Chọn thêm 1 máy`
+    : "Đã chọn đủ 2 máy • Sẵn sàng so sánh";
 
   actions.append(instruction,clear,open);
   bar.append(left,actions);
