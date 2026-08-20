@@ -1433,3 +1433,26 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - V193 chờ `DOMContentLoaded` rồi mới gắn sự kiện.
 - Thêm trạng thái `Đang tra cứu...` và hiển thị lỗi API rõ hơn.
 - Giữ nguyên API KiotViet và giao diện tra cứu của V192.
+
+## V194 - Ghi rõ chính sách 1 đổi 1
+- Đổi dòng `Mốc 1 đổi 1 lỗi NSX` thành nội dung rõ ràng:
+  `1 đổi 1 trong tháng đầu tiên nếu có lỗi do nhà sản xuất`.
+- Vẫn hiển thị ngày áp dụng đến ngay bên dưới.
+
+## V195 - Ẩn tên KiotViet khỏi giao diện khách
+- `Dữ liệu được đối chiếu trực tiếp từ hóa đơn KiotViet.` → `Dữ liệu được đối chiếu trực tiếp từ hệ thống.`
+- Trạng thái tải đổi thành `Đang đối chiếu dữ liệu từ hệ thống...`
+- Phần kết nối API bên trong vẫn giữ nguyên.
+
+## V196 - Tối ưu menu mobile và Tra cứu bảo hành
+- Bỏ nút `Tra cứu bảo hành` khỏi menu mobile.
+- Menu chỉ giữ `Tư vấn ngay` làm CTA chính nên gọn hơn.
+- Thêm nút `Tra cứu bảo hành` độc lập bên ngoài menu trên mobile.
+- Nút bảo hành nổi cố định phía dưới bên phải, khách có thể mở tra cứu mà không cần vào menu.
+- Desktop vẫn giữ `Tra cứu BH` trên thanh điều hướng.
+
+## V197 - Nút tư vấn mobile mở thẳng Zalo
+- Nút trong menu mobile đổi thành `Nhắn Zalo tư vấn ngay`.
+- Bấm nút sẽ chuyển trực tiếp tới Zalo: `https://zalo.me/84901234567`.
+- Chặn sự kiện cũ để không mở AI chatbox.
+- Nút AI chat nổi trên website vẫn hoạt động riêng như trước.

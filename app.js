@@ -3475,7 +3475,7 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
       document.body.classList.remove("warranty-open");
     }
 
-    ["sddWarrantyBtn","sddMobileWarrantyBtn"].forEach(id=>{
+    ["sddWarrantyBtn","sddMobileWarrantyQuickBtn"].forEach(id=>{
       const btn=document.getElementById(id);
       if(btn && !btn.dataset.warrantyBound){
         btn.dataset.warrantyBound="1";
@@ -3495,7 +3495,7 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
       }
       const submit=form.querySelector('button[type="submit"]');
       if(submit){ submit.disabled=true; submit.textContent="Đang tra cứu..."; }
-      result.innerHTML='<div class="warranty-loading"><span></span> Đang đối chiếu hóa đơn KiotViet...</div>';
+      result.innerHTML='<div class="warranty-loading"><span></span> Đang đối chiếu dữ liệu từ hệ thống...</div>';
       try{
         const r=await fetch("/api/warranty-lookup",{
           method:"POST",
@@ -3528,7 +3528,7 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
                   <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
                 </div>
                 ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
-                ${x.exchangeEnd?`<div class="warranty-note">Mốc 1 đổi 1 lỗi NSX: đến <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
+                ${x.exchangeEnd?`<div class="warranty-note"><strong>1 đổi 1 trong tháng đầu tiên nếu có lỗi do nhà sản xuất</strong><br>Áp dụng đến: ${esc(x.exchangeEnd)}</div>`:""}
               </article>`).join("")}
           </div>`;
       }catch(err){
@@ -3543,5 +3543,28 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
     document.addEventListener("DOMContentLoaded",initWarrantyLookup,{once:true});
   }else{
     initWarrantyLookup();
+  }
+})();
+
+
+/* V197 - Mobile "Tư vấn ngay" mở thẳng Zalo, không mở AI chat */
+(function(){
+  function bindDirectZalo(){
+    const btn=document.getElementById("sddMobileConsultBtn");
+    if(!btn || btn.dataset.directZaloBound==="1") return;
+    btn.dataset.directZaloBound="1";
+
+    // Capture phase để chặn handler cũ mở AI chat.
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(typeof e.stopImmediatePropagation==="function") e.stopImmediatePropagation();
+      window.location.href='https://zalo.me/84901234567';
+    },true);
+  }
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",bindDirectZalo,{once:true});
+  }else{
+    bindDirectZalo();
   }
 })();
