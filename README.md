@@ -1575,3 +1575,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Tin nhắn SĐT kế tiếp gửi cờ này lên server và bị ép chạy thẳng `lookupWarrantyByPhone()`.
 - Không cho AI chung trả các câu giả như `hệ thống đang kiểm tra`, `vui lòng chờ`, hoặc đẩy sang Zalo.
 - Khi có kết quả thật, server trả `warrantyCompleted=true` và frontend xóa trạng thái chờ.
+
+## V215 - Làm đẹp trang Tra cứu bảo hành
+- Card chính gọn và cao cấp hơn với shadow nhẹ, bo góc đều.
+- Khu tiêu đề cân lại icon, title và mô tả.
+- Form tra cứu có nền xám nhạt, input và nút cam rõ hơn.
+- Nút Tra cứu có chiều cao, bo góc và shadow cân đối.
+- Chính sách bảo hành chuyển sang box cam nhạt có thanh nhấn bên trái.
+- Mobile thu gọn khoảng cách và nút Tra cứu chuyển full-width.
