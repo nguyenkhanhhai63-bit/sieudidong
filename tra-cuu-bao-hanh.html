@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Tra cứu bảo hành | Siêu Di Động</title>
   <meta name="description" content="Tra cứu thông tin bảo hành sản phẩm đã mua tại Siêu Di Động.">
-  <link rel="stylesheet" href="/styles.css?v=199">
+  <link rel="stylesheet" href="/styles.css?v=203">
 </head>
 <body class="warranty-page-body">
   <header class="warranty-page-header">
@@ -39,10 +39,52 @@
 
       <div class="warranty-policy-box">
         <strong>Chính sách bảo hành</strong>
-        <p>1 đổi 1 trong tháng đầu tiên nếu có lỗi do nhà sản xuất. Thời hạn bảo hành cụ thể được tính theo ngày mua hàng trên hệ thống.</p>
+        <p>Trong 30 ngày đầu, sản phẩm phát sinh lỗi do nhà sản xuất và đủ điều kiện sẽ được hỗ trợ đổi máy theo chính sách Siêu Di Động.</p>
+        <button type="button" class="warranty-policy-toggle" id="warrantyPolicyToggle" aria-expanded="false">
+          Xem chính sách chi tiết <span>⌄</span>
+        </button>
+
+        <div class="warranty-policy-details" id="warrantyPolicyDetails" hidden>
+          <div class="warranty-policy-section">
+            <h3>Bảo hành</h3>
+            <ul>
+              <li><strong>Mainboard:</strong> 12 tháng, áp dụng cho lỗi kỹ thuật do nhà sản xuất.</li>
+              <li><strong>Nguồn, màn hình, camera:</strong> 3 tháng; hỗ trợ đổi hoặc sửa nếu phát sinh lỗi trong thời gian bảo hành.</li>
+              <li><strong>Phụ kiện (sạc, cáp,...):</strong> 1 tháng, bảo hành lỗi kỹ thuật, không áp dụng với hao mòn tự nhiên.</li>
+              <li>Trong <strong>30 ngày đầu</strong>, sản phẩm lỗi do nhà sản xuất và còn đầy đủ tem, hóa đơn sẽ được hỗ trợ đổi máy theo chính sách.</li>
+              <li>Hỗ trợ cài đặt và cập nhật phần mềm miễn phí. Phần mềm không thuộc phạm vi bảo hành.</li>
+            </ul>
+          </div>
+
+          <div class="warranty-policy-section warranty-policy-exclude">
+            <h3>Trường hợp không bảo hành</h3>
+            <ul>
+              <li>Máy rơi, cong, móp, trầy xước nặng, vào nước, kể cả máy có khả năng chống nước.</li>
+              <li>Tự ý up ROM, root, sửa chữa hoặc thay linh kiện ngoài hệ thống.</li>
+              <li>Cháy nổ, chập nguồn, ẩm mốc, oxi hóa hoặc hư hỏng do va đập hay nguồn điện không ổn định.</li>
+              <li>Mất tem, rách tem, mất hóa đơn hoặc số IMEI không trùng khớp.</li>
+              <li>Màn hình sọc, chảy mực; hư cổng sạc, khay SIM, tai nghe, thẻ nhớ do người dùng gây ra.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   </main>
+
+
+<script>
+(function(){
+  const btn=document.getElementById("warrantyPolicyToggle");
+  const box=document.getElementById("warrantyPolicyDetails");
+  if(!btn||!box) return;
+  btn.addEventListener("click",function(){
+    const opening=box.hasAttribute("hidden");
+    if(opening) box.removeAttribute("hidden"); else box.setAttribute("hidden","");
+    btn.setAttribute("aria-expanded",opening?"true":"false");
+    btn.firstChild.nodeValue=opening?"Thu gọn chính sách ":"Xem chính sách chi tiết ";
+  });
+})();
+</script>
 
 <script>
 (function(){

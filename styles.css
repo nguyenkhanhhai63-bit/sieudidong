@@ -11023,3 +11023,58 @@ body.warranty-open{overflow:hidden}
     font-weight:500!important;
   }
 }
+
+
+/* V203 - Chính sách bảo hành chi tiết có thu gọn */
+.warranty-policy-toggle{
+  margin-top:11px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:0;
+  background:transparent;
+  color:#e64f00;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.warranty-policy-toggle span{
+  font-size:16px;
+  transition:transform .18s ease;
+}
+.warranty-policy-toggle[aria-expanded="true"] span{
+  transform:rotate(180deg);
+}
+.warranty-policy-details{
+  margin-top:13px;
+  padding-top:13px;
+  border-top:1px solid #fed7aa;
+}
+.warranty-policy-details[hidden]{display:none!important}
+.warranty-policy-section h3{
+  margin:0 0 7px;
+  color:#9a3412;
+  font-size:12px;
+}
+.warranty-policy-section ul{
+  margin:0;
+  padding-left:18px;
+}
+.warranty-policy-section li{
+  margin:0 0 6px;
+  color:#5f3a27;
+  font-size:11.5px;
+  line-height:1.55;
+}
+.warranty-policy-section+.warranty-policy-section{
+  margin-top:14px;
+  padding-top:13px;
+  border-top:1px dashed #fed7aa;
+}
+.warranty-policy-exclude h3{color:#b42318}
+@media(max-width:640px){
+  .warranty-policy-box{padding:13px 14px}
+  .warranty-policy-toggle{min-height:34px;font-size:11.5px}
+  .warranty-policy-section li{font-size:11px}
+}

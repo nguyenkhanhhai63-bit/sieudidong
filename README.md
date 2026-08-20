@@ -1493,3 +1493,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - AI trả lời máy đã mua, ngày mua, ngày hết bảo hành, số ngày còn lại và mốc 1 đổi 1 nếu còn áp dụng.
 - Dữ liệu bảo hành và số điện thoại KHÔNG được gửi sang Gemini; xử lý xác định hoàn toàn ở server.
 - Nếu một SĐT có nhiều máy, AI liệt kê các máy; nếu câu hỏi có tên máy thì ưu tiên đúng máy đó.
+
+## V203 - Xem chính sách bảo hành chi tiết
+- Box mặc định chỉ hiển thị quyền lợi bảo hành ngắn gọn.
+- Thêm nút `Xem chính sách chi tiết`.
+- Khi mở sẽ hiển thị thời hạn Mainboard, nguồn/màn hình/camera, phụ kiện, đổi máy 30 ngày và hỗ trợ phần mềm.
+- Có riêng phần `Trường hợp không bảo hành`.
+- Có thể bấm `Thu gọn chính sách` để đóng lại, tránh trang tra cứu quá dài trên mobile.
