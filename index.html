@@ -48,7 +48,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=197">
+  <link rel="stylesheet" href="/styles.css?v=200">
 </head>
 <body>
 
@@ -124,7 +124,7 @@
         <a href="#products">Phụ kiện</a>
         <a href="#products">Trả góp</a>
         <button id="sddNavConsultBtn" type="button">Tư vấn</button>
-        <button id="sddWarrantyBtn" class="sdd-warranty-nav-btn" type="button">Tra cứu BH</button>
+        <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh.html">Tra cứu BH</a>
       </nav>
 
       <a class="sdd-nav-store" href="#products">
@@ -135,18 +135,37 @@
   </div>
 
   <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
-    <div class="sdd-mobile-drawer-head">
-      <strong>Danh mục</strong>
-      <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+    <div class="sdd-mobile-drawer-panel">
+      <div class="sdd-mobile-drawer-head">
+        <div class="sdd-mobile-drawer-title">
+          <img src="/assets/logo-square.jpg" alt="">
+          <div>
+            <strong>Danh mục</strong>
+            <small>Siêu Di Động Quy Nhơn</small>
+          </div>
+        </div>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+      </div>
+
+      <nav class="sdd-mobile-nav-list">
+        <a href="/"><span class="sdd-mobile-nav-icon">⌂</span><span>Trang chủ</span><b>›</b></a>
+        <a href="#products"><span class="sdd-mobile-nav-icon">▣</span><span>Điện thoại</span><b>›</b></a>
+        <a href="#products"><span class="sdd-mobile-nav-icon">▤</span><span>Máy tính bảng</span><b>›</b></a>
+        <a href="#products"><span class="sdd-mobile-nav-icon">◇</span><span>Phụ kiện</span><b>›</b></a>
+        <a href="#products"><span class="sdd-mobile-nav-icon">%</span><span>Trả góp</span><b>›</b></a>
+      </nav>
+
+      <div class="sdd-mobile-drawer-footer">
+        <button id="sddMobileConsultBtn" type="button">
+          <span class="sdd-zalo-dot">Z</span>
+          <span>
+            <strong>Nhắn Zalo tư vấn ngay</strong>
+            <small>Nhân viên hỗ trợ trực tiếp</small>
+          </span>
+          <b>›</b>
+        </button>
+      </div>
     </div>
-    <nav>
-      <a href="/">Trang chủ</a>
-      <a href="#products">Điện thoại</a>
-      <a href="#products">Máy tính bảng</a>
-      <a href="#products">Phụ kiện</a>
-      <a href="#products">Trả góp</a>
-      <button id="sddMobileConsultBtn" type="button">Nhắn Zalo tư vấn ngay</button>
-    </nav>
   </div>
 </header>
 
@@ -254,7 +273,7 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=197"></script>
+  <script src="/app.js?v=200"></script>
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */
@@ -289,37 +308,14 @@
 
 
 
-<button id="sddMobileWarrantyQuickBtn" class="sdd-mobile-warranty-quick" type="button" aria-label="Tra cứu bảo hành">
+<a id="sddMobileWarrantyQuickBtn" class="sdd-mobile-warranty-quick" href="/tra-cuu-bao-hanh.html" aria-label="Tra cứu bảo hành">
   <span class="sdd-mobile-warranty-quick-icon">✓</span>
   <span>
     <strong>Tra cứu bảo hành</strong>
     <small>Kiểm tra nhanh bằng số điện thoại</small>
   </span>
   <b>›</b>
-</button>
-
-<div class="warranty-modal" id="warrantyModal" hidden>
-  <div class="warranty-backdrop" data-warranty-close></div>
-  <section class="warranty-panel" role="dialog" aria-modal="true" aria-labelledby="warrantyTitle">
-    <button class="warranty-close" type="button" data-warranty-close aria-label="Đóng">×</button>
-    <div class="warranty-head">
-      <span class="warranty-icon">✓</span>
-      <div>
-        <h2 id="warrantyTitle">Tra cứu bảo hành</h2>
-        <p>Nhập số điện thoại đã dùng khi mua hàng tại Siêu Di Động.</p>
-      </div>
-    </div>
-    <form id="warrantyForm" class="warranty-form">
-      <label for="warrantyPhone">Số điện thoại mua hàng</label>
-      <div class="warranty-search-row">
-        <input id="warrantyPhone" inputmode="tel" autocomplete="tel" maxlength="14" placeholder="Ví dụ: 0353 105 423" required>
-        <button type="submit">Tra cứu</button>
-      </div>
-      <small>Dữ liệu được đối chiếu trực tiếp từ hệ thống.</small>
-    </form>
-    <div id="warrantyResult" class="warranty-result" aria-live="polite"></div>
-  </section>
-</div>
+</a>
 
 </body>
 </html>

@@ -1456,3 +1456,24 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Bấm nút sẽ chuyển trực tiếp tới Zalo: `https://zalo.me/84901234567`.
 - Chặn sự kiện cũ để không mở AI chatbox.
 - Nút AI chat nổi trên website vẫn hoạt động riêng như trước.
+
+## V198 - Đưa Tra cứu bảo hành lên thanh trên mobile
+- Chuyển nút Tra cứu bảo hành từ góc dưới lên góc phải thanh trên.
+- Thu gọn thành dạng pill để không chiếm diện tích màn hình.
+- Bỏ dòng mô tả phụ trên nút ở mobile.
+- Icon AI chat tiếp tục nằm góc dưới và không còn đụng nút bảo hành.
+- Chức năng tra cứu bảo hành giữ nguyên.
+
+## V199 - Tra cứu bảo hành thành trang riêng
+- `Tra cứu BH` không còn mở popup/cửa sổ trên trang chủ.
+- Desktop và mobile đều chuyển tới `/tra-cuu-bao-hanh.html`.
+- Trang riêng có form số điện thoại, kết quả bảo hành và chính sách 1 đổi 1.
+- API `/api/warranty-lookup` giữ nguyên nên vẫn đối chiếu dữ liệu hệ thống như trước.
+- Trang chủ nhẹ và gọn hơn vì đã bỏ modal bảo hành.
+
+## V200 - Thiết kế lại Danh mục mobile
+- Drawer chuyển thành dạng panel trượt từ trái, cao full màn hình.
+- Header có logo Siêu Di Động + tiêu đề + nút đóng riêng.
+- Mỗi danh mục có icon, khoảng cách đều và mũi tên điều hướng.
+- Nút Zalo được tách xuống footer, rõ ràng nhưng không chiếm phần danh mục.
+- Menu không còn dạng hộp nổi ngắn, dồn chữ và khó nhìn như bản cũ.
