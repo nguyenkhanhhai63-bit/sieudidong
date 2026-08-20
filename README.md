@@ -1401,3 +1401,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Còn hàng dùng badge xanh; hết hàng dùng badge xám.
 - Badge cập nhật theo đúng màu/dung lượng khách đang chọn.
 - Mobile tự xuống dòng nếu không đủ chiều ngang.
+
+## V190 - Cân lại giao diện chi tiết sản phẩm
+- Desktop chia lại 3 cột: ảnh / thông tin / sản phẩm tương tự.
+- Tăng khoảng thở giữa các khối, giảm cảm giác dồn cục ở giữa.
+- Giá + trạng thái hàng nằm gọn trên cùng một hàng.
+- Hai nút Liên hệ mua hàng / Thêm vào so sánh cân bằng cùng kích thước.
+- Cột sản phẩm tương tự gọn, ảnh và chữ cân hơn.
+- Mobile tự chuyển về 1 cột.
