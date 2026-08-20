@@ -2572,6 +2572,55 @@ button,.primary,.secondary{font-size:12px!important}
   .warranty-recent-table{min-width:620px}
   .warranty-analytics-head{display:block}
 }
+
+
+/* =========================================================
+   V231 - Dashboard quản trị dễ nhìn, tối ưu màn hình lớn
+   ========================================================= */
+#analyticsCard{max-width:1480px;margin-left:auto;margin-right:auto;border-radius:18px}
+#analyticsCard .dashboard-welcome{padding:22px 26px}
+#analyticsCard .head{padding:18px 26px}
+#analyticsCard .analytics-shell{padding:22px 26px 28px;background:#f6f7f9}
+.analytics-section-title{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.analytics-section-title>div{display:flex;align-items:baseline;gap:10px}
+.analytics-section-title strong{font-size:17px;color:#101828;letter-spacing:-.2px}
+.analytics-section-title span{font-size:12px;color:#98a2b3}
+.analytics-section-title strong:before{content:"";display:inline-block;width:4px;height:16px;border-radius:4px;background:#ff5a00;margin-right:8px;vertical-align:-2px}
+.analytics-section-title.warranty-title{margin-top:22px}
+.metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric-grid.metric-grid-warranty{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.metric{min-height:104px;padding:16px 18px;border-radius:13px}
+.metric small{font-size:12px}.metric strong{font-size:30px;margin-top:6px}.metric em{margin-top:6px;font-size:11px}
+.analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.analytics-grid>.abox{min-height:0!important;border-radius:13px}
+.analytics-grid>.abox:nth-child(1){grid-column:1/-1}
+.analytics-grid>.abox:nth-child(2),.analytics-grid>.abox:nth-child(3),.analytics-grid>.abox:nth-child(4){grid-column:auto}
+.abox h2{min-height:50px;padding:13px 16px;font-size:14px}
+.chart{height:260px;padding:18px 16px 14px}
+.ranklist{padding:6px 16px 12px}.rankrow{min-height:40px;padding:9px 0;font-size:13px}
+.devrow{min-height:42px;padding:10px 16px;font-size:13px}
+.device-analytics-note{font-size:11px!important;line-height:1.45;padding-left:16px;padding-right:16px}
+.compare-pairs-box,.warranty-analytics-box{grid-column:1/-1!important}
+.warranty-recent-table{font-size:12px}
+.warranty-recent-table th,.warranty-recent-table td{padding:9px 10px}
+@media(min-width:1800px){
+  #analyticsCard{max-width:1560px}
+  .metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:1100px){
+  #analyticsCard{max-width:none}
+  .metric-grid.metric-grid-main,.metric-grid.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .analytics-grid{grid-template-columns:1fr}
+  .analytics-grid>.abox:nth-child(1),.compare-pairs-box,.warranty-analytics-box{grid-column:auto!important}
+}
+@media(max-width:560px){
+  #analyticsCard .dashboard-welcome,#analyticsCard .head{padding-left:16px;padding-right:16px}
+  #analyticsCard .analytics-shell{padding:14px}
+  .analytics-section-title>div{display:block}
+  .analytics-section-title span{display:block;margin-top:3px}
+  .metric-grid.metric-grid-main,.metric-grid.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .metric{min-height:94px;padding:13px}.metric strong{font-size:26px}
+}
 </style>
 
 <style id="login-success-toast-style">
@@ -2711,17 +2760,21 @@ button,.primary,.secondary{font-size:12px!important}
     <div class="analytics-shell">
       <div id="analyticsLoading" class="aload">Đang tải thống kê...</div>
       <div id="analyticsContent" class="hidden">
-        <div class="metric-grid">
+        <div class="analytics-section-title"><div><strong>Hoạt động website</strong><span>Truy cập, sản phẩm và tương tác của khách</span></div></div>
+        <div class="metric-grid metric-grid-main">
           <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
           <div class="metric"><small>Truy cập hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
           <div class="metric"><small>Đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
           <div class="metric"><small>Xem sản phẩm</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
           <div class="metric"><small>So sánh hôm nay</small><strong id="mTodayCompare">0</strong><em id="mCompare30">30 ngày: 0</em></div>
           <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
+          <div class="metric"><small>Truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
+        </div>
+        <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
+        <div class="metric-grid metric-grid-warranty">
           <div class="metric"><small>Tra bảo hành hôm nay</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">30 ngày: 0</em></div>
           <div class="metric"><small>Khách tra bảo hành</small><strong id="mWarrantyPhonesToday">0</strong><em id="mWarrantyPhones30">30 ngày: 0 SĐT</em></div>
           <div class="metric"><small>Tìm thấy bảo hành</small><strong id="mTodayWarrantyFound">0</strong><em id="mWarrantyFound30">30 ngày: 0</em></div>
-          <div class="metric"><small>Truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
         </div>
       </div>
       <div class="analytics-grid">
