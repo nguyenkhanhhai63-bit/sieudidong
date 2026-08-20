@@ -3209,3 +3209,76 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
     bindDirectZalo();
   }
 })();
+
+/* =========================================================
+   V224 - Public installment modal
+   ========================================================= */
+(function(){
+  const modal=document.getElementById("installmentModal");
+  const intro=document.getElementById("installmentIntroPublic");
+  const list=document.getElementById("installmentProviderList");
+  if(!modal || !intro || !list) return;
+
+  let loaded=false;
+  const fallback={
+    intro:"Siêu Di Động hỗ trợ tư vấn trả góp theo hồ sơ và sản phẩm thực tế. Nhân viên sẽ hỗ trợ số tiền trả trước, kỳ hạn và khoản góp dự kiến trước khi đăng ký.",
+    providers:[
+      {id:"hd-saison",name:"HD SAISON",logo:"",enabled:true,staff:[]},
+      {id:"mirae-asset",name:"Mirae Asset",logo:"",enabled:true,staff:[]}
+    ]
+  };
+
+  function esc(v){
+    return String(v??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function zaloUrl(v){
+    let raw=String(v||"").trim();
+    if(!raw) return "";
+    if(/^https?:\/\//i.test(raw)) return raw;
+    let n=raw.replace(/\D/g,"");
+    if(n.startsWith("0")) n="84"+n.slice(1);
+    return n ? "https://zalo.me/"+n : "";
+  }
+  function render(data){
+    const settings=data&&typeof data==="object"?data:fallback;
+    intro.textContent=settings.intro||fallback.intro;
+    const providers=(Array.isArray(settings.providers)?settings.providers:[]).filter(p=>p&&p.enabled!==false);
+    list.innerHTML=providers.map(p=>{
+      const name=esc(p.name||"Công ty tài chính");
+      const logo=p.logo ? `<img class="installment-public-logo" src="${esc(p.logo)}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : "";
+      const fallbackLogo=`<div class="installment-public-logo-fallback"${p.logo?' style="display:none"':''}>${name}</div>`;
+      const staff=(Array.isArray(p.staff)?p.staff:[]).filter(s=>s&&s.enabled!==false&&zaloUrl(s.zalo));
+      const staffHtml=staff.length ? staff.map(s=>`<div class="installment-zalo-person"><div class="installment-zalo-person-copy"><strong>${esc(s.name||"Nhân viên tư vấn")}</strong><span>${esc(s.note||"Tư vấn trả góp")}</span></div><a class="installment-zalo-link" href="${esc(zaloUrl(s.zalo))}" target="_blank" rel="noopener noreferrer">Nhắn Zalo</a></div>`).join("") : `<div class="installment-staff-public-empty">Chưa cấu hình nhân viên Zalo cho đơn vị này.</div>`;
+      return `<article class="installment-public-provider"><div class="installment-public-provider-head">${logo}${fallbackLogo}<div><h3>${name}</h3><small>Công ty tài chính</small></div></div><div class="installment-staff-public">${staffHtml}</div></article>`;
+    }).join("") || `<div class="installment-staff-public-empty">Hiện chưa có đơn vị trả góp đang bật.</div>`;
+  }
+  async function load(){
+    if(loaded) return;
+    intro.textContent="Đang tải thông tin trả góp...";
+    try{
+      const r=await fetch("/api/installment-settings",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d=await r.json();
+      render(d.settings||fallback);
+      loaded=true;
+    }catch(_){
+      render(fallback);
+    }
+  }
+  function openInstallment(e){
+    e?.preventDefault?.();
+    document.getElementById("sddMobileDrawer")?.setAttribute("hidden","");
+    document.documentElement.style.overflow="";
+    modal.hidden=false;
+    document.body.classList.add("installment-open");
+    load();
+  }
+  function closeInstallment(){
+    modal.hidden=true;
+    document.body.classList.remove("installment-open");
+  }
+  document.querySelectorAll(".js-installment-open").forEach(el=>el.addEventListener("click",openInstallment));
+  modal.querySelectorAll("[data-installment-close]").forEach(el=>el.addEventListener("click",closeInstallment));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden) closeInstallment();});
+  if(location.hash==="#tra-gop") openInstallment();
+})();

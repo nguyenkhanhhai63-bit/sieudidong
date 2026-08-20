@@ -1643,3 +1643,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Mỗi nhân viên có: tên, số Zalo và ghi chú.
 - Dữ liệu được lưu Redis qua API quản trị có xác thực.
 - Có public API `/api/installment-settings` để trang Trả góp đọc dữ liệu sau này.
+
+## V224 - Kích hoạt Trả góp trên trang chính
+- Sửa menu Trả góp desktop/mobile: mở popup thay vì trỏ về danh sách sản phẩm.
+- Popup đọc trực tiếp cấu hình từ `/api/installment-settings`.
+- Hiển thị HD SAISON, Mirae Asset, logo, trạng thái bật/tắt và danh sách nhân viên tư vấn từ trang quản trị.
+- Nút Nhắn Zalo hỗ trợ cả số điện thoại và URL Zalo; tối ưu giao diện mobile.

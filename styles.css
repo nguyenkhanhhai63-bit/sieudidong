@@ -12436,3 +12436,38 @@ body.warranty-open{overflow:hidden}
     height:36px!important;
   }
 }
+
+/* V224 - Trả góp trên trang chính */
+.installment-modal[hidden]{display:none!important}
+.installment-modal{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:18px}
+.installment-modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(3px)}
+.installment-modal-dialog{position:relative;width:min(760px,100%);max-height:min(84vh,820px);overflow:auto;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(15,23,42,.28);padding:22px}
+.installment-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px}
+.installment-modal-head h2{margin:3px 0 0;font-size:25px;line-height:1.2;color:#111827}
+.installment-eyebrow{font-size:11px;font-weight:900;letter-spacing:.08em;color:#e65300}
+.installment-modal-close{width:38px;height:38px;flex:0 0 38px;border:0;border-radius:50%;background:#f2f4f7;color:#344054;font-size:25px;line-height:1;cursor:pointer}
+.installment-public-intro{margin:0 0 16px;color:#475467;line-height:1.55}
+.installment-provider-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.installment-public-provider{border:1px solid #e4e7ec;border-radius:15px;padding:15px;background:#fff}
+.installment-public-provider-head{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.installment-public-logo{width:68px;height:48px;object-fit:contain;border:1px solid #eaecf0;border-radius:10px;padding:5px;background:#fff}
+.installment-public-logo-fallback{width:68px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#fff3eb;color:#d94800;font-size:11px;font-weight:900;text-align:center;padding:5px;box-sizing:border-box}
+.installment-public-provider h3{margin:0;font-size:17px;color:#101828}
+.installment-public-provider small{display:block;margin-top:2px;color:#667085}
+.installment-staff-public{display:grid;gap:8px}
+.installment-staff-public-empty{font-size:13px;color:#667085;padding:9px 0}
+.installment-zalo-person{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-radius:11px;background:#f8fafc}
+.installment-zalo-person-copy{min-width:0}
+.installment-zalo-person-copy strong{display:block;font-size:14px;color:#101828}
+.installment-zalo-person-copy span{display:block;margin-top:2px;font-size:12px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.installment-zalo-link{flex:0 0 auto;text-decoration:none;border-radius:9px;background:#e65300;color:#fff!important;padding:9px 12px;font-size:12px;font-weight:900}
+.installment-public-note{margin-top:14px;border-radius:12px;background:#fff7ed;padding:11px 12px;color:#7c2d12;font-size:12px;line-height:1.5}
+body.installment-open{overflow:hidden}
+@media(max-width:680px){
+ .installment-modal{padding:0;align-items:flex-end}
+ .installment-modal-dialog{width:100%;max-height:88vh;border-radius:20px 20px 0 0;padding:18px 15px 20px}
+ .installment-modal-head h2{font-size:21px}
+ .installment-provider-list{grid-template-columns:1fr}
+ .installment-public-provider{padding:13px}
+ .installment-zalo-link{padding:9px 10px}
+}

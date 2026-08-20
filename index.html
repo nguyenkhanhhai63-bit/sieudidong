@@ -48,7 +48,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=219">
+  <link rel="stylesheet" href="/styles.css?v=224">
 </head>
 <body>
 
@@ -111,7 +111,7 @@
         <a href="#products">Điện thoại</a>
         <a href="#products">Máy tính bảng</a>
         <a href="#products">Phụ kiện</a>
-        <a href="#products">Trả góp</a>
+        <a href="#tra-gop" class="js-installment-open">Trả góp</a>
         <button id="sddNavConsultBtn" type="button">Tư vấn</button>
         <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh.html">Tra cứu BH</a>
       </nav>
@@ -141,7 +141,7 @@
         <a href="#products"><span class="sdd-mobile-nav-icon">▣</span><span>Điện thoại</span><b>›</b></a>
         <a href="#products"><span class="sdd-mobile-nav-icon">▤</span><span>Máy tính bảng</span><b>›</b></a>
         <a href="#products"><span class="sdd-mobile-nav-icon">◇</span><span>Phụ kiện</span><b>›</b></a>
-        <a href="#products"><span class="sdd-mobile-nav-icon">%</span><span>Trả góp</span><b>›</b></a>
+        <a href="#tra-gop" class="js-installment-open"><span class="sdd-mobile-nav-icon">%</span><span>Trả góp</span><b>›</b></a>
         <a href="/tra-cuu-bao-hanh.html" class="sdd-mobile-warranty-menu-item">
           <span class="sdd-mobile-nav-icon">✓</span>
           <span>
@@ -218,7 +218,21 @@
 </main>
 
 
-
+<section id="installmentModal" class="installment-modal" hidden aria-modal="true" role="dialog" aria-labelledby="installmentTitle">
+  <div class="installment-modal-backdrop" data-installment-close></div>
+  <div class="installment-modal-dialog">
+    <div class="installment-modal-head">
+      <div>
+        <span class="installment-eyebrow">HỖ TRỢ MUA MÁY</span>
+        <h2 id="installmentTitle">Trả góp tại Siêu Di Động</h2>
+      </div>
+      <button class="installment-modal-close" type="button" data-installment-close aria-label="Đóng">×</button>
+    </div>
+    <p id="installmentIntroPublic" class="installment-public-intro">Đang tải thông tin trả góp...</p>
+    <div id="installmentProviderList" class="installment-provider-list"></div>
+    <div class="installment-public-note">Hồ sơ và kết quả duyệt phụ thuộc công ty tài chính. Nhân viên sẽ tư vấn khoản trả trước, kỳ hạn và số tiền góp dự kiến trước khi đăng ký.</div>
+  </div>
+</section>
 
 <section id="aiChatPanel" class="ai-chat-panel" hidden aria-label="Tư vấn AI Siêu Di Động">
   <div class="ai-chat-head">
@@ -271,7 +285,7 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=219"></script>
+  <script src="/app.js?v=224"></script>
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */
