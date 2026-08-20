@@ -2128,7 +2128,7 @@ if(!inlineProductDetail) return;
     }
   });
 
-  heading.append(title,statusTop);
+  heading.append(title);
 
   const main=document.createElement("div");
   main.className="detail-main";
@@ -2145,8 +2145,13 @@ if(!inlineProductDetail) return;
   const info=document.createElement("div");
   info.className="detail-info";
 
+  const priceRow=document.createElement("div");
+  priceRow.className="detail-price-row";
+
   const price=document.createElement("div");
   price.className="detail-price";
+
+  priceRow.append(price,statusTop);
 
   const chooseText=document.createElement("div");
   chooseText.className="detail-choose-text";
@@ -2200,7 +2205,7 @@ if(!inlineProductDetail) return;
     <div class="detail-info-line"><span>Tình trạng</span><strong class="js-stock-text"></strong></div>
   `;
 
-  info.append(price,chooseText);
+  info.append(priceRow,chooseText);
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
   info.appendChild(detailActions);

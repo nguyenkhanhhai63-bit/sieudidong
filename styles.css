@@ -10223,3 +10223,60 @@ input,select,textarea{
     font-size:11.5px!important;
   }
 }
+
+
+/* =========================================================
+   V189 - Đưa Còn hàng / Hết hàng sát ngay bên cạnh giá
+   ========================================================= */
+.detail-heading{
+  justify-content:flex-start!important;
+}
+
+.detail-price-row{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:12px!important;
+  margin:0 0 8px!important;
+}
+
+.detail-price-row .detail-price{
+  margin:0!important;
+}
+
+.detail-price-row .detail-status-top{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:32px!important;
+  padding:7px 13px!important;
+  border:1px solid #a9e7bd!important;
+  border-radius:999px!important;
+  background:#e9f9ef!important;
+  color:#07883f!important;
+  font-size:12.5px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  box-shadow:0 2px 7px rgba(16,185,129,.10)!important;
+}
+
+.detail-price-row .detail-status-top.out{
+  border-color:#d9dee5!important;
+  background:#eef1f4!important;
+  color:#697386!important;
+  box-shadow:0 2px 6px rgba(15,23,42,.05)!important;
+}
+
+@media(max-width:720px){
+  .detail-price-row{
+    gap:9px!important;
+    margin-bottom:7px!important;
+  }
+
+  .detail-price-row .detail-status-top{
+    min-height:29px!important;
+    padding:6px 10px!important;
+    font-size:11.5px!important;
+  }
+}

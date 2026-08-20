@@ -1394,3 +1394,10 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Hết hàng: badge xám rõ ràng, chữ đậm hơn.
 - Tăng kích thước badge để khách nhìn trạng thái ngay.
 - Tự nhận diện trạng thái theo chữ hiển thị, không phụ thuộc hoàn toàn vào class cũ.
+
+## V189 - Trạng thái hàng cạnh giá
+- Bỏ badge Còn hàng/Hết hàng ở mép phải dòng tên sản phẩm.
+- Đưa badge sát ngay bên phải giá bán trong trang chi tiết.
+- Còn hàng dùng badge xanh; hết hàng dùng badge xám.
+- Badge cập nhật theo đúng màu/dung lượng khách đang chọn.
+- Mobile tự xuống dòng nếu không đủ chiều ngang.
