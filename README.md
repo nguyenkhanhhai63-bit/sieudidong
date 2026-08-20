@@ -1654,3 +1654,12 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Menu Trả góp desktop/mobile chuyển sang `/tra-gop.html` thay vì popup.
 - Có URL riêng để mở trực tiếp/chia sẻ.
 - Trang trả góp tiếp tục lấy dữ liệu từ `/api/installment-settings` và phần quản trị hiện có.
+
+## V226 - Đồng bộ nút Trang chủ
+- Tăng nút Trang chủ trên trang Tra cứu bảo hành để bằng kích thước nút Trang chủ bên trang Trả góp trên mobile.
+
+
+## V227 - Đảo vị trí header trang Trả góp
+- Chuyển nút Trang chủ sang bên trái.
+- Chuyển logo/thương hiệu Siêu Di Động sang bên phải.
+- Giữ nguyên kích thước và giao diện hiện tại.

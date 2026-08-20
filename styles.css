@@ -12471,3 +12471,19 @@ body.installment-open{overflow:hidden}
  .installment-public-provider{padding:13px}
  .installment-zalo-link{padding:9px 10px}
 }
+
+/* V226 - Nút Trang chủ trang bảo hành cùng kích thước với trang Trả góp */
+@media(max-width:640px){
+  .warranty-page-back{
+    min-height:40px!important;
+    padding:0 14px 0 8px!important;
+    gap:6px!important;
+    border-radius:12px!important;
+    font-size:13px!important;
+  }
+  .warranty-back-icon{
+    width:25px!important;
+    height:25px!important;
+    font-size:20px!important;
+  }
+}
