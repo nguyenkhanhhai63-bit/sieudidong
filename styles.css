@@ -12330,3 +12330,59 @@ body.warranty-open{overflow:hidden}
     font-size:11px!important;
   }
 }
+
+
+/* =========================================================
+   V221 - Nút nghe AI tư vấn trên trang so sánh
+   ========================================================= */
+.compare-page-voicebar{
+  min-height:48px;
+  padding:9px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-top:1px solid #ffe1d0;
+  background:#fffaf7;
+}
+.compare-page-voicebar[hidden]{display:none!important}
+.compare-page-voicebar span{
+  color:#7a4a2f;
+  font-size:11px;
+  font-weight:700;
+}
+.compare-page-voicebar button{
+  min-height:34px;
+  padding:0 13px;
+  border:1px solid #ffb88f;
+  border-radius:9px;
+  background:#fff;
+  color:#e65300;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.compare-page-voicebar button.speaking{
+  border-color:#ff5a00;
+  background:#ff5a00;
+  color:#fff;
+}
+.compare-page-voicebar button:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+
+@media(max-width:720px){
+  .compare-page-voicebar{
+    min-height:50px!important;
+    padding:9px 12px!important;
+  }
+  .compare-page-voicebar span{
+    font-size:10px!important;
+  }
+  .compare-page-voicebar button{
+    min-height:36px!important;
+    padding:0 11px!important;
+    font-size:10px!important;
+  }
+}

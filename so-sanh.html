@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>So sánh sản phẩm | Siêu Di Động</title>
   <meta name="description" content="So sánh 2 điện thoại về giá, tình trạng và thông số kỹ thuật tại Siêu Di Động.">
-  <link rel="stylesheet" href="/styles.css?v=220">
+  <link rel="stylesheet" href="/styles.css?v=221">
 </head>
 <body class="compare-page-body">
   <header class="compare-page-header">
@@ -45,6 +45,10 @@
         </div>
       </div>
       <div id="compareAiResult" class="compare-page-ai-result">Chọn nhu cầu rồi bấm “Gemini phân tích” để nhận gợi ý.</div>
+      <div id="compareVoiceBar" class="compare-page-voicebar" hidden>
+        <span>Lười đọc? Nghe AI tư vấn</span>
+        <button id="compareVoiceBtn" type="button">🔊 Nghe tư vấn</button>
+      </div>
     </section>
 
     <section id="comparePageContent" class="compare-page-content">
@@ -237,6 +241,115 @@ async function init(){
     </div>`;
 }
 
+
+let compareSpeechUtterance=null;
+let compareSpeechText="";
+
+function cleanSpeechText(text=""){
+  return String(text||"")
+    .replace(/[#*_`>-]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function getVietnameseVoice(){
+  if(!("speechSynthesis" in window)) return null;
+  const voices=speechSynthesis.getVoices?.()||[];
+  return voices.find(v=>String(v.lang||"").toLowerCase()==="vi-vn")
+    || voices.find(v=>/^vi(?:-|_)/i.test(String(v.lang||"")))
+    || voices.find(v=>/vietnamese|tiếng việt|tieng viet/i.test(String(v.name||"")))
+    || null;
+}
+
+async function waitForVietnameseVoice(timeoutMs=1800){
+  const found=getVietnameseVoice();
+  if(found) return found;
+
+  return new Promise(resolve=>{
+    let done=false;
+    const finish=v=>{
+      if(done) return;
+      done=true;
+      clearTimeout(timer);
+      try{speechSynthesis.removeEventListener("voiceschanged",onChange);}catch(_){}
+      resolve(v||null);
+    };
+    const onChange=()=>{
+      const v=getVietnameseVoice();
+      if(v) finish(v);
+    };
+    try{
+      speechSynthesis.addEventListener("voiceschanged",onChange);
+      speechSynthesis.getVoices?.();
+    }catch(_){}
+    const timer=setTimeout(()=>finish(getVietnameseVoice()),timeoutMs);
+  });
+}
+
+function stopCompareVoice(){
+  try{speechSynthesis.cancel();}catch(_){}
+  compareSpeechUtterance=null;
+  const btn=document.getElementById("compareVoiceBtn");
+  if(btn){
+    btn.classList.remove("speaking");
+    btn.textContent="🔊 Nghe tư vấn";
+  }
+}
+
+async function playCompareVoice(){
+  const btn=document.getElementById("compareVoiceBtn");
+  const result=document.getElementById("compareAiResult");
+  const text=cleanSpeechText(result?.textContent||"");
+
+  if(!text || /chọn nhu cầu/i.test(text)){
+    return;
+  }
+
+  if(!("speechSynthesis" in window)){
+    btn.textContent="Không hỗ trợ giọng đọc";
+    setTimeout(()=>btn.textContent="🔊 Nghe tư vấn",1800);
+    return;
+  }
+
+  if(speechSynthesis.speaking && compareSpeechText===text){
+    stopCompareVoice();
+    return;
+  }
+
+  stopCompareVoice();
+  btn.disabled=true;
+  btn.textContent="Đang chuẩn bị giọng...";
+  const voice=await waitForVietnameseVoice();
+  btn.disabled=false;
+
+  if(!voice){
+    btn.textContent="Thiết bị chưa có giọng Việt";
+    setTimeout(()=>btn.textContent="🔊 Nghe tư vấn",2200);
+    return;
+  }
+
+  compareSpeechText=text;
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang="vi-VN";
+  utter.voice=voice;
+  utter.rate=1.02;
+  utter.pitch=1;
+  utter.volume=1;
+
+  utter.onstart=()=>{
+    btn.classList.add("speaking");
+    btn.textContent="⏹ Dừng đọc";
+  };
+  utter.onend=stopCompareVoice;
+  utter.onerror=stopCompareVoice;
+
+  compareSpeechUtterance=utter;
+  speechSynthesis.speak(utter);
+}
+
+document.getElementById("compareVoiceBtn")?.addEventListener("click",playCompareVoice);
+window.addEventListener("beforeunload",stopCompareVoice);
+
 document.getElementById("compareAiBtn").addEventListener("click",async()=>{
   const btn=document.getElementById("compareAiBtn");
   const result=document.getElementById("compareAiResult");
@@ -245,6 +358,8 @@ document.getElementById("compareAiBtn").addEventListener("click",async()=>{
   const old=btn.textContent;
   btn.textContent="Đang phân tích...";
   result.textContent="Gemini đang đối chiếu hai máy...";
+  document.getElementById("compareVoiceBar")?.setAttribute("hidden","");
+  stopCompareVoice();
   try{
     const products=CURRENT_GROUPS.map((g,i)=>{
       const v=defaultVariant(g);
@@ -267,6 +382,9 @@ document.getElementById("compareAiBtn").addEventListener("click",async()=>{
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.error||"AI đang bận.");
     result.textContent=d.text||"Chưa có kết luận.";
+    const voiceBar=document.getElementById("compareVoiceBar");
+    if(voiceBar && d.text) voiceBar.hidden=false;
+    stopCompareVoice();
   }catch(e){
     result.textContent=e.message||"AI đang bận. Vui lòng thử lại.";
   }finally{

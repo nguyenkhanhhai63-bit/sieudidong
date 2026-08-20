@@ -1621,3 +1621,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nội dung thông số tự xuống dòng, không làm tràn ngang trang.
 - Khối Gemini AI chuyển thành bố cục dọc, nút và dropdown full-width.
 - Header và tiêu đề trang cũng được thu gọn.
+
+## V221 - Khôi phục nút nghe AI tư vấn
+- Sau khi Gemini phân tích xong sẽ hiện `🔊 Nghe tư vấn`.
+- Bấm để đọc toàn bộ kết luận bằng giọng tiếng Việt của thiết bị.
+- Khi đang đọc, nút đổi thành `⏹ Dừng đọc`.
+- Bấm lần nữa để dừng.
+- Nút chỉ xuất hiện sau khi có kết quả AI thật, không chiếm chỗ trước đó.
+- Desktop và mobile đều hỗ trợ.
