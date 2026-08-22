@@ -2658,6 +2658,7 @@ button,.primary,.secondary{font-size:12px!important}
 .warranty-title{margin-top:14px!important}.warranty-analytics-box{grid-column:span 12!important}.compare-pairs-box{grid-column:span 6!important}
 @media (max-width:1500px){.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}.metric-grid-warranty{max-width:none}.traffic-box,.monthly-box{grid-column:span 12!important}.abox{grid-column:span 6!important}}
 @media (max-width:900px){.analytics-periodbar{align-items:flex-start;flex-direction:column}.period-tabs{justify-content:flex-start}.metric-grid-main,.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))!important}.abox{grid-column:span 12!important}}
+.routing-tab{display:none!important}
 </style>
 </head>
 <body class="auth-pending">
@@ -2675,6 +2676,9 @@ button,.primary,.secondary{font-size:12px!important}
     <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
     <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
+    <!-- Routing tabs: dùng để các shortcut AI/SEO kích hoạt đúng panel nhưng không hiển thị lặp trong sidebar -->
+    <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
+    <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
   </div></div>
 
   <div class="sidebar-section-title sidebar-ai-title">AI & TỐI ƯU</div>
@@ -2689,7 +2693,7 @@ button,.primary,.secondary{font-size:12px!important}
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V248</small>
+    <small>Siêu Di Động Admin • V250</small>
   </div>
 </aside>
 
@@ -2776,6 +2780,7 @@ button,.primary,.secondary{font-size:12px!important}
       </div>
       <div class="period-tabs" id="analyticsPeriodTabs">
         <button type="button" class="period-tab active" data-period="today">Hôm nay</button>
+        <button type="button" class="period-tab" data-period="yesterday">Hôm qua</button>
         <button type="button" class="period-tab" data-period="days7">7 ngày</button>
         <button type="button" class="period-tab" data-period="days30">30 ngày</button>
         <button type="button" class="period-tab" data-period="month">Tháng này</button>
@@ -3477,7 +3482,7 @@ function renderWarrantyRecent(items=[]){
 
 let analyticsPeriod="today";
 let currentAnalyticsData=null;
-const ANALYTICS_PERIOD_LABELS={today:"Hôm nay",days7:"7 ngày gần nhất",days30:"30 ngày gần nhất",month:"Tháng này",year:"Năm nay"};
+const ANALYTICS_PERIOD_LABELS={today:"Hôm nay",yesterday:"Hôm qua",days7:"7 ngày gần nhất",days30:"30 ngày gần nhất",month:"Tháng này",year:"Năm nay"};
 
 function renderTrafficForPeriod(d,period){
   const chart=document.getElementById("trafficChart");
@@ -3490,6 +3495,7 @@ function renderTrafficForPeriod(d,period){
   let rows=[];
   let labelEvery=1;
   if(period==="today") rows=history.slice(-1);
+  else if(period==="yesterday") rows=history.slice(-2,-1);
   else if(period==="days7") rows=history.slice(-7);
   else if(period==="days30") { rows=history.slice(-30); labelEvery=5; }
   else if(period==="month") { rows=history.filter(x=>String(x.date||"").slice(0,7)===today.slice(0,7)); labelEvery=Math.max(1,Math.ceil(rows.length/7)); }
