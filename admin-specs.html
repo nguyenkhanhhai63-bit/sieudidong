@@ -2659,6 +2659,101 @@ button,.primary,.secondary{font-size:12px!important}
 @media (max-width:1500px){.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}.metric-grid-warranty{max-width:none}.traffic-box,.monthly-box{grid-column:span 12!important}.abox{grid-column:span 6!important}}
 @media (max-width:900px){.analytics-periodbar{align-items:flex-start;flex-direction:column}.period-tabs{justify-content:flex-start}.metric-grid-main,.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))!important}.abox{grid-column:span 12!important}}
 .routing-tab{display:none!important}
+
+/* =========================================================
+   V251 - Login quản trị mới
+   ========================================================= */
+body:not(.authenticated):not(.auth-pending){
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(255,90,0,.10),transparent 30%),
+    radial-gradient(circle at 88% 82%,rgba(255,146,85,.10),transparent 28%),
+    #f5f7fa!important;
+}
+body:not(.authenticated):not(.auth-pending) .wrap{
+  width:100%!important;
+  max-width:none!important;
+  min-height:100vh;
+  margin:0!important;
+  padding:clamp(24px,5vh,56px) 24px!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-shell{
+  width:min(900px,calc(100vw - 40px));
+  min-height:520px;
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  overflow:hidden;
+  border:1px solid #e4e7ec;
+  border-radius:24px;
+  background:#fff;
+  box-shadow:0 28px 80px rgba(15,23,42,.13);
+}
+.login-brand-panel{
+  position:relative;
+  min-width:0;
+  padding:38px;
+  display:flex;
+  flex-direction:column;
+  color:#fff;
+  background:linear-gradient(145deg,#ff5a00 0%,#ff742c 58%,#ff8d50 100%);
+  isolation:isolate;
+}
+.login-brand-panel:before,
+.login-brand-panel:after{
+  content:"";position:absolute;border-radius:50%;z-index:-1;background:rgba(255,255,255,.09)
+}
+.login-brand-panel:before{width:250px;height:250px;right:-115px;top:-70px}
+.login-brand-panel:after{width:190px;height:190px;left:-95px;bottom:-80px}
+.login-brand-mark{display:flex;align-items:center;gap:12px}
+.login-brand-mark img{width:48px;height:48px;border-radius:13px;box-shadow:0 8px 22px rgba(126,44,0,.18)}
+.login-brand-mark div{display:flex;flex-direction:column;gap:2px}
+.login-brand-mark strong{font-size:17px;letter-spacing:.3px}
+.login-brand-mark span{font-size:11px;opacity:.82}
+.login-brand-copy{margin:auto 0}
+.login-kicker{display:inline-block;font-size:10px;font-weight:900;letter-spacing:1.2px;color:#ff5a00}
+.login-brand-panel .login-kicker{color:#fff;opacity:.78}
+.login-brand-copy h2{margin:12px 0 14px;font-size:34px;line-height:1.14;letter-spacing:-.8px}
+.login-brand-copy p{max-width:350px;margin:0;font-size:13px;line-height:1.7;color:rgba(255,255,255,.88)}
+.login-security-note{display:flex;gap:11px;align-items:center;padding-top:20px;border-top:1px solid rgba(255,255,255,.2)}
+.shield-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.16);font-weight:900}
+.login-security-note div{display:flex;flex-direction:column;gap:3px}
+.login-security-note strong{font-size:11px}.login-security-note small{font-size:10px;opacity:.75}
+.login-form-panel{padding:52px 54px;display:flex;flex-direction:column;justify-content:center}
+.login-mobile-brand{display:none}
+.login-form-head h1{margin:8px 0 8px;font-size:30px;letter-spacing:-.7px;color:#101828}
+.login-form-head p{margin:0 0 28px;font-size:13px;line-height:1.6;color:#667085}
+.login-label{display:block;margin-bottom:8px;font-size:12px;font-weight:800;color:#344054}
+.password-wrap{position:relative}
+.login-password{height:50px!important;padding:0 50px 0 14px!important;font-size:14px!important;background:#fff!important}
+.password-toggle{position:absolute;right:6px;top:6px;width:38px;height:38px;border:0;border-radius:9px;background:#f6f7f9;color:#667085;cursor:pointer;display:grid;place-items:center;font-size:15px}
+.password-toggle:hover{background:#eef0f3}
+.login-options{margin:14px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.remember-login{display:flex;align-items:center;gap:8px;color:#344054;font-size:11px;font-weight:700;cursor:pointer}
+.remember-login input{width:16px;height:16px;accent-color:#ff5a00}
+.login-session-hint{font-size:10px;color:#98a2b3}
+.login-submit{width:100%;height:50px;border:0;border-radius:11px;padding:0 16px;background:linear-gradient(90deg,#ff5a00,#ff6d1f);color:#fff;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 22px rgba(255,90,0,.20);transition:.15s ease}
+.login-submit:hover{transform:translateY(-1px);box-shadow:0 13px 26px rgba(255,90,0,.25)}
+.login-submit:active{transform:translateY(0)}
+.login-submit b{font-size:18px;line-height:1}
+.login-submit[disabled]{opacity:.68;cursor:wait;transform:none!important}
+.login-status{margin-top:12px!important;text-align:left!important}
+.login-footnote{margin-top:22px;padding-top:18px;border-top:1px solid #eef0f2;color:#98a2b3;font-size:10px;text-align:center}
+#authLoading{width:min(520px,calc(100vw - 32px));margin:auto}
+@media(max-width:720px){
+  body:not(.authenticated):not(.auth-pending) .wrap{padding:18px 14px!important;align-items:flex-start}
+  .login-shell{width:100%;min-height:0;margin-top:6vh;grid-template-columns:1fr;border-radius:20px}
+  .login-brand-panel{display:none}
+  .login-form-panel{padding:28px 22px 24px}
+  .login-mobile-brand{display:flex;align-items:center;gap:10px;margin-bottom:30px}
+  .login-mobile-brand img{width:42px;height:42px;border-radius:11px}
+  .login-mobile-brand strong{font-size:16px;color:#111827}
+  .login-form-head h1{font-size:26px}
+  .login-options{align-items:flex-start;flex-direction:column;gap:8px}
+  .login-session-hint{padding-left:24px}
+}
 </style>
 </head>
 <body class="auth-pending">
@@ -2693,7 +2788,7 @@ button,.primary,.secondary{font-size:12px!important}
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V250</small>
+    <small>Siêu Di Động Admin • V251</small>
   </div>
 </aside>
 
@@ -2734,14 +2829,49 @@ button,.primary,.secondary{font-size:12px!important}
     </div>
   </section>
 
-<section id="loginCard" class="card login">
-    <h1>Đăng nhập quản trị</h1>
-    <p>Chỉ quản trị viên mới có thể xem và sửa link thông số.</p>
-    <form id="loginForm">
-      <input id="password" class="field" type="password" placeholder="Mật khẩu quản trị" autocomplete="current-password">
-      <button id="loginSubmitBtn" class="primary" style="width:100%;margin-top:10px" type="submit">Đăng nhập</button>
-      <div id="loginMessage" class="login-status" aria-live="polite"></div>
-    </form>
+<section id="loginCard" class="login-shell" aria-labelledby="loginTitle">
+    <div class="login-brand-panel">
+      <div class="login-brand-mark">
+        <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <div><strong>SIÊU DI ĐỘNG</strong><span>Quản trị hệ thống</span></div>
+      </div>
+      <div class="login-brand-copy">
+        <span class="login-kicker">KHU VỰC QUẢN TRỊ</span>
+        <h2>Quản lý website<br>nhanh và an toàn.</h2>
+        <p>Thống kê truy cập, cấu hình trả góp, SEO, đào tạo AI và thông số sản phẩm trong một nơi.</p>
+      </div>
+      <div class="login-security-note">
+        <span class="shield-icon">✓</span>
+        <div><strong>Phiên đăng nhập được bảo vệ</strong><small>Không chia sẻ mật khẩu quản trị cho người khác.</small></div>
+      </div>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="login-mobile-brand">
+        <img src="/assets/logo-square.jpg" alt="Siêu Di Động"><strong>SIÊU DI ĐỘNG</strong>
+      </div>
+      <div class="login-form-head">
+        <span class="login-kicker">XIN CHÀO</span>
+        <h1 id="loginTitle">Đăng nhập quản trị</h1>
+        <p>Nhập mật khẩu để tiếp tục vào hệ thống quản trị Siêu Di Động.</p>
+      </div>
+      <form id="loginForm" novalidate>
+        <label class="login-label" for="password">Mật khẩu quản trị</label>
+        <div class="password-wrap">
+          <input id="password" class="field login-password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+          <button id="togglePassword" class="password-toggle" type="button" aria-label="Hiện mật khẩu" title="Hiện/ẩn mật khẩu">
+            <span id="passwordEye">👁</span>
+          </button>
+        </div>
+        <div class="login-options">
+          <label class="remember-login"><input id="rememberLogin" type="checkbox" checked><span>Giữ đăng nhập trong 7 ngày</span></label>
+          <span class="login-session-hint">Dùng trên máy cá nhân</span>
+        </div>
+        <button id="loginSubmitBtn" class="login-submit" type="submit"><span>Đăng nhập</span><b>→</b></button>
+        <div id="loginMessage" class="login-status" aria-live="polite"></div>
+      </form>
+      <div class="login-footnote"><span>🔒</span> Hệ thống sẽ tự kiểm tra phiên đăng nhập khi bạn quay lại.</div>
+    </div>
   </section>
 
   
@@ -3059,6 +3189,9 @@ const loginForm=document.getElementById("loginForm");
 const password=document.getElementById("password");
 const loginMessage=document.getElementById("loginMessage");
 const loginSubmitBtn=document.getElementById("loginSubmitBtn");
+const togglePassword=document.getElementById("togglePassword");
+const passwordEye=document.getElementById("passwordEye");
+const rememberLogin=document.getElementById("rememberLogin");
 const authLoadingHint=document.getElementById("authLoadingHint");
 const logoutBtn=document.getElementById("logoutBtn");
 const rows=document.getElementById("rows");
@@ -3148,9 +3281,10 @@ function setLoginStatus(message,type=""){
 function setLoginBusy(busy){
   if(loginSubmitBtn){
     loginSubmitBtn.disabled=Boolean(busy);
-    loginSubmitBtn.textContent=busy?"Đang đăng nhập...":"Đăng nhập";
+    loginSubmitBtn.innerHTML=busy?'<span>Đang xác thực...</span>':'<span>Đăng nhập</span><b>→</b>';
   }
   if(password) password.disabled=Boolean(busy);
+  if(togglePassword) togglePassword.disabled=Boolean(busy);
 }
 
 function setLoggedIn(value){
@@ -4144,6 +4278,16 @@ document.getElementById("analyticsPeriodTabs")?.addEventListener("click",e=>{
 
 
 
+if(togglePassword){
+  togglePassword.addEventListener("click",()=>{
+    const showing=password.type==="text";
+    password.type=showing?"password":"text";
+    togglePassword.setAttribute("aria-label",showing?"Hiện mật khẩu":"Ẩn mật khẩu");
+    if(passwordEye) passwordEye.textContent=showing?"👁":"◉";
+    password.focus();
+  });
+}
+
 loginForm.addEventListener("submit",async(e)=>{
   e.preventDefault();
 
@@ -4168,7 +4312,7 @@ loginForm.addEventListener("submit",async(e)=>{
         headers:{"Content-Type":"application/json"},
         credentials:"same-origin",
         signal:controller.signal,
-        body:JSON.stringify({password:pass})
+        body:JSON.stringify({password:pass,remember:Boolean(rememberLogin?.checked)})
       });
     }finally{
       clearTimeout(timer);
@@ -4178,7 +4322,7 @@ loginForm.addEventListener("submit",async(e)=>{
     try{ data=await r.json(); }catch(_){}
 
     if(!r.ok){
-      if(r.status===401) throw new Error("Mật khẩu quản trị không đúng.");
+      if(r.status===401) throw new Error(data.error||"Mật khẩu quản trị không đúng.");
       if(r.status===429) throw new Error("Bạn thử đăng nhập quá nhiều lần. Vui lòng chờ một lúc.");
       throw new Error(data.error||"Đăng nhập thất bại.");
     }

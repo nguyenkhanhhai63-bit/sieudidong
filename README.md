@@ -1693,3 +1693,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Biểu đồ truy cập đổi theo ngày hoặc theo tháng; thêm bảng tổng hợp 6 tháng gần nhất.
 - Dữ liệu thống kê ngày mới được giữ khoảng 400 ngày để hỗ trợ báo cáo năm.
 - Gọn lại sidebar, bỏ mục AI/SEO bị lặp.
+
+
+## V251 - Đăng nhập quản trị
+- Giao diện đăng nhập mới, responsive.
+- Hiện/ẩn mật khẩu.
+- Có tùy chọn giữ đăng nhập 7 ngày; nếu bỏ chọn, cookie chỉ tồn tại trong phiên trình duyệt.
+- Tự kiểm tra session khi mở trang; session còn hiệu lực thì vào thẳng dashboard.
+- Giữ thông báo số lần thử còn lại từ API khi nhập sai.
