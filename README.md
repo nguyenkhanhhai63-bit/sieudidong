@@ -1680,3 +1680,8 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Sidebar danh mục bên trái, lưới thương hiệu 5 cột, nhóm mức giá và dải lợi ích phía dưới.
 - Tách OnePlus, Realme, iQOO, POCO thành hãng riêng để hiển thị đúng hơn.
 - Mobile chuyển sidebar/brand/giá thành thanh cuộn ngang gọn.
+
+
+## V234
+- Xóa cột danh mục nhanh bên trái ở khu vực thương hiệu/giá trên trang chủ.
+- Khu vực thương hiệu và mức giá sử dụng toàn bộ chiều rộng.

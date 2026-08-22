@@ -13049,3 +13049,187 @@ body.installment-open{overflow:hidden}
   .sdd-catalog-toolbar .catalog-sort-area>span{display:none!important}
   .sdd-catalog-toolbar .sort-select{max-width:145px!important}
 }
+
+
+/* =========================================================
+   V234 - Remove left quick-category sidebar
+   ========================================================= */
+.sdd-catalog-showcase-main{
+  display:block!important;
+  min-height:0!important;
+}
+.sdd-catalog-side{display:none!important;}
+.sdd-catalog-content{
+  width:100%!important;
+  padding-left:28px!important;
+  padding-right:28px!important;
+}
+@media(min-width:1500px){
+  .sdd-catalog-content{padding-left:34px!important;padding-right:34px!important;}
+}
+@media(max-width:1080px){
+  .sdd-catalog-content{padding-left:18px!important;padding-right:18px!important;}
+}
+@media(max-width:720px){
+  .sdd-catalog-content{padding-left:10px!important;padding-right:10px!important;}
+}
+
+/* =========================================================
+   V235 - Desktop header theo mẫu showroom
+   ========================================================= */
+@media (min-width: 901px){
+  .sdd-header-v164{
+    border-top:0!important;
+    box-shadow:0 1px 0 #eef1f4!important;
+  }
+  .sdd-top-strip{
+    background:#ff5900!important;
+  }
+  .sdd-top-strip-inner{
+    width:min(1540px,calc(100% - 72px))!important;
+    min-height:46px!important;
+    font-size:14px!important;
+    font-weight:800!important;
+    letter-spacing:-.1px;
+  }
+  .sdd-top-message,
+  .sdd-top-benefits > span{
+    display:flex!important;
+    align-items:center!important;
+    gap:9px!important;
+  }
+  .sdd-top-message svg,
+  .sdd-top-benefits svg{
+    width:20px;
+    height:20px;
+    flex:0 0 20px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .sdd-top-benefits{
+    gap:36px!important;
+  }
+
+  .sdd-header-v164 .commerce-header-inner{
+    width:min(1540px,calc(100% - 72px))!important;
+    min-height:132px!important;
+    grid-template-columns:330px minmax(520px,1fr) 365px!important;
+    gap:34px!important;
+    padding:18px 0!important;
+  }
+  .sdd-mobile-menu-btn{display:none!important;}
+  .commerce-brand-block{min-width:0;}
+  .sdd-header-v164 .commerce-logo{
+    gap:18px!important;
+  }
+  .sdd-header-v164 .commerce-logo-mark{
+    width:82px!important;
+    height:82px!important;
+    border-radius:20px!important;
+    box-shadow:none!important;
+  }
+  .sdd-header-v164 .commerce-logo-text{
+    font-size:28px!important;
+    letter-spacing:-1px!important;
+  }
+  .sdd-brand-copy small{
+    margin-top:7px!important;
+    font-size:15px!important;
+    color:#6b7280!important;
+  }
+
+  .sdd-header-search{
+    height:66px!important;
+    grid-template-columns:54px minmax(0,1fr) 40px 68px!important;
+    border:1.5px solid #ff9b67!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:none!important;
+  }
+  .sdd-header-search input{
+    height:63px!important;
+    font-size:17px!important;
+    color:#111827!important;
+  }
+  .sdd-header-search input::placeholder{color:#98a2b3!important;opacity:1;}
+  .sdd-search-leading svg{
+    width:24px;height:24px;
+    fill:none;stroke:#98a2b3;stroke-width:1.8;stroke-linecap:round;
+  }
+  .sdd-header-search #clearSearch{
+    width:32px!important;height:32px!important;
+  }
+  .sdd-search-submit{
+    width:68px!important;
+    height:66px!important;
+    border-radius:0 12px 12px 0!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  .sdd-search-submit svg{
+    width:29px;height:29px;
+    fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;
+  }
+
+  .sdd-header-actions{
+    justify-content:flex-end!important;
+    gap:28px!important;
+  }
+  .sdd-header-action{
+    min-width:155px!important;
+    height:72px!important;
+    gap:14px!important;
+    padding:0!important;
+    border-radius:0!important;
+  }
+  .sdd-header-action:hover{background:transparent!important;}
+  .sdd-action-icon{
+    width:58px!important;
+    height:58px!important;
+    background:#f6f7f8!important;
+    color:#111827!important;
+    font-size:unset!important;
+  }
+  .sdd-action-icon svg{
+    width:31px;height:31px;
+    fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .sdd-header-action strong{
+    font-size:20px!important;
+    line-height:1.05!important;
+    color:#111827!important;
+  }
+  .sdd-header-action small{
+    margin-top:6px!important;
+    font-size:15px!important;
+    color:#667085!important;
+  }
+  #sddConsultAction strong{position:relative;}
+  #sddConsultAction strong::after{
+    content:"";
+    position:absolute;
+    width:8px;height:8px;
+    border-radius:50%;
+    background:#22c55e;
+    top:-5px;right:-12px;
+    border:2px solid #fff;
+  }
+  .commerce-header-note{display:none!important;}
+}
+
+@media (min-width: 901px) and (max-width: 1250px){
+  .sdd-header-v164 .commerce-header-inner{
+    grid-template-columns:250px minmax(360px,1fr) 290px!important;
+    gap:20px!important;
+  }
+  .sdd-header-v164 .commerce-logo-mark{width:64px!important;height:64px!important;}
+  .sdd-header-v164 .commerce-logo-text{font-size:22px!important;}
+  .sdd-brand-copy small{font-size:12px!important;}
+  .sdd-header-action{min-width:130px!important;gap:10px!important;}
+  .sdd-action-icon{width:48px!important;height:48px!important;}
+  .sdd-header-action strong{font-size:16px!important;}
+  .sdd-header-action small{font-size:13px!important;}
+}
