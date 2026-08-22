@@ -13362,3 +13362,22 @@ body.installment-open{overflow:hidden}
     gap:16px!important;
   }
 }
+
+/* V238 - Fix icon search mobile bị thành chấm đen */
+@media(max-width:720px){
+  .sdd-search-leading svg{
+    width:18px!important;
+    height:18px!important;
+    display:block!important;
+    fill:none!important;
+    stroke:#98a2b3!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  .sdd-search-leading svg circle,
+  .sdd-search-leading svg path{
+    fill:none!important;
+    stroke:#98a2b3!important;
+  }
+}
