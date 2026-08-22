@@ -13381,3 +13381,203 @@ body.installment-open{overflow:hidden}
     stroke:#98a2b3!important;
   }
 }
+
+/* v241 - Fix duplicate native search clear button and header search alignment */
+#searchInput::-webkit-search-cancel-button,
+#searchInput::-webkit-search-decoration,
+#searchInput::-webkit-search-results-button,
+#searchInput::-webkit-search-results-decoration{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  display:none!important;
+}
+#searchInput::-ms-clear,
+#searchInput::-ms-reveal{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+
+.sdd-header-search{
+  overflow:visible!important;
+}
+.sdd-header-search #searchInput{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.sdd-header-search #clearSearch{
+  flex:0 0 auto!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  box-shadow:none!important;
+  line-height:1!important;
+  z-index:3!important;
+}
+
+@media (min-width: 769px){
+  .sdd-header-search{
+    overflow:hidden!important;
+  }
+  .sdd-header-search #clearSearch{
+    margin:0!important;
+    align-self:center!important;
+  }
+}
+
+@media (max-width: 768px){
+  .sdd-header-search #clearSearch{
+    margin:0 4px 0 0!important;
+  }
+}
+
+/* =========================================================
+   V242 - Equal product card heights / aligned actions
+   ========================================================= */
+.compact-product-card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.compact-product-media{
+  flex:0 0 auto;
+}
+.compact-product-body{
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+}
+.compact-product-title{
+  min-height:58px;
+}
+.compact-product-price{
+  min-height:25px;
+}
+.compact-product-meta{
+  margin-top:auto;
+}
+
+@media(max-width:720px){
+  .compact-product-title{
+    min-height:66px;
+  }
+  .compact-product-price{
+    min-height:25px;
+  }
+  .compact-product-meta{
+    margin-top:auto;
+  }
+  .compact-card-actions{
+    width:100%;
+  }
+}
+
+/* =========================================================
+   V243 - Cân đối lại trang Tra cứu bảo hành trên desktop
+   ========================================================= */
+@media(min-width:900px){
+  .warranty-page-main{
+    width:min(1180px,calc(100% - 56px))!important;
+    margin:34px auto 56px!important;
+  }
+
+  .warranty-page-card{
+    display:grid!important;
+    grid-template-columns:minmax(280px,.72fr) minmax(520px,1.55fr)!important;
+    column-gap:34px!important;
+    row-gap:22px!important;
+    padding:34px 36px!important;
+    border-radius:22px!important;
+  }
+
+  .warranty-page-card .warranty-head{
+    margin:0!important;
+    align-self:center!important;
+  }
+
+  .warranty-page-card .warranty-head h1{
+    font-size:29px!important;
+  }
+
+  .warranty-page-card .warranty-head p{
+    max-width:300px!important;
+    font-size:13px!important;
+  }
+
+  .warranty-page-card .warranty-form{
+    margin:0!important;
+    padding:20px!important;
+    align-self:center!important;
+  }
+
+  .warranty-page-card .warranty-search-row input{
+    height:54px!important;
+    font-size:16px!important;
+  }
+
+  .warranty-page-card .warranty-search-row button{
+    min-width:122px!important;
+    height:54px!important;
+    font-size:14px!important;
+  }
+
+  .warranty-page-card .warranty-result,
+  .warranty-page-card .warranty-policy-box{
+    grid-column:1 / -1!important;
+  }
+
+  .warranty-page-card .warranty-result{
+    margin-top:0!important;
+  }
+
+  .warranty-page-card .warranty-policy-box{
+    margin-top:0!important;
+    padding:20px 22px!important;
+  }
+
+  .warranty-page-card .warranty-policy-box>strong{
+    font-size:14px!important;
+  }
+
+  .warranty-page-card .warranty-policy-box>p{
+    max-width:900px!important;
+    font-size:12.5px!important;
+  }
+
+  .warranty-page-card .warranty-policy-details:not([hidden]){
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:0 34px!important;
+    margin-top:16px!important;
+    padding-top:16px!important;
+    border-top:1px dashed #f2c3a7!important;
+  }
+
+  .warranty-page-card .warranty-policy-section+.warranty-policy-section{
+    margin-top:0!important;
+    padding-top:0!important;
+    border-top:0!important;
+    padding-left:28px!important;
+    border-left:1px dashed #f2c3a7!important;
+  }
+
+  .warranty-page-card .warranty-policy-section h3{
+    font-size:13px!important;
+    margin-top:0!important;
+  }
+
+  .warranty-page-card .warranty-policy-section li{
+    font-size:12px!important;
+    line-height:1.6!important;
+  }
+
+  .warranty-page-card .warranty-items{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+}
