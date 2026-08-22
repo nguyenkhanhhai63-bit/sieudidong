@@ -1674,3 +1674,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 ## V232
 - Dashboard quản trị tự giãn theo vùng nội dung, bỏ giới hạn 1480/1560px gây trống hai bên trên màn hình rộng.
 - Desktop giữ lề 20–24px; tablet 12px; mobile 8px.
+
+## V233 - Khu danh mục kiểu showroom
+- Thiết kế lại khu vực danh mục/trình lọc trang chủ theo mẫu tham chiếu.
+- Sidebar danh mục bên trái, lưới thương hiệu 5 cột, nhóm mức giá và dải lợi ích phía dưới.
+- Tách OnePlus, Realme, iQOO, POCO thành hãng riêng để hiển thị đúng hơn.
+- Mobile chuyển sidebar/brand/giá thành thanh cuộn ngang gọn.

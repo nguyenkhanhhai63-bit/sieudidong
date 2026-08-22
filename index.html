@@ -48,7 +48,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=224">
+  <link rel="stylesheet" href="/styles.css?v=233">
 </head>
 <body>
 
@@ -169,22 +169,44 @@
 <main class="page">
 
   
-  <section class="catalog-overview">
+  <section class="catalog-overview sdd-catalog-showcase">
     <span id="updatedAt" hidden></span>
 
-    <div class="catalog-nav-row">
-      <div class="catalog-brand-area">
-        <div class="catalog-brand-label">Thương hiệu</div>
-        <div id="categoryFilters" class="category-filters" aria-label="Lọc theo hãng"></div>
-      </div>
+    <div class="sdd-catalog-showcase-main">
+      <aside class="sdd-catalog-side" aria-label="Danh mục nổi bật">
+        <button class="sdd-side-item active" type="button" data-sdd-quick="all"><span class="sdd-side-icon">▦</span><span>Tất cả sản phẩm</span><b>›</b></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="featured"><span class="sdd-side-icon">☆</span><span>Hàng nổi bật</span></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="new"><span class="sdd-side-icon">✦</span><span>Máy mới về</span></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="battery"><span class="sdd-side-icon">▣</span><span>Pin trâu</span></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="camera"><span class="sdd-side-icon">▢</span><span>Chụp ảnh đẹp</span></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="gaming"><span class="sdd-side-icon">⌘</span><span>Gaming</span></button>
+        <button class="sdd-side-item" type="button" data-sdd-quick="sim"><span class="sdd-side-icon">▤</span><span>Sim &amp; Thẻ cào</span></button>
+      </aside>
 
-      <div class="catalog-price-area">
-        <div class="catalog-brand-label">Mức giá</div>
-        <div id="priceFilters" class="price-filters" aria-label="Lọc theo giá"></div>
-      </div>
+      <div class="sdd-catalog-content">
+        <div class="sdd-brand-section">
+          <div class="sdd-catalog-section-title">Thương hiệu nổi bật</div>
+          <div id="categoryFilters" class="category-filters sdd-brand-grid" aria-label="Lọc theo hãng"></div>
+        </div>
 
+        <div class="sdd-price-section">
+          <div class="sdd-catalog-section-title">Mức giá phổ biến</div>
+          <div id="priceFilters" class="price-filters sdd-price-grid" aria-label="Lọc theo giá"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sdd-catalog-benefits">
+      <div class="sdd-benefit-item"><span class="sdd-benefit-icon">₫</span><div><strong>Trả góp 0đ</strong><small>Hồ sơ đơn giản</small></div></div>
+      <div class="sdd-benefit-item"><span class="sdd-benefit-icon">✓</span><div><strong>Bảo hành uy tín</strong><small>1 đổi 1 trong tháng đầu</small></div></div>
+      <div class="sdd-benefit-item"><span class="sdd-benefit-icon">◉</span><div><strong>Hỗ trợ tận tâm</strong><small>Tư vấn trực tiếp</small></div></div>
+      <div class="sdd-benefit-item"><span class="sdd-benefit-icon">▣</span><div><strong>Giao hàng nhanh</strong><small>Toàn quốc</small></div></div>
+    </div>
+
+    <div class="sdd-catalog-toolbar">
+      <div id="summary" class="summary"></div>
       <div class="catalog-sort-area">
-        <div class="catalog-brand-label">Sắp xếp</div>
+        <span>Sắp xếp</span>
         <select id="sortSelect" class="sort-select" aria-label="Sắp xếp sản phẩm">
           <option value="default">Tìm nhiều nhất</option>
           <option value="price-asc">Giá thấp đến cao</option>
@@ -193,12 +215,7 @@
         </select>
       </div>
     </div>
-
-    <div class="catalog-meta-row">
-      <div id="summary" class="summary"></div>
-    </div>
   </section>
-
 
   <section id="productGrid" class="product-grid">
     <div class="loading">Đang tải sản phẩm...</div>
@@ -285,7 +302,7 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=225"></script>
+  <script src="/app.js?v=233"></script>
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */

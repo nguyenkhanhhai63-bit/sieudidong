@@ -643,12 +643,17 @@ function detectBrand(name){
   const text = String(name || "").toLowerCase();
 
   const brands = [
-    ["Xiaomi", ["xiaomi", "redmi", "poco", "mi " ]],
+    ["POCO", ["poco"]],
+    ["OnePlus", ["oneplus"]],
+    ["Realme", ["realme"]],
+    ["iQOO", ["iqoo", "i qoo"]],
+    ["Xiaomi", ["xiaomi", "redmi", "mi " ]],
     ["Apple", ["iphone", "ipad", "apple"]],
     ["Samsung", ["samsung", "galaxy"]],
-    ["OPPO", ["oppo", "oneplus", "realme", "find x", "reno", "k13", "k15"]],
-    ["vivo", ["vivo", "iqoo", "i qoo"]],
+    ["OPPO", ["oppo", "find x", "reno", "k13", "k15"]],
+    ["vivo", ["vivo"]],
     ["HONOR", ["honor"]],
+    ["TECNO", ["tecno"]],
     ["Huawei", ["huawei"]],
     ["Nubia", ["nubia", "redmagic", "red magic"]],
     ["Motorola", ["motorola", "moto"]],
@@ -925,7 +930,8 @@ function renderCategoryFilters(){
   });
 
   const preferredOrder = [
-    "HONOR","OPPO","vivo","Xiaomi","Samsung","Apple",
+    "Xiaomi","Samsung","OPPO","vivo","Realme",
+    "OnePlus","iQOO","HONOR","POCO","TECNO","Apple",
     "Huawei","Nubia","Motorola","Google","ASUS","Sony","Nothing"
   ];
 
@@ -961,14 +967,34 @@ function renderCategoryFilters(){
   all.forEach(filter=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="category-btn" + (filter===ACTIVE_CATEGORY ? " active" : "");
-    btn.textContent=(filter==="Tất cả" || filter==="Bán chạy")
-      ? filter
-      : String(filter).toUpperCase();
+    btn.className="category-btn sdd-brand-card" + (filter===ACTIVE_CATEGORY ? " active" : "");
+    btn.dataset.brand=String(filter);
 
-    if(filter==="Bán chạy"){
-      btn.classList.add("best-seller-filter");
+    const mark=document.createElement("span");
+    mark.className="sdd-brand-mark";
+    const label=document.createElement("span");
+    label.className="sdd-brand-name";
+
+    if(filter==="Tất cả"){
+      mark.textContent="ALL";
+      label.textContent="Tất cả";
+      btn.classList.add("sdd-brand-all");
+    }else if(filter==="Bán chạy"){
+      mark.textContent="★";
+      label.textContent="Bán chạy";
+      btn.classList.add("best-seller-filter","sdd-brand-hot");
+    }else{
+      const display={
+        Xiaomi:"mi",Samsung:"SAMSUNG",OPPO:"oppo",vivo:"vivo",Realme:"R",
+        OnePlus:"1+",iQOO:"iQOO",HONOR:"HONOR",POCO:"POCO",TECNO:"TECNO",
+        Apple:"",Huawei:"HUAWEI",Nubia:"nubia",Motorola:"moto",Google:"G",
+        ASUS:"ASUS",Sony:"SONY",Nothing:"NOTHING"
+      };
+      mark.textContent=display[filter] || String(filter).toUpperCase();
+      label.textContent=filter;
     }
+
+    btn.append(mark,label);
 
     btn.addEventListener("click",()=>{
       ACTIVE_CATEGORY=filter;
@@ -976,6 +1002,7 @@ function renderCategoryFilters(){
       renderCategoryFilters();
       render();
       updateUrlFromState();
+      document.querySelectorAll("[data-sdd-quick]").forEach(x=>x.classList.remove("active"));
     });
 
     categoryFilters.appendChild(btn);
@@ -3109,6 +3136,64 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 
 /* =========================================================
+   V233 - Danh mục kiểu showroom giống mẫu tham chiếu
+   ========================================================= */
+function sddRefreshCatalogAfterQuickFilter(){
+  renderCategoryFilters();
+  render();
+  updateUrlFromState();
+  document.getElementById("productGrid")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+document.querySelectorAll("[data-sdd-quick]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const action=btn.dataset.sddQuick;
+    document.querySelectorAll("[data-sdd-quick]").forEach(x=>x.classList.toggle("active",x===btn));
+
+    if(action==="all"){
+      ACTIVE_CATEGORY="Tất cả";
+      ACTIVE_PRICE_FILTER="Tất cả giá";
+      if(searchInput) searchInput.value="";
+      sddRefreshCatalogAfterQuickFilter();
+      return;
+    }
+    if(action==="featured"){
+      ACTIVE_CATEGORY=BEST_SELLER_READY ? "Bán chạy" : "Tất cả";
+      if(searchInput) searchInput.value="";
+      sddRefreshCatalogAfterQuickFilter();
+      return;
+    }
+    if(action==="new"){
+      ACTIVE_CATEGORY="Tất cả";
+      ACTIVE_SORT="default";
+      if(searchInput) searchInput.value="";
+      if(sortSelect) sortSelect.value="default";
+      sddRefreshCatalogAfterQuickFilter();
+      return;
+    }
+    if(action==="sim"){
+      if(searchInput) searchInput.value="sim";
+      ACTIVE_CATEGORY="Tất cả";
+      sddRefreshCatalogAfterQuickFilter();
+      return;
+    }
+
+    const questions={
+      battery:"Tư vấn giúp tôi các máy pin trâu đang còn hàng",
+      camera:"Tôi cần máy chụp ảnh đẹp, tư vấn giúp tôi",
+      gaming:"Tư vấn giúp tôi máy chơi game tốt đang còn hàng"
+    };
+    if(questions[action]){
+      try{ if(typeof aiChatOpen==="function") aiChatOpen(); }catch(_){}
+      setTimeout(()=>{
+        const input=document.getElementById("aiChatInput");
+        if(input){ input.value=questions[action]; input.focus(); }
+      },80);
+    }
+  });
+});
+
+/* =========================================================
    V164 - Header interactions
    ========================================================= */
 const sddMobileMenuBtn=document.getElementById("sddMobileMenuBtn");
@@ -3159,7 +3244,7 @@ sddNavCategoryBtn?.addEventListener("click",()=>{
 /* Search icon behaves like Enter/search: scroll to products after query */
 document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
   document.getElementById("searchInput")?.dispatchEvent(new Event("input",{bubbles:true}));
-  document.getElementById("products")?.scrollIntoView({behavior:"smooth",block:"start"});
+  document.getElementById("productGrid")?.scrollIntoView({behavior:"smooth",block:"start"});
 });
 
 
