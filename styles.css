@@ -13233,3 +13233,87 @@ body.installment-open{overflow:hidden}
   .sdd-header-action strong{font-size:16px!important;}
   .sdd-header-action small{font-size:13px!important;}
 }
+
+/* =========================================================
+   V236 - Can doi lai desktop showroom header
+   ========================================================= */
+@media (min-width: 1251px){
+  .sdd-top-strip-inner,
+  .sdd-header-v164 .commerce-header-inner,
+  .sdd-header-nav-inner{
+    width:min(1680px,calc(100% - 80px))!important;
+    max-width:1680px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  .sdd-header-v164 .commerce-header-inner.sdd-header-main{
+    min-height:126px!important;
+    grid-template-columns:320px minmax(560px,1fr) 390px!important;
+    column-gap:42px!important;
+    align-items:center!important;
+    padding:18px 0!important;
+  }
+
+  .sdd-header-v164 .commerce-logo{gap:16px!important;}
+  .sdd-header-v164 .commerce-logo-mark{
+    width:72px!important;
+    height:72px!important;
+    border-radius:18px!important;
+  }
+  .sdd-header-v164 .commerce-logo-text{
+    font-size:27px!important;
+    line-height:1!important;
+  }
+  .sdd-brand-copy small{
+    margin-top:7px!important;
+    font-size:14px!important;
+  }
+
+  .sdd-header-search{
+    width:100%!important;
+    max-width:none!important;
+    height:64px!important;
+    grid-template-columns:50px minmax(0,1fr) 40px 68px!important;
+  }
+  .sdd-header-search input{height:61px!important;font-size:16px!important;}
+  .sdd-search-submit{height:64px!important;width:68px!important;}
+
+  .sdd-header-actions{
+    width:390px!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:22px!important;
+    justify-content:stretch!important;
+  }
+  .sdd-header-action{
+    min-width:0!important;
+    width:100%!important;
+    height:68px!important;
+    gap:12px!important;
+    justify-content:flex-start!important;
+  }
+  .sdd-action-icon{
+    width:54px!important;
+    height:54px!important;
+    flex:0 0 54px!important;
+  }
+  .sdd-header-action strong{font-size:18px!important;white-space:nowrap!important;}
+  .sdd-header-action small{font-size:14px!important;}
+}
+
+@media (min-width: 1251px) and (max-width: 1550px){
+  .sdd-top-strip-inner,
+  .sdd-header-v164 .commerce-header-inner,
+  .sdd-header-nav-inner{
+    width:calc(100% - 56px)!important;
+  }
+  .sdd-header-v164 .commerce-header-inner.sdd-header-main{
+    grid-template-columns:280px minmax(480px,1fr) 340px!important;
+    column-gap:28px!important;
+  }
+  .sdd-header-actions{width:340px!important;gap:14px!important;}
+  .sdd-header-v164 .commerce-logo-mark{width:66px!important;height:66px!important;}
+  .sdd-header-v164 .commerce-logo-text{font-size:24px!important;}
+  .sdd-header-action strong{font-size:16px!important;}
+}
