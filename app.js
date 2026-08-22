@@ -3453,3 +3453,21 @@ window.addEventListener("load",()=>{
     }
   },150);
 });
+
+/* V247 - Drawer active state */
+(function sddSyncDrawerActive(){
+  function sync(){
+    const path=(location.pathname||'/').toLowerCase();
+    let active='home';
+    if(path.includes('tra-cuu-bao-hanh')) active='warranty';
+    else if(path.includes('tra-gop')) active='installment';
+    else if(typeof ACTIVE_NAV_KIND!=='undefined' && ACTIVE_NAV_KIND==='tablet') active='tablet';
+    else if(typeof ACTIVE_NAV_KIND!=='undefined' && ACTIVE_NAV_KIND==='phone') active='phone';
+    document.querySelectorAll('[data-sdd-drawer-nav]').forEach(el=>{
+      el.classList.toggle('sdd-drawer-active',el.dataset.sddDrawerNav===active);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',sync);
+  document.querySelectorAll('[data-sdd-main-nav]').forEach(el=>el.addEventListener('click',()=>setTimeout(sync,0)));
+  window.addEventListener('popstate',sync);
+})();

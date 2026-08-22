@@ -13654,3 +13654,66 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
     background:#f8fbff!important;
   }
 }
+
+/* =========================================================
+   V247 - Refine mobile drawer navigation
+   ========================================================= */
+@media(max-width:768px){
+  .sdd-mobile-drawer-panel{
+    width:min(90vw,380px)!important;
+    border-radius:0 22px 22px 0!important;
+  }
+
+  .sdd-mobile-nav-list{
+    padding:9px 11px 14px!important;
+  }
+
+  .sdd-mobile-nav-list a{
+    min-height:48px!important;
+    padding:6px 9px!important;
+    grid-template-columns:36px minmax(0,1fr) 18px!important;
+    gap:10px!important;
+    border-radius:12px!important;
+    transition:background .15s ease,color .15s ease!important;
+  }
+
+  .sdd-mobile-nav-list a + a{margin-top:2px!important}
+
+  .sdd-mobile-nav-icon{
+    width:34px!important;
+    height:34px!important;
+    border-radius:10px!important;
+    background:#fff5ef!important;
+  }
+
+  .sdd-mobile-nav-icon svg{
+    width:18px!important;
+    height:18px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .sdd-mobile-nav-list a.sdd-drawer-active{
+    color:#e94f00!important;
+    background:#fff3eb!important;
+  }
+
+  .sdd-mobile-nav-list a.sdd-drawer-active .sdd-mobile-nav-icon{
+    background:#ffeadc!important;
+    color:#ff5a00!important;
+  }
+
+  .sdd-mobile-nav-list a.sdd-drawer-active>b{color:#ff7a33!important}
+
+  .sdd-mobile-warranty-menu-item small{
+    display:block!important;
+    margin-top:2px!important;
+    font-size:9.5px!important;
+    line-height:1.2!important;
+    color:#8a94a3!important;
+    font-weight:500!important;
+  }
+}
