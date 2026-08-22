@@ -13317,3 +13317,48 @@ body.installment-open{overflow:hidden}
   .sdd-header-v164 .commerce-logo-text{font-size:24px!important;}
   .sdd-header-action strong{font-size:16px!important;}
 }
+
+
+/* =========================================================
+   V237 - Wider desktop layout + single-row brands + clean nav
+   ========================================================= */
+@media (min-width: 1000px){
+  .page{
+    width:min(1680px,calc(100% - 48px))!important;
+    max-width:1680px!important;
+  }
+}
+
+@media (min-width: 1251px){
+  .sdd-header-nav-inner{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:24px!important;
+  }
+  .sdd-main-nav{
+    justify-content:flex-start!important;
+    gap:34px!important;
+  }
+  .sdd-catalog-showcase .sdd-brand-grid{
+    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  .sdd-catalog-showcase .sdd-brand-card{
+    height:96px!important;
+  }
+  .sdd-brand-section{
+    margin-bottom:16px!important;
+  }
+  .sdd-catalog-content{
+    padding-top:22px!important;
+    padding-bottom:22px!important;
+  }
+}
+
+@media (min-width: 1550px){
+  .page{
+    width:min(1680px,calc(100% - 64px))!important;
+  }
+  .product-grid{
+    gap:16px!important;
+  }
+}
