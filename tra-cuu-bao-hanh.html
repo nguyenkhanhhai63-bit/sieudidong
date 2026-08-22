@@ -49,11 +49,11 @@
       <div class="warranty-policy-box">
         <strong>Chính sách bảo hành</strong>
         <p>Trong 30 ngày đầu, sản phẩm phát sinh lỗi do nhà sản xuất và đủ điều kiện sẽ được hỗ trợ đổi máy theo chính sách Siêu Di Động.</p>
-        <button type="button" class="warranty-policy-toggle" id="warrantyPolicyToggle" aria-expanded="true">
-          Thu gọn chính sách <span>⌄</span>
+        <button type="button" class="warranty-policy-toggle" id="warrantyPolicyToggle" aria-expanded="false">
+          Xem chính sách chi tiết <span>⌄</span>
         </button>
 
-        <div class="warranty-policy-details" id="warrantyPolicyDetails">
+        <div class="warranty-policy-details" id="warrantyPolicyDetails" hidden>
           <div class="warranty-policy-section">
             <h3>Bảo hành</h3>
             <ul>
@@ -125,6 +125,14 @@
   const btn=document.getElementById("warrantyPolicyToggle");
   const box=document.getElementById("warrantyPolicyDetails");
   if(!btn||!box) return;
+
+  // Mobile: mặc định thu gọn. Desktop: mặc định mở rộng.
+  if(!window.matchMedia("(max-width: 760px)").matches){
+    box.removeAttribute("hidden");
+    btn.setAttribute("aria-expanded","true");
+    btn.firstChild.nodeValue="Thu gọn chính sách ";
+  }
+
   btn.addEventListener("click",function(){
     const opening=box.hasAttribute("hidden");
     if(opening) box.removeAttribute("hidden"); else box.setAttribute("hidden","");

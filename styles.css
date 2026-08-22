@@ -13587,3 +13587,70 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
 
 /* V244 - Warranty full page */
 .warranty-extra{border:1px solid #e7eaf0;border-radius:16px;background:#fff;padding:20px}.warranty-extra-head h2{margin:3px 0 6px;font-size:18px;line-height:1.25;color:#111827}.warranty-extra-head p{margin:0;color:#64748b;font-size:12.5px;line-height:1.55}.warranty-extra-kicker{font-size:10px;font-weight:900;letter-spacing:.08em;color:#ff5a00}.warranty-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.warranty-step{position:relative;min-height:106px;padding:16px 14px 14px 48px;border:1px solid #edf0f4;border-radius:14px;background:#fafbfc}.warranty-step>span{position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:9px;background:#fff0e8;color:#ff5a00;display:grid;place-items:center;font-weight:900;font-size:12px}.warranty-step strong{display:block;font-size:13px;color:#111827;margin-bottom:5px}.warranty-step small{display:block;color:#64748b;line-height:1.45;font-size:11px}.warranty-bottom-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:16px}.warranty-note-card ul{margin:14px 0 0;padding-left:18px;color:#475569}.warranty-note-card li{margin:8px 0;font-size:12px;line-height:1.5}.warranty-support-card{background:linear-gradient(135deg,#fff8f3,#fff);border-color:#ffd5bc}.warranty-zalo-btn,.warranty-home-btn{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:11px;text-decoration:none;font-weight:800;font-size:12px;margin-top:12px}.warranty-zalo-btn{background:#1677ff;color:#fff}.warranty-home-btn{border:1px solid #ffb58b;color:#e64f00;background:#fff}@media(min-width:900px){.warranty-page-main{margin-bottom:34px!important}.warranty-page-card{row-gap:18px!important}.warranty-page-card .warranty-policy-details:not([hidden]){display:grid!important}.warranty-page-card .warranty-extra,.warranty-page-card .warranty-bottom-grid{grid-column:1/-1!important}.warranty-page-card .warranty-policy-box{padding:22px 24px!important}.warranty-page-card .warranty-policy-toggle{margin-top:10px!important}}@media(max-width:899px){.warranty-extra{padding:16px 14px}.warranty-steps{grid-template-columns:1fr 1fr}.warranty-bottom-grid{grid-template-columns:1fr}}@media(max-width:520px){.warranty-steps{grid-template-columns:1fr}.warranty-step{min-height:86px}}
+
+/* =========================================================
+   V246 - Refine mobile Zalo CTA in drawer
+   ========================================================= */
+@media(max-width:768px){
+  .sdd-mobile-drawer-footer{
+    padding:12px 14px calc(14px + env(safe-area-inset-bottom))!important;
+    border-top:1px solid #eef1f5!important;
+    background:linear-gradient(180deg,#fff 0%,#f8fafc 100%)!important;
+  }
+
+  #sddMobileConsultBtn{
+    min-height:64px!important;
+    padding:9px 12px!important;
+    grid-template-columns:44px minmax(0,1fr) 28px!important;
+    gap:11px!important;
+    border:1px solid #e4e9f0!important;
+    border-radius:16px!important;
+    background:#fff!important;
+    color:#111827!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.07)!important;
+  }
+
+  #sddMobileConsultBtn .sdd-zalo-dot{
+    width:44px!important;
+    height:44px!important;
+    border-radius:13px!important;
+    background:#0068ff!important;
+    color:#fff!important;
+    font-size:20px!important;
+    font-weight:900!important;
+    box-shadow:0 5px 12px rgba(0,104,255,.20)!important;
+  }
+
+  #sddMobileConsultBtn strong{
+    font-size:14px!important;
+    line-height:1.2!important;
+    font-weight:850!important;
+    color:#111827!important;
+    letter-spacing:-.1px!important;
+  }
+
+  #sddMobileConsultBtn small{
+    margin-top:4px!important;
+    color:#64748b!important;
+    font-size:10.5px!important;
+    line-height:1.2!important;
+    font-weight:600!important;
+  }
+
+  #sddMobileConsultBtn>b{
+    width:28px!important;
+    height:28px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+    background:#eef5ff!important;
+    color:#0068ff!important;
+    font-size:18px!important;
+    font-weight:700!important;
+  }
+
+  #sddMobileConsultBtn:active{
+    transform:scale(.985)!important;
+    background:#f8fbff!important;
+  }
+}
