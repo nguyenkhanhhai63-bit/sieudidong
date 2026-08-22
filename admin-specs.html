@@ -2646,6 +2646,19 @@ button,.primary,.secondary{font-size:12px!important}
 <style>
 #seoCard .seo-editor{display:block!important;visibility:visible!important;opacity:1!important}
 </style>
+
+<style id="v248-admin-dashboard">
+.analytics-periodbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:14px 0 0;padding:12px 14px;border:1px solid #e7eaee;border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(15,23,42,.025)}
+.periodbar-copy{display:flex;align-items:center;gap:10px;white-space:nowrap}.periodbar-copy strong{font-size:13px;color:#101828}.periodbar-copy span{font-size:11px;color:#667085;padding:6px 10px;border-radius:999px;background:#f2f4f7}
+.period-tabs{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.period-tab{height:34px;padding:0 14px;border:1px solid #e4e7ec;border-radius:9px;background:#fff;color:#475467;font-size:11px;font-weight:800;cursor:pointer;transition:.16s}.period-tab:hover{border-color:#ffb38b;color:#ff5a00}.period-tab.active{border-color:#ff5a00;background:#fff4ee;color:#e34f00;box-shadow:0 3px 10px rgba(255,90,0,.08)}
+.analytics-shell{border-radius:14px!important}.analytics-section-title{margin:8px 0 12px!important}.analytics-section-title strong{font-size:15px!important}.analytics-section-title span{font-size:11px!important;color:#98a2b3!important}
+.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}.metric-grid-warranty{grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:none}.metric{min-height:112px!important}.metric small{min-height:auto!important;font-size:11px!important}.metric strong{font-size:30px!important}.metric em{font-style:normal!important;font-size:10px!important}.metric-total::before{background:linear-gradient(180deg,#344054,#667085)!important}.metric-accent-blue::before{background:linear-gradient(180deg,#2e90fa,#53b1fd)!important}
+.analytics-grid{grid-template-columns:repeat(12,minmax(0,1fr))!important}.traffic-box{grid-column:span 8!important;min-height:290px!important}.monthly-box{grid-column:span 4!important;min-height:290px!important}.monthly-analytics{padding:8px 14px 14px}.month-row{display:grid;grid-template-columns:58px 1fr 64px;gap:9px;align-items:center;padding:8px 0;border-bottom:1px solid #f0f2f5}.month-row:last-child{border-bottom:0}.month-label{font-size:11px;font-weight:800;color:#344054}.month-track{height:7px;background:#f2f4f7;border-radius:999px;overflow:hidden}.month-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#ff7a33,#ff5a00)}.month-value{text-align:right;font-size:11px;font-weight:900;color:#101828}.month-meta{grid-column:2/4;margin-top:-5px;font-size:9px;color:#98a2b3}
+#trafficChart{height:220px!important;padding-top:18px!important}.chart .bar{border-radius:5px 5px 2px 2px!important}.chart .barwrap:hover .bar{filter:brightness(.95)}
+.warranty-title{margin-top:14px!important}.warranty-analytics-box{grid-column:span 12!important}.compare-pairs-box{grid-column:span 6!important}
+@media (max-width:1500px){.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}.metric-grid-warranty{max-width:none}.traffic-box,.monthly-box{grid-column:span 12!important}.abox{grid-column:span 6!important}}
+@media (max-width:900px){.analytics-periodbar{align-items:flex-start;flex-direction:column}.period-tabs{justify-content:flex-start}.metric-grid-main,.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))!important}.abox{grid-column:span 12!important}}
+</style>
 </head>
 <body class="auth-pending">
 <aside id="adminSidebar" class="admin-sidebar">
@@ -2661,8 +2674,6 @@ button,.primary,.secondary{font-size:12px!important}
   <div id="sidebarNavMount"><div id="adminTabs" class="admin-tabs hidden" style="display:none">
     <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
-    <button class="admin-tab" data-tab="ai" type="button"><span class="nav-icon">✦</span><span>Đào tạo AI</span><b class="nav-new">Mới</b></button>
-    <button class="admin-tab" data-tab="seo" type="button"><span class="nav-icon">⌕</span><span>SEO & Google</span></button>
     <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
   </div></div>
 
@@ -2678,7 +2689,7 @@ button,.primary,.secondary{font-size:12px!important}
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V223</small>
+    <small>Siêu Di Động Admin • V248</small>
   </div>
 </aside>
 
@@ -2755,31 +2766,45 @@ button,.primary,.secondary{font-size:12px!important}
       </div>
     </div>
     <div class="head">
-      <div><h1>Thống kê truy cập</h1><p>Lượt truy cập duy nhất, khách truy cập, so sánh sản phẩm và lượt bấm Zalo.</p></div>
+      <div><h1>Báo cáo & thống kê</h1><p>Theo dõi hoạt động website theo ngày, tuần, tháng và năm.</p></div>
       <button id="refreshAnalytics" class="secondary" type="button">Làm mới</button>
+    </div>
+    <div class="analytics-periodbar">
+      <div class="periodbar-copy">
+        <strong>Khoảng thời gian</strong>
+        <span id="analyticsPeriodCaption">Hôm nay</span>
+      </div>
+      <div class="period-tabs" id="analyticsPeriodTabs">
+        <button type="button" class="period-tab active" data-period="today">Hôm nay</button>
+        <button type="button" class="period-tab" data-period="days7">7 ngày</button>
+        <button type="button" class="period-tab" data-period="days30">30 ngày</button>
+        <button type="button" class="period-tab" data-period="month">Tháng này</button>
+        <button type="button" class="period-tab" data-period="year">Năm nay</button>
+      </div>
     </div>
     <div class="analytics-shell">
       <div id="analyticsLoading" class="aload">Đang tải thống kê...</div>
       <div id="analyticsContent" class="hidden">
         <div class="analytics-section-title"><div><strong>Hoạt động website</strong><span>Truy cập, sản phẩm và tương tác của khách</span></div></div>
         <div class="metric-grid metric-grid-main">
-          <div class="metric"><small>Khách hôm nay</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">30 ngày: 0</em></div>
-          <div class="metric"><small>Truy cập hôm nay</small><strong id="mTodayViews">0</strong><em id="mViews7">7 ngày: 0</em></div>
+          <div class="metric metric-accent-blue"><small>Khách truy cập</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">Theo kỳ đang chọn</em></div>
+          <div class="metric"><small>Lượt truy cập</small><strong id="mTodayViews">0</strong><em id="mViews7">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
-          <div class="metric"><small>Xem sản phẩm</small><strong id="mDetailClicks">0</strong><em>Tổng từ khi bật thống kê</em></div>
-          <div class="metric"><small>So sánh hôm nay</small><strong id="mTodayCompare">0</strong><em id="mCompare30">30 ngày: 0</em></div>
-          <div class="metric"><small>Bấm Zalo hôm nay</small><strong id="mTodayZalo">0</strong><em id="mZalo30">30 ngày: 0</em></div>
-          <div class="metric"><small>Truy cập 30 ngày</small><strong id="mViews30">0</strong><em id="mTotalViews">Tổng từ khi bật thống kê: 0</em></div>
+          <div class="metric"><small>Xem chi tiết sản phẩm</small><strong id="mDetailClicks">0</strong><em id="mDetailPeriod">Theo kỳ đang chọn</em></div>
+          <div class="metric"><small>Lượt so sánh</small><strong id="mTodayCompare">0</strong><em id="mCompare30">Theo kỳ đang chọn</em></div>
+          <div class="metric"><small>Bấm Zalo</small><strong id="mTodayZalo">0</strong><em id="mZalo30">Theo kỳ đang chọn</em></div>
+          <div class="metric metric-total"><small>Tổng truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
-          <div class="metric"><small>Tra bảo hành hôm nay</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">30 ngày: 0</em></div>
-          <div class="metric"><small>Khách tra bảo hành</small><strong id="mWarrantyPhonesToday">0</strong><em id="mWarrantyPhones30">30 ngày: 0 SĐT</em></div>
-          <div class="metric"><small>Tìm thấy bảo hành</small><strong id="mTodayWarrantyFound">0</strong><em id="mWarrantyFound30">30 ngày: 0</em></div>
+          <div class="metric"><small>Lượt tra bảo hành</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">Theo kỳ đang chọn</em></div>
+          <div class="metric"><small>Khách tra bảo hành</small><strong id="mWarrantyPhonesToday">0</strong><em id="mWarrantyPhones30">SĐT khác nhau trong kỳ</em></div>
+          <div class="metric"><small>Tra cứu có kết quả</small><strong id="mTodayWarrantyFound">0</strong><em id="mWarrantyFound30">Theo kỳ đang chọn</em></div>
         </div>
       </div>
       <div class="analytics-grid">
-          <div class="abox"><h2>Xu hướng truy cập 30 ngày</h2><div id="trafficChart" class="chart"></div></div>
+          <div class="abox traffic-box"><h2 id="trafficChartTitle">Xu hướng truy cập</h2><div id="trafficChart" class="chart"></div></div>
+          <div class="abox monthly-box"><h2>Tổng hợp theo tháng</h2><div id="monthlyAnalytics" class="monthly-analytics"></div></div>
           <div class="abox"><h2>Loại thiết bị truy cập</h2><div id="deviceList"></div></div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Android thường nhận được model; iPhone có thể chỉ hiện iPhone do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
@@ -3449,6 +3474,75 @@ function renderWarrantyRecent(items=[]){
   </table></div>`;
 }
 
+
+let analyticsPeriod="today";
+let currentAnalyticsData=null;
+const ANALYTICS_PERIOD_LABELS={today:"Hôm nay",days7:"7 ngày gần nhất",days30:"30 ngày gần nhất",month:"Tháng này",year:"Năm nay"};
+
+function renderTrafficForPeriod(d,period){
+  const chart=document.getElementById("trafficChart");
+  const title=document.getElementById("trafficChartTitle");
+  if(!chart) return;
+  chart.innerHTML="";
+  const history=Array.isArray(d?.history)?d.history:[];
+  const monthly=Array.isArray(d?.monthly)?d.monthly:[];
+  const today=(history.at(-1)?.date)||new Date().toISOString().slice(0,10);
+  let rows=[];
+  let labelEvery=1;
+  if(period==="today") rows=history.slice(-1);
+  else if(period==="days7") rows=history.slice(-7);
+  else if(period==="days30") { rows=history.slice(-30); labelEvery=5; }
+  else if(period==="month") { rows=history.filter(x=>String(x.date||"").slice(0,7)===today.slice(0,7)); labelEvery=Math.max(1,Math.ceil(rows.length/7)); }
+  else { rows=monthly.filter(x=>String(x.month||"").startsWith(today.slice(0,4))).slice(-12); }
+  if(title) title.textContent=period==="year"?"Xu hướng truy cập theo tháng":"Xu hướng truy cập theo ngày";
+  const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
+  rows.forEach((x,i)=>{
+    const w=document.createElement("div"); w.className="barwrap";
+    const name=period==="year"?String(x.month||""):String(x.date||"");
+    w.title=`${name}: ${fmt(x.views)} lượt truy cập`;
+    const b=document.createElement("div"); b.className="bar"; b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";
+    const l=document.createElement("span"); l.className="blabel";
+    if(period==="year") l.textContent=name.slice(5);
+    else l.textContent=(i%labelEvery===0||i===rows.length-1)?name.slice(5):"";
+    w.append(b,l); chart.appendChild(w);
+  });
+  if(!rows.length){ chart.innerHTML='<div style="margin:auto;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>'; }
+}
+
+function renderMonthlyAnalytics(items=[]){
+  const host=document.getElementById("monthlyAnalytics");
+  if(!host) return;
+  const rows=(Array.isArray(items)?items:[]).slice(-6).reverse();
+  if(!rows.length){host.innerHTML='<div style="padding:18px 0;color:#98a2b3;font-size:10px">Chưa có dữ liệu theo tháng.</div>';return;}
+  const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
+  host.innerHTML=rows.map(x=>{
+    const pct=Math.max(3,Math.round(Number(x.views||0)/max*100));
+    const month=String(x.month||"").replace(/^(\d{4})-(\d{2})$/,(_,y,m)=>`${m}/${y}`);
+    return `<div class="month-row"><span class="month-label">${month}</span><div class="month-track"><div class="month-fill" style="width:${pct}%"></div></div><span class="month-value">${fmt(x.views)}</span><span class="month-meta">${fmt(x.compare)} so sánh · ${fmt(x.zalo)} Zalo · ${fmt(x.warrantyChecks)} tra BH</span></div>`;
+  }).join("");
+}
+
+function applyAnalyticsPeriod(d,period=analyticsPeriod){
+  currentAnalyticsData=d;
+  analyticsPeriod=period;
+  const p=d?.periods?.[period]||{};
+  const o=d?.overview||{};
+  const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
+  const caption=document.getElementById("analyticsPeriodCaption"); if(caption) caption.textContent=label;
+  document.querySelectorAll(".period-tab").forEach(btn=>btn.classList.toggle("active",btn.dataset.period===period));
+  mTodayVisitors.textContent=fmt(p.visitors); mVisitors30.textContent=label;
+  mTodayViews.textContent=fmt(p.views); mViews7.textContent=label;
+  mOnlineNow.textContent=fmt(o.onlineNow);
+  mDetailClicks.textContent=fmt(p.detailClicks); const dp=document.getElementById("mDetailPeriod"); if(dp) dp.textContent=label;
+  document.getElementById("mTodayCompare").textContent=fmt(p.compare); document.getElementById("mCompare30").textContent=label;
+  mTodayZalo.textContent=fmt(p.zalo); mZalo30.textContent=label;
+  mViews30.textContent=fmt(o.totalViews); mTotalViews.textContent="Từ khi bật thống kê";
+  document.getElementById("mTodayWarrantyChecks").textContent=fmt(p.warrantyChecks); document.getElementById("mWarrantyChecks30").textContent=label;
+  document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
+  document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
+  renderTrafficForPeriod(d,period);
+}
+
 async function loadAnalytics(){
   const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
   loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
@@ -3496,6 +3590,8 @@ async function loadAnalytics(){
     const chart=document.getElementById("trafficChart"); chart.innerHTML="";
     const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
+    renderMonthlyAnalytics(d.monthly||[]);
+    applyAnalyticsPeriod(d,analyticsPeriod);
     const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
@@ -4034,6 +4130,11 @@ adminTabs.addEventListener("click",e=>{
   if(showSeo){ loadSeoStatus(); loadSeoSettings(); }
 });
 refreshAnalytics.addEventListener("click",loadAnalytics);
+document.getElementById("analyticsPeriodTabs")?.addEventListener("click",e=>{
+  const btn=e.target.closest(".period-tab");
+  if(!btn) return;
+  applyAnalyticsPeriod(currentAnalyticsData||{},btn.dataset.period||"today");
+});
 
 
 

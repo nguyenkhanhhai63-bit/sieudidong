@@ -1685,3 +1685,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 ## V234
 - Xóa cột danh mục nhanh bên trái ở khu vực thương hiệu/giá trên trang chủ.
 - Khu vực thương hiệu và mức giá sử dụng toàn bộ chiều rộng.
+
+## V248 - Dashboard quản trị theo kỳ
+- Thiết kế lại trang Tổng quan quản trị để dễ đọc hơn trên màn hình lớn.
+- Thêm bộ lọc Hôm nay / 7 ngày / 30 ngày / Tháng này / Năm nay.
+- KPI truy cập, khách, xem sản phẩm, so sánh, Zalo và tra bảo hành thay đổi theo kỳ đang chọn.
+- Biểu đồ truy cập đổi theo ngày hoặc theo tháng; thêm bảng tổng hợp 6 tháng gần nhất.
+- Dữ liệu thống kê ngày mới được giữ khoảng 400 ngày để hỗ trợ báo cáo năm.
+- Gọn lại sidebar, bỏ mục AI/SEO bị lặp.
