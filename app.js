@@ -712,6 +712,7 @@ function normalizeProductBaseName(fullName, color, memory){
 
 
 let ACTIVE_MAIN_CATEGORY = "";
+let ACTIVE_NAV_KIND = ""; // phone | tablet; menu chính không phụ thuộc tên danh mục KiotViet
 let MAIN_CATEGORIES = [];
 
 function normalizeCategoryName(text=""){
@@ -804,7 +805,17 @@ function renderMainCategoryMenu(){
   });
 }
 
+function sddProductKind(p){
+  const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand]
+    .filter(Boolean).join(" ").toLowerCase();
+  if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
+  // Loại các nhóm phụ kiện rõ ràng để menu Điện thoại không kéo nhầm sản phẩm.
+  if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
+  return "phone";
+}
+
 function productMatchesMainCategory(p){
+  if(ACTIVE_NAV_KIND) return sddProductKind(p) === ACTIVE_NAV_KIND;
   if(!ACTIVE_MAIN_CATEGORY) return true;
 
   const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
@@ -912,7 +923,10 @@ function renderCategoryFilters(){
 
   PRODUCTS.forEach(p=>{
     const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
-    if(ACTIVE_MAIN_CATEGORY && categoryKey(root) !== categoryKey(ACTIVE_MAIN_CATEGORY)) return;
+    if(ACTIVE_NAV_KIND){
+      const probe={...p, fullName:p.name || "", baseName:p.name || ""};
+      if(sddProductKind(probe) !== ACTIVE_NAV_KIND) return;
+    }else if(ACTIVE_MAIN_CATEGORY && categoryKey(root) !== categoryKey(ACTIVE_MAIN_CATEGORY)) return;
 
     const candidates = [
       p.name,
@@ -3370,16 +3384,8 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
 
 
 /* =========================================================
-   V239 - Kích hoạt menu Điện thoại / Máy tính bảng
+   V240 - Menu Điện thoại / Máy tính bảng độc lập danh mục KiotViet
    ========================================================= */
-function sddResolveMainCategory(kind){
-  if(!MAIN_CATEGORIES.length && PRODUCTS.length) buildMainCategories();
-  const patterns = kind === "tablet"
-    ? [/máy\s*tính\s*bảng/i,/tablet/i,/ipad/i]
-    : [/điện\s*thoại/i,/smartphone/i,/phone/i];
-  return MAIN_CATEGORIES.find(cat=>patterns.some(rx=>rx.test(cat.name))) || null;
-}
-
 function sddUpdateMainNavActive(kind){
   document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
     link.classList.toggle("active", link.dataset.sddMainNav===kind);
@@ -3387,46 +3393,43 @@ function sddUpdateMainNavActive(kind){
 }
 
 function sddActivateMainCategory(kind){
-  const cat=sddResolveMainCategory(kind);
-  if(!cat){
-    // Dữ liệu có thể chưa tải xong; ghi nhớ và áp dụng sau khi catalog sẵn sàng.
-    window.__SDD_PENDING_MAIN_CATEGORY=kind;
-    return false;
-  }
-
-  ACTIVE_MAIN_CATEGORY=cat.name;
-  ACTIVE_CATEGORY="Tất cả";
-  ACTIVE_PRICE_FILTER="Tất cả giá";
+  ACTIVE_NAV_KIND = kind === "tablet" ? "tablet" : "phone";
+  ACTIVE_MAIN_CATEGORY = "";
+  ACTIVE_CATEGORY = "Tất cả";
+  ACTIVE_PRICE_FILTER = "Tất cả giá";
   if(searchInput) searchInput.value="";
 
   renderCategoryFilters();
   render();
-  updateUrlFromState();
-  sddUpdateMainNavActive(kind);
-  document.getElementById("productGrid")?.scrollIntoView({behavior:"smooth",block:"start"});
+  sddUpdateMainNavActive(ACTIVE_NAV_KIND);
+
+  const url = new URL(location.href);
+  url.searchParams.set("category", ACTIVE_NAV_KIND === "tablet" ? "Máy tính bảng" : "Điện thoại");
+  url.searchParams.delete("brand");
+  url.searchParams.delete("price");
+  url.searchParams.delete("q");
+  history.replaceState(history.state, "", url.pathname + "?" + url.searchParams.toString());
+
+  requestAnimationFrame(()=>document.getElementById("productGrid")?.scrollIntoView({behavior:"smooth",block:"start"}));
   return true;
 }
 
 document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
   link.addEventListener("click",event=>{
     event.preventDefault();
-    const kind=link.dataset.sddMainNav;
-    sddActivateMainCategory(kind);
-
-    // Nếu click từ menu mobile thì đóng drawer sau khi chọn.
+    sddActivateMainCategory(link.dataset.sddMainNav);
     const drawer=document.getElementById("sddMobileMenu");
     if(drawer) drawer.classList.remove("open");
     document.body.classList.remove("sdd-mobile-menu-open");
   });
 });
 
-function sddApplyPendingMainCategory(){
-  const kind=window.__SDD_PENDING_MAIN_CATEGORY;
-  if(kind && sddActivateMainCategory(kind)){
-    window.__SDD_PENDING_MAIN_CATEGORY="";
-  }
-}
-
+// Nếu URL được mở trực tiếp với ?category=Điện thoại / Máy tính bảng thì kích hoạt đúng tab.
+(function sddInitNavFromUrl(){
+  const c=new URLSearchParams(location.search).get("category") || "";
+  if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)){ ACTIVE_NAV_KIND="tablet"; ACTIVE_MAIN_CATEGORY=""; }
+  else if(/điện\s*thoại|smartphone|phone/i.test(c)){ ACTIVE_NAV_KIND="phone"; ACTIVE_MAIN_CATEGORY=""; }
+})();
 
 // Đồng bộ trạng thái menu sau khi dữ liệu sản phẩm được nạp.
 window.addEventListener("load",()=>{
@@ -3435,10 +3438,15 @@ window.addEventListener("load",()=>{
     tries++;
     if(PRODUCTS.length){
       buildMainCategories();
-      sddApplyPendingMainCategory();
-      const current=String(ACTIVE_MAIN_CATEGORY||"");
-      if(/máy\s*tính\s*bảng|tablet|ipad/i.test(current)) sddUpdateMainNavActive("tablet");
-      else if(/điện\s*thoại|smartphone|phone/i.test(current)) sddUpdateMainNavActive("phone");
+      if(ACTIVE_NAV_KIND){
+        renderCategoryFilters();
+        render();
+        sddUpdateMainNavActive(ACTIVE_NAV_KIND);
+      }else{
+        const current=String(ACTIVE_MAIN_CATEGORY||"");
+        if(/máy\s*tính\s*bảng|tablet|ipad/i.test(current)) sddUpdateMainNavActive("tablet");
+        else if(/điện\s*thoại|smartphone|phone/i.test(current)) sddUpdateMainNavActive("phone");
+      }
       clearInterval(timer);
     }else if(tries>40){
       clearInterval(timer);
