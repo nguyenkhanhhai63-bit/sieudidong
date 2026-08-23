@@ -865,7 +865,9 @@ function groupItems(items){
 
     if(!map.has(key)){
       map.set(key,{
-        name:key,
+        // Mã key chỉ dùng để gom nhóm. Máy cũ phải hiển thị tên thật đã nhập trong quản trị.
+        name:(item.sourceType==="used" ? (item.fullName || item.baseName || "Máy cũ") : key),
+        groupKey:key,
         image:item.image || "",
         categoryName:item.categoryName || "Khác",
         rootCategoryName:item.rootCategoryName || "Khác",

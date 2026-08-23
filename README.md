@@ -1744,3 +1744,9 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 ## V258
 - Sửa lỗi thẻ máy cũ ngoài website hiển thị mã nội bộ `used:used_xxx` thay cho tên sản phẩm.
 - Ưu tiên hiển thị trường `name` của máy cũ; mã nội bộ chỉ dùng để định danh hệ thống.
+
+
+## V259 - Fix tên máy cũ tại nguồn
+- Sửa `groupItems`: key `used:used_xxx` chỉ dùng nội bộ để gom nhóm.
+- `group.name` của máy cũ lấy trực tiếp tên máy đã nhập trong quản trị.
+- Tên đúng được dùng đồng nhất ở card, trang chi tiết, so sánh và URL sản phẩm.
