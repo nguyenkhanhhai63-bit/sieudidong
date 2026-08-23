@@ -142,10 +142,17 @@ function sendAnalytics(type,extra={}){
   }catch(_){}
 }
 
-// Page view được gửi sau khi lấy thông tin thiết bị để thống kê model chính xác hơn.
+// V262: Gửi page_view NGAY khi trang chạy.
+// Trước đây page_view phải chờ userAgentData.getHighEntropyValues(); trên một số
+// trình duyệt promise này có thể chậm/treo nên dashboard vẫn thấy heartbeat online
+// nhưng Hôm nay = 0. Dùng UA fallback ngay để không mất lượt truy cập.
+sendAnalytics("page_view",deviceInfoFromUa());
+
+// Nếu trình duyệt trả được thông tin thiết bị chi tiết hơn thì chỉ bổ sung metadata,
+// tuyệt đối không cộng thêm lượt xem.
 analyticsDeviceInfo()
-  .then(info=>sendAnalytics("page_view",info))
-  .catch(()=>sendAnalytics("page_view"));
+  .then(info=>sendAnalytics("device_enrich",info))
+  .catch(()=>{});
 
 let analyticsSearchTimer=null;
 function trackSearchQuery(){

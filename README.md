@@ -1779,3 +1779,10 @@ Sau khi thêm biến môi trường, redeploy website.
 - Cân lại 3 cột: ảnh / thông tin / sản phẩm tương tự.
 - Tăng ảnh, tiêu đề, CTA và thông số kỹ thuật trên desktop.
 - Laptop 1100-1350px có layout co riêng; mobile giữ nguyên.
+
+
+## V262 - Fix thống kê Hôm nay
+- Sửa lỗi page_view chờ `navigator.userAgentData.getHighEntropyValues()` khiến một số trình duyệt chỉ gửi heartbeat nhưng không ghi lượt truy cập trong ngày.
+- Page view giờ được gửi ngay bằng User-Agent fallback.
+- Thông tin model/HĐH chi tiết được gửi riêng bằng `device_enrich`, không cộng trùng lượt xem.
+- Giữ mốc ngày theo UTC+7 (Việt Nam).
