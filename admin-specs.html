@@ -3096,6 +3096,145 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   }
 }
 
+
+/* =========================================================
+   V269 - Màn hình tải quản trị
+   ========================================================= */
+#adminBootLoading{display:none!important}
+body.auth-pending{
+  min-height:100vh!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 18% 18%,rgba(255,90,0,.09),transparent 28%),
+    radial-gradient(circle at 82% 82%,rgba(255,135,72,.07),transparent 26%),
+    #f5f7fa!important;
+}
+body.auth-pending .admin-sidebar,
+body.auth-pending .admin-topbar,
+body.auth-pending .mobile-admin-nav,
+body.auth-pending #mobileAdminMenuBtn,
+body.auth-pending #mobileAdminDrawerBackdrop{
+  display:none!important;
+}
+body.auth-pending .wrap{
+  width:100%!important;
+  min-height:100vh!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:24px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+body.auth-pending #authLoading{
+  position:fixed!important;
+  inset:0!important;
+  z-index:20000!important;
+  width:100%!important;
+  min-height:100vh!important;
+  margin:0!important;
+  padding:24px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+.admin-loader-card{
+  width:min(430px,calc(100vw - 32px));
+  overflow:hidden;
+  border:1px solid #e7eaee;
+  border-radius:20px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 28px 70px rgba(15,23,42,.12);
+  backdrop-filter:blur(14px);
+}
+.admin-loader-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:20px 22px 17px;
+  border-bottom:1px solid #f0f1f3;
+}
+.admin-loader-logo{
+  width:46px;height:46px;flex:0 0 46px;
+  overflow:hidden;border-radius:13px;
+  box-shadow:0 8px 20px rgba(255,90,0,.20);
+}
+.admin-loader-logo img{width:100%;height:100%;display:block;object-fit:cover}
+.admin-loader-brand>div:last-child{display:flex;flex-direction:column;gap:2px}
+.admin-loader-brand strong{color:#101828;font-size:16px;font-weight:900;letter-spacing:-.25px}
+.admin-loader-brand span{color:#98a2b3;font-size:10px}
+.admin-loader-main{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:24px 22px 19px;
+}
+.admin-loader-spinner{
+  position:relative;
+  width:48px;height:48px;flex:0 0 48px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,#ff5a00,#ff9a62,#ffe2d1,#ff5a00);
+  animation:adminLoaderSpin 1.05s linear infinite;
+}
+.admin-loader-spinner:after{
+  content:"";position:absolute;inset:5px;border-radius:50%;background:#fff;
+}
+.admin-loader-spinner span{
+  position:absolute;z-index:2;left:50%;top:50%;width:8px;height:8px;
+  transform:translate(-50%,-50%);border-radius:50%;background:#ff5a00;
+  box-shadow:0 0 0 5px rgba(255,90,0,.10);
+}
+@keyframes adminLoaderSpin{to{transform:rotate(360deg)}}
+.admin-loader-copy{min-width:0;display:flex;flex-direction:column;gap:5px}
+.admin-loader-copy strong{color:#101828;font-size:15px;font-weight:850}
+.admin-loader-copy span{color:#667085;font-size:11px;line-height:1.45}
+.admin-loader-progress{
+  height:5px;margin:0 22px 18px;border-radius:999px;background:#f2f4f7;overflow:hidden;
+}
+.admin-loader-progress i{
+  display:block;width:42%;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,#ff5a00,#ff8a4c);
+  animation:adminLoaderProgress 1.65s ease-in-out infinite;
+}
+@keyframes adminLoaderProgress{
+  0%{transform:translateX(-115%)}
+  55%{transform:translateX(115%)}
+  100%{transform:translateX(300%)}
+}
+.admin-loader-steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  padding:0 22px 17px;
+}
+.admin-loader-steps span{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  min-width:0;color:#98a2b3;font-size:9px;font-weight:750;white-space:nowrap;
+}
+.admin-loader-steps b{
+  width:19px;height:19px;display:grid;place-items:center;border-radius:50%;
+  background:#f2f4f7;color:#98a2b3;font-size:8px;
+}
+.admin-loader-steps span.active{color:#d94800}
+.admin-loader-steps span.active b{background:#fff0e8;color:#e65100}
+.admin-loader-card>small{
+  display:block;padding:12px 22px;text-align:center;border-top:1px solid #f0f1f3;
+  color:#a0a7b2;font-size:9px;background:#fbfcfd;
+}
+@media(max-width:520px){
+  body.auth-pending #authLoading{padding:14px!important}
+  .admin-loader-card{width:100%;border-radius:18px}
+  .admin-loader-brand{padding:17px 18px 15px}
+  .admin-loader-main{padding:22px 18px 17px}
+  .admin-loader-progress{margin-left:18px;margin-right:18px}
+  .admin-loader-steps{padding-left:16px;padding-right:16px;gap:2px}
+  .admin-loader-steps span{font-size:8px}
+}
+
+
+.admin-loader-steps span.done{color:#15803d}
+.admin-loader-steps span.done b{background:#eaf8ef;color:#15803d}
 </style>
 </head>
 <body class="auth-pending">
@@ -3172,17 +3311,35 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   </div>
 </header>
 <main class="wrap">
-  <div id="adminBootLoading" style="min-height:320px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:14px">
-    Đang tải trang quản trị...
-  </div>
-  
-  <section id="authLoading" class="auth-loading">
-    <div class="auth-loading-box auth-loading-card">
-      <div class="auth-spinner"></div>
-      <div class="auth-loading-copy">
-        <strong>Đang kiểm tra phiên quản trị...</strong>
-        <span id="authLoadingHint">Vui lòng chờ trong giây lát.</span>
+  <div id="adminBootLoading" hidden></div>
+  <section id="authLoading" class="auth-loading" aria-live="polite" aria-busy="true">
+    <div class="admin-loader-card">
+      <div class="admin-loader-brand">
+        <div class="admin-loader-logo"><img src="/assets/logo-square.jpg" alt="Siêu Di Động"></div>
+        <div>
+          <strong>SIÊU DI ĐỘNG</strong>
+          <span>Quản trị hệ thống</span>
+        </div>
       </div>
+
+      <div class="admin-loader-main">
+        <div class="admin-loader-spinner" aria-hidden="true">
+          <span></span>
+        </div>
+        <div class="admin-loader-copy">
+          <strong>Đang chuẩn bị trang quản trị</strong>
+          <span id="authLoadingHint">Đang xác thực phiên đăng nhập...</span>
+        </div>
+      </div>
+
+      <div class="admin-loader-progress" aria-hidden="true"><i></i></div>
+
+      <div class="admin-loader-steps">
+        <span class="active"><b>1</b>Xác thực</span>
+        <span><b>2</b>Tải dữ liệu</span>
+        <span><b>3</b>Hoàn tất</span>
+      </div>
+      <small>Kết nối an toàn • Vui lòng chờ trong giây lát</small>
     </div>
   </section>
 
@@ -3828,8 +3985,18 @@ function render(){
   stats.textContent=`${products.length} model gốc • ${linked} đã có link • ${products.length-linked} chưa có link`;
 }
 
+
+function setAdminLoadingStage(stage,hint){
+  if(authLoadingHint && hint) authLoadingHint.textContent=hint;
+  const steps=[...document.querySelectorAll(".admin-loader-steps span")];
+  steps.forEach((el,i)=>{
+    el.classList.toggle("active",i===stage);
+    el.classList.toggle("done",i<stage);
+  });
+}
+
 async function loadAdmin(){
-  if(authLoadingHint) authLoadingHint.textContent="Đang xác thực phiên đăng nhập...";
+  setAdminLoadingStage(0,"Đang xác thực phiên đăng nhập...");
 
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
@@ -3852,7 +4019,7 @@ async function loadAdmin(){
 
     links=data.links||{};
 
-    if(authLoadingHint) authLoadingHint.textContent="Đang tải danh sách sản phẩm...";
+    setAdminLoadingStage(1,"Đang tải dữ liệu và danh sách sản phẩm...");
 
     const pr=await fetch("/api/products?ts="+Date.now(),{
       cache:"no-store",
@@ -3875,6 +4042,8 @@ async function loadAdmin(){
     window.PRODUCT_MODEL_META=grouped;
     products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
 
+    setAdminLoadingStage(2,"Hoàn tất, đang mở trang quản trị...");
+    await new Promise(resolve=>setTimeout(resolve,180));
     setLoggedIn(true);
     setLoginStatus("");
     render();

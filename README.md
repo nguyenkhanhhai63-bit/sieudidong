@@ -1833,3 +1833,11 @@ Sau khi thêm biến môi trường, redeploy website.
 - `Lượt truy cập` = số page load thực tế (`raw_pageviews`).
 - Heartbeat cũng bảo đảm visitor đang online được ghi vào unique visitor hôm nay.
 - Dashboard trả thêm `analyticsDay` và `timezone=Asia/Ho_Chi_Minh` để chẩn đoán.
+
+
+## V269 - Thiết kế lại màn hình load quản trị
+- Bỏ loader chữ bị lặp phía trên.
+- Loader full-screen riêng, không hiện sidebar/topbar khi đang xác thực.
+- Có logo Siêu Di Động, spinner, progress bar và 3 bước Xác thực → Tải dữ liệu → Hoàn tất.
+- Trạng thái thay đổi theo tiến trình thực tế của `loadAdmin()`.
+- Tối ưu riêng cho mobile.
