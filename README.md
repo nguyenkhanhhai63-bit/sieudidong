@@ -1731,3 +1731,11 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Khôi phục JavaScript Lưu/Sửa/Xóa/Tải danh sách đã bị thiếu ở V255.
 - Báo rõ khi thiếu ảnh, tên hoặc giá.
 - Tự nén ảnh nhỏ hơn để tránh request quá lớn.
+
+
+## V257 - Quản lý máy cũ tiện hơn
+- Gợi ý hãng tự động theo tên máy.
+- Gợi ý bộ nhớ, màu, ngoại hình, pin, bảo hành, phụ kiện.
+- Nhớ tên các máy đã nhập để gợi ý khi nhập máy tương tự.
+- Tìm nhanh danh sách theo tên máy/IMEI.
+- Tối ưu bố cục nhập liệu và danh sách.
