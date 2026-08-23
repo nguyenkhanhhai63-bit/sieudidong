@@ -1848,3 +1848,11 @@ Sau khi thêm biến môi trường, redeploy website.
 - Heartbeat ghi visitor V3 và tự phục hồi ít nhất 1 lượt truy cập/ngày nếu page_view bị mất.
 - Admin lấy danh sách visitor online và nhập trực tiếp vào visitor V3 hôm nay trước khi tính số.
 - Vì online ZSET dùng visitor ID duy nhất, Khách truy cập hôm nay tối thiểu bằng số visitor đang online sau lần làm mới.
+
+
+## V271 - Fix thứ tự thống kê Online → Khách truy cập
+- Sửa race condition của V270: PFCOUNT Hôm nay từng chạy đồng thời với PFADD visitor online.
+- V271 lấy danh sách online trước, reconcile Redis xong rồi mới đọc số Hôm nay.
+- Visitor đang online được ghi vào `analytics:v3:visitors:day:*`.
+- Visitor online chưa có page view được bổ sung tối thiểu 1 lượt truy cập/ngày, không cộng trùng nhờ SADD.
+- Có invariant: nếu Online > 0 thì Khách truy cập/Lượt truy cập hôm nay không thể hiển thị 0.
