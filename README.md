@@ -1772,3 +1772,10 @@ Sau khi thêm biến môi trường, redeploy website.
 - Khi bỏ một ảnh trong lúc sửa máy: ảnh Cloudinary cũ sẽ được xóa khi bấm Lưu thay đổi.
 - Khi xóa máy cũ: toàn bộ ảnh Cloudinary có `public_id` của máy đó sẽ được dọn.
 - Dữ liệu máy cũ cũ đã lưu Base64 trước V260 vẫn đọc được để tránh mất dữ liệu.
+
+
+## V261 - Trang chi tiết cân đối desktop
+- Tăng chiều rộng trang chi tiết theo màn hình, tối đa khoảng 1580px.
+- Cân lại 3 cột: ảnh / thông tin / sản phẩm tương tự.
+- Tăng ảnh, tiêu đề, CTA và thông số kỹ thuật trên desktop.
+- Laptop 1100-1350px có layout co riêng; mobile giữ nguyên.

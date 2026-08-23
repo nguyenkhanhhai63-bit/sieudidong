@@ -13729,3 +13729,186 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
 .used-detail-info p{margin:2px 0 0;padding-top:9px;border-top:1px dashed #ffd0b7;color:#7a4124;font-size:12px;line-height:1.5}
 .used-detail-badge{font-weight:900;color:#e65100;font-size:12px}
 @media(max-width:640px){.used-detail-thumbs{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* =========================================================
+   V261 - Cân đối lại trang chi tiết sản phẩm desktop rộng
+   ========================================================= */
+@media (min-width:1101px){
+  body.detail-view-active .inline-detail-page{
+    width:min(1500px,calc(100% - 48px))!important;
+    max-width:none!important;
+    margin:22px auto 46px!important;
+  }
+
+  .inline-detail-topbar{
+    margin-bottom:12px!important;
+  }
+
+  .detail-breadcrumb{
+    margin-bottom:8px!important;
+    font-size:12.5px!important;
+  }
+
+  .detail-heading{
+    margin-bottom:16px!important;
+  }
+
+  .detail-heading h2{
+    font-size:28px!important;
+    line-height:1.24!important;
+    letter-spacing:-.35px!important;
+  }
+
+  .detail-main{
+    grid-template-columns:minmax(360px,.92fr) minmax(420px,1.15fr) minmax(300px,.78fr)!important;
+    gap:24px!important;
+    padding:22px!important;
+    border-radius:16px!important;
+    align-items:start!important;
+  }
+
+  .detail-gallery{
+    align-self:start!important;
+  }
+
+  .detail-image-box{
+    width:100%!important;
+    height:430px!important;
+    border-radius:14px!important;
+    background:#fbfbfc!important;
+  }
+
+  .detail-image-box .product-image{
+    padding:22px!important;
+  }
+
+  .detail-info{
+    padding:7px 2px!important;
+  }
+
+  .detail-price{
+    font-size:31px!important;
+    line-height:1.08!important;
+  }
+
+  .detail-choose-text{
+    margin-top:7px!important;
+    margin-bottom:20px!important;
+    font-size:13.5px!important;
+  }
+
+  .detail-option-row{
+    grid-template-columns:105px minmax(0,1fr)!important;
+    gap:12px!important;
+    margin:15px 0!important;
+  }
+
+  .detail-option-label{
+    font-size:13px!important;
+  }
+
+  .detail-actions{
+    gap:10px!important;
+    margin-top:18px!important;
+  }
+
+  .detail-action-primary,
+  .detail-action-secondary{
+    min-height:48px!important;
+    border-radius:10px!important;
+    font-size:14px!important;
+  }
+
+  .detail-related{
+    border-radius:12px!important;
+  }
+
+  .detail-related-title{
+    padding:13px 14px!important;
+    font-size:14px!important;
+  }
+
+  .detail-related-item{
+    grid-template-columns:78px minmax(0,1fr)!important;
+    gap:11px!important;
+    min-height:100px!important;
+    padding:10px 11px!important;
+  }
+
+  .detail-related-thumb{
+    width:78px!important;
+    height:78px!important;
+  }
+
+  .detail-related-name{
+    font-size:12.5px!important;
+    line-height:1.35!important;
+  }
+
+  .detail-related-price{
+    font-size:13px!important;
+  }
+
+  .technical-spec-section{
+    margin-top:20px!important;
+    border-radius:14px!important;
+  }
+
+  .technical-spec-title{
+    padding:15px 18px!important;
+    font-size:17px!important;
+  }
+
+  .tech-spec-row{
+    grid-template-columns:220px minmax(0,1fr)!important;
+  }
+
+  .tech-spec-label{
+    padding:14px 17px!important;
+    font-size:12.5px!important;
+  }
+
+  .tech-spec-value{
+    padding:14px 18px!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+  }
+}
+
+/* Màn hình rất rộng: tăng vừa phải, không kéo card quá loãng */
+@media (min-width:1700px){
+  body.detail-view-active .inline-detail-page{
+    width:min(1580px,calc(100% - 72px))!important;
+  }
+
+  .detail-main{
+    grid-template-columns:minmax(400px,.95fr) minmax(470px,1.18fr) minmax(320px,.78fr)!important;
+    gap:28px!important;
+    padding:24px!important;
+  }
+
+  .detail-image-box{
+    height:455px!important;
+  }
+}
+
+/* Laptop desktop: vẫn cân, tránh ép 3 cột */
+@media (min-width:1101px) and (max-width:1350px){
+  body.detail-view-active .inline-detail-page{
+    width:calc(100% - 28px)!important;
+  }
+
+  .detail-main{
+    grid-template-columns:minmax(320px,.9fr) minmax(390px,1.1fr) minmax(270px,.75fr)!important;
+    gap:18px!important;
+    padding:18px!important;
+  }
+
+  .detail-image-box{
+    height:380px!important;
+  }
+
+  .detail-heading h2{
+    font-size:25px!important;
+  }
+}
