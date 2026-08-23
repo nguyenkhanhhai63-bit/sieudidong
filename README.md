@@ -1881,3 +1881,22 @@ Sau khi thêm biến môi trường, redeploy website.
 - Các bảng thiết bị / sản phẩm / từ khóa / so sánh được bố trí lại theo lưới 12 cột.
 - Laptop 1024–1280 có breakpoint riêng.
 - Mobile giữ nguyên layout hiện tại.
+
+
+## V275 - Thiết kế lại tra cứu bảo hành
+- Cân lại tỷ lệ tiêu đề / form tra cứu.
+- Giảm phần trống, form gọn hơn và dễ nhìn hơn.
+- Kết quả sản phẩm rộng toàn khung.
+- 4 ô Ngày mua / Bảo hành đến / Hóa đơn / Thời gian còn lại cân đều.
+- Trạng thái bảo hành, IMEI và hỗ trợ đổi máy rõ hơn.
+- Mobile giữ nguyên.
+
+
+## V276 - Khách truy cập hôm nay tích lũy đúng
+- Bỏ HyperLogLog làm nguồn chính cho số Khách truy cập theo ngày.
+- Mỗi ngày dùng Redis SET `analytics:v4:visitors:day:YYYY-MM-DD`.
+- `page_view` và `heartbeat` đều SADD visitor vào SET của ngày.
+- Visitor offline chỉ bị loại khỏi `analytics:online`; KHÔNG bị xóa khỏi SET Khách truy cập hôm nay.
+- Dashboard dùng SCARD nên số hôm nay chỉ tăng hoặc giữ nguyên trong ngày.
+- 7 ngày / 30 ngày / tháng / năm dùng hợp nhất visitor ID từ các SET ngày để không đếm trùng.
+- Bỏ các bản vá UI kiểu Online làm lower-bound vì không còn đúng bản chất.

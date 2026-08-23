@@ -3237,7 +3237,7 @@ body.auth-pending #authLoading{
 .admin-loader-steps span.done b{background:#eaf8ef;color:#15803d}
 
 /* =========================================================
-   V274 - Dashboard quản trị desktop cân đối
+   V275 - Dashboard quản trị desktop cân đối
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4457,35 +4457,8 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   const rawPeriod=d?.periods?.[period]||{};
   const o=d?.overview||{};
 
-  // V272: invariant thống kê Hôm nay.
-  // Một visitor đang online chắc chắn đã truy cập website ít nhất 1 lần.
-  // Nếu API/Redis trả periods.today = 0 nhưng onlineNow > 0, dùng online làm
-  // lower-bound để dashboard không hiển thị dữ liệu tự mâu thuẫn.
   const onlineNow=Math.max(0,Number(o.onlineNow||0));
   const p={...rawPeriod};
-  if(period==="today" && onlineNow>0){
-    p.visitors=Math.max(Number(p.visitors||0),onlineNow);
-    p.views=Math.max(Number(p.views||0),onlineNow);
-
-    // Đồng bộ object hiện tại để các phần khác trong dashboard cùng thấy số đã chuẩn hóa.
-    if(d?.periods?.today){
-      d.periods.today.visitors=p.visitors;
-      d.periods.today.views=p.views;
-    }
-    if(d?.overview){
-      d.overview.todayVisitors=Math.max(Number(d.overview.todayVisitors||0),onlineNow);
-      d.overview.todayViews=Math.max(Number(d.overview.todayViews||0),onlineNow);
-    }
-
-    // Ngày cuối của biểu đồ 30 ngày cũng phải phản ánh tối thiểu số visitor đang online.
-    if(Array.isArray(d.daily) && d.daily.length){
-      const last=d.daily[d.daily.length-1];
-      if(last){
-        last.views=Math.max(Number(last.views||0),onlineNow);
-        last.rawViews=Math.max(Number(last.rawViews||0),onlineNow);
-      }
-    }
-  }
 
   const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
   const caption=document.getElementById("analyticsPeriodCaption"); if(caption) caption.textContent=label;
@@ -4514,7 +4487,7 @@ async function loadAnalytics(){
       let lastError=null;
       for(let attempt=1;attempt<=3;attempt++){
         try{
-          r=await fetch("/api/admin/analytics?ts="+Date.now()+"&try="+attempt+"&client=v272",{
+          r=await fetch("/api/admin/analytics?ts="+Date.now()+"&try="+attempt+"&client=v276",{
             cache:"no-store",
             credentials:"same-origin",
             signal:controller.signal
@@ -4530,23 +4503,6 @@ async function loadAnalytics(){
       clearTimeout(timeout);
     }
     const d=await r.json(); if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
-
-    // V272: chuẩn hóa ngay khi nhận response để cả lần render đầu tiên cũng không hiện 0 sai.
-    const apiOnline=Math.max(0,Number(d?.overview?.onlineNow||0));
-    if(apiOnline>0){
-      d.periods=d.periods||{};
-      d.periods.today=d.periods.today||{};
-      d.overview=d.overview||{};
-      d.periods.today.visitors=Math.max(Number(d.periods.today.visitors||0),apiOnline);
-      d.periods.today.views=Math.max(Number(d.periods.today.views||0),apiOnline);
-      d.overview.todayVisitors=Math.max(Number(d.overview.todayVisitors||0),apiOnline);
-      d.overview.todayViews=Math.max(Number(d.overview.todayViews||0),apiOnline);
-      if(Array.isArray(d.daily) && d.daily.length){
-        const last=d.daily[d.daily.length-1];
-        last.views=Math.max(Number(last?.views||0),apiOnline);
-        last.rawViews=Math.max(Number(last?.rawViews||0),apiOnline);
-      }
-    }
 
     const o=d.overview||{};
     mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`7 ngày: ${fmt(o.views7)}`;
@@ -4570,7 +4526,7 @@ async function loadAnalytics(){
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
     renderMonthlyAnalytics(d.monthly||[]);
     applyAnalyticsPeriod(d,analyticsPeriod);
-    queueMicrotask(()=>window.enforceTodayOnlineInvariant?.());
+
     const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
@@ -5919,87 +5875,11 @@ document.addEventListener("DOMContentLoaded",function(){
 </script>
 
 
-<script>
-/* =========================================================
-   V273 - Invariant DOM cuối cùng cho thống kê Hôm nay
-   Online > 0 => Khách truy cập và Lượt truy cập tối thiểu = Online
-   ========================================================= */
-(function(){
-  function parseMetric(el){
-    if(!el) return 0;
-    const raw=String(el.textContent||"").replace(/[^\d]/g,"");
-    return Number(raw||0);
-  }
 
-  function isTodaySelected(){
-    const active=document.querySelector(".period-tab.active");
-    if(active) return active.dataset.period==="today";
-    return true;
-  }
-
-  function enforceTodayOnlineInvariant(){
-    if(!isTodaySelected()) return;
-
-    const onlineEl=document.getElementById("mOnlineNow");
-    const visitorsEl=document.getElementById("mTodayVisitors");
-    const viewsEl=document.getElementById("mTodayViews");
-    if(!onlineEl || !visitorsEl || !viewsEl) return;
-
-    const online=parseMetric(onlineEl);
-    if(online<=0) return;
-
-    const visitors=parseMetric(visitorsEl);
-    const views=parseMetric(viewsEl);
-
-    if(visitors<online){
-      visitorsEl.textContent=new Intl.NumberFormat("vi-VN").format(online);
-      visitorsEl.dataset.v273Adjusted="1";
-    }
-    if(views<online){
-      viewsEl.textContent=new Intl.NumberFormat("vi-VN").format(online);
-      viewsEl.dataset.v273Adjusted="1";
-    }
-  }
-
-  function install(){
-    const onlineEl=document.getElementById("mOnlineNow");
-    const visitorsEl=document.getElementById("mTodayVisitors");
-    const viewsEl=document.getElementById("mTodayViews");
-
-    if(onlineEl){
-      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
-        .observe(onlineEl,{childList:true,subtree:true,characterData:true});
-    }
-    if(visitorsEl){
-      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
-        .observe(visitorsEl,{childList:true,subtree:true,characterData:true});
-    }
-    if(viewsEl){
-      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
-        .observe(viewsEl,{childList:true,subtree:true,characterData:true});
-    }
-
-    document.querySelectorAll(".period-tab").forEach(btn=>{
-      btn.addEventListener("click",()=>setTimeout(enforceTodayOnlineInvariant,0));
-    });
-
-    enforceTodayOnlineInvariant();
-    setInterval(enforceTodayOnlineInvariant,1000);
-  }
-
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",install,{once:true});
-  }else{
-    install();
-  }
-
-  window.enforceTodayOnlineInvariant=enforceTodayOnlineInvariant;
-})();
-</script>
 
 
 <script>
-/* V274 - gắn class bố cục cho các box dashboard theo tiêu đề */
+/* V275 - gắn class bố cục cho các box dashboard theo tiêu đề */
 (function(){
   function normalize(t){return String(t||"").trim().toLowerCase();}
   function tagAnalyticsBoxes(){

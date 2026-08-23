@@ -13912,3 +13912,175 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
     font-size:25px!important;
   }
 }
+
+
+/* =========================================================
+   V275 - Thiết kế lại khu vực tra cứu bảo hành desktop
+   ========================================================= */
+@media(min-width:900px){
+  .warranty-page-main{
+    width:min(1120px,calc(100% - 48px))!important;
+    margin:30px auto 52px!important;
+  }
+
+  .warranty-page-card{
+    display:grid!important;
+    grid-template-columns:minmax(220px,.72fr) minmax(0,1.7fr)!important;
+    gap:18px 24px!important;
+    padding:28px 30px!important;
+    border-radius:22px!important;
+    box-shadow:0 14px 36px rgba(15,23,42,.06)!important;
+  }
+
+  /* Header bên trái gọn lại */
+  .warranty-page-card .warranty-head{
+    align-self:center!important;
+    gap:12px!important;
+    padding-right:0!important;
+  }
+  .warranty-page-card .warranty-icon{
+    width:48px!important;
+    height:48px!important;
+    flex:0 0 48px!important;
+    border-radius:14px!important;
+    font-size:24px!important;
+  }
+  .warranty-page-card .warranty-head h1{
+    max-width:none!important;
+    margin:0 0 5px!important;
+    font-size:25px!important;
+    line-height:1.05!important;
+    letter-spacing:-.45px!important;
+  }
+  .warranty-page-card .warranty-head p{
+    max-width:230px!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+  }
+
+  /* Form tra cứu thành thanh gọn */
+  .warranty-page-card .warranty-form{
+    align-self:center!important;
+    margin:0!important;
+    padding:16px 18px!important;
+    border-radius:15px!important;
+    background:#f8fafc!important;
+  }
+  .warranty-page-card .warranty-form label{
+    margin-bottom:8px!important;
+    font-size:11px!important;
+  }
+  .warranty-page-card .warranty-search-row{
+    grid-template-columns:minmax(0,1fr) 120px!important;
+    gap:10px!important;
+  }
+  .warranty-page-card .warranty-search-row input{
+    height:48px!important;
+    padding:0 14px!important;
+    border-radius:11px!important;
+    font-size:14px!important;
+  }
+  .warranty-page-card .warranty-search-row button{
+    min-width:0!important;
+    height:48px!important;
+    border-radius:11px!important;
+    font-size:12px!important;
+    box-shadow:0 7px 14px rgba(255,90,0,.16)!important;
+  }
+  .warranty-page-card .warranty-form>small{
+    margin-top:7px!important;
+    font-size:9.5px!important;
+  }
+
+  /* Kết quả nằm full width, nhưng nội dung không bị lọt thỏm */
+  .warranty-page-card .warranty-result{
+    grid-column:1/-1!important;
+    margin:2px 0 0!important;
+  }
+  .warranty-page-card .warranty-summary{
+    margin:0 0 9px!important;
+    font-size:11px!important;
+    color:#667085!important;
+  }
+
+  .warranty-page-card .warranty-items{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  .warranty-page-card .warranty-item{
+    padding:16px 17px!important;
+    border-radius:14px!important;
+    border-color:#e6e9ee!important;
+    box-shadow:0 4px 12px rgba(15,23,42,.025)!important;
+  }
+  .warranty-page-card .warranty-item-top{
+    align-items:center!important;
+    gap:14px!important;
+  }
+  .warranty-page-card .warranty-item h3{
+    margin:0 0 3px!important;
+    font-size:14px!important;
+    line-height:1.3!important;
+  }
+  .warranty-page-card .warranty-item small{
+    font-size:10px!important;
+  }
+  .warranty-page-card .warranty-state{
+    padding:6px 10px!important;
+    font-size:10px!important;
+    border-radius:999px!important;
+  }
+
+  /* 4 ô thông tin cân đều */
+  .warranty-page-card .warranty-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+  .warranty-page-card .warranty-grid>div{
+    min-height:58px!important;
+    padding:9px 10px!important;
+    border:1px solid #edf0f4!important;
+    border-radius:10px!important;
+    background:#f8fafc!important;
+  }
+  .warranty-page-card .warranty-grid span{
+    margin-bottom:4px!important;
+    font-size:9px!important;
+  }
+  .warranty-page-card .warranty-grid strong{
+    font-size:11px!important;
+  }
+
+  .warranty-page-card .warranty-imei{
+    margin-top:10px!important;
+    font-size:10px!important;
+    color:#64748b!important;
+  }
+  .warranty-page-card .warranty-note{
+    margin-top:10px!important;
+    padding:9px 11px!important;
+    border-radius:9px!important;
+    font-size:10px!important;
+    background:#fff6ec!important;
+  }
+
+  /* Chính sách tách rõ bên dưới */
+  .warranty-page-card .warranty-policy-box,
+  .warranty-page-card .warranty-extra,
+  .warranty-page-card .warranty-bottom-grid{
+    grid-column:1/-1!important;
+  }
+}
+
+/* Laptop nhỏ */
+@media(min-width:900px) and (max-width:1080px){
+  .warranty-page-main{
+    width:min(960px,calc(100% - 32px))!important;
+  }
+  .warranty-page-card{
+    grid-template-columns:240px minmax(0,1fr)!important;
+    padding:24px!important;
+  }
+}
