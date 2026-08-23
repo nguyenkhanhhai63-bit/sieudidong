@@ -8,7 +8,8 @@ const handlers = {
   "logout": () => import("../../lib/admin-api/logout.js"),
   "seo-settings": () => import("../../lib/admin-api/seo-settings.js"),
   "spec-links": () => import("../../lib/admin-api/spec-links.js"),
-  "used-products": () => import("../../lib/admin-api/used-products.js")
+  "used-products": () => import("../../lib/admin-api/used-products.js"),
+  "cloudinary-signature": () => import("../../lib/admin-api/cloudinary-signature.js")
 };
 
 export default async function handler(req, res) {

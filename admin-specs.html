@@ -2794,6 +2794,12 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-form-grid{gap:12px!important}.used-field label{display:flex;align-items:center;gap:5px}
 .used-admin-form,.used-admin-listbox{box-shadow:0 4px 18px rgba(16,24,40,.035)}
 @media(max-width:1050px){.used-admin-form{position:static}.used-admin-shell{grid-template-columns:1fr!important}.used-list-search{width:180px}}
+
+.used-cloudinary-status{margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:10px;font-weight:800}
+.used-cloudinary-status.ok{background:#eaf8ef;color:#087a36}
+.used-cloudinary-status.bad{background:#fff0ed;color:#b42318}
+.used-preview-uploading{display:grid;place-items:center;background:#fff7f2;color:#d94800;font-size:10px;font-weight:850;text-align:center;padding:8px}
+
 </style>
 </head>
 <body class="auth-pending">
@@ -3199,7 +3205,8 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 <div class="used-field"><label>Trạng thái</label><select id="usedStatus" class="used-select"><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div>
 <div class="used-field wide"><label>Phụ kiện đi kèm</label><input id="usedAccessories" class="used-input" list="usedAccessorySuggestions" placeholder="Chọn hoặc nhập phụ kiện"><datalist id="usedAccessorySuggestions"><option>Máy trần</option><option>Máy + sạc</option><option>Máy + sạc + ốp</option><option>Fullbox</option><option>Fullbox + phụ kiện</option></datalist></div>
 <div class="used-field wide"><label>Ghi chú tình trạng</label><textarea id="usedNote" class="used-textarea" placeholder="Mô tả rõ vết xước/cấn móp nếu có..."></textarea></div>
-<div class="used-image-upload" id="usedImageUploadBox"><label>Ảnh thực tế *</label><br><label class="used-upload-btn" for="usedImagesInput">＋ Chọn ảnh từ điện thoại / máy tính</label><input id="usedImagesInput" type="file" accept="image/*" multiple><div class="used-upload-note"><strong>Bắt buộc ít nhất 1 ảnh thực tế</strong> để đăng máy lên website. Tối đa 8 ảnh; ảnh đầu là ảnh đại diện.</div><div id="usedImagePreview" class="used-image-preview"></div></div>
+<div class="used-image-upload" id="usedImageUploadBox"><label>Ảnh thực tế *</label><br><label class="used-upload-btn" for="usedImagesInput">＋ Chọn ảnh từ điện thoại / máy tính</label><input id="usedImagesInput" type="file" accept="image/*" multiple><div class="used-upload-note"><strong>Bắt buộc ít nhất 1 ảnh thực tế</strong> để đăng máy lên website. Tối đa 8 ảnh; ảnh đầu là ảnh đại diện.</div>
+<div id="usedCloudinaryStatus" class="used-cloudinary-status">Kho ảnh Cloudinary: đang kiểm tra...</div><div id="usedImagePreview" class="used-image-preview"></div></div>
 </div><div class="used-form-actions"><button id="saveUsedProduct" class="primary" type="button">Lưu máy cũ</button><button id="resetUsedForm" class="secondary" type="button">Nhập máy mới</button><span id="usedAdminStatus"></span></div></div>
 <div class="used-admin-listbox"><div class="used-list-head"><div><h2>Máy đã nhập</h2><p class="used-admin-help" style="margin:3px 0 0">Máy đã bán vẫn giữ lịch sử nhưng tự ẩn khỏi website.</p></div><div class="used-list-tools"><input id="usedListSearch" class="used-list-search" placeholder="Tìm tên máy, IMEI..."><select id="usedListFilter"><option value="all">Tất cả</option><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div></div><div id="usedProductsList"></div></div>
 </div></section>
@@ -4835,16 +4842,21 @@ document.addEventListener("DOMContentLoaded",function(){
 <div id="usedAdminToast" class="used-admin-toast" role="status" aria-live="polite"></div>
 
 <script>
-/* V256 - Máy cũ: khôi phục đầy đủ logic lưu/sửa/xóa */
+/* V260 - Máy cũ: ảnh lưu Cloudinary, Redis chỉ giữ URL + public_id */
 (function(){
   const $=id=>document.getElementById(id);
   const els={
-    name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast')
+    name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
+    imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),search:$('usedListSearch'),
+    statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
+    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest')
   };
-  let rows=[], editingId='', images=[], toastTimer=null;
+  let rows=[], editingId='', assets=[], toastTimer=null;
 
-  function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-  function money(v){return new Intl.NumberFormat('vi-VN').format(Number(v||0))+' đ'}
+  const BRAND_RULES=[['redmi','Redmi'],['poco','POCO'],['xiaomi','Xiaomi'],['samsung','Samsung'],['galaxy','Samsung'],['oppo','OPPO'],['vivo','vivo'],['iqoo','iQOO'],['oneplus','OnePlus'],['honor','HONOR'],['realme','Realme'],['tecno','Tecno'],['iphone','Apple'],['ipad','Apple']];
+  const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=v=>new Intl.NumberFormat('vi-VN').format(Number(v||0))+' đ';
   function setStatus(msg,color=''){if(!els.statusText)return;els.statusText.textContent=msg||'';els.statusText.style.color=color||''}
   function toast(msg,type='error'){
     if(!els.toast){ alert(msg); return; }
@@ -4853,42 +4865,160 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   function clearErrors(){els.uploadBox?.classList.remove('has-error');els.name?.closest('.used-field')?.classList.remove('has-error');els.price?.closest('.used-field')?.classList.remove('has-error')}
   function fail(el,msg){clearErrors();const box=el===els.imagesInput?els.uploadBox:el?.closest?.('.used-field');box?.classList.add('has-error');setStatus(msg,'#b42318');toast(msg,'error');setTimeout(()=>box?.scrollIntoView({behavior:'smooth',block:'center'}),40);if(el!==els.imagesInput)setTimeout(()=>el?.focus?.(),350)}
+  function imageUrl(a){return String(a?.url||a?.secure_url||a||'').trim()}
+  function normalizedAsset(a){
+    if(typeof a==='string') return {url:a,publicId:''};
+    return {url:imageUrl(a),publicId:String(a?.publicId||a?.public_id||'').trim()};
+  }
+  function currentImages(){return assets.map(imageUrl).filter(Boolean)}
+  function guessBrand(name){const n=norm(name);return (BRAND_RULES.find(([k])=>n.includes(k))||[])[1]||''}
+
+  async function getCloudinarySignature(){
+    const r=await fetch('/api/admin/cloudinary-signature?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||`Lỗi ${r.status}`);
+    if(!d.configured) throw new Error(d.error||'Cloudinary chưa cấu hình.');
+    return d;
+  }
+  async function checkCloudinary(){
+    if(!els.cloudStatus)return;
+    try{
+      const d=await getCloudinarySignature();
+      els.cloudStatus.textContent=`Kho ảnh Cloudinary: đã kết nối • ${d.cloudName}`;
+      els.cloudStatus.className='used-cloudinary-status ok';
+    }catch(e){
+      els.cloudStatus.textContent='Kho ảnh Cloudinary: chưa cấu hình';
+      els.cloudStatus.className='used-cloudinary-status bad';
+    }
+  }
 
   function renderImages(){
     if(!els.imagePreview)return;els.imagePreview.innerHTML='';
-    images.forEach((src,i)=>{
+    assets.forEach((asset,i)=>{
+      const src=imageUrl(asset);if(!src)return;
       const d=document.createElement('div');d.className='used-preview-item'+(i===0?' primary':'');
       d.innerHTML=`<img src="${src}" alt=""><small>${i===0?'Ảnh đại diện':'Ảnh '+(i+1)}</small><button class="used-preview-remove" type="button" data-rm="${i}">×</button>`;
-      d.addEventListener('click',e=>{if(e.target.closest('[data-rm]'))return;if(i>0){const [pick]=images.splice(i,1);images.unshift(pick);renderImages()}});
+      d.addEventListener('click',e=>{if(e.target.closest('[data-rm]'))return;if(i>0){const [pick]=assets.splice(i,1);assets.unshift(pick);renderImages()}});
       els.imagePreview.appendChild(d);
     });
   }
-  els.imagePreview?.addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;e.stopPropagation();images.splice(Number(b.dataset.rm),1);renderImages()});
-
-  async function compress(file){
-    if(!file?.type?.startsWith('image/'))throw new Error('File đã chọn không phải ảnh.');
-    const bmp=await createImageBitmap(file);const max=1200,scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
-    const w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale));
-    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close?.();
-    let q=.80,data=c.toDataURL('image/jpeg',q);while(data.length>350000&&q>.40){q-=.07;data=c.toDataURL('image/jpeg',q)}
-    if(data.length>450000)throw new Error('Ảnh quá lớn, vui lòng chọn ảnh khác.');return data;
-  }
-  els.imagesInput?.addEventListener('change',async()=>{
-    const files=[...(els.imagesInput.files||[])].slice(0,Math.max(0,8-images.length));if(!files.length)return;
-    setStatus('Đang xử lý ảnh...','#667085');
-    try{for(const f of files)images.push(await compress(f));renderImages();els.uploadBox?.classList.remove('has-error');setStatus(`Đã thêm ${files.length} ảnh.`,'#15803d');toast(`Đã thêm ${files.length} ảnh thực tế.`,'success')}
-    catch(e){fail(els.imagesInput,e?.message||'Không xử lý được ảnh.')}
-    finally{els.imagesInput.value=''}
+  els.imagePreview?.addEventListener('click',e=>{
+    const b=e.target.closest('[data-rm]');if(!b)return;e.stopPropagation();
+    assets.splice(Number(b.dataset.rm),1);renderImages();
   });
 
-  function formData(){return{id:editingId||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',price:Number(String(els.price?.value||'').replace(/[^\d]/g,''))||0,memory:els.memory?.value.trim()||'',color:els.color?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',warranty:els.warranty?.value.trim()||'',imei:els.imei?.value.trim()||'',status:els.status?.value||'available',accessories:els.accessories?.value.trim()||'',note:els.note?.value.trim()||'',images:[...images]}}
-  function reset(){clearErrors();editingId='';images=[];['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});if(els.status)els.status.value='available';if(els.formTitle)els.formTitle.textContent='Thêm máy cũ';if(els.save)els.save.textContent='Lưu máy cũ';renderImages();setStatus('')}
-  function edit(x){editingId=x.id||'';for(const k of ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'])if(els[k])els[k].value=x[k]??'';if(els.status)els.status.value=x.status==='sold'?'sold':'available';images=[...(x.images||[])];if(els.formTitle)els.formTitle.textContent='Sửa máy cũ';if(els.save)els.save.textContent='Lưu thay đổi';renderImages();document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'})}
+  async function compressToBlob(file){
+    if(!file?.type?.startsWith('image/')) throw new Error('File đã chọn không phải ảnh.');
+    const bmp=await createImageBitmap(file);
+    const max=1600,scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale));
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close?.();
+    const blob=await new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error('Không nén được ảnh.')),'image/jpeg',.84));
+    return blob;
+  }
+  async function uploadCloudinary(blob,fileName,signatureData){
+    const fd=new FormData();
+    fd.append('file',blob,(String(fileName||'may-cu').replace(/\.[^.]+$/,'')||'may-cu')+'.jpg');
+    fd.append('api_key',signatureData.apiKey);
+    fd.append('timestamp',String(signatureData.timestamp));
+    fd.append('folder',signatureData.folder);
+    fd.append('signature',signatureData.signature);
+
+    const url=`https://api.cloudinary.com/v1_1/${encodeURIComponent(signatureData.cloudName)}/image/upload`;
+    const r=await fetch(url,{method:'POST',body:fd});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok || !d.secure_url) throw new Error(d?.error?.message||'Upload Cloudinary thất bại.');
+    return {url:d.secure_url,publicId:d.public_id||'',width:d.width||0,height:d.height||0,bytes:d.bytes||0};
+  }
+
+  els.imagesInput?.addEventListener('change',async()=>{
+    const files=[...(els.imagesInput.files||[])].slice(0,Math.max(0,8-assets.length));
+    if(!files.length)return;
+    setStatus(`Đang upload 0/${files.length} ảnh lên Cloudinary...`,'#667085');
+    try{
+      const sig=await getCloudinarySignature();
+      let done=0;
+      for(const f of files){
+        const blob=await compressToBlob(f);
+        const asset=await uploadCloudinary(blob,f.name,sig);
+        assets.push(asset);done++;
+        renderImages();
+        setStatus(`Đang upload ${done}/${files.length} ảnh lên Cloudinary...`,'#667085');
+      }
+      els.uploadBox?.classList.remove('has-error');
+      setStatus(`✓ Đã upload ${done} ảnh lên Cloudinary.`,'#15803d');
+      toast(`Đã upload ${done} ảnh thực tế lên Cloudinary.`,'success');
+      checkCloudinary();
+    }catch(e){
+      fail(els.imagesInput,e?.message||'Không upload được ảnh.');
+    }finally{
+      els.imagesInput.value='';
+    }
+  });
+
+  function formData(){
+    return {
+      id:editingId||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',
+      price:Number(String(els.price?.value||'').replace(/[^\d]/g,''))||0,memory:els.memory?.value.trim()||'',
+      color:els.color?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',
+      warranty:els.warranty?.value.trim()||'',imei:els.imei?.value.trim()||'',status:els.status?.value||'available',
+      accessories:els.accessories?.value.trim()||'',note:els.note?.value.trim()||'',
+      imageAssets:assets.map(normalizedAsset),images:currentImages()
+    };
+  }
+  function reset(){
+    clearErrors();editingId='';assets=[];
+    ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});
+    if(els.status)els.status.value='available';if(els.formTitle)els.formTitle.textContent='Thêm máy cũ';if(els.save)els.save.textContent='Lưu máy cũ';
+    renderImages();setStatus('');
+  }
+  function edit(x){
+    editingId=x.id||'';
+    for(const k of ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
+    if(els.status)els.status.value=x.status==='sold'?'sold':'available';
+    assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
+    if(els.formTitle)els.formTitle.textContent='Sửa máy cũ';if(els.save)els.save.textContent='Lưu thay đổi';
+    renderImages();document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function renderNameSuggestions(){
+    if(!els.nameSuggest||!els.name)return;
+    const q=norm(els.name.value.trim());
+    if(q.length<2){els.nameSuggest.classList.remove('show');return}
+    const seen=new Set(),data=[];
+    rows.forEach(x=>{
+      const n=String(x.name||'').trim(),key=norm(n);
+      if(n && key.includes(q) && !seen.has(key)){seen.add(key);data.push(x)}
+    });
+    if(!data.length){els.nameSuggest.classList.remove('show');return}
+    els.nameSuggest.innerHTML=data.slice(0,8).map(x=>`<div class="used-name-option" data-used-suggest="${esc(x.id)}"><strong>${esc(x.name)}</strong><span>${esc(x.memory||'')} ${esc(x.color||'')}</span></div>`).join('');
+    els.nameSuggest.classList.add('show');
+  }
+  els.name?.addEventListener('input',()=>{
+    const b=guessBrand(els.name.value);
+    if(b && (!els.brand.value.trim() || BRAND_RULES.some(([,v])=>norm(v)===norm(els.brand.value)))) els.brand.value=b;
+    renderNameSuggestions();
+  });
+  els.nameSuggest?.addEventListener('click',e=>{
+    const row=e.target.closest('[data-used-suggest]');if(!row)return;
+    const x=rows.find(i=>String(i.id)===String(row.dataset.usedSuggest));if(!x)return;
+    els.name.value=x.name||'';els.brand.value=x.brand||guessBrand(x.name);
+    if(!els.memory.value)els.memory.value=x.memory||'';
+    if(!els.warranty.value)els.warranty.value=x.warranty||'';
+    if(!els.accessories.value)els.accessories.value=x.accessories||'';
+    els.nameSuggest.classList.remove('show');
+  });
+  document.addEventListener('click',e=>{if(els.nameSuggest&&!e.target.closest('.used-name-field'))els.nameSuggest.classList.remove('show')});
 
   function render(){
-    if(!els.list)return;const f=els.filter?.value||'all',data=rows.filter(x=>f==='all'||x.status===f);
+    if(!els.list)return;
+    const f=els.filter?.value||'all',q=norm(els.search?.value||'');
+    const data=rows.filter(x=>(f==='all'||x.status===f)&&(!q||norm([x.name,x.brand,x.memory,x.color,x.imei].join(' ')).includes(q)));
     if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
-    els.list.innerHTML=data.map(x=>`<div class="used-item-card" data-id="${esc(x.id)}">${x.images?.[0]?`<img class="used-item-photo" src="${x.images[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${(x.images||[]).length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span></div><div class="used-item-actions"><button type="button" data-act="edit">Sửa</button><button type="button" data-act="toggle">${x.status==='sold'?'Bán lại':'Đã bán'}</button><button type="button" class="danger" data-act="delete">Xóa</button></div></div>`).join('');
+    els.list.innerHTML=data.map(x=>{
+      const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span></div><div class="used-item-actions"><button type="button" data-act="edit">Sửa</button><button type="button" data-act="toggle">${x.status==='sold'?'Bán lại':'Đã bán'}</button><button type="button" class="danger" data-act="delete">Xóa</button></div></div>`;
+    }).join('');
   }
 
   async function apiSave(item){
@@ -4897,26 +5027,45 @@ document.addEventListener("DOMContentLoaded",function(){
     if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);rows=d.items||rows;render();return d.item;
   }
   async function loadUsedProducts(force=false){
-    if(rows.length&&!force){render();return}setStatus('Đang tải...','#667085');
-    try{const r=await fetch('/api/admin/used-products?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);rows=d.items||[];render();setStatus('')}
-    catch(e){setStatus(e.message||'Không tải được danh sách.','#b42318');toast(e.message||'Không tải được danh sách.','error')}
+    if(rows.length&&!force){render();checkCloudinary();return}
+    setStatus('Đang tải...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-products?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+      const d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      rows=d.items||[];render();setStatus('');checkCloudinary();
+    }catch(e){setStatus(e.message||'Không tải được danh sách.','#b42318');toast(e.message||'Không tải được danh sách.','error')}
   }
   window.loadUsedProducts=loadUsedProducts;
 
   els.save?.addEventListener('click',async()=>{
-    clearErrors();const x=formData();if(!x.name)return fail(els.name,'Vui lòng nhập tên máy.');if(!x.price)return fail(els.price,'Vui lòng nhập giá bán.');if(!x.images.length)return fail(els.imagesInput,'Bạn chưa chọn ảnh thực tế. Cần ít nhất 1 ảnh để lưu máy cũ.');
-    els.save.disabled=true;const old=els.save.textContent;els.save.textContent='Đang lưu...';setStatus('Đang lưu dữ liệu...','#667085');
-    try{await apiSave(x);reset();setStatus('✓ Đã lưu máy cũ.','#15803d');toast('Đã lưu máy cũ thành công.','success')}
+    clearErrors();const x=formData();
+    if(!x.name)return fail(els.name,'Vui lòng nhập tên máy.');
+    if(!x.price)return fail(els.price,'Vui lòng nhập giá bán.');
+    if(!x.images.length)return fail(els.imagesInput,'Bạn chưa có ảnh thực tế. Hãy upload ít nhất 1 ảnh lên Cloudinary.');
+    els.save.disabled=true;els.save.textContent='Đang lưu...';setStatus('Đang lưu thông tin vào Redis...','#667085');
+    try{await apiSave(x);reset();setStatus('✓ Đã lưu máy cũ. Redis chỉ lưu link ảnh.','#15803d');toast('Đã lưu máy cũ thành công.','success')}
     catch(e){const msg=e?.message||'Không lưu được máy cũ.';setStatus(msg,'#b42318');toast(msg,'error')}
-    finally{els.save.disabled=false;if(editingId)els.save.textContent='Lưu thay đổi';else els.save.textContent='Lưu máy cũ'}
+    finally{els.save.disabled=false;els.save.textContent=editingId?'Lưu thay đổi':'Lưu máy cũ'}
   });
-  els.reset?.addEventListener('click',reset);els.reload?.addEventListener('click',()=>loadUsedProducts(true));els.filter?.addEventListener('change',render);
+  els.reset?.addEventListener('click',reset);
+  els.reload?.addEventListener('click',()=>loadUsedProducts(true));
+  els.filter?.addEventListener('change',render);
+  els.search?.addEventListener('input',render);
+
   els.list?.addEventListener('click',async e=>{
-    const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
+    const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
+    const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
     if(act==='edit')return edit(x);
     if(act==='toggle'){try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
-    if(act==='delete'){if(!confirm(`Xóa "${x.name}" khỏi danh sách máy cũ?`))return;try{const r=await fetch('/api/admin/used-products?id='+encodeURIComponent(x.id),{method:'DELETE',credentials:'same-origin'}),d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);rows=d.items||[];render();if(editingId===x.id)reset();toast('Đã xóa máy.','success')}catch(er){toast(er.message,'error')}}
+    if(act==='delete'){
+      if(!confirm(`Xóa "${x.name}" khỏi danh sách máy cũ?\nẢnh Cloudinary của máy này cũng sẽ được xóa.`))return;
+      try{
+        const r=await fetch('/api/admin/used-products?id='+encodeURIComponent(x.id),{method:'DELETE',credentials:'same-origin'}),d=await r.json();
+        if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);rows=d.items||[];render();if(editingId===x.id)reset();toast('Đã xóa máy và dọn ảnh Cloudinary.','success')
+      }catch(er){toast(er.message,'error')}
+    }
   });
+  checkCloudinary();
 })();
 </script>
 

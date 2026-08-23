@@ -1750,3 +1750,25 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Sửa `groupItems`: key `used:used_xxx` chỉ dùng nội bộ để gom nhóm.
 - `group.name` của máy cũ lấy trực tiếp tên máy đã nhập trong quản trị.
 - Tên đúng được dùng đồng nhất ở card, trang chi tiết, so sánh và URL sản phẩm.
+
+
+## V260 - Ảnh máy cũ lưu Cloudinary
+
+Từ V260, ảnh máy cũ mới không còn lưu Base64 trong Redis.
+
+### Cấu hình trên Vercel
+Vào Project > Settings > Environment Variables và thêm:
+
+- `CLOUDINARY_CLOUD_NAME` = Cloud name trong Cloudinary
+- `CLOUDINARY_API_KEY` = API Key
+- `CLOUDINARY_API_SECRET` = API Secret
+- `CLOUDINARY_USED_FOLDER` = `sieu-di-dong/may-cu` (không bắt buộc)
+
+Sau khi thêm biến môi trường, redeploy website.
+
+### Cách lưu
+- Ảnh thực tế: upload trực tiếp từ trình duyệt lên Cloudinary bằng signed upload.
+- Redis: chỉ lưu URL ảnh + `public_id`.
+- Khi bỏ một ảnh trong lúc sửa máy: ảnh Cloudinary cũ sẽ được xóa khi bấm Lưu thay đổi.
+- Khi xóa máy cũ: toàn bộ ảnh Cloudinary có `public_id` của máy đó sẽ được dọn.
+- Dữ liệu máy cũ cũ đã lưu Base64 trước V260 vẫn đọc được để tránh mất dữ liệu.
