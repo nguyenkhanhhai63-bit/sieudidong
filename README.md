@@ -1794,3 +1794,10 @@ Sau khi thêm biến môi trường, redeploy website.
 - Có lớp nền tối; bấm ngoài menu để đóng.
 - Chọn một mục trong menu sẽ tự đóng drawer.
 - Giữ nguyên thanh điều hướng nhanh phía dưới.
+
+
+## V264 - Fix chữ menu quản trị mobile
+- Khắc phục CSS <=1020px ẩn toàn bộ nhãn sidebar.
+- Drawer mobile hiển thị đầy đủ tên shop, tiêu đề nhóm và tên từng chức năng.
+- Khôi phục badge Mới/Riêng và trạng thái hệ thống.
+- Giữ menu dạng drawer + overlay của V263.
