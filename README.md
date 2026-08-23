@@ -1739,3 +1739,8 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nhớ tên các máy đã nhập để gợi ý khi nhập máy tương tự.
 - Tìm nhanh danh sách theo tên máy/IMEI.
 - Tối ưu bố cục nhập liệu và danh sách.
+
+
+## V258
+- Sửa lỗi thẻ máy cũ ngoài website hiển thị mã nội bộ `used:used_xxx` thay cho tên sản phẩm.
+- Ưu tiên hiển thị trường `name` của máy cũ; mã nội bộ chỉ dùng để định danh hệ thống.

@@ -26,7 +26,33 @@
     "logo":"https://sieudidong.vn/assets/logo-square.jpg",
     "areaServed":"Quy Nhơn"
   }
-  </script>
+  
+<script>
+/* V258: normalize used-product display names on public cards */
+(function(){
+  function fixUsedCardNames(){
+    document.querySelectorAll('[data-product-id], .product-card, .product-item').forEach(function(card){
+      var id=(card.getAttribute('data-product-id')||'').trim();
+      if(!/^used:/i.test(id)) return;
+      var title=card.querySelector('.product-name,.product-title,h2,h3,h4');
+      if(title && /^used:/i.test((title.textContent||'').trim())){
+        var stored='';
+        try{
+          var raw=localStorage.getItem('sdd_used_products')||localStorage.getItem('usedProducts')||'[]';
+          var arr=JSON.parse(raw);
+          var key=id.replace(/^used:/i,'');
+          var item=Array.isArray(arr)&&arr.find(function(x){return String(x.id||'')===key || String(x.id||'')===id});
+          stored=item && (item.name||item.title||item.productName)||'';
+        }catch(e){}
+        if(stored) title.textContent=stored;
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded',fixUsedCardNames);
+  new MutationObserver(fixUsedCardNames).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+</script>
   <script id="seoProductJsonLd" type="application/ld+json"></script>
   <script>
   // SEO settings editable from Admin > SEO. Static defaults remain as fallback for crawlers.
