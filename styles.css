@@ -13717,3 +13717,15 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
     font-weight:500!important;
   }
 }
+
+/* V253 - Máy cũ độc lập */
+.used-detail-thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}
+.used-detail-thumb{aspect-ratio:1;border:1px solid #e5e7eb;border-radius:10px;background:#fff;padding:4px;cursor:pointer;overflow:hidden}
+.used-detail-thumb.active{border-color:#ff5a00;box-shadow:0 0 0 2px rgba(255,90,0,.12)}
+.used-detail-thumb img{width:100%;height:100%;object-fit:cover;border-radius:7px}
+.used-detail-info{margin:14px 0;padding:14px;border:1px solid #ffd8c2;border-radius:12px;background:#fff8f4;display:grid;gap:8px}
+.used-detail-info>div:not(.used-detail-badge){display:flex;justify-content:space-between;gap:18px;font-size:13px}
+.used-detail-info span{color:#667085}.used-detail-info strong{text-align:right;color:#101828}
+.used-detail-info p{margin:2px 0 0;padding-top:9px;border-top:1px dashed #ffd0b7;color:#7a4124;font-size:12px;line-height:1.5}
+.used-detail-badge{font-weight:900;color:#e65100;font-size:12px}
+@media(max-width:640px){.used-detail-thumbs{grid-template-columns:repeat(4,minmax(0,1fr))}}

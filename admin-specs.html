@@ -2754,6 +2754,23 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   .login-options{align-items:flex-start;flex-direction:column;gap:8px}
   .login-session-hint{padding-left:24px}
 }
+/* V253 - Máy cũ */
+.used-admin-shell{padding:20px;display:grid;grid-template-columns:minmax(360px,.8fr) minmax(520px,1.2fr);gap:16px}
+.used-admin-form,.used-admin-listbox{border:1px solid var(--line);border-radius:15px;background:#fff;padding:18px}
+.used-admin-form h2,.used-admin-listbox h2{margin:0 0 5px;font-size:18px}.used-admin-help{margin:0 0 16px;color:var(--muted);font-size:12px;line-height:1.5}
+.used-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.used-field{display:grid;gap:6px}.used-field.wide{grid-column:1/-1}.used-field label{font-size:11px;font-weight:850;color:#344054}
+.used-input,.used-select,.used-textarea{width:100%;box-sizing:border-box;border:1px solid #d9dde3;border-radius:9px;background:#fff;padding:10px 11px;font:inherit;font-size:13px}.used-textarea{min-height:78px;resize:vertical}
+.used-image-upload{grid-column:1/-1;border:1px dashed #ffb98f;border-radius:12px;background:#fff8f4;padding:14px}.used-image-upload input{display:none}
+.used-upload-btn{display:inline-flex;align-items:center;height:38px;padding:0 13px;border:1px solid #ff9b64;border-radius:9px;background:#fff;color:#d94800;font-weight:850;cursor:pointer}.used-upload-note{margin-top:7px;font-size:11px;color:#7c6a60}
+.used-image-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.used-preview-item{position:relative;aspect-ratio:1;border:1px solid #e4e7ec;border-radius:10px;overflow:hidden;background:#f8fafc;cursor:pointer}.used-preview-item.primary{border-color:#ff5a00;box-shadow:0 0 0 2px rgba(255,90,0,.12)}
+.used-preview-item img{width:100%;height:100%;object-fit:cover}.used-preview-item small{position:absolute;left:5px;bottom:5px;background:rgba(17,24,39,.78);color:#fff;border-radius:6px;padding:3px 5px;font-size:9px}.used-preview-remove{position:absolute;right:5px;top:5px;width:25px;height:25px;border:0;border-radius:50%;background:rgba(17,24,39,.78);color:#fff;font-weight:900}
+.used-form-actions{display:flex;gap:9px;align-items:center;margin-top:16px;flex-wrap:wrap}#usedAdminStatus{font-size:12px;font-weight:750}
+.used-list-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.used-list-tools select{height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:0 8px}
+.used-item-card{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid #eef0f3;align-items:center}.used-item-photo{width:92px;height:92px;border-radius:11px;object-fit:cover;border:1px solid #e4e7ec}
+.used-item-main strong{display:block;font-size:14px}.used-item-meta{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:6px;color:#667085;font-size:11px}.used-item-price{margin-top:7px;color:#d70000;font-weight:900;font-size:14px}
+.used-item-state{display:inline-flex;margin-top:7px;padding:4px 8px;border-radius:999px;background:#eaf8ef;color:#087a36;font-size:10px;font-weight:850}.used-item-state.sold{background:#f2f4f7;color:#667085}.used-item-actions{display:grid;gap:6px}.used-item-actions button{height:32px;padding:0 10px;border:1px solid #e1e5ea;border-radius:8px;background:#fff;font-size:11px;font-weight:800}.used-item-actions .danger{color:#b42318}.used-empty{padding:28px 10px;text-align:center;color:#98a2b3;font-size:12px}
+@media(max-width:1050px){.used-admin-shell{grid-template-columns:1fr}}@media(max-width:620px){.used-admin-shell{padding:12px}.used-form-grid{grid-template-columns:1fr}.used-field.wide,.used-image-upload{grid-column:auto}.used-image-preview{grid-template-columns:repeat(3,1fr)}.used-item-card{grid-template-columns:72px minmax(0,1fr)}.used-item-photo{width:72px;height:72px}.used-item-actions{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}}
+
 </style>
 </head>
 <body class="auth-pending">
@@ -2771,6 +2788,7 @@ body:not(.authenticated):not(.auth-pending) .wrap{
     <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
     <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
+    <button class="admin-tab" data-tab="used" type="button"><span class="nav-icon">▣</span><span>Máy cũ</span></button>
     <!-- Routing tabs: dùng để các shortcut AI/SEO kích hoạt đúng panel nhưng không hiển thị lặp trong sidebar -->
     <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
     <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
@@ -2788,7 +2806,7 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V251</small>
+    <small>Siêu Di Động Admin • V253</small>
   </div>
 </aside>
 
@@ -3137,6 +3155,23 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   </div>
 </section>
 
+<section id="usedProductsCard" class="card panel" data-panel="used" style="display:none">
+<div class="head"><div><h1>Danh sách máy cũ</h1><p>Quản lý riêng từng chiếc, không lấy từ KiotViet. Ảnh ngoài website là ảnh thực tế tải tại đây.</p></div><button id="reloadUsedProducts" class="secondary" type="button">Tải lại</button></div>
+<div class="used-admin-shell">
+<div class="used-admin-form"><h2 id="usedFormTitle">Thêm máy cũ</h2><p class="used-admin-help">IMEI chỉ lưu nội bộ, không hiển thị cho khách.</p><div class="used-form-grid">
+<div class="used-field wide"><label>Tên máy *</label><input id="usedName" class="used-input" placeholder="Ví dụ: Xiaomi 15 Pro"></div>
+<div class="used-field"><label>Hãng</label><input id="usedBrand" class="used-input" placeholder="Xiaomi"></div><div class="used-field"><label>Giá bán *</label><input id="usedPrice" class="used-input" inputmode="numeric" placeholder="12500000"></div>
+<div class="used-field"><label>Bộ nhớ</label><input id="usedMemory" class="used-input" placeholder="12/256GB"></div><div class="used-field"><label>Màu</label><input id="usedColor" class="used-input" placeholder="Đen"></div>
+<div class="used-field"><label>Ngoại hình</label><input id="usedCondition" class="used-input" placeholder="98%, xước nhẹ viền"></div><div class="used-field"><label>Pin</label><input id="usedBattery" class="used-input" placeholder="Pin 92%"></div>
+<div class="used-field"><label>Bảo hành</label><input id="usedWarranty" class="used-input" placeholder="3 tháng"></div><div class="used-field"><label>IMEI / mã nội bộ</label><input id="usedImei" class="used-input" placeholder="Không hiển thị ngoài web"></div>
+<div class="used-field"><label>Trạng thái</label><select id="usedStatus" class="used-select"><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div>
+<div class="used-field wide"><label>Phụ kiện đi kèm</label><input id="usedAccessories" class="used-input" placeholder="Máy + sạc + ốp..."></div>
+<div class="used-field wide"><label>Ghi chú tình trạng</label><textarea id="usedNote" class="used-textarea" placeholder="Mô tả rõ vết xước/cấn móp nếu có..."></textarea></div>
+<div class="used-image-upload"><label>Ảnh thực tế *</label><br><label class="used-upload-btn" for="usedImagesInput">＋ Chọn ảnh từ điện thoại / máy tính</label><input id="usedImagesInput" type="file" accept="image/*" multiple><div class="used-upload-note">Tối đa 8 ảnh. Hệ thống tự nén; ảnh đầu là ảnh đại diện. Bấm ảnh để đưa lên đầu.</div><div id="usedImagePreview" class="used-image-preview"></div></div>
+</div><div class="used-form-actions"><button id="saveUsedProduct" class="primary" type="button">Lưu máy cũ</button><button id="resetUsedForm" class="secondary" type="button">Nhập máy mới</button><span id="usedAdminStatus"></span></div></div>
+<div class="used-admin-listbox"><div class="used-list-head"><div><h2>Máy đã nhập</h2><p class="used-admin-help" style="margin:3px 0 0">Máy đã bán vẫn giữ lịch sử nhưng tự ẩn khỏi website.</p></div><div class="used-list-tools"><select id="usedListFilter"><option value="all">Tất cả</option><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div></div><div id="usedProductsList"></div></div>
+</div></section>
+
 <section id="seoCard" class="card panel" data-panel="seo" style="display:none">
     <div class="head">
       <div><h1>SEO & hiển thị Google</h1><p>Chỉnh tiêu đề, mô tả, tên website, logo nhỏ Google và kiểm tra Sitemap.</p></div>
@@ -3203,6 +3238,7 @@ const adminBootLoading=document.getElementById("adminBootLoading");
 const analyticsCard=document.getElementById("analyticsCard");
 const aiSettingsCard=document.getElementById("aiSettingsCard");
 const seoCard=document.getElementById("seoCard");
+const usedProductsCard=document.getElementById("usedProductsCard");
 
 const aiCustomInstructions=document.getElementById("aiCustomInstructions");
 const aiRecommendationStyle=document.getElementById("aiRecommendationStyle");
@@ -3306,6 +3342,7 @@ function setLoggedIn(value){
     analyticsCard.style.display="";
     aiSettingsCard.style.display="none";
     seoCard.style.display="none";
+    if(usedProductsCard) usedProductsCard.style.display="none";
 
     adminCard.classList.remove("active");
     analyticsCard.classList.add("active");
@@ -3324,6 +3361,7 @@ function setLoggedIn(value){
     analyticsCard.style.display="none";
     aiSettingsCard.style.display="none";
     seoCard.style.display="none";
+    if(usedProductsCard) usedProductsCard.style.display="none";
     loginCard.classList.remove("hidden");
   }
 }
@@ -4225,21 +4263,25 @@ adminTabs.addEventListener("click",e=>{
   const showAi = tab==="ai";
   const showSeo = tab==="seo";
   const showInstallment = tab==="installment";
+  const showUsed = tab==="used";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
   aiSettingsCard.classList.toggle("active", showAi);
   seoCard.classList.toggle("active", showSeo);
   installmentCard.classList.toggle("active", showInstallment);
+  usedProductsCard.classList.toggle("active", showUsed);
 
   adminCard.style.display = showSpecs ? "" : "none";
   analyticsCard.style.display = showAnalytics ? "" : "none";
   aiSettingsCard.style.display = showAi ? "" : "none";
   seoCard.style.display = showSeo ? "" : "none";
   installmentCard.style.display = showInstallment ? "" : "none";
+  usedProductsCard.style.display = showUsed ? "" : "none";
 
   if(showAnalytics){ loadAnalytics(); }
   if(showInstallment){ loadInstallmentSettings(); }
+  if(showUsed){ loadUsedProducts(); }
   if(showAi){
     (async()=>{
       try{
@@ -4370,6 +4412,7 @@ setTimeout(()=>{
     analyticsCard.style.display="none";
     if(aiSettingsCard) aiSettingsCard.style.display="none";
     if(seoCard) seoCard.style.display="none";
+    if(usedProductsCard) usedProductsCard.style.display="none";
     setLoginStatus("Không xác minh được phiên đăng nhập. Vui lòng đăng nhập lại.","error");
   }
 },9000);

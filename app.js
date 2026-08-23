@@ -712,7 +712,7 @@ function normalizeProductBaseName(fullName, color, memory){
 
 
 let ACTIVE_MAIN_CATEGORY = "";
-let ACTIVE_NAV_KIND = ""; // phone | tablet; menu chính không phụ thuộc tên danh mục KiotViet
+let ACTIVE_NAV_KIND = ""; // phone | tablet | used; menu chính không phụ thuộc tên danh mục KiotViet
 let MAIN_CATEGORIES = [];
 
 function normalizeCategoryName(text=""){
@@ -806,10 +806,9 @@ function renderMainCategoryMenu(){
 }
 
 function sddProductKind(p){
-  const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand]
-    .filter(Boolean).join(" ").toLowerCase();
+  if(p?.sourceType==="used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
+  const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand].filter(Boolean).join(" ").toLowerCase();
   if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
-  // Loại các nhóm phụ kiện rõ ràng để menu Điện thoại không kéo nhầm sản phẩm.
   if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
   return "phone";
 }
@@ -847,7 +846,11 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" "))
+        brand:p.brand || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
+        sourceType:p.sourceType || "",
+        usedItemId:p.usedItemId || "",
+        images:Array.isArray(v.images)&&v.images.length?v.images:(Array.isArray(p.images)?p.images:[]),
+        usedData:v.usedData || p.usedData || null
       });
     });
   });
@@ -858,7 +861,7 @@ function groupItems(items){
   const map=new Map();
 
   items.forEach(item=>{
-    const key=item.baseName || item.fullName;
+    const key=item.sourceType==="used" && item.usedItemId ? `used:${item.usedItemId}` : (item.baseName || item.fullName);
 
     if(!map.has(key)){
       map.set(key,{
@@ -866,6 +869,10 @@ function groupItems(items){
         image:item.image || "",
         categoryName:item.categoryName || "Khác",
         rootCategoryName:item.rootCategoryName || "Khác",
+        sourceType:item.sourceType || "",
+        usedItemId:item.usedItemId || "",
+        images:item.images || [],
+        usedData:item.usedData || null,
         items:[]
       });
     }
@@ -1914,6 +1921,25 @@ if(!inlineProductDetail) return;
 
   gallery.append(imageBox);
 
+  const usedGalleryImages=group.sourceType==="used" ? (group.images?.length?group.images:(selected?.images||[])) : [];
+  if(usedGalleryImages.length>1){
+    const thumbs=document.createElement("div");
+    thumbs.className="used-detail-thumbs";
+    usedGalleryImages.forEach((src,i)=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="used-detail-thumb"+(i===0?" active":"");
+      b.innerHTML=`<img src="${src}" alt="Ảnh thực tế ${i+1}">`;
+      b.addEventListener("click",()=>{
+        thumbs.querySelectorAll(".used-detail-thumb").forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+        imageBox.innerHTML=`<img class="product-image" src="${src}" alt="${group.name} - ảnh thực tế ${i+1}" loading="eager">`;
+      });
+      thumbs.appendChild(b);
+    });
+    gallery.appendChild(thumbs);
+  }
+
   const info=document.createElement("div");
   info.className="detail-info";
 
@@ -1978,6 +2004,20 @@ if(!inlineProductDetail) return;
   `;
 
   info.append(priceRow,chooseText);
+  if(group.sourceType==="used" && group.usedData){
+    const ud=group.usedData;
+    const usedBox=document.createElement("div");
+    usedBox.className="used-detail-info";
+    usedBox.innerHTML=`
+      <div class="used-detail-badge">Ảnh thực tế đúng chiếc máy đang bán</div>
+      ${ud.condition?`<div><span>Ngoại hình</span><strong>${ud.condition}</strong></div>`:""}
+      ${ud.battery?`<div><span>Tình trạng pin</span><strong>${ud.battery}</strong></div>`:""}
+      ${ud.warranty?`<div><span>Bảo hành</span><strong>${ud.warranty}</strong></div>`:""}
+      ${ud.accessories?`<div><span>Phụ kiện</span><strong>${ud.accessories}</strong></div>`:""}
+      ${ud.note?`<p>${ud.note}</p>`:""}
+    `;
+    info.appendChild(usedBox);
+  }
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
   info.appendChild(detailActions);
@@ -2110,7 +2150,7 @@ if(!inlineProductDetail) return;
 
       // Đổi ảnh theo đúng biến thể màu/dung lượng đang chọn.
       // Nếu biến thể có ảnh riêng từ KiotViet thì dùng ảnh đó.
-      if(selected.image){
+      if(selected.image && group.sourceType!=="used"){
         const currentImg=imageBox.querySelector(".product-image");
 
         if(currentImg){
@@ -2261,9 +2301,28 @@ window.addEventListener("popstate",()=>{
   window.scrollTo({top:0,left:0,behavior:"auto"});
 });
 
+
+function usedPublicToProducts(items){
+  return (Array.isArray(items)?items:[]).map(x=>{
+    const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
+    const usedData={condition:x.condition||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
+    const image=Array.isArray(x.images)&&x.images[0]?x.images[0]:"";
+    return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:x.brand||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
+      sourceType:"used",usedItemId:x.id,basePrice:Number(x.price||0),image,images:x.images||[],attributes:attrs,usedData,
+      variants:[{id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",price:Number(x.price||0),onHand:x.status==="sold"?0:1,image,images:x.images||[],attributes:attrs,usedData}]};
+  });
+}
+async function loadUsedPublicProducts(){
+  try{const r=await fetch("/api/used-products?ts="+Date.now(),{cache:"no-store"});const d=await r.json();if(!r.ok) throw new Error(d?.error||"Không tải được máy cũ");return usedPublicToProducts(d.items||[])}
+  catch(e){console.warn("Used products:",e);return []}
+}
+
 async function load(){
   try{
-    const res=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
+    const [res,usedProducts]=await Promise.all([
+      fetch("/api/products?ts="+Date.now(),{cache:"no-store"}),
+      loadUsedPublicProducts()
+    ]);
 
     if(!res.ok){
       throw new Error("HTTP "+res.status);
@@ -2271,11 +2330,11 @@ async function load(){
 
     const data=await res.json();
 
-    if(!Array.isArray(data.products) || !data.products.length){
-      throw new Error("Empty product data");
+    if(!Array.isArray(data.products)){
+      throw new Error("Invalid product data");
     }
 
-    PRODUCTS=data.products;
+    PRODUCTS=[...data.products,...usedProducts];
     saveProductCache(PRODUCTS);
 
     updatedAt.textContent=data.stale
@@ -3384,7 +3443,7 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
 
 
 /* =========================================================
-   V240 - Menu Điện thoại / Máy tính bảng độc lập danh mục KiotViet
+   V252 - Menu Điện thoại / Máy tính bảng / Máy cũ độc lập danh mục KiotViet
    ========================================================= */
 function sddUpdateMainNavActive(kind){
   document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
@@ -3393,7 +3452,7 @@ function sddUpdateMainNavActive(kind){
 }
 
 function sddActivateMainCategory(kind){
-  ACTIVE_NAV_KIND = kind === "tablet" ? "tablet" : "phone";
+  ACTIVE_NAV_KIND = kind === "tablet" ? "tablet" : (kind === "used" ? "used" : "phone");
   ACTIVE_MAIN_CATEGORY = "";
   ACTIVE_CATEGORY = "Tất cả";
   ACTIVE_PRICE_FILTER = "Tất cả giá";
@@ -3404,7 +3463,7 @@ function sddActivateMainCategory(kind){
   sddUpdateMainNavActive(ACTIVE_NAV_KIND);
 
   const url = new URL(location.href);
-  url.searchParams.set("category", ACTIVE_NAV_KIND === "tablet" ? "Máy tính bảng" : "Điện thoại");
+  url.searchParams.set("category", ACTIVE_NAV_KIND === "tablet" ? "Máy tính bảng" : (ACTIVE_NAV_KIND === "used" ? "Máy cũ" : "Điện thoại"));
   url.searchParams.delete("brand");
   url.searchParams.delete("price");
   url.searchParams.delete("q");
@@ -3427,7 +3486,8 @@ document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
 // Nếu URL được mở trực tiếp với ?category=Điện thoại / Máy tính bảng thì kích hoạt đúng tab.
 (function sddInitNavFromUrl(){
   const c=new URLSearchParams(location.search).get("category") || "";
-  if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)){ ACTIVE_NAV_KIND="tablet"; ACTIVE_MAIN_CATEGORY=""; }
+  if(/máy\s*cũ|like\s*new|likenew|used|secondhand/i.test(c)){ ACTIVE_NAV_KIND="used"; ACTIVE_MAIN_CATEGORY=""; }
+  else if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)){ ACTIVE_NAV_KIND="tablet"; ACTIVE_MAIN_CATEGORY=""; }
   else if(/điện\s*thoại|smartphone|phone/i.test(c)){ ACTIVE_NAV_KIND="phone"; ACTIVE_MAIN_CATEGORY=""; }
 })();
 
@@ -3444,7 +3504,8 @@ window.addEventListener("load",()=>{
         sddUpdateMainNavActive(ACTIVE_NAV_KIND);
       }else{
         const current=String(ACTIVE_MAIN_CATEGORY||"");
-        if(/máy\s*tính\s*bảng|tablet|ipad/i.test(current)) sddUpdateMainNavActive("tablet");
+        if(/máy\s*cũ|like\s*new|likenew|used|secondhand/i.test(current)) sddUpdateMainNavActive("used");
+        else if(/máy\s*tính\s*bảng|tablet|ipad/i.test(current)) sddUpdateMainNavActive("tablet");
         else if(/điện\s*thoại|smartphone|phone/i.test(current)) sddUpdateMainNavActive("phone");
       }
       clearInterval(timer);
@@ -3461,6 +3522,7 @@ window.addEventListener("load",()=>{
     let active='home';
     if(path.includes('tra-cuu-bao-hanh')) active='warranty';
     else if(path.includes('tra-gop')) active='installment';
+    else if(typeof ACTIVE_NAV_KIND!=='undefined' && ACTIVE_NAV_KIND==='used') active='used';
     else if(typeof ACTIVE_NAV_KIND!=='undefined' && ACTIVE_NAV_KIND==='tablet') active='tablet';
     else if(typeof ACTIVE_NAV_KIND!=='undefined' && ACTIVE_NAV_KIND==='phone') active='phone';
     document.querySelectorAll('[data-sdd-drawer-nav]').forEach(el=>{

@@ -11,7 +11,8 @@ const handlers = {
   "sitemap": () => import("../lib/public-api/sitemap.js"),
   "specs": () => import("../lib/public-api/specs.js"),
   "version": () => import("../lib/public-api/version.js"),
-  "warranty-lookup": () => import("../lib/public-api/warranty-lookup.js")
+  "warranty-lookup": () => import("../lib/public-api/warranty-lookup.js"),
+  "used-products": () => import("../lib/public-api/used-products.js")
 };
 
 export default async function handler(req,res){

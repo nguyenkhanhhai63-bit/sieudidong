@@ -1701,3 +1701,17 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Có tùy chọn giữ đăng nhập 7 ngày; nếu bỏ chọn, cookie chỉ tồn tại trong phiên trình duyệt.
 - Tự kiểm tra session khi mở trang; session còn hiệu lực thì vào thẳng dashboard.
 - Giữ thông báo số lần thử còn lại từ API khi nhập sai.
+
+
+## V252 - Danh sách Máy cũ
+- Thêm mục `Máy cũ` trên menu desktop và menu mobile.
+- Tự nhận diện sản phẩm máy cũ qua tên/danh mục: Máy cũ, Like New, 95%-99%, máy lướt, used, secondhand...
+- Máy cũ được tách khỏi danh sách Điện thoại/Máy tính bảng mới để tránh lẫn hàng.
+- Giữ nguyên lọc hãng, mức giá, tìm kiếm, so sánh và chi tiết sản phẩm.
+- Hỗ trợ URL `?category=Máy+cũ`.
+
+
+## V253 - Máy cũ quản lý riêng
+- Không dùng KiotViet cho máy cũ.
+- Mỗi chiếc quản lý riêng trong admin, có tối đa 8 ảnh thực tế, IMEI nội bộ, tình trạng, pin, bảo hành, phụ kiện, trạng thái Còn hàng/Đã bán.
+- Máy Đã bán tự ẩn khỏi website nhưng giữ trong lịch sử quản trị.
