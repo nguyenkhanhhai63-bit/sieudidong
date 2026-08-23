@@ -3235,6 +3235,248 @@ body.auth-pending #authLoading{
 
 .admin-loader-steps span.done{color:#15803d}
 .admin-loader-steps span.done b{background:#eaf8ef;color:#15803d}
+
+/* =========================================================
+   V274 - Dashboard quản trị desktop cân đối
+   ========================================================= */
+@media(min-width:1021px){
+  body.authenticated{
+    background:#f4f6f9!important;
+  }
+
+  .admin-topbar{
+    height:68px!important;
+    padding:0 22px!important;
+  }
+
+  .wrap{
+    width:auto!important;
+    max-width:1680px!important;
+    margin:0 auto!important;
+    padding:88px 22px 42px calc(var(--sidebar-w) + 22px)!important;
+  }
+
+  /* Header welcome */
+  .dashboard-welcome{
+    min-height:92px!important;
+    margin-bottom:16px!important;
+    padding:18px 22px!important;
+    border-radius:16px!important;
+    background:linear-gradient(135deg,#fff 0%,#fff8f4 100%)!important;
+    box-shadow:0 8px 24px rgba(15,23,42,.035)!important;
+  }
+  .dashboard-welcome h2{
+    font-size:18px!important;
+    margin:3px 0 5px!important;
+  }
+  .dashboard-welcome p{
+    font-size:11px!important;
+    max-width:680px!important;
+  }
+
+  /* Analytics main card */
+  #analyticsCard{
+    border:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+  }
+  #analyticsCard>.head{
+    min-height:70px!important;
+    margin-bottom:12px!important;
+    padding:16px 18px!important;
+    border:1px solid #e6e9ee!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.025)!important;
+  }
+  #analyticsCard>.head h1{
+    font-size:18px!important;
+    margin-bottom:3px!important;
+  }
+  #analyticsCard>.head p{
+    font-size:10px!important;
+  }
+
+  .analytics-shell{
+    padding:0!important;
+    background:transparent!important;
+    border-top:0!important;
+  }
+
+  /* Period filter */
+  .period-filter-bar{
+    min-height:52px!important;
+    margin-bottom:14px!important;
+    padding:9px 12px!important;
+    border:1px solid #e6e9ee!important;
+    border-radius:13px!important;
+    background:#fff!important;
+    box-shadow:0 5px 16px rgba(15,23,42,.02)!important;
+  }
+  .period-tabs{
+    gap:7px!important;
+  }
+  .period-tab{
+    height:34px!important;
+    padding:0 13px!important;
+    border-radius:9px!important;
+    font-size:10px!important;
+  }
+
+  /* Section titles */
+  .analytics-section-title{
+    margin:4px 0 9px!important;
+    padding-left:10px!important;
+    font-size:12px!important;
+    line-height:1.3!important;
+  }
+  .analytics-section-title:before{
+    width:3px!important;
+    border-radius:3px!important;
+  }
+
+  /* Main metrics */
+  .metric-grid-main{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:12px!important;
+    margin-bottom:16px!important;
+  }
+  .metric-grid-warranty{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:12px!important;
+    margin-bottom:16px!important;
+  }
+  .metric{
+    min-height:108px!important;
+    padding:16px 17px!important;
+    border:1px solid #e5e8ed!important;
+    border-radius:13px!important;
+    background:#fff!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.025)!important;
+  }
+  .metric small{
+    min-height:auto!important;
+    margin-bottom:10px!important;
+    font-size:10px!important;
+    color:#667085!important;
+    font-weight:750!important;
+  }
+  .metric strong{
+    margin:0 0 5px!important;
+    font-size:29px!important;
+    line-height:1!important;
+    letter-spacing:-.7px!important;
+  }
+  .metric em{
+    font-size:9px!important;
+    color:#98a2b3!important;
+  }
+
+  /* Charts */
+  .analytics-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,2fr) minmax(320px,.95fr)!important;
+    gap:14px!important;
+    margin-bottom:14px!important;
+  }
+  .abox{
+    grid-column:auto!important;
+    overflow:hidden!important;
+    border:1px solid #e5e8ed!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.025)!important;
+  }
+  .abox h2{
+    min-height:46px!important;
+    padding:14px 16px!important;
+    font-size:12px!important;
+    border-bottom:1px solid #eef0f3!important;
+  }
+  .chart{
+    height:260px!important;
+    padding:22px 16px 14px!important;
+  }
+
+  /* lower info grid */
+  .analytics-lower-grid,
+  .analytics-detail-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    gap:14px!important;
+    align-items:stretch!important;
+  }
+
+  .device-box{grid-column:span 2!important}
+  .device-model-box{grid-column:span 3!important}
+  .device-os-box{grid-column:span 3!important}
+  .top-products-box{grid-column:span 4!important}
+  .top-search-box{grid-column:span 4!important}
+  .compare-products-box{grid-column:span 4!important}
+  .compare-pairs-box{grid-column:span 8!important}
+
+  /* Generic lower boxes fallback */
+  #analyticsCard .analytics-shell>.analytics-grid:nth-of-type(n+2) .abox{
+    min-height:260px!important;
+  }
+
+  .rankrow,.devrow{
+    min-height:36px!important;
+    padding:8px 13px!important;
+    font-size:10px!important;
+    line-height:1.35!important;
+  }
+  .rankrow span:first-child{
+    width:22px!important;
+    height:22px!important;
+    flex:0 0 22px!important;
+  }
+  .rankvalue{
+    font-weight:850!important;
+    font-size:10px!important;
+  }
+
+  /* Compare pair list */
+  .compare-pair-row{
+    min-height:44px!important;
+    padding:8px 11px!important;
+    border-radius:9px!important;
+  }
+
+  /* Remove excessive empty vertical stretch */
+  .empty{
+    min-height:150px!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#98a2b3!important;
+    font-size:10px!important;
+  }
+}
+
+/* Large desktop: keep content readable, not edge-to-edge */
+@media(min-width:1680px){
+  .wrap{
+    max-width:1720px!important;
+  }
+}
+
+/* Laptop tuning */
+@media(min-width:1021px) and (max-width:1280px){
+  .wrap{
+    padding-left:calc(var(--sidebar-w) + 14px)!important;
+    padding-right:14px!important;
+  }
+  .metric-grid-main{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .analytics-grid{
+    grid-template-columns:1fr!important;
+  }
+  .chart{height:235px!important}
+}
+
 </style>
 </head>
 <body class="auth-pending">
@@ -4328,6 +4570,7 @@ async function loadAnalytics(){
     daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
     renderMonthlyAnalytics(d.monthly||[]);
     applyAnalyticsPeriod(d,analyticsPeriod);
+    queueMicrotask(()=>window.enforceTodayOnlineInvariant?.());
     const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
     const dh=document.getElementById("deviceList");dh.innerHTML="";
     Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
@@ -5672,6 +5915,108 @@ document.addEventListener("DOMContentLoaded",function(){
   resetMobileDrawer();
   document.addEventListener('DOMContentLoaded', resetMobileDrawer, {once:true});
   window.addEventListener('pageshow', resetMobileDrawer);
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   V273 - Invariant DOM cuối cùng cho thống kê Hôm nay
+   Online > 0 => Khách truy cập và Lượt truy cập tối thiểu = Online
+   ========================================================= */
+(function(){
+  function parseMetric(el){
+    if(!el) return 0;
+    const raw=String(el.textContent||"").replace(/[^\d]/g,"");
+    return Number(raw||0);
+  }
+
+  function isTodaySelected(){
+    const active=document.querySelector(".period-tab.active");
+    if(active) return active.dataset.period==="today";
+    return true;
+  }
+
+  function enforceTodayOnlineInvariant(){
+    if(!isTodaySelected()) return;
+
+    const onlineEl=document.getElementById("mOnlineNow");
+    const visitorsEl=document.getElementById("mTodayVisitors");
+    const viewsEl=document.getElementById("mTodayViews");
+    if(!onlineEl || !visitorsEl || !viewsEl) return;
+
+    const online=parseMetric(onlineEl);
+    if(online<=0) return;
+
+    const visitors=parseMetric(visitorsEl);
+    const views=parseMetric(viewsEl);
+
+    if(visitors<online){
+      visitorsEl.textContent=new Intl.NumberFormat("vi-VN").format(online);
+      visitorsEl.dataset.v273Adjusted="1";
+    }
+    if(views<online){
+      viewsEl.textContent=new Intl.NumberFormat("vi-VN").format(online);
+      viewsEl.dataset.v273Adjusted="1";
+    }
+  }
+
+  function install(){
+    const onlineEl=document.getElementById("mOnlineNow");
+    const visitorsEl=document.getElementById("mTodayVisitors");
+    const viewsEl=document.getElementById("mTodayViews");
+
+    if(onlineEl){
+      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
+        .observe(onlineEl,{childList:true,subtree:true,characterData:true});
+    }
+    if(visitorsEl){
+      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
+        .observe(visitorsEl,{childList:true,subtree:true,characterData:true});
+    }
+    if(viewsEl){
+      new MutationObserver(()=>queueMicrotask(enforceTodayOnlineInvariant))
+        .observe(viewsEl,{childList:true,subtree:true,characterData:true});
+    }
+
+    document.querySelectorAll(".period-tab").forEach(btn=>{
+      btn.addEventListener("click",()=>setTimeout(enforceTodayOnlineInvariant,0));
+    });
+
+    enforceTodayOnlineInvariant();
+    setInterval(enforceTodayOnlineInvariant,1000);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",install,{once:true});
+  }else{
+    install();
+  }
+
+  window.enforceTodayOnlineInvariant=enforceTodayOnlineInvariant;
+})();
+</script>
+
+
+<script>
+/* V274 - gắn class bố cục cho các box dashboard theo tiêu đề */
+(function(){
+  function normalize(t){return String(t||"").trim().toLowerCase();}
+  function tagAnalyticsBoxes(){
+    document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
+      const title=normalize(box.querySelector("h2")?.textContent);
+      if(title.includes("loại thiết bị")) box.classList.add("device-box");
+      else if(title.includes("điện thoại khách") || title.includes("thiết bị khách")) box.classList.add("device-model-box");
+      else if(title.includes("hệ điều hành")) box.classList.add("device-os-box");
+      else if(title.includes("sản phẩm được xem")) box.classList.add("top-products-box");
+      else if(title.includes("từ khóa")) box.classList.add("top-search-box");
+      else if(title.includes("sản phẩm được so sánh")) box.classList.add("compare-products-box");
+      else if(title.includes("cặp") && title.includes("so sánh")) box.classList.add("compare-pairs-box");
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",tagAnalyticsBoxes,{once:true});
+  else tagAnalyticsBoxes();
+  new MutationObserver(tagAnalyticsBoxes).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
 

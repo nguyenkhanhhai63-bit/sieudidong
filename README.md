@@ -1863,3 +1863,21 @@ Sau khi thêm biến môi trường, redeploy website.
 - Nếu online = 5 nhưng API period hôm nay trả 0, giao diện hiển thị tối thiểu 5.
 - Đồng bộ cả lần render đầu tiên, period Hôm nay và cột ngày hiện tại trên biểu đồ.
 - API trả thêm `analyticsVersion: v272`; request admin có `client=v272` để dễ xác minh deployment.
+
+
+## V273 - Fix DOM cuối cho thống kê
+- Theo dõi trực tiếp 3 ô: Đang online, Khách truy cập, Lượt truy cập.
+- Khi tab Hôm nay đang chọn và Online > 0, Khách/Lượt truy cập không thể thấp hơn Online.
+- MutationObserver chạy sau mọi render nên không bị hàm khác ghi đè lại về 0.
+- Có kiểm tra định kỳ 1 giây và gọi lại sau `applyAnalyticsPeriod`.
+- Tooltip tiêu đề Tổng quan có `Admin V273` để kiểm tra đúng bản deploy.
+
+
+## V274 - Thiết kế lại dashboard quản trị desktop
+- Giới hạn chiều rộng nội dung để dashboard không bị kéo quá ngang trên màn hình lớn.
+- Card số liệu 4 cột, card bảo hành 3 cột.
+- Biểu đồ chia tỷ lệ 2:1, dễ đọc hơn.
+- Tăng khoảng trắng, cỡ chữ, bo góc và hierarchy.
+- Các bảng thiết bị / sản phẩm / từ khóa / so sánh được bố trí lại theo lưới 12 cột.
+- Laptop 1024–1280 có breakpoint riêng.
+- Mobile giữ nguyên layout hiện tại.
