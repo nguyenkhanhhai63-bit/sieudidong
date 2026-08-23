@@ -1816,3 +1816,20 @@ Sau khi thêm biến môi trường, redeploy website.
 - Căn lại logo và nút đóng drawer.
 - Không để bottom navigation gây nhiễu khi drawer đang mở.
 - Giữ nguyên các mục menu thật và badge Mới/Riêng.
+
+
+## V267 - Drawer mobile mặc định đóng
+- Sửa lỗi vào trang quản trị mobile drawer tự mở che nội dung.
+- Sidebar mobile mặc định translate ra ngoài màn hình.
+- Chỉ class `mobile-open` mới cho phép hiện drawer.
+- Tự reset drawer khi load/reload/back-forward cache.
+- Nút hamburger mặc định nằm lại góc trái.
+
+
+## V268 - Sửa thống kê chính xác
+- Hôm nay/Hôm qua đọc trực tiếp từ Redis, không phụ thuộc truy vấn lịch sử 365 ngày.
+- MGET lịch sử chia lô nhỏ 80 key và timeout 8 giây thay vì 2.5 giây.
+- `Khách truy cập` = unique visitor (HyperLogLog).
+- `Lượt truy cập` = số page load thực tế (`raw_pageviews`).
+- Heartbeat cũng bảo đảm visitor đang online được ghi vào unique visitor hôm nay.
+- Dashboard trả thêm `analyticsDay` và `timezone=Asia/Ho_Chi_Minh` để chẩn đoán.

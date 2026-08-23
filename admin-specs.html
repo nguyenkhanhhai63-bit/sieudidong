@@ -3055,6 +3055,47 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   }
 }
 
+
+/* =========================================================
+   V267 - Drawer mobile mặc định đóng
+   ========================================================= */
+@media(max-width:760px){
+  .admin-sidebar{
+    display:flex!important;
+    width:min(86vw,320px)!important;
+    max-width:320px!important;
+    transform:translateX(-110%)!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transition:transform .22s ease, visibility 0s linear .22s!important;
+  }
+
+  .admin-sidebar.mobile-open{
+    transform:translateX(0)!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+    transition:transform .22s ease!important;
+  }
+
+  #mobileAdminDrawerBackdrop{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  #mobileAdminDrawerBackdrop.show{
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+
+  /* Trạng thái đóng: hamburger luôn ở góc trái */
+  #mobileAdminMenuBtn:not(.open){
+    left:12px!important;
+    right:auto!important;
+  }
+}
+
 </style>
 </head>
 <body class="auth-pending">
@@ -3244,7 +3285,7 @@ body:not(.authenticated):not(.auth-pending) .wrap{
           <div class="metric"><small>Xem chi tiết sản phẩm</small><strong id="mDetailClicks">0</strong><em id="mDetailPeriod">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Lượt so sánh</small><strong id="mTodayCompare">0</strong><em id="mCompare30">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Bấm Zalo</small><strong id="mTodayZalo">0</strong><em id="mZalo30">Theo kỳ đang chọn</em></div>
-          <div class="metric metric-total"><small>Tổng truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
+          <div class="metric metric-total"><small>Tổng lượt truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
@@ -5393,6 +5434,26 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   document.addEventListener('DOMContentLoaded',markRoutingTabs);
   markRoutingTabs();
+})();
+</script>
+
+
+<script>
+/* V267 - luôn reset drawer về trạng thái đóng khi vào/reload trang */
+(function(){
+  function resetMobileDrawer(){
+    document.querySelectorAll('.admin-sidebar').forEach(el=>el.classList.remove('mobile-open'));
+    document.body.classList.remove('mobile-sidebar-open');
+    document.getElementById('mobileAdminDrawerBackdrop')?.classList.remove('show');
+    const btn=document.getElementById('mobileAdminMenuBtn');
+    btn?.classList.remove('open');
+    btn?.setAttribute('aria-expanded','false');
+    document.documentElement.style.overflow='';
+  }
+
+  resetMobileDrawer();
+  document.addEventListener('DOMContentLoaded', resetMobileDrawer, {once:true});
+  window.addEventListener('pageshow', resetMobileDrawer);
 })();
 </script>
 
