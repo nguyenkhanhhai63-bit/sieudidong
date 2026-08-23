@@ -1900,3 +1900,20 @@ Sau khi thêm biến môi trường, redeploy website.
 - Dashboard dùng SCARD nên số hôm nay chỉ tăng hoặc giữ nguyên trong ngày.
 - 7 ngày / 30 ngày / tháng / năm dùng hợp nhất visitor ID từ các SET ngày để không đếm trùng.
 - Bỏ các bản vá UI kiểu Online làm lower-bound vì không còn đúng bản chất.
+
+
+## V277 - Làm lại hệ thống thống kê V5
+
+Bỏ cơ chế thống kê cũ làm nguồn chính. V5 dùng cấu trúc đơn giản:
+
+- `analytics:v5:visitors:YYYY-MM-DD` — ZSET visitor duy nhất trong ngày.
+- `analytics:v5:day:YYYY-MM-DD` — HASH chứa pageviews, xem chi tiết, so sánh, Zalo, bảo hành...
+- `analytics:online` — ZSET riêng, chỉ dùng cho số đang online trong 5 phút.
+- `analytics:v5:visit_seen:YYYY-MM-DD` — đảm bảo heartbeat chỉ bổ sung 1 lượt/ngày nếu page_view bị mất.
+
+Quy tắc:
+- Khách truy cập hôm nay = ZCARD visitor ZSET của ngày, chỉ tăng/giữ nguyên.
+- Online giảm khi khách rời web nhưng không làm giảm Khách truy cập hôm nay.
+- Lượt truy cập = số page_view thực tế.
+- Khi admin load, visitor đang online được migrate vào ZSET hôm nay trước khi dashboard đọc số.
+- 7/30 ngày/tháng/năm dùng ZUNIONSTORE key tạm TTL 30 giây để union visitor chính xác, không đếm trùng.
