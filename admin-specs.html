@@ -2800,9 +2800,59 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-cloudinary-status.bad{background:#fff0ed;color:#b42318}
 .used-preview-uploading{display:grid;place-items:center;background:#fff7f2;color:#d94800;font-size:10px;font-weight:850;text-align:center;padding:8px}
 
+
+/* V263 - Mobile admin drawer */
+.mobile-admin-menu-btn{display:none}
+.mobile-admin-drawer-backdrop{display:none}
+
+@media(max-width:760px){
+  .mobile-admin-menu-btn{
+    display:flex;position:fixed;z-index:1202;top:12px;left:12px;width:38px;height:38px;
+    border:1px solid #dfe3e8;border-radius:10px;background:#fff;box-shadow:0 4px 16px rgba(16,24,40,.08);
+    align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:0;cursor:pointer
+  }
+  .mobile-admin-menu-btn span{display:block;width:16px;height:2px;background:#344054;border-radius:2px;transition:.2s}
+  .mobile-admin-menu-btn.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .mobile-admin-menu-btn.open span:nth-child(2){opacity:0}
+  .mobile-admin-menu-btn.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+  .mobile-admin-drawer-backdrop{
+    display:block;position:fixed;inset:0;z-index:1198;background:rgba(15,23,42,.38);
+    opacity:0;pointer-events:none;transition:opacity .2s
+  }
+  .mobile-admin-drawer-backdrop.show{opacity:1;pointer-events:auto}
+
+  /* sidebar desktop biến thành drawer trên mobile */
+  .sidebar,.admin-sidebar,[class*="sidebar"]:has(.admin-tab){
+    display:block!important;position:fixed!important;z-index:1200!important;
+    top:0!important;left:0!important;bottom:0!important;
+    width:min(82vw,320px)!important;max-width:320px!important;
+    transform:translateX(-105%);transition:transform .24s ease;
+    overflow-y:auto!important;box-shadow:12px 0 30px rgba(15,23,42,.18)!important
+  }
+  .sidebar.mobile-open,.admin-sidebar.mobile-open,[class*="sidebar"].mobile-open:has(.admin-tab){
+    transform:translateX(0)!important
+  }
+
+  /* chừa chỗ cho nút hamburger */
+  .topbar,.admin-topbar,.header{
+    padding-left:58px!important
+  }
+
+  /* thanh tab dưới vẫn giữ nhưng nhỏ lại */
+  .mobile-admin-nav{
+    z-index:1100!important
+  }
+}
+
 </style>
 </head>
 <body class="auth-pending">
+<button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
+  <span></span><span></span><span></span>
+</button>
+<div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
+
 <aside id="adminSidebar" class="admin-sidebar">
   <div class="sidebar-brand">
     <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
@@ -5066,6 +5116,58 @@ document.addEventListener("DOMContentLoaded",function(){
     }
   });
   checkCloudinary();
+})();
+</script>
+
+
+<script>
+/* V263 - Mobile admin drawer controller */
+(function(){
+  const btn=document.getElementById('mobileAdminMenuBtn');
+  const backdrop=document.getElementById('mobileAdminDrawerBackdrop');
+
+  function findSidebar(){
+    return document.querySelector('.sidebar,.admin-sidebar') ||
+      [...document.querySelectorAll('aside,nav,div')].find(el=>el.querySelector?.('.admin-tab'));
+  }
+
+  function closeDrawer(){
+    const sidebar=findSidebar();
+    sidebar?.classList.remove('mobile-open');
+    backdrop?.classList.remove('show');
+    btn?.classList.remove('open');
+    btn?.setAttribute('aria-expanded','false');
+    document.documentElement.style.overflow='';
+  }
+
+  function openDrawer(){
+    const sidebar=findSidebar();
+    if(!sidebar)return;
+    sidebar.classList.add('mobile-open');
+    backdrop?.classList.add('show');
+    btn?.classList.add('open');
+    btn?.setAttribute('aria-expanded','true');
+    document.documentElement.style.overflow='hidden';
+  }
+
+  btn?.addEventListener('click',()=>{
+    const sidebar=findSidebar();
+    if(sidebar?.classList.contains('mobile-open')) closeDrawer();
+    else openDrawer();
+  });
+
+  backdrop?.addEventListener('click',closeDrawer);
+
+  document.addEventListener('click',e=>{
+    if(window.innerWidth>760)return;
+    if(e.target.closest('.admin-tab,[data-go-tab],.sidebar-shortcut')){
+      setTimeout(closeDrawer,80);
+    }
+  });
+
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>760)closeDrawer();
+  });
 })();
 </script>
 

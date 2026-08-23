@@ -1786,3 +1786,11 @@ Sau khi thêm biến môi trường, redeploy website.
 - Page view giờ được gửi ngay bằng User-Agent fallback.
 - Thông tin model/HĐH chi tiết được gửi riêng bằng `device_enrich`, không cộng trùng lượt xem.
 - Giữ mốc ngày theo UTC+7 (Việt Nam).
+
+
+## V263 - Sửa menu quản trị trên mobile
+- Thêm nút hamburger cố định góc trên trái.
+- Sidebar desktop trở thành drawer trượt từ trái trên mobile.
+- Có lớp nền tối; bấm ngoài menu để đóng.
+- Chọn một mục trong menu sẽ tự đóng drawer.
+- Giữ nguyên thanh điều hướng nhanh phía dưới.
