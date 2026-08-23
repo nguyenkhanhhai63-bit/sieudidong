@@ -4212,14 +4212,45 @@ function renderMonthlyAnalytics(items=[]){
 function applyAnalyticsPeriod(d,period=analyticsPeriod){
   currentAnalyticsData=d;
   analyticsPeriod=period;
-  const p=d?.periods?.[period]||{};
+  const rawPeriod=d?.periods?.[period]||{};
   const o=d?.overview||{};
+
+  // V272: invariant thống kê Hôm nay.
+  // Một visitor đang online chắc chắn đã truy cập website ít nhất 1 lần.
+  // Nếu API/Redis trả periods.today = 0 nhưng onlineNow > 0, dùng online làm
+  // lower-bound để dashboard không hiển thị dữ liệu tự mâu thuẫn.
+  const onlineNow=Math.max(0,Number(o.onlineNow||0));
+  const p={...rawPeriod};
+  if(period==="today" && onlineNow>0){
+    p.visitors=Math.max(Number(p.visitors||0),onlineNow);
+    p.views=Math.max(Number(p.views||0),onlineNow);
+
+    // Đồng bộ object hiện tại để các phần khác trong dashboard cùng thấy số đã chuẩn hóa.
+    if(d?.periods?.today){
+      d.periods.today.visitors=p.visitors;
+      d.periods.today.views=p.views;
+    }
+    if(d?.overview){
+      d.overview.todayVisitors=Math.max(Number(d.overview.todayVisitors||0),onlineNow);
+      d.overview.todayViews=Math.max(Number(d.overview.todayViews||0),onlineNow);
+    }
+
+    // Ngày cuối của biểu đồ 30 ngày cũng phải phản ánh tối thiểu số visitor đang online.
+    if(Array.isArray(d.daily) && d.daily.length){
+      const last=d.daily[d.daily.length-1];
+      if(last){
+        last.views=Math.max(Number(last.views||0),onlineNow);
+        last.rawViews=Math.max(Number(last.rawViews||0),onlineNow);
+      }
+    }
+  }
+
   const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
   const caption=document.getElementById("analyticsPeriodCaption"); if(caption) caption.textContent=label;
   document.querySelectorAll(".period-tab").forEach(btn=>btn.classList.toggle("active",btn.dataset.period===period));
   mTodayVisitors.textContent=fmt(p.visitors); mVisitors30.textContent=label;
   mTodayViews.textContent=fmt(p.views); mViews7.textContent=label;
-  mOnlineNow.textContent=fmt(o.onlineNow);
+  mOnlineNow.textContent=fmt(onlineNow);
   mDetailClicks.textContent=fmt(p.detailClicks); const dp=document.getElementById("mDetailPeriod"); if(dp) dp.textContent=label;
   document.getElementById("mTodayCompare").textContent=fmt(p.compare); document.getElementById("mCompare30").textContent=label;
   mTodayZalo.textContent=fmt(p.zalo); mZalo30.textContent=label;
@@ -4241,7 +4272,7 @@ async function loadAnalytics(){
       let lastError=null;
       for(let attempt=1;attempt<=3;attempt++){
         try{
-          r=await fetch("/api/admin/analytics?ts="+Date.now()+"&try="+attempt,{
+          r=await fetch("/api/admin/analytics?ts="+Date.now()+"&try="+attempt+"&client=v272",{
             cache:"no-store",
             credentials:"same-origin",
             signal:controller.signal
@@ -4257,6 +4288,24 @@ async function loadAnalytics(){
       clearTimeout(timeout);
     }
     const d=await r.json(); if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
+
+    // V272: chuẩn hóa ngay khi nhận response để cả lần render đầu tiên cũng không hiện 0 sai.
+    const apiOnline=Math.max(0,Number(d?.overview?.onlineNow||0));
+    if(apiOnline>0){
+      d.periods=d.periods||{};
+      d.periods.today=d.periods.today||{};
+      d.overview=d.overview||{};
+      d.periods.today.visitors=Math.max(Number(d.periods.today.visitors||0),apiOnline);
+      d.periods.today.views=Math.max(Number(d.periods.today.views||0),apiOnline);
+      d.overview.todayVisitors=Math.max(Number(d.overview.todayVisitors||0),apiOnline);
+      d.overview.todayViews=Math.max(Number(d.overview.todayViews||0),apiOnline);
+      if(Array.isArray(d.daily) && d.daily.length){
+        const last=d.daily[d.daily.length-1];
+        last.views=Math.max(Number(last?.views||0),apiOnline);
+        last.rawViews=Math.max(Number(last?.rawViews||0),apiOnline);
+      }
+    }
+
     const o=d.overview||{};
     mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`7 ngày: ${fmt(o.views7)}`;
     mTodayVisitors.textContent=fmt(o.todayVisitors); mVisitors30.textContent=`30 ngày: ${fmt(o.visitors30)}`;

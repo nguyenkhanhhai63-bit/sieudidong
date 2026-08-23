@@ -1856,3 +1856,10 @@ Sau khi thêm biến môi trường, redeploy website.
 - Visitor đang online được ghi vào `analytics:v3:visitors:day:*`.
 - Visitor online chưa có page view được bổ sung tối thiểu 1 lượt truy cập/ngày, không cộng trùng nhờ SADD.
 - Có invariant: nếu Online > 0 thì Khách truy cập/Lượt truy cập hôm nay không thể hiển thị 0.
+
+
+## V272 - Chặn mâu thuẫn Online > 0 nhưng Hôm nay = 0
+- Dashboard dùng `onlineNow` làm lower-bound hợp lệ cho Khách truy cập và Lượt truy cập Hôm nay.
+- Nếu online = 5 nhưng API period hôm nay trả 0, giao diện hiển thị tối thiểu 5.
+- Đồng bộ cả lần render đầu tiên, period Hôm nay và cột ngày hiện tại trên biểu đồ.
+- API trả thêm `analyticsVersion: v272`; request admin có `client=v272` để dễ xác minh deployment.
