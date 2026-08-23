@@ -2988,6 +2988,73 @@ body:not(.authenticated):not(.auth-pending) .wrap{
   }
 }
 
+
+/* =========================================================
+   V266 - Mobile drawer cleanup
+   ========================================================= */
+@media(max-width:760px){
+  /* Các tab chỉ dùng làm routing tuyệt đối không được lộ ra UI */
+  .admin-sidebar .routing-tab,
+  .admin-sidebar.mobile-open .routing-tab,
+  body.sidebar-collapsed .admin-sidebar.mobile-open .routing-tab{
+    display:none!important;
+    visibility:hidden!important;
+    width:0!important;
+    height:0!important;
+    min-height:0!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    position:absolute!important;
+    pointer-events:none!important;
+  }
+
+  /* Drawer rõ ràng, không chồng nút đóng lên logo */
+  .admin-sidebar.mobile-open{
+    width:min(86vw,320px)!important;
+    max-width:320px!important;
+    padding:16px 12px 18px!important;
+  }
+  .admin-sidebar.mobile-open .sidebar-brand{
+    min-height:58px!important;
+    padding:0 44px 14px 7px!important;
+    position:relative!important;
+  }
+  .admin-sidebar.mobile-open .sidebar-brand img{
+    flex:0 0 40px!important;
+  }
+
+  #mobileAdminMenuBtn.open{
+    left:auto!important;
+    right:calc(100vw - min(86vw,320px) + 12px)!important;
+    top:12px!important;
+    width:36px!important;
+    height:36px!important;
+    background:#fff!important;
+    border-color:#e4e7ec!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.10)!important;
+  }
+
+  /* Căn chữ menu, tránh wrap xấu */
+  .admin-sidebar.mobile-open .admin-tab > span:not(.nav-icon),
+  .admin-sidebar.mobile-open .sidebar-shortcut span:not(.shortcut-icon){
+    line-height:1.25!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    white-space:normal!important;
+  }
+
+  .admin-sidebar.mobile-open .sidebar-shortcut.used-sidebar-entry{
+    min-height:46px!important;
+  }
+
+  /* Không để bottom nav lộ trên drawer */
+  body:has(.admin-sidebar.mobile-open) .mobile-admin-nav{
+    opacity:.18!important;
+    pointer-events:none!important;
+  }
+}
+
 </style>
 </head>
 <body class="auth-pending">
@@ -5311,6 +5378,21 @@ document.addEventListener("DOMContentLoaded",function(){
   window.addEventListener('resize',()=>{
     if(window.innerWidth>760)closeDrawer();
   });
+})();
+</script>
+
+
+<script>
+/* V266 - bảo đảm các routing tab ẩn không bao giờ xuất hiện */
+(function(){
+  function markRoutingTabs(){
+    document.querySelectorAll('.admin-tab[aria-hidden="true"], .admin-tab[tabindex="-1"]').forEach(el=>{
+      el.classList.add('routing-tab');
+      el.style.display='none';
+    });
+  }
+  document.addEventListener('DOMContentLoaded',markRoutingTabs);
+  markRoutingTabs();
 })();
 </script>
 

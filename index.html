@@ -15,8 +15,15 @@
   <meta property="og:title" content="Siêu Di Động | Điện thoại & sản phẩm công nghệ">
   <meta property="og:description" content="Điện thoại, máy tính bảng và sản phẩm công nghệ tại Siêu Di Động Quy Nhơn.">
   <meta property="og:url" content="https://sieudidong.vn/">
-  <meta property="og:image" content="https://sieudidong.vn/assets/logo-square.jpg">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="https://sieudidong.vn/assets/share-logo-v265.jpg">
+  <meta property="og:image:secure_url" content="https://sieudidong.vn/assets/share-logo-v265.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1254">
+  <meta property="og:image:height" content="1254">
+  <meta property="og:image:alt" content="Logo Siêu Di Động">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="https://sieudidong.vn/assets/share-logo-v265.jpg">
+  <meta name="twitter:image:alt" content="Logo Siêu Di Động">
   <script id="seoOrganizationJsonLd" type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -41,7 +48,7 @@
     setMeta('meta[property="og:site_name"]',s.siteName);
     setMeta('meta[property="og:title"]',s.seoTitle);
     setMeta('meta[property="og:description"]',s.ogDescription||s.description);
-    setMeta('meta[property="og:image"]',s.logo);
+    // Ảnh chia sẻ dùng file riêng để Facebook/Zalo không lấy nhầm logo ngang hoặc ảnh cũ.
     const fav=document.getElementById('siteFavicon'); if(fav&&s.favicon) fav.href=s.favicon;
     const apple=document.querySelector('link[rel="apple-touch-icon"]'); if(apple&&s.favicon) apple.href=s.favicon;
     const org=document.getElementById('seoOrganizationJsonLd');

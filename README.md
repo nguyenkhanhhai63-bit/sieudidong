@@ -1801,3 +1801,18 @@ Sau khi thêm biến môi trường, redeploy website.
 - Drawer mobile hiển thị đầy đủ tên shop, tiêu đề nhóm và tên từng chức năng.
 - Khôi phục badge Mới/Riêng và trạng thái hệ thống.
 - Giữ menu dạng drawer + overlay của V263.
+
+
+## V265 - Sửa logo khi chia sẻ link
+- Dùng ảnh riêng `/assets/share-logo-v265.jpg` cho Facebook/Zalo.
+- Ảnh vuông 1254x1254, tránh bị cắt mất logo.
+- Thêm đầy đủ Open Graph image metadata và Twitter image.
+- Đổi URL ảnh mới để phá cache preview cũ.
+- Không để logo cấu hình trong admin ghi đè ảnh chia sẻ.
+
+
+## V266 - Fix drawer quản trị mobile
+- Ẩn tuyệt đối các routing tab AI/SEO/Máy cũ, không còn chồng chữ dọc.
+- Căn lại logo và nút đóng drawer.
+- Không để bottom navigation gây nhiễu khi drawer đang mở.
+- Giữ nguyên các mục menu thật và badge Mới/Riêng.
