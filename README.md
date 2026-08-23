@@ -1715,3 +1715,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Không dùng KiotViet cho máy cũ.
 - Mỗi chiếc quản lý riêng trong admin, có tối đa 8 ảnh thực tế, IMEI nội bộ, tình trạng, pin, bảo hành, phụ kiện, trạng thái Còn hàng/Đã bán.
 - Máy Đã bán tự ẩn khỏi website nhưng giữ trong lịch sử quản trị.
+
+
+## V254
+- Sửa menu quản trị: thêm khu vực SẢN PHẨM > Danh sách máy cũ hiển thị rõ ràng ở sidebar.

@@ -2771,6 +2771,13 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-item-state{display:inline-flex;margin-top:7px;padding:4px 8px;border-radius:999px;background:#eaf8ef;color:#087a36;font-size:10px;font-weight:850}.used-item-state.sold{background:#f2f4f7;color:#667085}.used-item-actions{display:grid;gap:6px}.used-item-actions button{height:32px;padding:0 10px;border:1px solid #e1e5ea;border-radius:8px;background:#fff;font-size:11px;font-weight:800}.used-item-actions .danger{color:#b42318}.used-empty{padding:28px 10px;text-align:center;color:#98a2b3;font-size:12px}
 @media(max-width:1050px){.used-admin-shell{grid-template-columns:1fr}}@media(max-width:620px){.used-admin-shell{padding:12px}.used-form-grid{grid-template-columns:1fr}.used-field.wide,.used-image-upload{grid-column:auto}.used-image-preview{grid-template-columns:repeat(3,1fr)}.used-item-card{grid-template-columns:72px minmax(0,1fr)}.used-item-photo{width:72px;height:72px}.used-item-actions{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}}
 
+
+.used-sidebar-entry{
+  border:1px solid rgba(255,90,0,.20)!important;
+  background:linear-gradient(90deg,rgba(255,90,0,.12),rgba(255,90,0,.035))!important;
+}
+.used-sidebar-entry .shortcut-icon{color:#ff5a00!important}
+.used-sidebar-entry b{background:#ff5a00!important;color:#fff!important}
 </style>
 </head>
 <body class="auth-pending">
@@ -2788,11 +2795,21 @@ body:not(.authenticated):not(.auth-pending) .wrap{
     <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
     <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
-    <button class="admin-tab" data-tab="used" type="button"><span class="nav-icon">▣</span><span>Máy cũ</span></button>
     <!-- Routing tabs: dùng để các shortcut AI/SEO kích hoạt đúng panel nhưng không hiển thị lặp trong sidebar -->
     <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
     <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
   </div></div>
+
+  <div class="sidebar-section-title">SẢN PHẨM</div>
+  <div class="sidebar-shortcuts used-sidebar-shortcuts">
+    <button type="button" class="sidebar-shortcut used-sidebar-entry" data-go-tab="used">
+      <span class="shortcut-icon">▣</span>
+      <span>Danh sách máy cũ</span>
+      <b>Riêng</b>
+    </button>
+  </div>
+  <!-- Nút routing ẩn để shortcut Máy cũ kích hoạt cùng cơ chế tab hiện có -->
+  <button class="admin-tab routing-tab" data-tab="used" type="button" aria-hidden="true" tabindex="-1" style="display:none!important"><span>Máy cũ</span></button>
 
   <div class="sidebar-section-title sidebar-ai-title">AI & TỐI ƯU</div>
   <div class="sidebar-shortcuts">
@@ -2806,7 +2823,7 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 
   <div class="sidebar-bottom">
     <div class="system-status"><i></i><span>Hệ thống hoạt động tốt</span></div>
-    <small>Siêu Di Động Admin • V253</small>
+    <small>Siêu Di Động Admin • V254</small>
   </div>
 </aside>
 
