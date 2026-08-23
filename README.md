@@ -1841,3 +1841,10 @@ Sau khi thêm biến môi trường, redeploy website.
 - Có logo Siêu Di Động, spinner, progress bar và 3 bước Xác thực → Tải dữ liệu → Hoàn tất.
 - Trạng thái thay đổi theo tiến trình thực tế của `loadAdmin()`.
 - Tối ưu riêng cho mobile.
+
+
+## V270 - Thống kê V3 chống lỗi online có số nhưng khách = 0
+- Tạo HyperLogLog visitor key V3 mới, không dùng key visitor cũ có nguy cơ sai kiểu Redis.
+- Heartbeat ghi visitor V3 và tự phục hồi ít nhất 1 lượt truy cập/ngày nếu page_view bị mất.
+- Admin lấy danh sách visitor online và nhập trực tiếp vào visitor V3 hôm nay trước khi tính số.
+- Vì online ZSET dùng visitor ID duy nhất, Khách truy cập hôm nay tối thiểu bằng số visitor đang online sau lần làm mới.
