@@ -1719,3 +1719,15 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 
 ## V254
 - Sửa menu quản trị: thêm khu vực SẢN PHẨM > Danh sách máy cũ hiển thị rõ ràng ở sidebar.
+
+
+## V256 - Fix lưu máy cũ
+- Báo rõ khi thiếu ảnh/tên/giá; tự cuộn tới trường lỗi.
+- Toast thành công/thất bại khi lưu.
+- Nén ảnh nhỏ hơn để tránh vượt giới hạn request khi tải nhiều ảnh.
+
+
+## V256 - Fix lưu Máy cũ
+- Khôi phục JavaScript Lưu/Sửa/Xóa/Tải danh sách đã bị thiếu ở V255.
+- Báo rõ khi thiếu ảnh, tên hoặc giá.
+- Tự nén ảnh nhỏ hơn để tránh request quá lớn.
