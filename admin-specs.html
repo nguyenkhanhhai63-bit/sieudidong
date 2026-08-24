@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V286 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V287 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V286: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V287: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V286: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V287: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V286 - Biểu đồ thống kê chuyên nghiệp */
+/* V287 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -7009,6 +7009,62 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",tag,{once:true});else tag();
   new MutationObserver(tag).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+
+<style id="v287-dashboard-order">
+/* Bỏ hoàn toàn mục Xu hướng truy cập */
+#analyticsCard .traffic-box{
+  display:none !important;
+}
+
+/* Đưa cụm Tra cứu bảo hành lên sát sau Hoạt động website */
+#analyticsCard .warranty-title{
+  margin-top:0 !important;
+}
+#analyticsCard .metric-grid-warranty{
+  margin-top:0 !important;
+  margin-bottom:14px !important;
+}
+
+/* Sau khi bỏ biểu đồ xu hướng, Tổng hợp tháng + Thiết bị chia đều hàng */
+@media(min-width:1021px){
+  #analyticsCard .analytics-grid>.monthly-box{
+    grid-column:span 6 !important;
+    min-height:280px !important;
+  }
+  #analyticsCard .analytics-grid>.device-box{
+    grid-column:span 6 !important;
+    min-height:280px !important;
+  }
+}
+</style>
+<script>
+(function(){
+  function moveWarrantyUp(){
+    const card=document.querySelector("#analyticsCard");
+    if(!card) return;
+    const main=card.querySelector(".metric-grid-main");
+    const warrantyGrid=card.querySelector(".metric-grid-warranty");
+    if(!main||!warrantyGrid) return;
+
+    let title=warrantyGrid.previousElementSibling;
+    if(title && !title.classList.contains("warranty-title")){
+      const txt=(title.textContent||"").toLowerCase();
+      if(txt.includes("tra cứu bảo hành")) title.classList.add("warranty-title");
+    }
+    title=card.querySelector(".warranty-title") || title;
+
+    if(title && main.nextElementSibling!==title){
+      main.insertAdjacentElement("afterend", title);
+      title.insertAdjacentElement("afterend", warrantyGrid);
+    }
+  }
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",moveWarrantyUp,{once:true});
+  }else moveWarrantyUp();
+  setTimeout(moveWarrantyUp,300);
 })();
 </script>
 
