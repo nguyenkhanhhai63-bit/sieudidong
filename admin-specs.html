@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V299 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V300 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V299: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V300: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V299: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V300: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V299 - Biểu đồ thống kê chuyên nghiệp */
+/* V300 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V299 - Dashboard compact giống ảnh demo
+   V300 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V299 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V300 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V299: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V300: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4867,7 +4867,7 @@ body.authenticated{
 
 
 <style id="v295-dashboard-grid">
-/* V299: compact analytics grid matching approved demo */
+/* V300: compact analytics grid matching approved demo */
 .analytics-grid{
   display:grid!important;
   grid-template-columns:repeat(10,minmax(0,1fr))!important;
@@ -4910,7 +4910,7 @@ body.authenticated{
 
 
 <style id="v298-dashboard-relayout">
-/* V299 - Bố trí lại các card thống kê cho cân đối */
+/* V300 - Bố trí lại các card thống kê cho cân đối */
 @media(min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5036,7 +5036,7 @@ body.authenticated{
 
 
 <style id="v299-five-summary-cards">
-/* V299: 5 mục thống kê quan trọng nằm chung một hàng */
+/* V300: 5 mục thống kê quan trọng nằm chung một hàng */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5111,6 +5111,124 @@ body.authenticated{
   #analyticsCard .compare-products-box,
   #analyticsCard .compare-pairs-box{
     grid-column:1!important;
+  }
+}
+</style>
+
+
+<style id="v300-exact-dashboard-layout">
+/* V300 - ép đúng thứ tự và hàng của dashboard */
+@media (min-width:1200px){
+  #analyticsCard .analytics-grid{
+    display:grid!important;
+    grid-template-columns:repeat(10,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+
+  /* Hàng 1: Tổng hợp tháng + Thiết bị */
+  #analyticsCard .monthly-box{
+    grid-column:1 / span 6!important;
+    grid-row:1!important;
+  }
+  #analyticsCard .device-box{
+    grid-column:7 / span 4!important;
+    grid-row:1!important;
+  }
+
+  /* Hàng 2: đúng 5 card, mỗi card 2 cột */
+  #analyticsCard .device-model-box{
+    grid-column:1 / span 2!important;
+    grid-row:2!important;
+  }
+  #analyticsCard .os-box{
+    grid-column:3 / span 2!important;
+    grid-row:2!important;
+  }
+  #analyticsCard .products-box{
+    grid-column:5 / span 2!important;
+    grid-row:2!important;
+  }
+  #analyticsCard .keywords-box{
+    grid-column:7 / span 2!important;
+    grid-row:2!important;
+  }
+  #analyticsCard .compare-products-box{
+    grid-column:9 / span 2!important;
+    grid-row:2!important;
+  }
+
+  #analyticsCard .device-model-box,
+  #analyticsCard .os-box,
+  #analyticsCard .products-box,
+  #analyticsCard .keywords-box,
+  #analyticsCard .compare-products-box{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    overflow:hidden!important;
+    align-self:stretch!important;
+  }
+
+  /* Hàng 3: cặp máy */
+  #analyticsCard .compare-pairs-box{
+    grid-column:1 / -1!important;
+    grid-row:3!important;
+  }
+
+  #analyticsCard .brands-box{
+    grid-column:1 / -1!important;
+  }
+
+  /* Đảm bảo Top 5 không làm card cao lệch nhau */
+  #analyticsCard .device-model-box .ranklist,
+  #analyticsCard .os-box .ranklist,
+  #analyticsCard .products-box .ranklist,
+  #analyticsCard .keywords-box .ranklist,
+  #analyticsCard .compare-products-box .ranklist{
+    height:205px!important;
+    overflow:hidden!important;
+  }
+
+  #analyticsCard .device-model-box .more-btn,
+  #analyticsCard .os-box .more-btn,
+  #analyticsCard .products-box .more-btn,
+  #analyticsCard .keywords-box .more-btn,
+  #analyticsCard .compare-products-box .more-btn{
+    margin-top:auto!important;
+  }
+}
+
+@media (min-width:900px) and (max-width:1199px){
+  #analyticsCard .analytics-grid{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+  #analyticsCard .monthly-box{grid-column:1 / span 4!important}
+  #analyticsCard .device-box{grid-column:5 / span 2!important}
+  #analyticsCard .device-model-box,
+  #analyticsCard .os-box,
+  #analyticsCard .products-box,
+  #analyticsCard .keywords-box,
+  #analyticsCard .compare-products-box{
+    grid-column:span 2!important;
+    grid-row:auto!important;
+  }
+  #analyticsCard .compare-pairs-box{grid-column:1/-1!important;grid-row:auto!important}
+}
+
+@media(max-width:899px){
+  #analyticsCard .analytics-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+  }
+  #analyticsCard .analytics-grid>.abox{
+    grid-column:1!important;
+    grid-row:auto!important;
+    height:auto!important;
+    max-height:none!important;
   }
 }
 </style>
@@ -8092,7 +8210,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 (function(){
-  function tagV299Boxes(){
+  function tagV300Boxes(){
     document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
       const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
       if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
@@ -8107,10 +8225,10 @@ document.addEventListener("DOMContentLoaded",function(){
     });
   }
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",tagV299Boxes,{once:true});
-  }else tagV299Boxes();
-  setTimeout(tagV299Boxes,300);
-  setTimeout(tagV299Boxes,1000);
+    document.addEventListener("DOMContentLoaded",tagV300Boxes,{once:true});
+  }else tagV300Boxes();
+  setTimeout(tagV300Boxes,300);
+  setTimeout(tagV300Boxes,1000);
 })();
 </script>
 
