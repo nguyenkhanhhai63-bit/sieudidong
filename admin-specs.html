@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V300 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V301 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V300: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V301: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V300: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V301: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V300 - Biểu đồ thống kê chuyên nghiệp */
+/* V301 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V300 - Dashboard compact giống ảnh demo
+   V301 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V300 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V301 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V300: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V301: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4867,7 +4867,7 @@ body.authenticated{
 
 
 <style id="v295-dashboard-grid">
-/* V300: compact analytics grid matching approved demo */
+/* V301: compact analytics grid matching approved demo */
 .analytics-grid{
   display:grid!important;
   grid-template-columns:repeat(10,minmax(0,1fr))!important;
@@ -4910,7 +4910,7 @@ body.authenticated{
 
 
 <style id="v298-dashboard-relayout">
-/* V300 - Bố trí lại các card thống kê cho cân đối */
+/* V301 - Bố trí lại các card thống kê cho cân đối */
 @media(min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5036,7 +5036,7 @@ body.authenticated{
 
 
 <style id="v299-five-summary-cards">
-/* V300: 5 mục thống kê quan trọng nằm chung một hàng */
+/* V301: 5 mục thống kê quan trọng nằm chung một hàng */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5117,7 +5117,7 @@ body.authenticated{
 
 
 <style id="v300-exact-dashboard-layout">
-/* V300 - ép đúng thứ tự và hàng của dashboard */
+/* V301 - ép đúng thứ tự và hàng của dashboard */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5229,6 +5229,116 @@ body.authenticated{
     grid-row:auto!important;
     height:auto!important;
     max-height:none!important;
+  }
+}
+</style>
+
+
+<style id="v301-compact-compare-pairs">
+/* V301 - Thu gọn Cặp máy được so sánh nhiều */
+#comparePairRanks{
+  padding:8px 12px 12px!important;
+}
+.compare-pair-row-compact{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 42px minmax(0,1fr) 64px!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:56px!important;
+  padding:8px 10px!important;
+  margin-bottom:7px!important;
+  border:1px solid #e8edf3!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+.compare-pair-index{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:#fff1e8!important;
+  color:#ff5a00!important;
+  font-size:11px!important;
+  font-weight:900!important;
+}
+.compare-pair-machine-compact{
+  min-width:0!important;
+}
+.compare-pair-machine-compact span{
+  display:block!important;
+  margin-bottom:2px!important;
+  color:#98a2b3!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.compare-pair-machine-compact strong{
+  display:block!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  color:#101828!important;
+  font-size:10px!important;
+  line-height:1.25!important;
+}
+.compare-pair-vs-compact{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#ff5a00!important;
+  color:#fff!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+.compare-pair-count-compact{
+  text-align:right!important;
+}
+.compare-pair-count-compact strong{
+  display:block!important;
+  color:#ff5a00!important;
+  font-size:18px!important;
+  line-height:1!important;
+}
+.compare-pair-count-compact span{
+  display:block!important;
+  margin-top:3px!important;
+  color:#98a2b3!important;
+  font-size:7.5px!important;
+}
+.compare-pair-more-btn{
+  display:block!important;
+  width:100%!important;
+  margin-top:8px!important;
+  padding:10px!important;
+  border:0!important;
+  border-top:1px solid #edf0f4!important;
+  background:transparent!important;
+  color:#ff5a00!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+.compare-pair-more-btn:hover{
+  background:#fff7f2!important;
+}
+#analyticsCard .compare-pairs-box{
+  min-height:0!important;
+  height:auto!important;
+}
+
+@media(max-width:760px){
+  .compare-pair-row-compact{
+    grid-template-columns:28px minmax(0,1fr) 34px minmax(0,1fr) 48px!important;
+    gap:6px!important;
+    padding:7px!important;
+  }
+  .compare-pair-machine-compact strong{
+    font-size:9px!important;
+  }
+  .compare-pair-count-compact strong{
+    font-size:15px!important;
   }
 }
 </style>
@@ -6120,42 +6230,44 @@ function renderComparePairs(list){
     return;
   }
 
-  list.forEach((x,i)=>{
-    const raw=String(x.name||"");
-    const parts=raw.split(/\s*↔\s*/);
-    const left=(parts[0]||raw).trim();
-    const right=(parts.slice(1).join(" ↔ ")||"").trim();
+  function render(expanded){
+    host.innerHTML="";
+    const rows=expanded ? list : list.slice(0,5);
 
-    const row=document.createElement("div");
-    row.className="compare-pair-card";
+    rows.forEach((x,i)=>{
+      const raw=String(x.name||"");
+      const parts=raw.split(/\s*↔\s*/);
+      const left=(parts[0]||raw).trim();
+      const right=(parts.slice(1).join(" ↔ ")||"").trim();
 
-    const rank=document.createElement("div");
-    rank.className="compare-pair-rank";
-    rank.textContent=i+1;
+      const row=document.createElement("div");
+      row.className="compare-pair-row-compact";
+      row.innerHTML=`
+        <div class="compare-pair-index">${i+1}</div>
+        <div class="compare-pair-machine-compact" title="${left.replace(/"/g,"&quot;")}">
+          <span>MÁY A</span><strong>${left||"—"}</strong>
+        </div>
+        <div class="compare-pair-vs-compact">VS</div>
+        <div class="compare-pair-machine-compact" title="${right.replace(/"/g,"&quot;")}">
+          <span>MÁY B</span><strong>${right||"—"}</strong>
+        </div>
+        <div class="compare-pair-count-compact">
+          <strong>${fmt(x.value)}</strong><span>lượt</span>
+        </div>`;
+      host.appendChild(row);
+    });
 
-    const matchup=document.createElement("div");
-    matchup.className="compare-pair-matchup";
+    if(list.length>5){
+      const more=document.createElement("button");
+      more.type="button";
+      more.className="compare-pair-more-btn";
+      more.textContent=expanded ? "Thu gọn" : "Xem thêm";
+      more.onclick=()=>render(!expanded);
+      host.appendChild(more);
+    }
+  }
 
-    const machineA=document.createElement("div");
-    machineA.className="compare-pair-machine machine-a";
-    machineA.innerHTML=`<span class="compare-pair-label">MÁY A</span><strong>${left||"—"}</strong>`;
-
-    const vs=document.createElement("div");
-    vs.className="compare-pair-vs";
-    vs.textContent="VS";
-
-    const machineB=document.createElement("div");
-    machineB.className="compare-pair-machine machine-b";
-    machineB.innerHTML=`<span class="compare-pair-label">MÁY B</span><strong>${right||"—"}</strong>`;
-
-    const count=document.createElement("div");
-    count.className="compare-pair-count";
-    count.innerHTML=`<strong>${fmt(x.value)}</strong><span>lượt so sánh</span>`;
-
-    matchup.append(machineA,vs,machineB);
-    row.append(rank,matchup,count);
-    host.appendChild(row);
-  });
+  render(false);
 }
 function renderWarrantyRecent(items=[]){
   const host=document.getElementById("warrantyRecentList");
@@ -8210,7 +8322,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 (function(){
-  function tagV300Boxes(){
+  function tagV301Boxes(){
     document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
       const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
       if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
@@ -8225,10 +8337,10 @@ document.addEventListener("DOMContentLoaded",function(){
     });
   }
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",tagV300Boxes,{once:true});
-  }else tagV300Boxes();
-  setTimeout(tagV300Boxes,300);
-  setTimeout(tagV300Boxes,1000);
+    document.addEventListener("DOMContentLoaded",tagV301Boxes,{once:true});
+  }else tagV301Boxes();
+  setTimeout(tagV301Boxes,300);
+  setTimeout(tagV301Boxes,1000);
 })();
 </script>
 
