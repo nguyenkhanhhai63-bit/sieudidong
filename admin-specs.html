@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V288 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V289 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V288: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V289: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V288: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V289: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V288 - Biểu đồ thống kê chuyên nghiệp */
+/* V289 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -7115,6 +7115,67 @@ document.addEventListener("DOMContentLoaded",function(){
   } else promoteRecentWarranty();
   setTimeout(promoteRecentWarranty,300);
   setTimeout(promoteRecentWarranty,1000);
+})();
+</script>
+
+
+<style id="v289-warranty-table-top">
+/* Bảng lịch sử tra cứu bảo hành là nội dung cần ưu tiên */
+#analyticsCard .v289-warranty-history{
+  width:100% !important;
+  margin:12px 0 18px !important;
+  grid-column:1/-1 !important;
+}
+#analyticsCard .v289-warranty-history{
+  max-height:430px;
+  overflow:auto;
+}
+#analyticsCard .v289-warranty-history table{
+  width:100% !important;
+  min-width:720px;
+}
+#analyticsCard .v289-warranty-history thead{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#fff;
+}
+</style>
+<script>
+(function(){
+ function promoteWarrantyHistory(){
+   const card=document.querySelector("#analyticsCard");
+   if(!card) return;
+
+   /* Tìm chính xác card có tiêu đề "Khách tra cứu bảo hành gần đây" */
+   const all=[...card.querySelectorAll("*")];
+   const title=all.find(el=>{
+     const own=[...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(" ").replace(/\s+/g," ").trim().toLowerCase();
+     return own==="khách tra cứu bảo hành gần đây";
+   }) || all.find(el=>(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase()==="khách tra cứu bảo hành gần đây");
+   if(!title) return;
+
+   let box=title;
+   while(box.parentElement && box.parentElement!==card){
+     if(box.querySelector && box.querySelector("table")) break;
+     box=box.parentElement;
+   }
+   if(!box.querySelector || !box.querySelector("table")) return;
+   box.classList.add("v289-warranty-history");
+
+   /* Đưa nguyên bảng này lên ngay sau 3 ô KPI tra cứu bảo hành */
+   const warrantyGrid=card.querySelector(".metric-grid-warranty");
+   if(warrantyGrid){
+      warrantyGrid.insertAdjacentElement("afterend",box);
+   } else {
+      const main=card.querySelector(".metric-grid-main");
+      if(main) main.insertAdjacentElement("afterend",box);
+   }
+ }
+ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",promoteWarrantyHistory,{once:true});
+ else promoteWarrantyHistory();
+ setTimeout(promoteWarrantyHistory,250);
+ setTimeout(promoteWarrantyHistory,900);
 })();
 </script>
 
