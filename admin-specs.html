@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V289 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V291 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V289: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V291: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V289: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V291: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V289 - Biểu đồ thống kê chuyên nghiệp */
+/* V291 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4431,6 +4431,347 @@ body.authenticated{
   .metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}
   .traffic-box{grid-column:span 7!important}.monthly-box{grid-column:span 5!important}
   .device-box,.device-model-box,.products-box,.keywords-box,.os-box{grid-column:span 4!important}
+}
+</style>
+
+
+<style id="v291-dashboard-compact">
+/* =========================================================
+   V291 - Dashboard compact giống ảnh demo
+   ========================================================= */
+@media(min-width:1021px){
+  body.authenticated{
+    background:#f7f9fc!important;
+  }
+
+  .admin-sidebar{
+    display:none!important;
+  }
+
+  .admin-topbar{
+    left:0!important;
+    height:64px!important;
+    padding:0 30px!important;
+    background:#fff!important;
+    border-bottom:1px solid #e8edf3!important;
+  }
+
+  .wrap{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:78px 28px 28px!important;
+  }
+
+  #analyticsCard{
+    width:100%!important;
+    max-width:1540px!important;
+    margin:0 auto!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+  }
+
+  .dashboard-welcome,
+  #analyticsCard>.head,
+  .analytics-periodbar{
+    border:1px solid #e8edf3!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 5px 18px rgba(15,23,42,.045)!important;
+  }
+
+  .dashboard-welcome{
+    min-height:78px!important;
+    padding:16px 20px!important;
+    margin-bottom:10px!important;
+    background:linear-gradient(105deg,#fff,#fffaf7)!important;
+  }
+
+  #analyticsCard>.head{
+    min-height:58px!important;
+    padding:13px 16px!important;
+    margin-bottom:10px!important;
+  }
+
+  .analytics-periodbar{
+    min-height:52px!important;
+    padding:8px 12px!important;
+    margin-bottom:10px!important;
+  }
+
+  .period-tab{
+    height:32px!important;
+    min-width:70px!important;
+    padding:0 11px!important;
+    border-radius:8px!important;
+    font-size:9.5px!important;
+  }
+
+  /* KPI dải ngang */
+  .metric-grid.metric-grid-main{
+    display:grid!important;
+    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    gap:0!important;
+    margin-bottom:10px!important;
+    border:1px solid #e8edf3!important;
+    border-radius:14px!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    box-shadow:0 5px 18px rgba(15,23,42,.045)!important;
+  }
+
+  .metric-grid.metric-grid-main .metric{
+    min-height:96px!important;
+    padding:13px 12px 11px 52px!important;
+    border:0!important;
+    border-right:1px solid #edf1f5!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+
+  .metric-grid.metric-grid-main .metric:last-child{
+    border-right:0!important;
+  }
+
+  .metric-grid.metric-grid-main .metric:before{
+    display:none!important;
+  }
+
+  .metric-grid.metric-grid-main .metric small{
+    font-size:8.8px!important;
+    margin-bottom:7px!important;
+  }
+
+  .metric-grid.metric-grid-main .metric strong{
+    font-size:24px!important;
+    margin:0!important;
+    line-height:1!important;
+  }
+
+  .metric-grid.metric-grid-main .metric em{
+    font-size:8px!important;
+    margin-top:7px!important;
+  }
+
+  .metric-grid.metric-grid-main .metric:after{
+    position:absolute!important;
+    left:13px!important;
+    top:18px!important;
+    width:30px!important;
+    height:30px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:50%!important;
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  .metric-grid.metric-grid-main .metric:nth-child(1):after{content:"👥";background:#eaf1ff}
+  .metric-grid.metric-grid-main .metric:nth-child(2):after{content:"🌐";background:#eaf9ef}
+  .metric-grid.metric-grid-main .metric:nth-child(3):after{content:"⌁";background:#f2ebff;color:#7c3aed}
+  .metric-grid.metric-grid-main .metric:nth-child(4):after{content:"◉";background:#fff1e8;color:#ea580c}
+  .metric-grid.metric-grid-main .metric:nth-child(5):after{content:"↔";background:#e7f8fc;color:#0891b2}
+  .metric-grid.metric-grid-main .metric:nth-child(6):after{content:"Z";background:#fdebf4;color:#db2777}
+  .metric-grid.metric-grid-main .metric:nth-child(7):after{content:"▥";background:#eef1f5;color:#475569}
+
+  /* Tra cứu bảo hành */
+  .warranty-title{
+    margin:10px 0 7px!important;
+  }
+
+  .metric-grid.metric-grid-warranty{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+    margin-bottom:10px!important;
+  }
+
+  .metric-grid.metric-grid-warranty .metric{
+    min-height:82px!important;
+    padding:12px!important;
+    border:1px solid #e8edf3!important;
+    border-radius:12px!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.035)!important;
+  }
+
+  /* Bảng khách tra cứu bảo hành */
+  #analyticsCard .v290-warranty-history,
+  #analyticsCard .v289-warranty-history,
+  #analyticsCard .recent-warranty-promoted,
+  #analyticsCard .v291-warranty-history{
+    width:100%!important;
+    max-height:360px!important;
+    margin:0 0 12px!important;
+    border:1px solid #e8edf3!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    box-shadow:0 5px 18px rgba(15,23,42,.045)!important;
+    overflow:auto!important;
+  }
+
+  #analyticsCard .v291-warranty-history table{
+    width:100%!important;
+    min-width:760px!important;
+  }
+
+  #analyticsCard .v291-warranty-history thead{
+    position:sticky!important;
+    top:0!important;
+    z-index:3!important;
+    background:#f8fafc!important;
+  }
+
+  /* Bỏ xu hướng truy cập */
+  #analyticsCard .traffic-box{
+    display:none!important;
+  }
+
+  /* Grid dưới dạng 6 card compact giống ảnh */
+  .analytics-grid{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    gap:10px!important;
+    margin-top:0!important;
+  }
+
+  .analytics-grid>.abox{
+    border:1px solid #e8edf3!important;
+    border-radius:13px!important;
+    background:#fff!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.035)!important;
+    overflow:hidden!important;
+    min-height:230px!important;
+  }
+
+  .analytics-grid>.monthly-box,
+  .analytics-grid>.device-box,
+  .analytics-grid>.products-box,
+  .analytics-grid>.device-model-box,
+  .analytics-grid>.keywords-box,
+  .analytics-grid>.os-box{
+    grid-column:span 2!important;
+  }
+
+  /* những khối phụ xuống hàng sau */
+  .analytics-grid>.compare-pairs-box,
+  .analytics-grid>.warranty-analytics-box{
+    grid-column:span 6!important;
+  }
+
+  .abox h2{
+    min-height:40px!important;
+    padding:0 12px!important;
+    margin:0!important;
+    border-bottom:0!important;
+    font-size:10.5px!important;
+    font-weight:900!important;
+  }
+
+  .abox h2:before{
+    display:none!important;
+  }
+
+  .monthly-analytics{
+    padding:5px 12px 10px!important;
+  }
+
+  .month-row{
+    grid-template-columns:48px 1fr 32px!important;
+    gap:7px!important;
+    padding:5px 0!important;
+  }
+
+  .month-label,
+  .month-value{
+    font-size:8.5px!important;
+  }
+
+  .month-meta{
+    font-size:7px!important;
+  }
+
+  .month-track{
+    height:5px!important;
+  }
+
+  .device-chart-wrap{
+    min-height:180px!important;
+    padding:8px 10px!important;
+    grid-template-columns:100px 1fr!important;
+    gap:7px!important;
+  }
+
+  .device-donut{
+    width:96px!important;
+    height:96px!important;
+  }
+
+  .device-donut-hole{
+    inset:20px!important;
+  }
+
+  .device-donut-hole strong{
+    font-size:16px!important;
+  }
+
+  .device-donut-hole span{
+    font-size:7px!important;
+  }
+
+  .device-legend .devrow{
+    min-height:25px!important;
+    padding:4px 0!important;
+    font-size:8.5px!important;
+  }
+
+  .ranklist{
+    padding:3px 11px 9px!important;
+  }
+
+  .rankrow{
+    min-height:30px!important;
+    padding:5px 0!important;
+    font-size:8.7px!important;
+  }
+
+  .rankrow span:first-child{
+    width:18px!important;
+    height:18px!important;
+    border-radius:5px!important;
+    background:#ff6b1a!important;
+    color:#fff!important;
+    font-size:7.5px!important;
+  }
+
+  .rankvalue{
+    font-size:8.7px!important;
+  }
+
+  .device-analytics-note{
+    display:none!important;
+  }
+}
+
+@media(min-width:1021px) and (max-width:1350px){
+  .metric-grid.metric-grid-main{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+
+  .analytics-grid>.monthly-box,
+  .analytics-grid>.device-box,
+  .analytics-grid>.products-box,
+  .analytics-grid>.device-model-box,
+  .analytics-grid>.keywords-box,
+  .analytics-grid>.os-box{
+    grid-column:span 4!important;
+  }
+}
+
+@media(max-width:1020px){
+  .admin-sidebar{
+    display:flex!important;
+  }
 }
 </style>
 
@@ -7176,6 +7517,126 @@ document.addEventListener("DOMContentLoaded",function(){
  else promoteWarrantyHistory();
  setTimeout(promoteWarrantyHistory,250);
  setTimeout(promoteWarrantyHistory,900);
+})();
+</script>
+
+
+<style id="v290-warranty-under-summary">
+#analyticsCard .v290-warranty-history{
+  width:100%!important;
+  margin:14px 0 18px!important;
+  grid-column:1/-1!important;
+  max-height:430px!important;
+  overflow:auto!important;
+}
+#analyticsCard .v290-warranty-history table{
+  width:100%!important;
+  min-width:720px!important;
+}
+#analyticsCard .v290-warranty-history thead{
+  position:sticky!important;
+  top:0!important;
+  z-index:3!important;
+  background:#fff!important;
+}
+</style>
+
+<script>
+(function(){
+  function findRecentWarrantyBox(card){
+    const candidates=[...card.querySelectorAll("section,article,div")];
+    for(const el of candidates){
+      const text=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+      if(!text.includes("khách tra cứu bảo hành gần đây")) continue;
+      if(el.querySelector("table")) return el;
+    }
+    return null;
+  }
+
+  function moveWarrantyUnderMonthlySummary(){
+    const card=document.querySelector("#analyticsCard");
+    if(!card) return;
+
+    let box=findRecentWarrantyBox(card);
+    if(!box) return;
+    box.classList.remove("v289-warranty-history","recent-warranty-promoted");
+    box.classList.add("v290-warranty-history");
+
+    /* tìm đúng card "Tổng hợp theo tháng" */
+    const monthly=[...card.querySelectorAll(".abox")].find(el=>{
+      const title=(el.querySelector("h2")?.textContent||"").trim().toLowerCase();
+      return title.includes("tổng hợp theo tháng");
+    });
+    if(!monthly) return;
+
+    /*
+      Đặt bảng ngay bên dưới dòng chứa Tổng hợp theo tháng.
+      Nếu monthly nằm trong analytics-grid thì chèn bảng ngay sau monthly trong grid
+      và bắt bảng span toàn hàng.
+    */
+    const grid=monthly.closest(".analytics-grid");
+    if(grid){
+      monthly.insertAdjacentElement("afterend",box);
+      box.style.gridColumn="1 / -1";
+      box.style.order=(Number(getComputedStyle(monthly).order)||0)+1;
+    }else{
+      monthly.insertAdjacentElement("afterend",box);
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",moveWarrantyUnderMonthlySummary,{once:true});
+  }else{
+    moveWarrantyUnderMonthlySummary();
+  }
+  setTimeout(moveWarrantyUnderMonthlySummary,250);
+  setTimeout(moveWarrantyUnderMonthlySummary,900);
+})();
+</script>
+
+
+<script>
+(function(){
+  function tagCompactDashboard(){
+    const card=document.querySelector("#analyticsCard");
+    if(!card)return;
+
+    document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
+      const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
+      if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
+      if(t.includes("thiết bị truy cập")||t.includes("loại thiết bị")) box.classList.add("device-box");
+      if(t.includes("sản phẩm được xem")) box.classList.add("products-box");
+      if(t.includes("điện thoại khách")) box.classList.add("device-model-box");
+      if(t.includes("từ khóa khách")) box.classList.add("keywords-box");
+      if(t.includes("hệ điều hành")) box.classList.add("os-box");
+    });
+
+    /* xác định chính xác bảng khách tra cứu bảo hành */
+    const candidates=[...card.querySelectorAll("section,article,div")];
+    const history=candidates.find(el=>{
+      const txt=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+      return txt.includes("khách tra cứu bảo hành gần đây") && !!el.querySelector("table");
+    });
+
+    if(history){
+      history.classList.remove("v289-warranty-history","v290-warranty-history","recent-warranty-promoted");
+      history.classList.add("v291-warranty-history");
+
+      const warrantyGrid=card.querySelector(".metric-grid-warranty");
+      if(warrantyGrid && warrantyGrid.nextElementSibling!==history){
+        warrantyGrid.insertAdjacentElement("afterend",history);
+      }
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",tagCompactDashboard,{once:true});
+  }else{
+    tagCompactDashboard();
+  }
+
+  setTimeout(tagCompactDashboard,300);
+  setTimeout(tagCompactDashboard,1000);
 })();
 </script>
 

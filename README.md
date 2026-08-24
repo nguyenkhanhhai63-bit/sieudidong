@@ -1955,3 +1955,11 @@ Quy tắc:
 - Thiết bị truy cập chuyển thành donut chart + legend.
 - Tổng hợp tháng được polish thành progress bars.
 - Không dùng dữ liệu giả; biểu đồ đọc trực tiếp `daily`, `devices`, `monthly` từ API thống kê.
+
+
+## V291 - Dashboard compact giống ảnh demo
+- Bảng khách tra cứu bảo hành đặt ngay sau 3 KPI bảo hành.
+- Bỏ Xu hướng truy cập.
+- 6 card dưới cùng chia đều 6 cột trên màn hình rộng.
+- Tổng hợp tháng, donut thiết bị, sản phẩm, điện thoại, từ khóa, hệ điều hành đều thu gọn.
+- Desktop bỏ sidebar, mobile giữ menu hiện tại.
