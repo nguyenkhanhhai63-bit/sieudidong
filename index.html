@@ -60,7 +60,7 @@
   <link rel="stylesheet" href="/styles.css?v=261">
 
 <style id="v319-product-balance">
-/* V319 - cân lại trang chi tiết, không can thiệp logic ảnh */
+/* V320 - cân lại trang chi tiết, không can thiệp logic ảnh */
 
 @media(min-width:1180px){
   /* Khung chi tiết rộng hơn, bớt khoảng trắng hai bên */
@@ -267,6 +267,81 @@
   #inlineProductDetail .detail-card,
   #inlineProductDetail .product-detail-card{
     padding:12px!important;
+  }
+}
+</style>
+
+
+<style id="v320-align-detail-with-header">
+/* V320 - Trang chi tiết thẳng hàng với header */
+:root{
+  --v320-site-width: 1020px;
+}
+
+/* Header và phần nội dung chi tiết dùng chung một trục */
+@media(min-width:1180px){
+  .commerce-header-inner.sdd-header-main,
+  .sdd-top-strip-inner{
+    width:min(var(--v320-site-width),calc(100% - 48px))!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  #inlineProductDetail:not([hidden]){
+    width:min(var(--v320-site-width),calc(100% - 48px))!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  /* Xóa mọi giới hạn con khiến card bị co nhỏ hơn container */
+  #inlineProductDetail > *,
+  #inlineProductDetail .detail-page,
+  #inlineProductDetail .detail-container,
+  #inlineProductDetail .detail-content,
+  #inlineProductDetail .product-detail-container{
+    max-width:none!important;
+  }
+
+  /* Card chính + thông số chiếm đủ bề ngang của trục */
+  #inlineProductDetail .detail-main,
+  #inlineProductDetail .detail-card,
+  #inlineProductDetail .product-detail-card,
+  #inlineProductDetail .product-main-card,
+  #inlineProductDetail .specs-section,
+  #inlineProductDetail .technical-specs,
+  #inlineProductDetail .product-specs{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+}
+
+/* Desktop rộng: cho khung hơi lớn hơn header logo/search nhưng vẫn cùng tâm */
+@media(min-width:1500px){
+  :root{ --v320-site-width: 1100px; }
+}
+
+/* Laptop */
+@media(min-width:900px) and (max-width:1179px){
+  .commerce-header-inner.sdd-header-main,
+  .sdd-top-strip-inner,
+  #inlineProductDetail:not([hidden]){
+    width:calc(100% - 32px)!important;
+    max-width:none!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:899px){
+  #inlineProductDetail:not([hidden]){
+    width:calc(100% - 18px)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
   }
 }
 </style>

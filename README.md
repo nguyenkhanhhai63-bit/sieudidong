@@ -2008,3 +2008,10 @@ Quy tắc:
 - Tăng vùng ảnh, cân lại cột thông tin mua và thu gọn sản phẩm tương tự.
 - Hai nút mua hàng / so sánh nằm cân đối cùng hàng trên desktop.
 - Bảng thông số thẳng hàng với card sản phẩm phía trên.
+
+
+## V320 - Căn trang chi tiết theo header
+- Header và trang chi tiết dùng chung chiều rộng container.
+- Breadcrumb, tiêu đề, card sản phẩm và bảng thông số thẳng cùng trục trái/phải.
+- Bỏ các max-width con khiến phần chi tiết bị co vào giữa.
+- Không thay đổi logic ảnh, màu, dung lượng, mua hàng hoặc so sánh.
