@@ -1,0 +1,10 @@
+Đổi icon thống kê:
+1 Khách truy cập: người dùng
+2 Lượt truy cập: địa cầu
+3 Đang online: nhịp realtime
+4 Xem chi tiết sản phẩm: mắt
+5 Lượt so sánh: 2 mũi tên
+6 Bấm Zalo: bong bóng chat
+7 Khách dùng AI chatbox: robot AI
+8 Tổng lượt truy cập hệ thống: biểu đồ
+Giữ bố cục 1 hàng desktop của V326.

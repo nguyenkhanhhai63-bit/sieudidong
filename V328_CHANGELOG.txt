@@ -1,0 +1,1 @@
+V328: Xóa mục 'Tổng lượt truy cập hệ thống' khỏi khối Hoạt động website. Desktop còn 7 ô và tự chia đều trên đúng một hàng. Giữ nguyên dữ liệu/thống kê các mục khác.
