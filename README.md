@@ -1938,3 +1938,12 @@ Quy tắc:
 - Tăng font tiêu đề, bộ lọc thời gian và bảng dữ liệu.
 - Biểu đồ cao hơn, các card dưới rộng và thoáng hơn.
 - Mobile cũng tăng nhẹ kích thước chữ/số.
+
+
+## V284 - Dashboard chuyên nghiệp theo ảnh demo
+- Sidebar sáng, hiện đại, giao diện kiểu hệ thống quản trị chuyên nghiệp.
+- Header/topbar gọn và tách rõ vùng thao tác.
+- KPI card có màu nhận diện riêng, hierarchy rõ ràng.
+- Biểu đồ / tháng / thiết bị chia bố cục 6-3-3.
+- Các bảng bên dưới bố trí card đồng đều, giảm cảm giác rối.
+- Giữ nguyên toàn bộ logic và số liệu backend hiện tại.
