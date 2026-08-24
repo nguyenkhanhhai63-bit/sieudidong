@@ -230,6 +230,89 @@ body{
 }
 </style>
 
+
+<style id="v309-installment-polish">
+@media(min-width:1181px){
+  .tg-wrap{max-width:1540px!important;padding-top:18px!important}
+  .tg-shell{border-radius:22px!important}
+
+  .tg-hero{
+    grid-template-columns:minmax(0,1.08fr) 230px minmax(520px,.92fr)!important;
+    min-height:278px!important;
+    padding:28px 38px!important;
+  }
+  .tg-hero h1{font-size:38px!important;letter-spacing:-1px!important}
+  .tg-intro{font-size:16px!important;line-height:1.7!important}
+  .tg-phone-art{width:185px!important;height:185px!important}
+  .tg-benefit{min-height:132px!important}
+  .tg-benefit-icon{width:48px!important;height:48px!important;font-size:22px!important}
+  .tg-benefit strong{font-size:14px!important}
+  .tg-benefit span{font-size:10.5px!important}
+
+  .tg-content{padding:28px 38px 30px!important}
+  .tg-provider{padding:20px!important}
+  .tg-provider-head{min-height:86px!important}
+  .tg-logo,.tg-logo-fallback{width:126px!important;height:74px!important}
+  .tg-provider-head h2{font-size:22px!important}
+
+  .tg-provider-features{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:14px!important;
+    margin:2px 0 16px!important;
+  }
+  .tg-feature{
+    min-height:68px!important;
+    background:#fff!important;
+    padding:8px 4px!important;
+  }
+  .tg-feature i{
+    width:34px!important;height:34px!important;
+    background:transparent!important;
+    font-size:20px!important;
+  }
+  .tg-feature strong{font-size:12px!important}
+  .tg-feature span{font-size:10px!important}
+
+  .tg-person{
+    grid-template-columns:40px minmax(0,1fr) auto!important;
+    min-height:68px!important;
+    padding:10px 12px!important;
+    background:linear-gradient(90deg,#f7faff,#fbfdff)!important;
+  }
+  .tg-provider:nth-child(2) .tg-person{
+    background:linear-gradient(90deg,#f4fcf7,#fbfffc)!important;
+  }
+  .tg-zalo-mini{
+    width:34px;height:34px;border-radius:9px;
+    display:grid;place-items:center;
+    background:#fff;color:#147df5;
+    border:1px solid #dce9ff;
+    font-size:9px;font-weight:900;
+  }
+  .tg-provider:nth-child(2) .tg-zalo-mini{
+    color:#12a95f;border-color:#d9f3e5;
+  }
+
+  .tg-process-wrap{
+    padding:20px!important;
+    grid-template-columns:minmax(0,1fr) 290px!important;
+  }
+  .tg-step-num{width:34px!important;height:34px!important}
+  .tg-step strong{font-size:11px!important}
+  .tg-step span{font-size:9px!important}
+  .tg-tip{padding:18px!important}
+}
+
+.tg-provider-title{min-width:0}
+.tg-zalo-mini{flex:0 0 auto}
+
+@media(max-width:640px){
+  .tg-zalo-mini{display:none}
+  .tg-person{grid-template-columns:1fr!important}
+}
+</style>
+
 </head>
 <body>
 <div class="tg-page">
@@ -373,8 +456,40 @@ body{
       const logo=p.logo?`<img class="tg-logo" src="${esc(p.logo)}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:'';
       const fallbackLogo=`<div class="tg-logo-fallback"${p.logo?' style="display:none"':''}>${name}</div>`;
       const staff=(Array.isArray(p.staff)?p.staff:[]).filter(s=>s&&s.enabled!==false&&zaloUrl(s.zalo));
-      const staffHtml=staff.length?staff.map(s=>`<div class="tg-person"><div class="tg-person-copy"><strong>${esc(s.name||'Nhân viên tư vấn')}</strong><span>${esc(s.note||'Tư vấn trả góp')}</span></div><a class="tg-zalo" href="${esc(zaloUrl(s.zalo))}" target="_blank" rel="noopener noreferrer">Nhắn Zalo</a></div>`).join(''):`<div class="tg-empty">Hiện chưa có nhân viên tư vấn trực tuyến cho đơn vị này.</div>`;
-      return `<article class="tg-provider"><div class="tg-provider-head">${logo}${fallbackLogo}<div><h2>${name}</h2><small>Công ty tài chính</small></div></div><div class="tg-staff">${staffHtml}</div></article>`;
+      const staffHtml=staff.length?staff.map(s=>`<div class="tg-person">
+        <div class="tg-zalo-mini">Zalo</div>
+        <div class="tg-person-copy">
+          <strong>Nhân viên: ${esc(s.name||'Nhân viên tư vấn')}</strong>
+          <span>${esc(s.note||'Tư vấn trả góp')}</span>
+        </div>
+        <a class="tg-zalo" href="${esc(zaloUrl(s.zalo))}" target="_blank" rel="noopener noreferrer">💬 Nhắn Zalo</a>
+      </div>`).join(''):`<div class="tg-empty">Hiện chưa có nhân viên tư vấn trực tuyến cho đơn vị này.</div>`;
+      return `<article class="tg-provider">
+        <div class="tg-provider-head">
+          ${logo}${fallbackLogo}
+          <div class="tg-provider-title">
+            <h2>${name}</h2>
+            <small>Công ty tài chính</small>
+          </div>
+        </div>
+
+        <div class="tg-provider-features">
+          <div class="tg-feature">
+            <i>👤</i>
+            <div><strong>Hồ sơ đơn giản</strong><span>Chỉ cần CCCD</span></div>
+          </div>
+          <div class="tg-feature">
+            <i>◷</i>
+            <div><strong>Duyệt nhanh</strong><span>15 - 30 phút</span></div>
+          </div>
+          <div class="tg-feature">
+            <i>▦</i>
+            <div><strong>Kỳ hạn linh hoạt</strong><span>3 - 12 tháng</span></div>
+          </div>
+        </div>
+
+        <div class="tg-staff">${staffHtml}</div>
+      </article>`;
     }).join('')||'<div class="tg-empty">Hiện chưa có đơn vị trả góp đang bật.</div>';
   }
   fetch('/api/installment-settings',{cache:'no-store'})
