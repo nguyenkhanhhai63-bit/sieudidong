@@ -59,289 +59,133 @@
 
   <link rel="stylesheet" href="/styles.css?v=261">
 
-<style id="v319-product-balance">
-/* V320 - cân lại trang chi tiết, không can thiệp logic ảnh */
 
-@media(min-width:1180px){
-  /* Khung chi tiết rộng hơn, bớt khoảng trắng hai bên */
+<style id="v321-product-detail-clean">
+/* V321 - căn lại trang chi tiết, không sửa header, không đụng logic ảnh */
+@media (min-width:1180px){
   #inlineProductDetail:not([hidden]){
-    width:min(1320px,calc(100% - 64px))!important;
-    max-width:none!important;
-    margin:24px auto 42px!important;
+    width:min(1180px,calc(100% - 40px))!important;
+    max-width:1180px!important;
+    margin:24px auto 44px!important;
+    padding:0!important;
   }
 
-  /* Tiêu đề */
-  #inlineProductDetail h1{
-    font-size:25px!important;
-    line-height:1.25!important;
-    letter-spacing:-.35px!important;
-    margin-top:8px!important;
-    margin-bottom:14px!important;
+  /* Các wrapper con không được tự co / lệch */
+  #inlineProductDetail > *,
+  #inlineProductDetail .detail-page,
+  #inlineProductDetail .detail-container,
+  #inlineProductDetail .detail-wrap,
+  #inlineProductDetail .product-detail-container{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
   }
 
   /* Card sản phẩm chính */
   #inlineProductDetail .detail-main,
   #inlineProductDetail .detail-card,
   #inlineProductDetail .product-detail-card,
-  #inlineProductDetail .product-main-card{
-    min-height:420px!important;
-    padding:20px!important;
+  #inlineProductDetail .product-main-card,
+  #inlineProductDetail .detail-box{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
     border-radius:18px!important;
-    box-shadow:0 10px 28px rgba(15,23,42,.045)!important;
+    box-sizing:border-box!important;
   }
 
-  /* Nếu layout đang dùng grid */
-  #inlineProductDetail .detail-layout,
+  /* Nếu cấu trúc bên trong là grid thì chia cân đối 42 / 38 / 20 */
   #inlineProductDetail .detail-grid,
+  #inlineProductDetail .detail-layout,
   #inlineProductDetail .product-detail-grid{
+    width:100%!important;
     display:grid!important;
-    grid-template-columns:minmax(360px,1.08fr) minmax(360px,.95fr) 300px!important;
-    gap:22px!important;
+    grid-template-columns:minmax(340px,42fr) minmax(340px,38fr) minmax(250px,20fr)!important;
+    gap:18px!important;
     align-items:start!important;
   }
 
-  /* Nếu layout gốc dùng flex */
-  #inlineProductDetail .detail-main,
-  #inlineProductDetail .product-detail-main{
-    gap:22px!important;
-  }
-
-  /* Vùng ảnh - tăng vừa phải */
+  /* Ảnh */
   #inlineProductDetail .detail-image,
   #inlineProductDetail .product-image,
-  #inlineProductDetail .detail-gallery{
-    min-width:360px!important;
+  #inlineProductDetail .detail-gallery,
+  #inlineProductDetail .product-gallery{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
   }
 
   #inlineProductDetail .detail-image img,
   #inlineProductDetail .product-image img,
-  #inlineProductDetail .detail-gallery img{
-    max-height:360px!important;
+  #inlineProductDetail .detail-gallery img,
+  #inlineProductDetail .product-gallery img{
     object-fit:contain!important;
   }
 
-  /* Cột thông tin mua hàng */
+  /* Khối thông tin */
   #inlineProductDetail .detail-info,
   #inlineProductDetail .product-info,
   #inlineProductDetail .buy-panel{
-    min-width:360px!important;
-    padding-top:4px!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
   }
 
-  #inlineProductDetail .price,
-  #inlineProductDetail .detail-price,
-  #inlineProductDetail .current-price{
-    font-size:27px!important;
-    line-height:1.05!important;
-  }
-
-  #inlineProductDetail .detail-info p,
-  #inlineProductDetail .product-info p{
-    font-size:12px!important;
-  }
-
-  /* Variant */
-  #inlineProductDetail .variant-row,
-  #inlineProductDetail .option-row{
-    margin-top:16px!important;
-  }
-
-  #inlineProductDetail .variant-btn,
-  #inlineProductDetail .option-btn,
-  #inlineProductDetail .storage-btn{
-    min-height:38px!important;
-    padding:0 13px!important;
-    border-radius:8px!important;
-  }
-
-  /* Nút CTA */
-  #inlineProductDetail .detail-actions,
-  #inlineProductDetail .product-actions{
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:10px!important;
-    margin-top:18px!important;
-  }
-
-  #inlineProductDetail .detail-actions button,
-  #inlineProductDetail .detail-actions a,
-  #inlineProductDetail .product-actions button,
-  #inlineProductDetail .product-actions a{
-    min-height:46px!important;
-    border-radius:9px!important;
-    font-size:12px!important;
-    font-weight:800!important;
-  }
-
-  /* Sản phẩm tương tự: bớt to, cân với cột bên phải */
+  /* Cột sản phẩm tương tự không tràn ra ngoài */
   #inlineProductDetail .similar-products,
   #inlineProductDetail .related-products,
   #inlineProductDetail .product-similar{
-    width:300px!important;
-    max-width:300px!important;
-    border-radius:13px!important;
-    overflow:hidden!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    margin:0!important;
   }
 
-  #inlineProductDetail .similar-products h3,
-  #inlineProductDetail .related-products h3,
-  #inlineProductDetail .product-similar h3{
-    min-height:42px!important;
-    padding:0 12px!important;
-    font-size:12px!important;
-  }
-
-  #inlineProductDetail .similar-item,
-  #inlineProductDetail .related-item{
-    min-height:84px!important;
-    padding:9px 10px!important;
-  }
-
-  #inlineProductDetail .similar-item img,
-  #inlineProductDetail .related-item img{
-    width:54px!important;
-    height:54px!important;
-    object-fit:contain!important;
-  }
-
-  /* Thông số kỹ thuật ngang bằng card chính */
+  /* Thông số kỹ thuật thẳng với card trên */
   #inlineProductDetail .specs-section,
   #inlineProductDetail .technical-specs,
   #inlineProductDetail .product-specs{
     width:100%!important;
     max-width:none!important;
-    margin-top:20px!important;
-    border-radius:16px!important;
-    overflow:hidden!important;
-  }
-
-  #inlineProductDetail .specs-section h2,
-  #inlineProductDetail .technical-specs h2,
-  #inlineProductDetail .product-specs h2{
-    padding:15px 18px!important;
-    font-size:16px!important;
-  }
-
-  #inlineProductDetail table th{
-    width:170px!important;
-    padding:13px 15px!important;
-    font-size:11.5px!important;
-  }
-
-  #inlineProductDetail table td{
-    padding:13px 16px!important;
-    font-size:11.5px!important;
-    line-height:1.55!important;
+    margin:20px 0 0!important;
+    box-sizing:border-box!important;
   }
 }
 
-/* Laptop vừa */
-@media(min-width:900px) and (max-width:1179px){
+/* Laptop */
+@media (min-width:900px) and (max-width:1179px){
   #inlineProductDetail:not([hidden]){
-    width:calc(100% - 32px)!important;
+    width:calc(100% - 28px)!important;
+    max-width:none!important;
+    margin:18px auto 36px!important;
   }
-  #inlineProductDetail .detail-layout,
   #inlineProductDetail .detail-grid,
+  #inlineProductDetail .detail-layout,
   #inlineProductDetail .product-detail-grid{
+    display:grid!important;
     grid-template-columns:1fr 1fr!important;
+    gap:16px!important;
   }
   #inlineProductDetail .similar-products,
   #inlineProductDetail .related-products,
   #inlineProductDetail .product-similar{
     grid-column:1/-1!important;
-    width:100%!important;
-    max-width:none!important;
-  }
-}
-
-/* Mobile giữ layout gốc, chỉ tăng độ thoáng */
-@media(max-width:899px){
-  #inlineProductDetail:not([hidden]){
-    width:calc(100% - 18px)!important;
-    margin:10px auto 28px!important;
-  }
-  #inlineProductDetail h1{
-    font-size:20px!important;
-  }
-  #inlineProductDetail .detail-main,
-  #inlineProductDetail .detail-card,
-  #inlineProductDetail .product-detail-card{
-    padding:12px!important;
-  }
-}
-</style>
-
-
-<style id="v320-align-detail-with-header">
-/* V320 - Trang chi tiết thẳng hàng với header */
-:root{
-  --v320-site-width: 1020px;
-}
-
-/* Header và phần nội dung chi tiết dùng chung một trục */
-@media(min-width:1180px){
-  .commerce-header-inner.sdd-header-main,
-  .sdd-top-strip-inner{
-    width:min(var(--v320-site-width),calc(100% - 48px))!important;
-    max-width:none!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
-  }
-
-  #inlineProductDetail:not([hidden]){
-    width:min(var(--v320-site-width),calc(100% - 48px))!important;
-    max-width:none!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
-  }
-
-  /* Xóa mọi giới hạn con khiến card bị co nhỏ hơn container */
-  #inlineProductDetail > *,
-  #inlineProductDetail .detail-page,
-  #inlineProductDetail .detail-container,
-  #inlineProductDetail .detail-content,
-  #inlineProductDetail .product-detail-container{
-    max-width:none!important;
-  }
-
-  /* Card chính + thông số chiếm đủ bề ngang của trục */
-  #inlineProductDetail .detail-main,
-  #inlineProductDetail .detail-card,
-  #inlineProductDetail .product-detail-card,
-  #inlineProductDetail .product-main-card,
-  #inlineProductDetail .specs-section,
-  #inlineProductDetail .technical-specs,
-  #inlineProductDetail .product-specs{
-    width:100%!important;
-    max-width:none!important;
-    margin-left:0!important;
-    margin-right:0!important;
-  }
-}
-
-/* Desktop rộng: cho khung hơi lớn hơn header logo/search nhưng vẫn cùng tâm */
-@media(min-width:1500px){
-  :root{ --v320-site-width: 1100px; }
-}
-
-/* Laptop */
-@media(min-width:900px) and (max-width:1179px){
-  .commerce-header-inner.sdd-header-main,
-  .sdd-top-strip-inner,
-  #inlineProductDetail:not([hidden]){
-    width:calc(100% - 32px)!important;
-    max-width:none!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
   }
 }
 
 /* Mobile */
-@media(max-width:899px){
+@media (max-width:899px){
   #inlineProductDetail:not([hidden]){
-    width:calc(100% - 18px)!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
+    width:calc(100% - 16px)!important;
+    max-width:none!important;
+    margin:10px auto 28px!important;
+  }
+  #inlineProductDetail .detail-grid,
+  #inlineProductDetail .detail-layout,
+  #inlineProductDetail .product-detail-grid{
+    display:block!important;
   }
 }
 </style>

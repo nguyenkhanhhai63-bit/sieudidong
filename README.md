@@ -2015,3 +2015,11 @@ Quy tắc:
 - Breadcrumb, tiêu đề, card sản phẩm và bảng thông số thẳng cùng trục trái/phải.
 - Bỏ các max-width con khiến phần chi tiết bị co vào giữa.
 - Không thay đổi logic ảnh, màu, dung lượng, mua hàng hoặc so sánh.
+
+
+## V321 - Fix lệch trang chi tiết
+- Gỡ CSS V319 và V320 đang chồng nhau.
+- Không thay đổi kích thước/header của website.
+- Trang chi tiết desktop dùng một container 1180px căn giữa.
+- Card sản phẩm và bảng thông số dùng 100% cùng một trục.
+- Không can thiệp DOM hoặc logic ảnh.
