@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V301 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V302 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V301: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V302: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V301: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V302: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V301 - Biểu đồ thống kê chuyên nghiệp */
+/* V302 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V301 - Dashboard compact giống ảnh demo
+   V302 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V301 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V302 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V301: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V302: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4867,7 +4867,7 @@ body.authenticated{
 
 
 <style id="v295-dashboard-grid">
-/* V301: compact analytics grid matching approved demo */
+/* V302: compact analytics grid matching approved demo */
 .analytics-grid{
   display:grid!important;
   grid-template-columns:repeat(10,minmax(0,1fr))!important;
@@ -4910,7 +4910,7 @@ body.authenticated{
 
 
 <style id="v298-dashboard-relayout">
-/* V301 - Bố trí lại các card thống kê cho cân đối */
+/* V302 - Bố trí lại các card thống kê cho cân đối */
 @media(min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5036,7 +5036,7 @@ body.authenticated{
 
 
 <style id="v299-five-summary-cards">
-/* V301: 5 mục thống kê quan trọng nằm chung một hàng */
+/* V302: 5 mục thống kê quan trọng nằm chung một hàng */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5117,7 +5117,7 @@ body.authenticated{
 
 
 <style id="v300-exact-dashboard-layout">
-/* V301 - ép đúng thứ tự và hàng của dashboard */
+/* V302 - ép đúng thứ tự và hàng của dashboard */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5235,7 +5235,7 @@ body.authenticated{
 
 
 <style id="v301-compact-compare-pairs">
-/* V301 - Thu gọn Cặp máy được so sánh nhiều */
+/* V302 - Thu gọn Cặp máy được so sánh nhiều */
 #comparePairRanks{
   padding:8px 12px 12px!important;
 }
@@ -5340,6 +5340,47 @@ body.authenticated{
   .compare-pair-count-compact strong{
     font-size:15px!important;
   }
+}
+</style>
+
+
+<style id="v302-warranty-recent-compact">
+/* V302: Khách tra cứu bảo hành gần đây - compact */
+#warrantyRecentCard,
+#recentWarrantyCard,
+.warranty-recent-card{
+  margin-top:12px!important;
+}
+#warrantyRecentCard table tbody tr:nth-child(n+6),
+#recentWarrantyCard table tbody tr:nth-child(n+6),
+.warranty-recent-card table tbody tr:nth-child(n+6){
+  display:none;
+}
+#warrantyRecentCard.is-expanded table tbody tr,
+#recentWarrantyCard.is-expanded table tbody tr,
+.warranty-recent-card.is-expanded table tbody tr{
+  display:table-row!important;
+}
+#warrantyRecentCard th,#warrantyRecentCard td,
+#recentWarrantyCard th,#recentWarrantyCard td,
+.warranty-recent-card th,.warranty-recent-card td{
+  padding:9px 12px!important;
+  height:38px!important;
+}
+#warrantyRecentCard .section-desc,
+#recentWarrantyCard .section-desc,
+.warranty-recent-card .section-desc{
+  margin:4px 0 8px!important;
+}
+.warranty-recent-toggle{
+  width:100%;
+  border:0;
+  border-top:1px solid #edf0f4;
+  background:#fff;
+  color:#ff5a00;
+  font-weight:800;
+  padding:11px;
+  cursor:pointer;
 }
 </style>
 
@@ -8322,7 +8363,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 (function(){
-  function tagV301Boxes(){
+  function tagV302Boxes(){
     document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
       const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
       if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
@@ -8337,10 +8378,10 @@ document.addEventListener("DOMContentLoaded",function(){
     });
   }
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",tagV301Boxes,{once:true});
-  }else tagV301Boxes();
-  setTimeout(tagV301Boxes,300);
-  setTimeout(tagV301Boxes,1000);
+    document.addEventListener("DOMContentLoaded",tagV302Boxes,{once:true});
+  }else tagV302Boxes();
+  setTimeout(tagV302Boxes,300);
+  setTimeout(tagV302Boxes,1000);
 })();
 </script>
 
@@ -8362,6 +8403,54 @@ document.addEventListener("DOMContentLoaded",function(){
   else tag();
   setTimeout(tag,250);
   setTimeout(tag,800);
+})();
+</script>
+
+
+<script id="v302-warranty-recent-move">
+(function(){
+  function norm(t){return (t||"").replace(/\s+/g," ").trim().toLowerCase();}
+  function init(){
+    var all=[].slice.call(document.querySelectorAll("section,article,.card,.panel,.box,div"));
+    var card=all.find(function(el){
+      var h=el.querySelector && el.querySelector("h1,h2,h3,h4,h5,.card-title,.section-title,strong");
+      return h && norm(h.textContent).includes("khách tra cứu bảo hành gần đây");
+    });
+    if(!card) return;
+
+    card.classList.add("warranty-recent-card");
+
+    // Move directly below the warranty KPI/summary block.
+    var warrantyCandidates=[].slice.call(document.querySelectorAll("section,article,.card,.panel,.box,div"));
+    var summary=warrantyCandidates.find(function(el){
+      if(el===card || el.contains(card)) return false;
+      var txt=norm(el.textContent);
+      return txt.includes("tra cứu bảo hành") &&
+             txt.includes("lượt tra bảo hành") &&
+             txt.includes("khách tra bảo hành") &&
+             txt.length < 1500;
+    });
+    if(summary && summary.parentNode){
+      summary.parentNode.insertBefore(card, summary.nextSibling);
+    }
+
+    var tbody=card.querySelector("tbody");
+    if(tbody && tbody.children.length>5 && !card.querySelector(".warranty-recent-toggle")){
+      var btn=document.createElement("button");
+      btn.type="button";
+      btn.className="warranty-recent-toggle";
+      btn.textContent="Xem thêm";
+      btn.onclick=function(){
+        var ex=card.classList.toggle("is-expanded");
+        btn.textContent=ex?"Thu gọn":"Xem thêm";
+      };
+      var table=card.querySelector("table");
+      (table && table.parentNode ? table.parentNode : card).appendChild(btn);
+    }
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init);
+  else setTimeout(init,0);
+  setTimeout(init,700);
 })();
 </script>
 
