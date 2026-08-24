@@ -1925,3 +1925,8 @@ Quy tắc:
 - Nhân viên tư vấn thành card riêng, nút Zalo rõ ràng.
 - Nội dung lưu ý ngắn và dễ đọc hơn.
 - Giữ nguyên dữ liệu cấu hình trả góp từ quản trị.
+
+
+## V280 Dashboard redesign
+- Giao diện dashboard mới compact, dễ đọc, giảm khoảng trắng.
+- KPI, biểu đồ và các bảng được chia lại theo mức độ quan trọng.
