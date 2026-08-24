@@ -5560,6 +5560,46 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v323-warranty-show-more">
+/* V323 - Khách tra cứu bảo hành: mặc định 5 dòng */
+.warranty-recent-card:not(.is-expanded) tbody tr:nth-child(n+6),
+#warrantyRecentCard:not(.is-expanded) tbody tr:nth-child(n+6),
+#recentWarrantyCard:not(.is-expanded) tbody tr:nth-child(n+6){
+  display:none!important;
+}
+
+.v323-warranty-more{
+  width:100%;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border:0;
+  border-top:1px solid #e8edf3;
+  background:#fff;
+  color:#ff5a00;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+  border-radius:0 0 12px 12px;
+}
+.v323-warranty-more:hover{
+  background:#fff7f2;
+}
+.v323-warranty-more:after{
+  content:"⌄";
+  font-size:15px;
+  line-height:1;
+}
+.warranty-recent-card.is-expanded .v323-warranty-more:after,
+#warrantyRecentCard.is-expanded .v323-warranty-more:after,
+#recentWarrantyCard.is-expanded .v323-warranty-more:after{
+  content:"⌃";
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -8760,6 +8800,77 @@ document.addEventListener("DOMContentLoaded",function(){
     document.addEventListener("DOMContentLoaded",syncDesktopMenu,{once:true});
   }else syncDesktopMenu();
   window.addEventListener("resize",syncDesktopMenu);
+})();
+</script>
+
+
+<script id="v323-warranty-show-more-js">
+(function(){
+  function norm(t){
+    return String(t||"").replace(/\s+/g," ").trim().toLowerCase();
+  }
+
+  function findCard(){
+    const candidates=[...document.querySelectorAll(
+      ".warranty-recent-card,#warrantyRecentCard,#recentWarrantyCard,.card,.panel,.box,section,article,div"
+    )];
+
+    return candidates.find(el=>{
+      const h=el.querySelector && el.querySelector(
+        "h1,h2,h3,h4,h5,.card-title,.section-title,strong"
+      );
+      return h && norm(h.textContent).includes("khách tra cứu bảo hành gần đây")
+             && el.querySelector("table");
+    });
+  }
+
+  function setup(){
+    const card=findCard();
+    if(!card) return;
+
+    card.classList.add("warranty-recent-card");
+
+    const tbody=card.querySelector("tbody");
+    if(!tbody) return;
+
+    const rows=tbody.querySelectorAll("tr");
+    let btn=card.querySelector(".v323-warranty-more");
+
+    // Chỉ cần nút khi có hơn 5 dòng.
+    if(rows.length<=5){
+      if(btn) btn.remove();
+      card.classList.remove("is-expanded");
+      return;
+    }
+
+    if(!btn){
+      btn=document.createElement("button");
+      btn.type="button";
+      btn.className="v323-warranty-more";
+      btn.textContent="Xem thêm";
+      btn.addEventListener("click",()=>{
+        const expanded=card.classList.toggle("is-expanded");
+        btn.textContent=expanded ? "Thu gọn" : "Xem thêm";
+      });
+
+      const table=card.querySelector("table");
+      const holder=table.parentElement || card;
+      holder.appendChild(btn);
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",setup,{once:true});
+  }else{
+    setup();
+  }
+
+  // Bảng được render lại sau khi tải thống kê.
+  const obs=new MutationObserver(()=>setup());
+  obs.observe(document.body,{childList:true,subtree:true});
+
+  setTimeout(setup,400);
+  setTimeout(setup,1200);
 })();
 </script>
 
