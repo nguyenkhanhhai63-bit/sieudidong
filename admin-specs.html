@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V293 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V294 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V293: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V294: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V293: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V294: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V293 - Biểu đồ thống kê chuyên nghiệp */
+/* V294 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V293 - Dashboard compact giống ảnh demo
+   V294 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V293 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V294 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V293: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V294: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4852,6 +4852,17 @@ body.authenticated{
   cursor:pointer;font-size:13px;padding:7px 12px;border-radius:8px;
 }
 .v293-more-btn:hover{background:#fff3ec;}
+</style>
+
+
+<style id="v294-real-top5">
+.rank-more-btn{
+ display:block;width:100%;margin:8px 0 0;padding:9px 10px;
+ border:0;border-top:1px solid #edf0f4;background:transparent;
+ color:#ff5a00;font-weight:800;font-size:12px;cursor:pointer;text-align:center;
+}
+.rank-more-btn:hover{background:#fff7f2}
+#deviceModelRanks,#deviceOsRanks,#productRanks,#searchRanks,#filterRanks{min-height:0!important}
 </style>
 
 </head>
@@ -5704,9 +5715,31 @@ function showToast(message,type="success"){
 
 function fmt(n){return new Intl.NumberFormat("vi-VN").format(Number(n||0));}
 function renderRank(id,list){
-  const host=document.getElementById(id); host.innerHTML="";
+  const host=document.getElementById(id);
+  host.innerHTML="";
   if(!list?.length){host.innerHTML='<div class="empty">Chưa có dữ liệu.</div>';return;}
-  list.forEach((x,i)=>{const r=document.createElement("div");r.className="rankrow";r.innerHTML=`<span>${i+1}</span><span>${x.name}</span><span class="rankvalue">${fmt(x.value)}</span>`;host.appendChild(r);});
+
+  const compactIds=new Set(["deviceModelRanks","deviceOsRanks","productRanks","searchRanks","filterRanks"]);
+  const isCompact=compactIds.has(id);
+  const renderRows=(expanded)=>{
+    host.innerHTML="";
+    const data=(isCompact && !expanded) ? list.slice(0,5) : list;
+    data.forEach((x,i)=>{
+      const r=document.createElement("div");
+      r.className="rankrow";
+      r.innerHTML=`<span>${i+1}</span><span>${x.name}</span><span class="rankvalue">${fmt(x.value)}</span>`;
+      host.appendChild(r);
+    });
+    if(isCompact && list.length>5){
+      const more=document.createElement("button");
+      more.type="button";
+      more.className="rank-more-btn";
+      more.textContent=expanded ? "Thu gọn" : "Xem thêm";
+      more.onclick=()=>renderRows(!expanded);
+      host.appendChild(more);
+    }
+  };
+  renderRows(false);
 }
 
 function renderComparePairs(list){
