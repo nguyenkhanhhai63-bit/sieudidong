@@ -6,68 +6,230 @@
   <title>Trả góp | Siêu Di Động</title>
   <meta name="description" content="Thông tin trả góp tại Siêu Di Động, công ty tài chính và nhân viên hỗ trợ Zalo.">
   <link rel="stylesheet" href="/style.css?v=225">
-  <style>
-    :root{
-      --tg-orange:#ff5a00;--tg-orange-2:#ff7a32;--tg-text:#101828;--tg-muted:#667085;
-      --tg-line:#e6e9ee;--tg-soft:#fff7f2;--tg-blue:#087df0;--tg-green:#067647
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:#f4f6f9;color:var(--tg-text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    .tg-page{min-height:100vh}
-    .tg-topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);border-top:3px solid var(--tg-orange);border-bottom:1px solid #eceff3;backdrop-filter:blur(12px)}
-    .tg-topbar-inner{max-width:1120px;margin:0 auto;height:68px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .tg-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--tg-text);font-weight:900}
-    .tg-brand img{width:40px;height:40px;border-radius:11px;object-fit:cover}
-    .tg-brand span{font-size:15px;letter-spacing:-.2px}
-    .tg-back{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 14px;border:1px solid var(--tg-line);border-radius:11px;text-decoration:none;color:#344054;font-size:13px;font-weight:800;background:#fff;box-shadow:0 3px 9px rgba(16,24,40,.03)}
-    .tg-wrap{max-width:1120px;margin:0 auto;padding:28px 20px 52px}
-    .tg-card{background:#fff;border:1px solid #e7eaee;border-radius:22px;padding:0;overflow:hidden;box-shadow:0 16px 38px rgba(16,24,40,.055)}
-    .tg-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);gap:24px;padding:28px 30px 24px;background:linear-gradient(135deg,#fff 0%,#fff9f5 100%);border-bottom:1px solid #f0f1f3}
-    .tg-eyebrow{display:block;color:var(--tg-orange);font-weight:900;font-size:12px;letter-spacing:.05em;margin-bottom:7px}
-    h1{font-size:30px;line-height:1.12;letter-spacing:-.6px;margin:0 0 10px}
-    .tg-intro{font-size:14px;line-height:1.6;color:var(--tg-muted);margin:0;max-width:670px}
-    .tg-benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-self:center}
-    .tg-benefit{min-height:72px;padding:11px 10px;border:1px solid #ffe0ce;border-radius:13px;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:3px}
-    .tg-benefit strong{font-size:13px;color:#c2410c}
-    .tg-benefit span{font-size:10px;color:#7c8a9b;line-height:1.35}
-    .tg-content{padding:22px 30px 26px}
-    .tg-section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}
-    .tg-section-head h2{margin:0 0 3px;font-size:17px;letter-spacing:-.25px}
-    .tg-section-head p{margin:0;font-size:11px;color:#98a2b3}
-    .tg-provider-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .tg-provider{border:1px solid var(--tg-line);border-radius:17px;padding:16px;background:#fff;box-shadow:0 5px 16px rgba(16,24,40,.025)}
-    .tg-provider-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #f0f2f5}
-    .tg-logo,.tg-logo-fallback{width:76px;height:54px;border-radius:12px;background:var(--tg-soft);object-fit:contain;padding:7px;flex:0 0 auto}
-    .tg-logo-fallback{display:flex;align-items:center;justify-content:center;text-align:center;color:#e44d06;font-weight:900;font-size:12px;line-height:1.15}
-    .tg-provider-head h2{margin:0 0 3px;font-size:18px}
-    .tg-provider-head small{color:#98a2b3;font-size:11px}
-    .tg-staff{display:grid;gap:8px}
-    .tg-person{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 12px;border:1px solid #edf0f3;border-radius:12px;background:#fafbfc}
-    .tg-person-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
-    .tg-person-copy strong{font-size:13px}
-    .tg-person-copy span{font-size:11px;color:#667085;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .tg-zalo{height:36px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;text-decoration:none;background:var(--tg-blue);color:#fff;font-size:11px;font-weight:850;border-radius:9px;padding:0 13px;white-space:nowrap;box-shadow:0 5px 12px rgba(8,125,240,.15)}
-    .tg-empty{color:#98a2b3;font-size:11px;padding:9px 0 2px}
-    .tg-note{margin-top:16px;display:flex;gap:10px;align-items:flex-start;background:#fff7ed;color:#9a451d;border:1px solid #ffead7;border-radius:13px;padding:12px 14px;font-size:11px;line-height:1.5}
-    .tg-note:before{content:"i";width:20px;height:20px;flex:0 0 20px;display:grid;place-items:center;border-radius:50%;background:#ffead7;color:#d94800;font-size:11px;font-weight:900}
-    .tg-loading{padding:24px;color:#667085;text-align:center;font-size:12px}
-    .tg-footer-tip{margin-top:14px;padding-top:14px;border-top:1px dashed #eceff3;display:flex;align-items:center;justify-content:space-between;gap:16px;color:#667085;font-size:10px}
-    .tg-footer-tip strong{color:#344054}
-    @media(max-width:820px){
-      .tg-hero{grid-template-columns:1fr}.tg-benefits{max-width:none}
-      .tg-provider-list{grid-template-columns:1fr}
-    }
-    @media(max-width:640px){
-      .tg-topbar-inner{height:60px;padding:0 14px}.tg-brand img{width:38px;height:38px}.tg-brand span{font-size:13px}.tg-back{height:38px;padding:0 12px;font-size:12px}
-      .tg-wrap{padding:14px 10px 30px}.tg-card{border-radius:18px}
-      .tg-hero{padding:20px 18px 17px;gap:16px}h1{font-size:25px}.tg-intro{font-size:13px;line-height:1.55}
-      .tg-benefits{grid-template-columns:1fr 1fr}.tg-benefit:last-child{grid-column:1/-1}.tg-benefit{min-height:62px;padding:9px 10px}
-      .tg-content{padding:17px 14px 20px}.tg-section-head{align-items:flex-start;flex-direction:column;gap:3px}.tg-section-head h2{font-size:16px}
-      .tg-provider{padding:14px;border-radius:15px}.tg-logo,.tg-logo-fallback{width:70px;height:50px}.tg-provider-head h2{font-size:17px}
-      .tg-person{grid-template-columns:1fr;padding:10px}.tg-zalo{width:100%;height:40px}.tg-person-copy span{white-space:normal}
-      .tg-note{font-size:10.5px}.tg-footer-tip{align-items:flex-start;flex-direction:column;gap:5px}
-    }
-  </style>
+  
+<style>
+:root{
+  --orange:#ff5a00;
+  --orange2:#ff7a32;
+  --orangeSoft:#fff6f0;
+  --blue:#147df5;
+  --green:#17b26a;
+  --navy:#101828;
+  --text:#344054;
+  --muted:#7b8798;
+  --line:#e7ebf0;
+  --bg:#f4f7fa;
+  --shadow:0 16px 42px rgba(16,24,40,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--navy);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.tg-page{min-height:100vh}
+.tg-topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.96);
+  border-top:3px solid var(--orange);
+  border-bottom:1px solid #ebeff3;
+  backdrop-filter:blur(10px);
+}
+.tg-topbar-inner{
+  max-width:1480px;margin:0 auto;height:66px;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.tg-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-weight:900}
+.tg-brand img{width:40px;height:40px;border-radius:11px;object-fit:cover}
+.tg-brand span{font-size:15px}
+.tg-back{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:38px;padding:0 13px;border:1px solid var(--line);border-radius:10px;
+  background:#fff;color:#475467;text-decoration:none;font-size:12px;font-weight:800;
+}
+
+.tg-wrap{max-width:1480px;margin:0 auto;padding:22px 24px 44px}
+.tg-shell{
+  background:#fff;border:1px solid #e6eaf0;border-radius:24px;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+/* HERO */
+.tg-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) 260px minmax(560px,.95fr);
+  gap:24px;align-items:center;
+  padding:30px 34px;
+  background:linear-gradient(110deg,#fff 0%,#fffaf6 100%);
+  border-bottom:1px solid #eef1f4;
+}
+.tg-eyebrow{
+  display:block;margin-bottom:10px;color:var(--orange);font-size:13px;font-weight:900;letter-spacing:.04em;
+}
+.tg-hero h1{margin:0 0 12px;font-size:34px;line-height:1.12;letter-spacing:-.8px}
+.tg-intro{margin:0;color:#667085;font-size:15px;line-height:1.65;max-width:690px}
+.tg-hero-visual{
+  min-height:180px;display:grid;place-items:center;position:relative;
+}
+.tg-phone-art{
+  width:170px;height:170px;border-radius:50%;background:linear-gradient(145deg,#fff1e7,#ffe4d3);
+  display:grid;place-items:center;position:relative;
+}
+.tg-phone-art:before{
+  content:"";width:78px;height:142px;border:4px solid #ff7a32;border-radius:18px;
+  background:#fff;transform:rotate(-7deg);box-shadow:0 14px 28px rgba(255,90,0,.14)
+}
+.tg-phone-art:after{
+  content:"🛍️";position:absolute;right:20px;bottom:15px;font-size:52px;
+}
+.tg-benefits{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+}
+.tg-benefit{
+  min-height:122px;padding:14px 12px;border:1px solid #f0e5de;border-radius:14px;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.tg-benefit-icon{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:#fff3eb;color:var(--orange);font-size:22px;margin-bottom:8px;
+}
+.tg-benefit strong{font-size:13px;margin-bottom:4px}
+.tg-benefit span{font-size:10px;color:#7d8998;line-height:1.4}
+
+/* BODY */
+.tg-content{padding:26px 34px 28px}
+.tg-section-title h2{margin:0 0 4px;font-size:19px}
+.tg-section-title p{margin:0 0 15px;font-size:11px;color:#98a2b3}
+
+.tg-provider-list{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;
+}
+.tg-provider{
+  border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff;
+  box-shadow:0 5px 18px rgba(16,24,40,.03);
+}
+.tg-provider-head{
+  display:flex;align-items:center;gap:14px;padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid #eef1f4;
+}
+.tg-logo,.tg-logo-fallback{
+  width:118px;height:72px;border-radius:13px;background:#fff8f4;object-fit:contain;padding:9px;flex:0 0 auto;
+}
+.tg-logo-fallback{display:flex;align-items:center;justify-content:center;text-align:center;color:#e64c05;font-weight:900;font-size:13px}
+.tg-provider-head h2{margin:0 0 4px;font-size:21px}
+.tg-provider-head small{font-size:11px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em}
+
+.tg-provider-features{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;
+}
+.tg-feature{
+  min-height:62px;padding:10px;border-radius:11px;background:#fbfcfd;
+  display:flex;align-items:center;gap:9px;
+}
+.tg-feature i{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  font-style:normal;background:#eef5ff;color:#147df5;font-size:15px;flex:0 0 30px;
+}
+.tg-feature strong{display:block;font-size:11px;margin-bottom:2px}
+.tg-feature span{display:block;font-size:9px;color:#7d8998}
+
+.tg-staff{display:grid;gap:9px}
+.tg-person{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;
+  padding:11px 12px;border:1px solid #e9edf2;border-radius:12px;background:#f9fbfd;
+}
+.tg-person-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
+.tg-person-copy strong{font-size:12px}
+.tg-person-copy span{font-size:10px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg-zalo{
+  height:40px;padding:0 16px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,#1782ff,#0f75e5);color:#fff;text-decoration:none;font-size:11px;font-weight:900;
+}
+.tg-provider:nth-child(2) .tg-zalo{
+  background:linear-gradient(90deg,#1fbf71,#13a85f);
+}
+.tg-provider:nth-child(2) .tg-feature i{
+  background:#ebfbf3;color:#14a860;
+}
+.tg-empty{font-size:11px;color:#98a2b3;padding:8px 0}
+
+/* PROCESS */
+.tg-process-wrap{
+  margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff;
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;
+}
+.tg-process h3{margin:0 0 14px;font-size:14px}
+.tg-steps{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;position:relative;
+}
+.tg-step{text-align:center;position:relative;padding:2px 8px 0}
+.tg-step-num{
+  width:30px;height:30px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;
+  background:var(--orange);color:#fff;font-size:11px;font-weight:900;
+}
+.tg-step strong{display:block;font-size:10px;margin-bottom:4px}
+.tg-step span{display:block;font-size:8.5px;color:#7d8998;line-height:1.45}
+.tg-step:not(:last-child):after{
+  content:"→";position:absolute;right:-10px;top:6px;color:#c7ced8;font-size:18px;
+}
+.tg-tip{
+  border:1px solid #ffe0cd;border-radius:13px;padding:16px;background:#fff8f3;
+}
+.tg-tip h4{margin:0 0 9px;font-size:13px;color:#f05a0d}
+.tg-tip p{margin:0;color:#667085;font-size:10px;line-height:1.6}
+
+.tg-footer-row{
+  margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;
+}
+.tg-note{
+  display:flex;gap:10px;align-items:flex-start;padding:14px 16px;
+  border:1px solid #ffe6d7;border-radius:13px;background:#fff8f3;color:#9a451d;
+  font-size:10px;line-height:1.55;
+}
+.tg-note:before{
+  content:"i";width:21px;height:21px;flex:0 0 21px;border-radius:50%;
+  display:grid;place-items:center;background:#ffead7;color:#e25108;font-weight:900;
+}
+.tg-support{
+  padding:13px 16px;border:1px solid var(--line);border-radius:13px;background:#fbfcfd;
+}
+.tg-support strong{display:block;font-size:11px;margin-bottom:7px}
+.tg-support div{font-size:10px;color:#667085;line-height:1.7}
+
+@media(max-width:1180px){
+  .tg-hero{grid-template-columns:1fr}
+  .tg-hero-visual{display:none}
+  .tg-benefits{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:900px){
+  .tg-provider-list{grid-template-columns:1fr}
+  .tg-process-wrap{grid-template-columns:1fr}
+  .tg-footer-row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .tg-topbar-inner{height:60px;padding:0 14px}
+  .tg-brand img{width:36px;height:36px}.tg-brand span{font-size:13px}
+  .tg-wrap{padding:12px 10px 28px}
+  .tg-shell{border-radius:18px}
+  .tg-hero{padding:20px 16px}
+  .tg-hero h1{font-size:27px}
+  .tg-intro{font-size:13px}
+  .tg-benefits{grid-template-columns:repeat(2,1fr)}
+  .tg-content{padding:18px 14px 20px}
+  .tg-provider{padding:14px}
+  .tg-provider-head{align-items:center}
+  .tg-logo,.tg-logo-fallback{width:90px;height:58px}
+  .tg-provider-head h2{font-size:18px}
+  .tg-provider-features{grid-template-columns:1fr}
+  .tg-person{grid-template-columns:1fr}
+  .tg-zalo{width:100%}
+  .tg-steps{grid-template-columns:1fr;gap:12px}
+  .tg-step{text-align:left;padding-left:42px}
+  .tg-step-num{position:absolute;left:0;top:0;margin:0}
+  .tg-step:not(:last-child):after{display:none}
+}
+</style>
+
 </head>
 <body>
 <div class="tg-page">
@@ -81,31 +243,106 @@
     </div>
   </header>
 
-  <main class="tg-wrap">
-    <section class="tg-card">
-      <div class="tg-hero">
-        <div>
-          <span class="tg-eyebrow">HỖ TRỢ MUA MÁY</span>
-          <h1>Trả góp tại Siêu Di Động</h1>
-          <p id="tgIntro" class="tg-intro">Đang tải thông tin trả góp...</p>
-        </div>
-        <div class="tg-benefits">
-          <div class="tg-benefit"><strong>Từ 18 tuổi</strong><span>Chỉ cần CCCD hợp lệ</span></div>
-          <div class="tg-benefit"><strong>Trả trước 0đ</strong><span>Tùy kết quả xét duyệt</span></div>
-          <div class="tg-benefit"><strong>Duyệt trước</strong><span>Gửi CCCD cho nhân viên tài chính</span></div>
-        </div>
+  
+<main class="tg-wrap">
+  <section class="tg-shell">
+    <div class="tg-hero">
+      <div>
+        <span class="tg-eyebrow">HỖ TRỢ MUA MÁY</span>
+        <h1>Trả góp tại Siêu Di Động</h1>
+        <p id="tgIntro" class="tg-intro">Trả góp đơn giản chỉ với CCCD, dành cho khách hàng từ 18 tuổi. Mang CCCD đến shop làm hồ sơ hoặc gửi nhân viên tài chính kiểm tra điều kiện trước. Hỗ trợ trả trước 0đ, nhận máy ngay khi hồ sơ được duyệt.</p>
       </div>
 
-      <div class="tg-content">
-        <div class="tg-section-head">
-          <div><h2>Chọn đơn vị tài chính</h2><p>Liên hệ nhân viên để kiểm tra điều kiện và phương án góp phù hợp.</p></div>
-        </div>
-        <div id="tgProviderList" class="tg-provider-list"><div class="tg-loading">Đang tải thông tin...</div></div>
-        <div class="tg-note">Hồ sơ và kết quả duyệt do công ty tài chính quyết định. Số tiền trả trước, kỳ hạn và khoản góp hàng tháng sẽ được nhân viên xác nhận trước khi đăng ký.</div>
-        <div class="tg-footer-tip"><span><strong>Mẹo:</strong> Có thể gửi CCCD để nhân viên kiểm tra điều kiện trước khi đến shop.</span><span>Làm hồ sơ trực tiếp tại Siêu Di Động</span></div>
+      <div class="tg-hero-visual">
+        <div class="tg-phone-art"></div>
       </div>
-    </section>
-  </main>
+
+      <div class="tg-benefits">
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">👥</div>
+          <strong>Từ 18 tuổi</strong>
+          <span>Chỉ cần CCCD hợp lệ</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">0đ</div>
+          <strong>Trả trước 0đ</strong>
+          <span>Tùy kết quả xét duyệt</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">◷</div>
+          <strong>Duyệt nhanh</strong>
+          <span>Nhận máy ngay</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">🛡</div>
+          <strong>Bảo mật</strong>
+          <span>Thông tin an toàn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tg-content">
+      <div class="tg-section-title">
+        <h2>Chọn đơn vị tài chính</h2>
+        <p>Liên hệ nhân viên để kiểm tra điều kiện và phương án góp phù hợp.</p>
+      </div>
+
+      <div id="tgProviderList" class="tg-provider-list">
+        <div class="tg-loading">Đang tải thông tin...</div>
+      </div>
+
+      <div class="tg-process-wrap">
+        <div class="tg-process">
+          <h3>Quy trình trả góp</h3>
+          <div class="tg-steps">
+            <div class="tg-step">
+              <div class="tg-step-num">1</div>
+              <strong>Chọn sản phẩm</strong>
+              <span>Chọn máy và gói trả góp phù hợp</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">2</div>
+              <strong>Cung cấp CCCD</strong>
+              <span>Gửi CCCD cho nhân viên kiểm tra điều kiện</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">3</div>
+              <strong>Duyệt hồ sơ</strong>
+              <span>Hồ sơ được xét duyệt nhanh chóng</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">4</div>
+              <strong>Ký hợp đồng</strong>
+              <span>Ký hợp đồng điện tử hoặc tại shop</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">5</div>
+              <strong>Nhận máy</strong>
+              <span>Nhận máy ngay sau khi duyệt thành công</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="tg-tip">
+          <h4>💡 Mẹo nhỏ</h4>
+          <p>Có thể gửi CCCD để nhân viên kiểm tra điều kiện trước khi đến shop.</p>
+        </aside>
+      </div>
+
+      <div class="tg-footer-row">
+        <div class="tg-note">
+          Hồ sơ và kết quả duyệt do công ty tài chính quyết định. Số tiền trả trước, kỳ hạn và khoản góp hàng tháng sẽ được nhân viên xác nhận trước khi đăng ký.
+        </div>
+        <div class="tg-support">
+          <strong>Hỗ trợ trực tiếp tại Siêu Di Động</strong>
+          <div>📍 314 Nguyễn Thái Học, Quy Nhơn</div>
+          <div>💬 Nhắn Zalo nhân viên tài chính để được tư vấn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
 </div>
 <script>
 (function(){
