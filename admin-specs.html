@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V294 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V295 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V294: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V295: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V294: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V295: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V294 - Biểu đồ thống kê chuyên nghiệp */
+/* V295 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V294 - Dashboard compact giống ảnh demo
+   V295 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V294 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V295 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V294: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V295: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4863,6 +4863,49 @@ body.authenticated{
 }
 .rank-more-btn:hover{background:#fff7f2}
 #deviceModelRanks,#deviceOsRanks,#productRanks,#searchRanks,#filterRanks{min-height:0!important}
+</style>
+
+
+<style id="v295-dashboard-grid">
+/* V295: compact analytics grid matching approved demo */
+.analytics-grid{
+  display:grid!important;
+  grid-template-columns:repeat(10,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:start!important;
+}
+.analytics-grid>.abox{
+  min-width:0!important;
+  width:auto!important;
+  grid-column:span 2!important;
+  height:auto!important;
+  min-height:0!important;
+}
+.analytics-grid>.abox:nth-child(n+6){
+  grid-column:span 3!important;
+}
+.analytics-grid>.abox:nth-child(8){
+  grid-column:span 4!important;
+}
+.analytics-grid .ranklist{
+  min-height:0!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.analytics-grid .rankrow:nth-of-type(n+6){display:none}
+.analytics-grid .ranklist.is-expanded .rankrow:nth-of-type(n+6){display:grid}
+.rank-more-btn{
+  display:block!important;width:100%!important;margin:8px 0 0!important;padding:10px!important;
+  border:0!important;border-top:1px solid #edf0f4!important;background:transparent!important;
+  color:#ff5a00!important;font-weight:800!important;cursor:pointer!important;text-align:center!important;
+}
+@media(max-width:1100px){
+ .analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .analytics-grid>.abox,.analytics-grid>.abox:nth-child(n+6),.analytics-grid>.abox:nth-child(8){grid-column:span 1!important}
+}
+@media(max-width:650px){
+ .analytics-grid{grid-template-columns:1fr!important}
+}
 </style>
 
 </head>
@@ -5719,7 +5762,7 @@ function renderRank(id,list){
   host.innerHTML="";
   if(!list?.length){host.innerHTML='<div class="empty">Chưa có dữ liệu.</div>';return;}
 
-  const compactIds=new Set(["deviceModelRanks","deviceOsRanks","productRanks","searchRanks","filterRanks"]);
+  const compactIds=new Set(["deviceModelRanks","deviceOsRanks","productRanks","searchRanks","filterRanks","compareProductRanks"]);
   const isCompact=compactIds.has(id);
   const renderRows=(expanded)=>{
     host.innerHTML="";
