@@ -1977,3 +1977,11 @@ Quy tắc:
 - Frontend đang gửi `zalo_click`, backend trước đây chỉ nhận `zalo`.
 - API analytics giờ chấp nhận cả tên event cũ và mới.
 - Lượt so sánh và Bấm Zalo sẽ cộng vào thống kê theo ngày và tổng hệ thống.
+
+
+## V313 - Tên khách hàng trong lịch sử tra bảo hành
+- Lấy tên khách hàng trực tiếp từ API khách hàng KiotViet theo số điện thoại.
+- API tra bảo hành trả thêm `customerName`.
+- Lịch sử Redis `analytics:warranty_recent` lưu thêm `customerName`.
+- Admin thêm cột `Tên khách hàng`.
+- Bản ghi cũ chưa lưu tên sẽ hiển thị `—`; lượt tra cứu mới sẽ có tên nếu KiotViet trả về.

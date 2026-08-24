@@ -2566,6 +2566,7 @@ button,.primary,.secondary{font-size:12px!important}
 .warranty-status.not-found{background:#fff7ed;color:#c2410c}
 .warranty-status.error{background:#fef2f2;color:#b42318}
 .warranty-phone{font-weight:800;color:#101828;letter-spacing:.02em}
+.warranty-customer-name{font-weight:700;color:#344054}
 .warranty-table-scroll{overflow:auto;border:1px solid var(--admin-line,#e7eaee);border-radius:10px}
 .warranty-empty{padding:24px;text-align:center;color:var(--admin-muted,#667085);font-size:13px}
 @media(max-width:760px){
@@ -6425,6 +6426,10 @@ function renderWarrantyRecent(items=[]){
       ? date.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"})
       : "—";
     const count=Number(x.itemCount||0);
+    const customerName=String(x.customerName||"").trim();
+    const customerSafe=customerName
+      ? customerName.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))
+      : "—";
     return `<tr>
       <td>${when}</td>
       <td class="warranty-phone">${(()=>{
@@ -6433,12 +6438,13 @@ function renderWarrantyRecent(items=[]){
         const safe=raw.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
         return legacy ? `<span class="warranty-phone-legacy">${safe}<small>Dữ liệu cũ đã che</small></span>` : safe;
       })()}</td>
+      <td class="warranty-customer-name">${customerSafe}</td>
       <td><span class="warranty-status ${statusClass[x.status]||"error"}">${statusText[x.status]||"Lỗi tra cứu"}</span></td>
       <td>${x.status==="found"?fmt(count)+" sản phẩm":"—"}</td>
     </tr>`;
   }).join("");
   host.innerHTML=`<div class="warranty-table-scroll"><table class="warranty-recent-table">
-    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Kết quả</th><th>Sản phẩm</th></tr></thead>
+    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
