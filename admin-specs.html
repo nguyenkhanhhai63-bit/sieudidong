@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V303 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V304 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V303: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V304: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V303: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V304: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V303 - Biểu đồ thống kê chuyên nghiệp */
+/* V304 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V303 - Dashboard compact giống ảnh demo
+   V304 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V303 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V304 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V303: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V304: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4867,7 +4867,7 @@ body.authenticated{
 
 
 <style id="v295-dashboard-grid">
-/* V303: compact analytics grid matching approved demo */
+/* V304: compact analytics grid matching approved demo */
 .analytics-grid{
   display:grid!important;
   grid-template-columns:repeat(10,minmax(0,1fr))!important;
@@ -4910,7 +4910,7 @@ body.authenticated{
 
 
 <style id="v298-dashboard-relayout">
-/* V303 - Bố trí lại các card thống kê cho cân đối */
+/* V304 - Bố trí lại các card thống kê cho cân đối */
 @media(min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5036,7 +5036,7 @@ body.authenticated{
 
 
 <style id="v299-five-summary-cards">
-/* V303: 5 mục thống kê quan trọng nằm chung một hàng */
+/* V304: 5 mục thống kê quan trọng nằm chung một hàng */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5117,7 +5117,7 @@ body.authenticated{
 
 
 <style id="v300-exact-dashboard-layout">
-/* V303 - ép đúng thứ tự và hàng của dashboard */
+/* V304 - ép đúng thứ tự và hàng của dashboard */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5235,7 +5235,7 @@ body.authenticated{
 
 
 <style id="v301-compact-compare-pairs">
-/* V303 - Thu gọn Cặp máy được so sánh nhiều */
+/* V304 - Thu gọn Cặp máy được so sánh nhiều */
 #comparePairRanks{
   padding:8px 12px 12px!important;
 }
@@ -5345,7 +5345,7 @@ body.authenticated{
 
 
 <style id="v302-warranty-recent-compact">
-/* V303: Khách tra cứu bảo hành gần đây - compact */
+/* V304: Khách tra cứu bảo hành gần đây - compact */
 #warrantyRecentCard,
 #recentWarrantyCard,
 .warranty-recent-card{
@@ -5616,7 +5616,7 @@ body.authenticated{
           <div class="abox compare-pairs-box"><div class="compare-pairs-head"><h2>Cặp máy được so sánh nhiều</h2><p>Nhìn nhanh máy nào thường được khách đặt lên bàn cân với nhau.</p></div><div id="comparePairRanks" class="compare-pair-list"></div></div>
           <div class="abox warranty-analytics-box">
             <div class="warranty-analytics-head">
-              <div><h2>Khách tra cứu bảo hành gần đây</h2><p>Ghi nhận tự động khi khách nhập số điện thoại và bấm Tra cứu. Số điện thoại được che bớt trên bảng thống kê.</p></div>
+              <div><h2>Khách tra cứu bảo hành gần đây</h2><p>Ghi nhận tự động khi khách nhập số điện thoại và bấm Tra cứu. Số điện thoại được hiển thị đầy đủ trong trang quản trị.</p></div>
               <div id="warrantyLookupSummary" class="device-analytics-note"></div>
             </div>
             <div id="warrantyRecentList"></div>
@@ -8363,7 +8363,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 (function(){
-  function tagV303Boxes(){
+  function tagV304Boxes(){
     document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
       const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
       if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
@@ -8378,10 +8378,10 @@ document.addEventListener("DOMContentLoaded",function(){
     });
   }
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",tagV303Boxes,{once:true});
-  }else tagV303Boxes();
-  setTimeout(tagV303Boxes,300);
-  setTimeout(tagV303Boxes,1000);
+    document.addEventListener("DOMContentLoaded",tagV304Boxes,{once:true});
+  }else tagV304Boxes();
+  setTimeout(tagV304Boxes,300);
+  setTimeout(tagV304Boxes,1000);
 })();
 </script>
 
