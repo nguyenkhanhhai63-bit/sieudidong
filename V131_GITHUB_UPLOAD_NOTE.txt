@@ -1,8 +1,0 @@
-V131 - QUAN TRỌNG KHI UP GITHUB
-
-Hãy upload cả file .vercelignore ở root repository.
-GitHub Upload files không tự xóa các API cũ, nên .vercelignore sẽ buộc Vercel bỏ qua chúng.
-
-Sau deploy:
-https://sieudidong.vn/api/version
-phải trả version V131 và serverlessFunctions 2.
