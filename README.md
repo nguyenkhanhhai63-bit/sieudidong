@@ -1963,3 +1963,10 @@ Quy tắc:
 - 6 card dưới cùng chia đều 6 cột trên màn hình rộng.
 - Tổng hợp tháng, donut thiết bị, sản phẩm, điện thoại, từ khóa, hệ điều hành đều thu gọn.
 - Desktop bỏ sidebar, mobile giữ menu hiện tại.
+
+
+## V292 - Fix dashboard bị cắt mất nội dung
+- Bỏ height/max-height cố định của vùng thống kê.
+- Bỏ scrollbar nội bộ của dashboard.
+- Toàn bộ card phía dưới hiển thị liên tục theo chiều dài trang.
+- Chỉ bảng lịch sử tra cứu bảo hành giữ scroll riêng vì danh sách dài.

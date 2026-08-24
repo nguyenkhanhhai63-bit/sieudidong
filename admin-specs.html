@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V291 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V292 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V291: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V292: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V291: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V292: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V291 - Biểu đồ thống kê chuyên nghiệp */
+/* V292 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V291 - Dashboard compact giống ảnh demo
+   V292 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4771,6 +4771,69 @@ body.authenticated{
 @media(max-width:1020px){
   .admin-sidebar{
     display:flex!important;
+  }
+}
+</style>
+
+
+<style id="v292-dashboard-full-content">
+/* =========================================================
+   V292 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   ========================================================= */
+@media(min-width:1021px){
+  #analyticsCard,
+  #analyticsContent,
+  #analyticsCard .analytics-shell,
+  #analyticsCard .analytics-content,
+  #analyticsCard .card-body,
+  #analyticsCard .dashboard-body{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  #analyticsContent{
+    display:block!important;
+    width:100%!important;
+  }
+
+  #analyticsContent.hidden{
+    display:none!important;
+  }
+
+  /* Grid phải tự mở rộng theo các hàng card bên dưới */
+  #analyticsCard .analytics-grid{
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    align-items:stretch!important;
+  }
+
+  #analyticsCard .analytics-grid>.abox{
+    overflow:hidden!important;
+  }
+
+  /* Chỉ riêng bảng lịch sử bảo hành được phép cuộn bên trong */
+  #analyticsCard .v291-warranty-history,
+  #analyticsCard .v290-warranty-history,
+  #analyticsCard .v289-warranty-history{
+    max-height:360px!important;
+    overflow:auto!important;
+  }
+
+  /* Không để container cha cắt các card phía dưới */
+  .wrap,
+  main,
+  .admin-main,
+  .admin-content{
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  /* Khôi phục footer / khoảng cuối trang */
+  #analyticsCard{
+    padding-bottom:28px!important;
   }
 }
 </style>
@@ -7637,6 +7700,36 @@ document.addEventListener("DOMContentLoaded",function(){
 
   setTimeout(tagCompactDashboard,300);
   setTimeout(tagCompactDashboard,1000);
+})();
+</script>
+
+
+<script>
+(function(){
+  function unlockAnalyticsHeight(){
+    const ids=["analyticsCard","analyticsContent"];
+    ids.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el)return;
+      if(id==="analyticsContent" && el.classList.contains("hidden")) return;
+      el.style.height="auto";
+      el.style.maxHeight="none";
+      el.style.overflow="visible";
+    });
+
+    document.querySelectorAll("#analyticsCard .analytics-shell,#analyticsCard .analytics-content,#analyticsCard .dashboard-body").forEach(el=>{
+      el.style.height="auto";
+      el.style.maxHeight="none";
+      el.style.overflow="visible";
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",unlockAnalyticsHeight,{once:true});
+  }else unlockAnalyticsHeight();
+
+  setTimeout(unlockAnalyticsHeight,300);
+  setTimeout(unlockAnalyticsHeight,1000);
 })();
 </script>
 
