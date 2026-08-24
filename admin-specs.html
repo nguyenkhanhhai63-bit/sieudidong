@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V292 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V293 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V292: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V293: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V292: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V293: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V292 - Biểu đồ thống kê chuyên nghiệp */
+/* V293 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V292 - Dashboard compact giống ảnh demo
+   V293 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V292 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V293 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4836,6 +4836,22 @@ body.authenticated{
     padding-bottom:28px!important;
   }
 }
+</style>
+
+
+<style id="v293-compact-ranking">
+/* V293: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+.v293-ranking-compact > *:nth-child(n+7){display:none!important;}
+.v293-ranking-compact.v293-expanded > *{display:flex!important;}
+.v293-more-wrap{
+  padding:12px 10px 4px;
+  text-align:center;
+}
+.v293-more-btn{
+  border:0;background:transparent;color:#ff5a00;font-weight:800;
+  cursor:pointer;font-size:13px;padding:7px 12px;border-radius:8px;
+}
+.v293-more-btn:hover{background:#fff3ec;}
 </style>
 
 </head>
@@ -7730,6 +7746,62 @@ document.addEventListener("DOMContentLoaded",function(){
 
   setTimeout(unlockAnalyticsHeight,300);
   setTimeout(unlockAnalyticsHeight,1000);
+})();
+</script>
+
+
+<script>
+(function(){
+ const titles=[
+   "Điện thoại khách đang dùng",
+   "Hệ điều hành thiết bị",
+   "Sản phẩm được xem nhiều",
+   "Từ khóa khách tìm nhiều",
+   "Bộ lọc được dùng nhiều"
+ ];
+ function setup(){
+   const boxes=[...document.querySelectorAll("#analyticsCard .abox")];
+   boxes.forEach(box=>{
+     const heading=box.querySelector("h3,.abox-title,strong");
+     if(!heading) return;
+     const title=(heading.textContent||"").trim();
+     if(!titles.some(x=>title.includes(x))) return;
+     if(box.dataset.v293==="1") return;
+
+     // Find the element containing the repeated ranking rows.
+     const candidates=[...box.querySelectorAll("div,ul,ol,tbody")];
+     let list=candidates.find(el=>{
+       const kids=[...el.children];
+       return kids.length>5 && kids.filter(k=>
+         k.matches("li,tr,.rank-row,.list-row") ||
+         /^\s*\d+\s*/.test((k.textContent||"").trim())
+       ).length>=5;
+     });
+     if(!list) return;
+
+     const rows=[...list.children];
+     if(rows.length<=5) return;
+     list.classList.add("v293-ranking-compact");
+
+     const wrap=document.createElement("div");
+     wrap.className="v293-more-wrap";
+     const btn=document.createElement("button");
+     btn.type="button";
+     btn.className="v293-more-btn";
+     btn.textContent="Xem thêm";
+     btn.onclick=()=>{
+       const expanded=list.classList.toggle("v293-expanded");
+       btn.textContent=expanded ? "Thu gọn" : "Xem thêm";
+     };
+     wrap.appendChild(btn);
+     list.after(wrap);
+     box.dataset.v293="1";
+   });
+ }
+ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setup);
+ else setup();
+ setTimeout(setup,500);
+ setTimeout(setup,1500);
 })();
 </script>
 
