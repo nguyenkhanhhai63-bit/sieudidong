@@ -3494,6 +3494,175 @@ body.auth-pending #authLoading{
 @media(max-width:760px){#analyticsCard{width:calc(100% - 16px)!important;margin:8px auto 24px!important}.analytics-periodbar{align-items:flex-start!important;flex-direction:column!important}.period-tabs{width:100%!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important}.period-tab{width:100%!important;padding:0 5px!important}.metric-grid.metric-grid-main,.metric-grid.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr))!important}.analytics-grid{grid-template-columns:1fr!important}.analytics-grid>.abox,.analytics-grid>.traffic-box,.analytics-grid>.monthly-box,.analytics-grid>.compare-pairs-box,.analytics-grid>.warranty-analytics-box{grid-column:1!important;min-height:0!important}}
 </style>
 
+
+<style id="v281-dashboard-scale-up">
+/* V281 - Tăng kích thước dashboard, dễ đọc hơn */
+@media(min-width:1021px){
+  #analyticsCard{
+    width:min(1580px,calc(100% - 28px))!important;
+    margin:22px auto 44px!important;
+  }
+
+  #analyticsCard .dashboard-welcome{
+    padding:23px 26px!important;
+    border-radius:17px!important;
+  }
+  #analyticsCard .dashboard-welcome h2{
+    font-size:22px!important;
+  }
+  #analyticsCard .dashboard-welcome p{
+    font-size:12.5px!important;
+  }
+
+  #analyticsCard>.head{
+    padding:24px 3px 12px!important;
+  }
+  #analyticsCard>.head h1{
+    font-size:22px!important;
+  }
+  #analyticsCard>.head p{
+    font-size:11.5px!important;
+  }
+
+  .analytics-periodbar{
+    min-height:56px!important;
+    padding:11px 14px!important;
+    margin-bottom:16px!important;
+  }
+  .period-filter-label{
+    font-size:11.5px!important;
+  }
+  .period-tab{
+    height:36px!important;
+    padding:0 15px!important;
+    font-size:10.5px!important;
+  }
+
+  .analytics-section-title{
+    margin:20px 3px 11px!important;
+  }
+  .analytics-section-title strong{
+    font-size:15.5px!important;
+  }
+  .analytics-section-title span{
+    font-size:10.5px!important;
+  }
+
+  .metric-grid.metric-grid-main{
+    gap:11px!important;
+  }
+  .metric-grid.metric-grid-warranty{
+    gap:11px!important;
+  }
+  .metric{
+    min-height:112px!important;
+    padding:16px 17px!important;
+    border-radius:14px!important;
+  }
+  .metric small{
+    font-size:10.5px!important;
+  }
+  .metric strong{
+    font-size:31px!important;
+    margin-top:11px!important;
+  }
+  .metric-grid-main .metric:nth-child(1) strong,
+  .metric-grid-main .metric:nth-child(2) strong,
+  .metric-grid-main .metric:nth-child(3) strong{
+    font-size:34px!important;
+  }
+  .metric em{
+    font-size:9.5px!important;
+    margin-top:8px!important;
+  }
+
+  .analytics-grid{
+    gap:12px!important;
+    margin-top:18px!important;
+  }
+  .analytics-grid>.abox{
+    min-height:270px!important;
+    border-radius:14px!important;
+  }
+  .analytics-grid>.traffic-box,
+  .analytics-grid>.monthly-box{
+    min-height:340px!important;
+  }
+  .abox h2{
+    min-height:50px!important;
+    padding:14px 16px!important;
+    font-size:13px!important;
+  }
+
+  #trafficChart{
+    height:280px!important;
+  }
+
+  .ranklist{
+    padding:6px 15px 12px!important;
+  }
+  .rankrow{
+    min-height:39px!important;
+    padding:9px 0!important;
+    font-size:11.5px!important;
+  }
+  .devrow{
+    min-height:41px!important;
+    padding:10px 15px!important;
+    font-size:11.5px!important;
+  }
+  .device-analytics-note{
+    font-size:9.5px!important;
+    padding:0 15px!important;
+  }
+
+  .monthly-analytics{
+    padding:7px 15px 12px!important;
+  }
+  .month-row{
+    padding:8px 0!important;
+    font-size:11px!important;
+  }
+}
+
+/* Màn hình 2K/Full HD rộng: tăng thêm nhẹ */
+@media(min-width:1600px){
+  #analyticsCard{
+    width:min(1660px,calc(100% - 36px))!important;
+  }
+  .metric{
+    min-height:118px!important;
+  }
+  .metric strong{
+    font-size:33px!important;
+  }
+  .metric-grid-main .metric:nth-child(1) strong,
+  .metric-grid-main .metric:nth-child(2) strong,
+  .metric-grid-main .metric:nth-child(3) strong{
+    font-size:36px!important;
+  }
+}
+
+/* Mobile cũng tăng nhẹ, không quá chật */
+@media(max-width:760px){
+  .metric{
+    min-height:96px!important;
+  }
+  .metric small{
+    font-size:10.5px!important;
+  }
+  .metric strong{
+    font-size:26px!important;
+  }
+  .analytics-section-title strong{
+    font-size:14px!important;
+  }
+  .rankrow,.devrow{
+    font-size:11px!important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">

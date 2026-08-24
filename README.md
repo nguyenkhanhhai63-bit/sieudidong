@@ -1930,3 +1930,11 @@ Quy tắc:
 ## V280 Dashboard redesign
 - Giao diện dashboard mới compact, dễ đọc, giảm khoảng trắng.
 - KPI, biểu đồ và các bảng được chia lại theo mức độ quan trọng.
+
+
+## V281 - Dashboard lớn và dễ đọc hơn
+- Tăng chiều rộng dashboard lên tối đa 1580–1660px.
+- KPI cao hơn, số lớn hơn 10–15%.
+- Tăng font tiêu đề, bộ lọc thời gian và bảng dữ liệu.
+- Biểu đồ cao hơn, các card dưới rộng và thoáng hơn.
+- Mobile cũng tăng nhẹ kích thước chữ/số.
