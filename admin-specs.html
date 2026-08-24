@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V305 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V307 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V305: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V307: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V305: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V307: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V305 - Biểu đồ thống kê chuyên nghiệp */
+/* V307 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -4437,7 +4437,7 @@ body.authenticated{
 
 <style id="v291-dashboard-compact">
 /* =========================================================
-   V305 - Dashboard compact giống ảnh demo
+   V307 - Dashboard compact giống ảnh demo
    ========================================================= */
 @media(min-width:1021px){
   body.authenticated{
@@ -4778,7 +4778,7 @@ body.authenticated{
 
 <style id="v292-dashboard-full-content">
 /* =========================================================
-   V305 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
+   V307 - Hiện đầy đủ toàn bộ dashboard, không nhốt trong khung cuộn
    ========================================================= */
 @media(min-width:1021px){
   #analyticsCard,
@@ -4840,7 +4840,7 @@ body.authenticated{
 
 
 <style id="v293-compact-ranking">
-/* V305: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
+/* V307: Các bảng ranking chỉ hiện 5 dòng, bấm Xem thêm để mở */
 .v293-ranking-compact > *:nth-child(n+7){display:none!important;}
 .v293-ranking-compact.v293-expanded > *{display:flex!important;}
 .v293-more-wrap{
@@ -4867,7 +4867,7 @@ body.authenticated{
 
 
 <style id="v295-dashboard-grid">
-/* V305: compact analytics grid matching approved demo */
+/* V307: compact analytics grid matching approved demo */
 .analytics-grid{
   display:grid!important;
   grid-template-columns:repeat(10,minmax(0,1fr))!important;
@@ -4910,7 +4910,7 @@ body.authenticated{
 
 
 <style id="v298-dashboard-relayout">
-/* V305 - Bố trí lại các card thống kê cho cân đối */
+/* V307 - Bố trí lại các card thống kê cho cân đối */
 @media(min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5036,7 +5036,7 @@ body.authenticated{
 
 
 <style id="v299-five-summary-cards">
-/* V305: 5 mục thống kê quan trọng nằm chung một hàng */
+/* V307: 5 mục thống kê quan trọng nằm chung một hàng */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5117,7 +5117,7 @@ body.authenticated{
 
 
 <style id="v300-exact-dashboard-layout">
-/* V305 - ép đúng thứ tự và hàng của dashboard */
+/* V307 - ép đúng thứ tự và hàng của dashboard */
 @media (min-width:1200px){
   #analyticsCard .analytics-grid{
     display:grid!important;
@@ -5235,7 +5235,7 @@ body.authenticated{
 
 
 <style id="v301-compact-compare-pairs">
-/* V305 - Thu gọn Cặp máy được so sánh nhiều */
+/* V307 - Thu gọn Cặp máy được so sánh nhiều */
 #comparePairRanks{
   padding:8px 12px 12px!important;
 }
@@ -5345,7 +5345,7 @@ body.authenticated{
 
 
 <style id="v302-warranty-recent-compact">
-/* V305: Khách tra cứu bảo hành gần đây - compact */
+/* V307: Khách tra cứu bảo hành gần đây - compact */
 #warrantyRecentCard,
 #recentWarrantyCard,
 .warranty-recent-card{
@@ -5388,6 +5388,100 @@ body.authenticated{
 <style id="v305-full-phone">
 .warranty-phone-legacy{display:flex;flex-direction:column;gap:2px}
 .warranty-phone-legacy small{font-size:8px;color:#98a2b3;font-weight:500}
+</style>
+
+
+<style id="v306-menu-fix">
+.admin-menu-overlay-v306{position:fixed;inset:0;background:rgba(15,23,42,.38);z-index:998;opacity:0;visibility:hidden;transition:.2s}
+body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
+@media(min-width:1021px){
+ .admin-sidebar{display:flex!important;position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:230px!important;z-index:999!important;transform:translateX(-100%)!important;transition:transform .22s ease!important}
+ body.admin-menu-open-v306 .admin-sidebar{transform:translateX(0)!important}
+ .admin-topbar{left:0!important}.wrap{padding-left:28px!important}
+}
+@media(max-width:1020px){
+ body.admin-menu-open-v306 .admin-sidebar{transform:translateX(0)!important}
+ .admin-sidebar{z-index:999!important}
+}
+</style>
+
+
+<style id="v307-desktop-sidebar-fixed">
+/* V307 - Desktop dùng sidebar cố định, không dùng nút hamburger */
+@media (min-width:1021px){
+  .admin-sidebar{
+    display:flex!important;
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:230px!important;
+    z-index:120!important;
+    transform:none!important;
+    visibility:visible!important;
+    opacity:1!important;
+    box-shadow:none!important;
+  }
+
+  .admin-topbar{
+    left:230px!important;
+    width:calc(100% - 230px)!important;
+  }
+
+  .wrap{
+    padding-left:258px!important;
+    padding-right:28px!important;
+  }
+
+  /* Ẩn nút 3 gạch trên desktop */
+  #sidebarToggle,
+  #menuToggle,
+  .sidebar-toggle,
+  .menu-toggle,
+  .admin-menu-toggle,
+  .hamburger{
+    display:none!important;
+  }
+
+  /* Không dùng overlay trên desktop */
+  .admin-menu-overlay-v306{
+    display:none!important;
+  }
+
+  body.admin-menu-open-v306 .admin-sidebar{
+    transform:none!important;
+  }
+}
+
+/* Mobile/tablet vẫn dùng nút 3 gạch */
+@media (max-width:1020px){
+  .admin-sidebar{
+    transform:translateX(-100%)!important;
+    transition:transform .22s ease!important;
+  }
+  body.admin-menu-open-v306 .admin-sidebar{
+    transform:translateX(0)!important;
+  }
+
+  .admin-topbar{
+    left:0!important;
+    width:100%!important;
+  }
+
+  .wrap{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+
+  #sidebarToggle,
+  #menuToggle,
+  .sidebar-toggle,
+  .menu-toggle,
+  .admin-menu-toggle,
+  .hamburger{
+    display:inline-flex!important;
+  }
+}
 </style>
 
 </head>
@@ -8374,7 +8468,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 <script>
 (function(){
-  function tagV305Boxes(){
+  function tagV307Boxes(){
     document.querySelectorAll("#analyticsCard .abox").forEach(box=>{
       const t=(box.querySelector("h2")?.textContent||"").trim().toLowerCase();
       if(t.includes("tổng hợp theo tháng")) box.classList.add("monthly-box");
@@ -8389,10 +8483,10 @@ document.addEventListener("DOMContentLoaded",function(){
     });
   }
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",tagV305Boxes,{once:true});
-  }else tagV305Boxes();
-  setTimeout(tagV305Boxes,300);
-  setTimeout(tagV305Boxes,1000);
+    document.addEventListener("DOMContentLoaded",tagV307Boxes,{once:true});
+  }else tagV307Boxes();
+  setTimeout(tagV307Boxes,300);
+  setTimeout(tagV307Boxes,1000);
 })();
 </script>
 
@@ -8502,6 +8596,61 @@ document.addEventListener("DOMContentLoaded",function(){
   else reveal();
   setTimeout(reveal,500);
   setTimeout(reveal,1500);
+})();
+</script>
+
+
+<script id="v306-menu-fix-js">
+(function(){
+ function setup(){
+   const sidebar=document.querySelector('.admin-sidebar');
+   if(!sidebar)return;
+
+   let overlay=document.querySelector('.admin-menu-overlay-v306');
+   if(!overlay){
+     overlay=document.createElement('div');
+     overlay.className='admin-menu-overlay-v306';
+     document.body.appendChild(overlay);
+   }
+
+   let btn=document.querySelector('#sidebarToggle,#menuToggle,.sidebar-toggle,.menu-toggle,.admin-menu-toggle,.hamburger');
+   if(!btn){
+     const top=document.querySelector('.admin-topbar');
+     if(top) btn=top.querySelector('button');
+   }
+   if(!btn || btn.dataset.v306Menu==='1')return;
+   btn.dataset.v306Menu='1';
+
+   const close=()=>document.body.classList.remove('admin-menu-open-v306');
+   btn.addEventListener('click',function(e){
+     e.preventDefault();e.stopPropagation();
+     document.body.classList.toggle('admin-menu-open-v306');
+   },true);
+   overlay.addEventListener('click',close);
+   document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+ setTimeout(setup,300);setTimeout(setup,1000);
+})();
+</script>
+
+
+<script id="v307-menu-desktop-guard">
+(function(){
+  function syncDesktopMenu(){
+    if(window.innerWidth>=1021){
+      document.body.classList.remove("admin-menu-open-v306");
+      const overlay=document.querySelector(".admin-menu-overlay-v306");
+      if(overlay) overlay.style.display="none";
+    }else{
+      const overlay=document.querySelector(".admin-menu-overlay-v306");
+      if(overlay) overlay.style.display="";
+    }
+  }
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",syncDesktopMenu,{once:true});
+  }else syncDesktopMenu();
+  window.addEventListener("resize",syncDesktopMenu);
 })();
 </script>
 
