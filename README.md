@@ -1993,3 +1993,10 @@ Quy tắc:
 - Không thay đổi logic ảnh, màu, dung lượng, mua hàng, so sánh.
 - Chỉ dùng CSS để tăng kích thước, bo card, font và bảng thông số.
 - Tránh lỗi ảnh chính bị thu nhỏ hoặc biến mất khi app.js render lại sản phẩm.
+
+
+## V318 - Khôi phục ảnh trang chi tiết sản phẩm
+- Khôi phục index.html ổn định của V315 cho phần storefront/product detail.
+- Loại bỏ toàn bộ CSS/JS V316-V317 can thiệp gallery và selector `[class*=main-image]`.
+- Ảnh sản phẩm dùng lại logic gốc của app.js, nên đổi màu/dung lượng không bị co hoặc biến mất.
+- Các file quản trị/API khác giữ nguyên từ V317.
