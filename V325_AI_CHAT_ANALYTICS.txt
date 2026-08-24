@@ -1,0 +1,8 @@
+V325 - Thống kê khách dùng AI chatbox
+- ai_chat_open và ai_chat_question là event riêng, không còn ghi nhầm dưới filter_click.
+- Khách dùng AI = visitorId duy nhất đã mở chatbox hoặc gửi câu hỏi trong kỳ.
+- Lưu ZSET theo ngày analytics:v5:ai_users:YYYY-MM-DD để tính unique chính xác.
+- Ghi tổng lượt mở và tổng câu hỏi AI theo ngày.
+- Admin có card "Khách dùng AI chatbox".
+- Đổi Hôm nay / Hôm qua / 7 ngày / 30 ngày / Tháng / Năm sẽ tính unique user đúng theo kỳ.
+- Dòng phụ card hiển thị số câu hỏi AI trong kỳ.

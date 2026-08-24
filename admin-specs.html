@@ -5600,6 +5600,20 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v325-ai-metric">
+.metric-grid-main .metric-ai:after{
+  content:"✦"!important;
+  background:#eef0ff!important;
+  color:#635bff!important;
+  transform:none!important;
+  font-size:18px!important;
+}
+.metric-grid-main .metric-ai{
+  border-left-color:#7c6cff!important;
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -5806,6 +5820,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
           <div class="metric"><small>Xem chi tiết sản phẩm</small><strong id="mDetailClicks">0</strong><em id="mDetailPeriod">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Lượt so sánh</small><strong id="mTodayCompare">0</strong><em id="mCompare30">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Bấm Zalo</small><strong id="mTodayZalo">0</strong><em id="mZalo30">Theo kỳ đang chọn</em></div>
+          <div class="metric metric-ai"><small>Khách dùng AI chatbox</small><strong id="mAiUsers">0</strong><em id="mAiQuestionsPeriod">0 câu hỏi · Hôm nay</em></div>
           <div class="metric metric-total"><small>Tổng lượt truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
@@ -6659,6 +6674,8 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   mDetailClicks.textContent=fmt(p.detailClicks); const dp=document.getElementById("mDetailPeriod"); if(dp) dp.textContent=label;
   document.getElementById("mTodayCompare").textContent=fmt(p.compare); document.getElementById("mCompare30").textContent=label;
   mTodayZalo.textContent=fmt(p.zalo); mZalo30.textContent=label;
+  const aiUsersEl=document.getElementById("mAiUsers"); if(aiUsersEl) aiUsersEl.textContent=fmt(p.aiUsers);
+  const aiQEl=document.getElementById("mAiQuestionsPeriod"); if(aiQEl) aiQEl.textContent=`${fmt(p.aiQuestions)} câu hỏi · ${label}`;
   mViews30.textContent=fmt(o.totalViews); mTotalViews.textContent="Từ khi bật thống kê";
   document.getElementById("mTodayWarrantyChecks").textContent=fmt(p.warrantyChecks); document.getElementById("mWarrantyChecks30").textContent=label;
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
@@ -6836,6 +6853,8 @@ async function loadAnalytics(){
     mTodayVisitors.textContent=fmt(o.todayVisitors); mVisitors30.textContent=`30 ngày: ${fmt(o.visitors30)}`;
     mViews30.textContent=fmt(o.views30); mTotalViews.textContent=`Tổng: ${fmt(o.totalViews)}`;
     mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
+    const aiUsersEl=document.getElementById("mAiUsers"); if(aiUsersEl) aiUsersEl.textContent=fmt(o.todayAiUsers);
+    const aiQEl=document.getElementById("mAiQuestionsPeriod"); if(aiQEl) aiQEl.textContent=`${fmt(o.todayAiQuestions)} câu hỏi · Hôm nay`;
     mOnlineNow.textContent=fmt(o.onlineNow);
     mDetailClicks.textContent=fmt(o.detailClicks);
     document.getElementById("mTodayCompare").textContent=fmt(o.todayCompare);

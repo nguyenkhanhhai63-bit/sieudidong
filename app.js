@@ -2706,7 +2706,7 @@ function aiChatOpen(){
   document.body.classList.add("ai-chat-open");
   if(zaloConsultBtn) zaloConsultBtn.style.setProperty("display","none","important");
   if(aiChatFloatLabel) aiChatFloatLabel.style.display="none";
-  sendAnalytics("filter_click",{action:"ai_chat_open"});
+  sendAnalytics("ai_chat_open",{action:"ai_chat_open"});
 
   if(!isMobile){
     setTimeout(()=>aiChatInput?.focus(),80);
@@ -2878,7 +2878,7 @@ async function aiChatAsk(question){
     aiChatAppend("user",text);
     aiChatAppend("assistant","Được, tôi chuyển bạn sang nhân viên tư vấn trực tiếp. Bấm nút Nhắn Zalo ngay bên dưới.");
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
-    sendAnalytics("filter_click",{action:"ai_chat_human_requested"});
+    sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested"});
     return;
   }
 
@@ -2892,7 +2892,7 @@ async function aiChatAsk(question){
 
   aiChatInput.value="";
   aiChatTyping(true);
-  sendAnalytics("filter_click",{action:"ai_chat_question"});
+  sendAnalytics("ai_chat_question",{action:"ai_chat_question"});
 
   try{
     const r=await fetch("/api/ai-chat",{
