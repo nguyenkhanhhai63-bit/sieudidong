@@ -5485,6 +5485,81 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v314-admin-visual-refresh">
+/* V314 - Icon dashboard mới + tăng cỡ chữ toàn trang quản trị */
+@media (min-width:1021px){
+  body{font-size:15px!important}
+  .top,.admin-topbar{font-size:14px!important}
+  .head h1{font-size:24px!important}
+  .head p{font-size:13px!important}
+  .analytics-section-title strong{font-size:15px!important}
+  .analytics-section-title span{font-size:11.5px!important}
+  .periodbar-copy strong{font-size:13px!important}
+  .periodbar-copy span,.period-tab{font-size:11px!important}
+
+  /* KPI dễ đọc hơn */
+  .metric-grid.metric-grid-main .metric{
+    min-height:116px!important;
+    padding:17px 14px 14px 62px!important;
+  }
+  .metric-grid.metric-grid-main .metric small{
+    font-size:11.5px!important;
+    line-height:1.25!important;
+    margin-bottom:7px!important;
+    font-weight:700!important;
+    color:#667085!important;
+  }
+  .metric-grid.metric-grid-main .metric strong{
+    font-size:29px!important;
+    line-height:1!important;
+    letter-spacing:-.5px!important;
+  }
+  .metric-grid.metric-grid-main .metric em{
+    font-size:10.5px!important;
+    line-height:1.3!important;
+    margin-top:9px!important;
+  }
+
+  /* Icon line-art đồng bộ, không dùng emoji hệ điều hành */
+  .metric-grid.metric-grid-main .metric:after{
+    left:15px!important;
+    top:18px!important;
+    width:38px!important;
+    height:38px!important;
+    border-radius:12px!important;
+    font-family:"Segoe UI Symbol","Arial Unicode MS",Arial,sans-serif!important;
+    font-size:19px!important;
+    font-weight:800!important;
+    line-height:38px!important;
+    text-align:center!important;
+    box-shadow:inset 0 0 0 1px rgba(15,23,42,.035)!important;
+  }
+  .metric-grid.metric-grid-main .metric:nth-child(1):after{content:"♟"!important;background:#edf4ff!important;color:#2563eb!important;transform:rotate(180deg)}
+  .metric-grid.metric-grid-main .metric:nth-child(2):after{content:"◎"!important;background:#eafaf1!important;color:#16a34a!important;transform:none}
+  .metric-grid.metric-grid-main .metric:nth-child(3):after{content:"∿"!important;background:#f3edff!important;color:#7c3aed!important;transform:none}
+  .metric-grid.metric-grid-main .metric:nth-child(4):after{content:"◉"!important;background:#fff1e8!important;color:#f97316!important;transform:none}
+  .metric-grid.metric-grid-main .metric:nth-child(5):after{content:"⇄"!important;background:#e9f9fc!important;color:#0891b2!important;transform:none}
+  .metric-grid.metric-grid-main .metric:nth-child(6):after{content:"Z"!important;background:#fdebf4!important;color:#db2777!important;font-size:16px!important;transform:none}
+  .metric-grid.metric-grid-main .metric:nth-child(7):after{content:"▥"!important;background:#eef2f6!important;color:#475569!important;font-size:17px!important;transform:none}
+
+  /* Các card/bảng bên dưới cũng tăng font */
+  .abox h2{font-size:13px!important;min-height:44px!important}
+  .rankrow,.device-legend .devrow{font-size:10.5px!important}
+  .rankvalue{font-size:10.5px!important}
+  .rankrow span:first-child{font-size:9px!important;width:21px!important;height:21px!important}
+  .month-label,.month-value{font-size:10.5px!important}
+  .month-meta{font-size:8.5px!important}
+  .v291-warranty-history table{font-size:12px!important}
+  .v291-warranty-history th{font-size:11px!important}
+  .v291-warranty-history td{font-size:12px!important}
+
+  /* Form, menu, nút quản trị */
+  button,input,select,textarea{font-size:13px!important}
+  .admin-sidebar,.sidebar,.nav,.menu{font-size:13px!important}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
