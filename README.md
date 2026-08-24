@@ -1970,3 +1970,10 @@ Quy tắc:
 - Bỏ scrollbar nội bộ của dashboard.
 - Toàn bộ card phía dưới hiển thị liên tục theo chiều dài trang.
 - Chỉ bảng lịch sử tra cứu bảo hành giữ scroll riêng vì danh sách dài.
+
+
+## V311 - Fix thống kê Lượt so sánh và Bấm Zalo
+- Frontend đang gửi `compare_create`, backend trước đây chỉ nhận `compare`.
+- Frontend đang gửi `zalo_click`, backend trước đây chỉ nhận `zalo`.
+- API analytics giờ chấp nhận cả tên event cũ và mới.
+- Lượt so sánh và Bấm Zalo sẽ cộng vào thống kê theo ngày và tổng hệ thống.
