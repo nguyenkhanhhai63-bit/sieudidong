@@ -1985,3 +1985,11 @@ Quy tắc:
 - Lịch sử Redis `analytics:warranty_recent` lưu thêm `customerName`.
 - Admin thêm cột `Tên khách hàng`.
 - Bản ghi cũ chưa lưu tên sẽ hiển thị `—`; lượt tra cứu mới sẽ có tên nếu KiotViet trả về.
+
+
+## V317 - Ổn định trang chi tiết sản phẩm
+- Quay về cấu trúc DOM gốc của V315.
+- Không còn JavaScript tự bọc / di chuyển gallery ảnh.
+- Không thay đổi logic ảnh, màu, dung lượng, mua hàng, so sánh.
+- Chỉ dùng CSS để tăng kích thước, bo card, font và bảng thông số.
+- Tránh lỗi ảnh chính bị thu nhỏ hoặc biến mất khi app.js render lại sản phẩm.
