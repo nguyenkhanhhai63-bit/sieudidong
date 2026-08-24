@@ -5487,7 +5487,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 
 <style id="v314-admin-visual-refresh">
-/* V314 - Icon dashboard mới + tăng cỡ chữ toàn trang quản trị */
+/* V315 - Icon dashboard mới + tăng cỡ chữ toàn trang quản trị */
 @media (min-width:1021px){
   body{font-size:15px!important}
   .top,.admin-topbar{font-size:14px!important}
@@ -5784,7 +5784,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     <div id="deviceList" class="device-legend"></div>
   </div>
 </div>
-          <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Android thường nhận được model; iPhone có thể chỉ hiện iPhone do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
+          <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Từ khóa khách tìm nhiều</h2><div id="searchRanks" class="ranklist"></div></div>
@@ -6408,10 +6408,38 @@ function showToast(message,type="success"){
 }
 
 function fmt(n){return new Intl.NumberFormat("vi-VN").format(Number(n||0));}
+function cleanDeviceModelRanks(list){
+  const merged=new Map();
+  (Array.isArray(list)?list:[]).forEach(x=>{
+    let name=String(x?.name||"").trim();
+    const value=Number(x?.value||0);
+
+    // Các chuỗi 1 ký tự như "K" là dữ liệu model lỗi từ trình duyệt.
+    // Gom chúng vào Android không xác định model thay vì hiển thị như tên máy.
+    if(!name || name.length<=1 || /^[^a-zA-Z0-9]+$/.test(name)){
+      name="Điện thoại Android (không xác định model)";
+    }
+
+    // Chuẩn hóa các nhãn Android không xác định cũ về cùng một nhóm.
+    if(/^(android|điện thoại android)\s*\(?không xác định model\)?$/i.test(name)){
+      name="Điện thoại Android (không xác định model)";
+    }
+
+    merged.set(name,(merged.get(name)||0)+value);
+  });
+  return [...merged.entries()]
+    .map(([name,value])=>({name,value}))
+    .sort((a,b)=>b.value-a.value);
+}
+
 function renderRank(id,list){
   const host=document.getElementById(id);
   if(!host)return;
   host.innerHTML="";
+
+  // Chỉ làm sạch dữ liệu ở bảng model điện thoại.
+  if(id==="deviceModelRanks") list=cleanDeviceModelRanks(list);
+
   if(!list?.length){host.innerHTML='<div class="empty">Chưa có dữ liệu.</div>';return;}
 
   const compactIds=new Set(["deviceModelRanks","deviceOsRanks","productRanks","searchRanks","compareProductRanks"]);
