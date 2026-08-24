@@ -58,6 +58,63 @@
 
 
   <link rel="stylesheet" href="/styles.css?v=261">
+
+<style id="v316-product-detail-demo">
+@media(min-width:900px){
+  .product-detail-container,.product-detail,.product-detail-main{
+    width:min(1460px,calc(100% - 36px))!important;max-width:none!important;margin:18px auto 0!important;
+  }
+  .product-title,.detail-title,.product-detail h1{
+    font-size:25px!important;line-height:1.25!important;margin-bottom:12px!important;font-weight:900!important;
+  }
+  .product-detail-card,.product-main-card,.product-detail-box{
+    display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(0,.9fr) 330px!important;
+    gap:18px!important;padding:18px!important;border-radius:18px!important;background:#fff!important;
+    border:1px solid #e6eaf0!important;box-shadow:0 10px 28px rgba(15,23,42,.04)!important;
+  }
+  .product-gallery,.detail-gallery,.product-image-section{
+    display:grid!important;grid-template-columns:72px minmax(0,1fr)!important;gap:14px!important;
+  }
+  .v316-main-image{
+    min-height:430px!important;border-radius:14px!important;background:#fbfbfc!important;display:grid!important;place-items:center!important;
+  }
+  .v316-main-image img{max-width:92%!important;max-height:410px!important;object-fit:contain!important}
+  .v316-thumbs{display:flex;flex-direction:column;gap:10px}
+  .v316-thumb{width:62px;height:62px;border:1px solid #e3e7ec;border-radius:10px;background:#fff;padding:4px}
+  .v316-thumb.active{border:2px solid #ff5a00}
+  .v316-thumb img{width:100%;height:100%;object-fit:contain}
+  .product-price,.detail-price,.current-price{font-size:30px!important;color:#e10600!important;font-weight:1000!important}
+  .product-actions,.detail-actions,.buy-actions{display:grid!important;grid-template-columns:1fr!important;gap:10px!important;margin-top:20px!important}
+  .product-actions .buy-btn,.product-actions .contact-btn,.detail-actions .buy-btn,.product-contact-button{
+    min-height:52px!important;border-radius:10px!important;background:linear-gradient(90deg,#ff650d,#ff5200)!important;color:#fff!important;font-weight:900!important;
+  }
+  .product-actions .compare-btn,.detail-actions .compare-btn,.add-compare-btn{
+    min-height:48px!important;border:1.5px solid #ff5a00!important;border-radius:10px!important;background:#fff!important;color:#f05a0b!important;font-weight:800!important;
+  }
+  .v316-benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid #eef1f4}
+  .v316-benefit{text-align:center;font-size:9px;color:#667085}
+  .v316-benefit i{width:36px;height:36px;margin:0 auto 6px;border-radius:11px;display:grid;place-items:center;background:#fff4ea;color:#ff5a00;font-style:normal;font-size:16px}
+  .v316-benefit strong{display:block;font-size:9px;color:#344054}
+  .similar-products,.related-products,.product-similar{border:1px solid #e6eaf0!important;border-radius:14px!important;overflow:hidden!important;background:#fff!important}
+  .similar-products h3,.related-products h3,.product-similar h3{margin:0!important;min-height:48px!important;padding:0 14px!important;display:flex!important;align-items:center!important;background:#fff5ed!important;color:#cc4a08!important;font-size:13px!important}
+  .v316-assurance{margin-top:14px;padding:14px;border:1px solid #e6eaf0;border-radius:14px;background:#fff}
+  .v316-assurance div{min-height:34px;display:flex;align-items:center;gap:8px;font-size:11px;color:#344054}
+  .v316-assurance i{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:#fff4ea;color:#ff5a00;font-style:normal}
+  .specs-section,.product-specs,.technical-specs{width:min(1460px,calc(100% - 36px))!important;max-width:none!important;margin:22px auto 40px!important;border-radius:18px!important;background:#fff!important;border:1px solid #e6eaf0!important;overflow:hidden!important}
+  .specs-section h2,.product-specs h2,.technical-specs h2{font-size:20px!important;padding:18px 20px!important;margin:0!important}
+  .spec-table,.specs-table,.technical-table{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:0 16px 16px!important}
+  .spec-table tr,.specs-table tr,.technical-table tr,.spec-row{display:grid!important;grid-template-columns:150px minmax(0,1fr)!important;min-height:84px!important;border:1px solid #e8ebef!important;background:#fff!important}
+  .spec-table th,.specs-table th,.technical-table th,.spec-label{padding:14px!important;background:#fbfcfd!important;font-size:12px!important;font-weight:900!important}
+  .spec-table td,.specs-table td,.technical-table td,.spec-value{padding:14px!important;font-size:11.5px!important;line-height:1.55!important}
+}
+.v316-trust-row{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 16px}
+.v316-trust-chip{font-size:12px;font-weight:800}.v316-trust-chip.green{color:#16a34a}.v316-trust-chip.blue{color:#2563eb}.v316-trust-chip.orange{color:#f97316}
+@media(max-width:899px){
+  .product-detail-card,.product-main-card,.product-detail-box{grid-template-columns:1fr!important}
+  .spec-table,.specs-table,.technical-table{grid-template-columns:1fr!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -328,6 +385,59 @@
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
+})();
+</script>
+
+
+<script id="v316-product-detail-enhance">
+(function(){
+  const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+
+  function run(){
+    const title=q(".product-title,.detail-title,.product-detail h1");
+    if(title && !q(".v316-trust-row")){
+      const row=document.createElement("div");
+      row.className="v316-trust-row";
+      row.innerHTML='<span class="v316-trust-chip green">✓ Chính hãng 100%</span><span class="v316-trust-chip blue">▣ Bảo hành tại Siêu Di Động</span><span class="v316-trust-chip orange">↻ 1 đổi 1 trong 30 ngày</span>';
+      title.insertAdjacentElement("afterend",row);
+    }
+
+    const gallery=q(".product-gallery,.detail-gallery,.product-image-section");
+    if(gallery && !q(".v316-thumbs",gallery)){
+      const mainImg=q("img",gallery);
+      if(mainImg){
+        mainImg.parentElement.classList.add("v316-main-image");
+        const thumbs=document.createElement("div"); thumbs.className="v316-thumbs";
+        const srcs=[...new Set(qa("img",gallery).map(x=>x.currentSrc||x.src).filter(Boolean))];
+        (srcs.length?srcs:[mainImg.src]).slice(0,5).forEach((src,i)=>{
+          const b=document.createElement("button"); b.type="button"; b.className="v316-thumb"+(i===0?" active":"");
+          b.innerHTML=`<img src="${src}" alt="">`;
+          b.onclick=()=>{mainImg.src=src;qa(".v316-thumb",thumbs).forEach(x=>x.classList.remove("active"));b.classList.add("active")};
+          thumbs.appendChild(b);
+        });
+        gallery.insertBefore(thumbs,gallery.firstChild);
+      }
+    }
+
+    const info=q(".product-info,.detail-info,.product-buy-panel");
+    if(info && !q(".v316-benefits",info)){
+      const box=document.createElement("div"); box.className="v316-benefits";
+      box.innerHTML='<div class="v316-benefit"><i>🚚</i><strong>Giao hàng nhanh</strong>Toàn quốc</div><div class="v316-benefit"><i>✓</i><strong>Kiểm tra máy</strong>Trước thanh toán</div><div class="v316-benefit"><i>%</i><strong>Hỗ trợ trả góp</strong>Lãi suất 0%</div><div class="v316-benefit"><i>🔒</i><strong>Bảo mật</strong>Thông tin khách hàng</div>';
+      info.appendChild(box);
+    }
+
+    const similar=q(".similar-products,.related-products,.product-similar");
+    if(similar && !similar.parentElement.classList.contains("v316-right-column")){
+      const wrap=document.createElement("div"); wrap.className="v316-right-column";
+      similar.parentNode.insertBefore(wrap,similar); wrap.appendChild(similar);
+      const ass=document.createElement("div"); ass.className="v316-assurance";
+      ass.innerHTML='<div><i>✓</i> Cam kết chính hãng 100%</div><div><i>✓</i> Bảo hành tại Siêu Di Động</div><div><i>↻</i> 1 đổi 1 trong 30 ngày nếu lỗi NSX</div>';
+      wrap.appendChild(ass);
+    }
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
+  setTimeout(run,500);setTimeout(run,1200);
 })();
 </script>
 
