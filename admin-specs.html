@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V287 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V288 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V287: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V288: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V287: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V288: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4301,7 +4301,7 @@ body.authenticated{
 
 
 <style id="v285-chart-design">
-/* V287 - Biểu đồ thống kê chuyên nghiệp */
+/* V288 - Biểu đồ thống kê chuyên nghiệp */
 .traffic-box{position:relative!important}
 .traffic-chart-shell{height:100%;padding:12px 14px 14px}
 .traffic-chart-toolbar{
@@ -7065,6 +7065,56 @@ document.addEventListener("DOMContentLoaded",function(){
     document.addEventListener("DOMContentLoaded",moveWarrantyUp,{once:true});
   }else moveWarrantyUp();
   setTimeout(moveWarrantyUp,300);
+})();
+</script>
+
+
+<style id="v288-recent-warranty">
+/* Khách tra cứu bảo hành gần đây: ưu tiên hiển thị cao, rộng và dễ xem */
+#analyticsCard .recent-warranty-promoted{
+  margin:14px 0 16px !important;
+  width:100% !important;
+}
+#analyticsCard .recent-warranty-promoted table{
+  width:100% !important;
+}
+</style>
+<script>
+(function(){
+  function promoteRecentWarranty(){
+    const card=document.querySelector("#analyticsCard");
+    if(!card) return;
+
+    const nodes=[...card.querySelectorAll("section,div,article")];
+    let recent=nodes.find(el=>{
+      const t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+      return t.includes("khách tra cứu bảo hành gần đây");
+    });
+    if(!recent) return;
+
+    /* lấy card gần nhất, tránh chỉ di chuyển mỗi tiêu đề */
+    let box=recent;
+    while(box.parentElement && box.parentElement!==card){
+      const cls=(box.className||"").toString();
+      if(/card|box|panel|recent/i.test(cls)) break;
+      box=box.parentElement;
+    }
+    box.classList.add("recent-warranty-promoted");
+
+    const warrantyGrid=card.querySelector(".metric-grid-warranty");
+    if(warrantyGrid){
+      warrantyGrid.insertAdjacentElement("afterend",box);
+    }else{
+      const main=card.querySelector(".metric-grid-main");
+      if(main) main.insertAdjacentElement("afterend",box);
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",promoteRecentWarranty,{once:true});
+  } else promoteRecentWarranty();
+  setTimeout(promoteRecentWarranty,300);
+  setTimeout(promoteRecentWarranty,1000);
 })();
 </script>
 
