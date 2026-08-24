@@ -2000,3 +2000,11 @@ Quy tắc:
 - Loại bỏ toàn bộ CSS/JS V316-V317 can thiệp gallery và selector `[class*=main-image]`.
 - Ảnh sản phẩm dùng lại logic gốc của app.js, nên đổi màu/dung lượng không bị co hoặc biến mất.
 - Các file quản trị/API khác giữ nguyên từ V317.
+
+
+## V319 - Cân đối lại trang chi tiết sản phẩm
+- Giữ nguyên logic ảnh và cấu trúc ổn định của V318.
+- Khung chi tiết desktop rộng tối đa 1320px, giảm khoảng trắng hai bên.
+- Tăng vùng ảnh, cân lại cột thông tin mua và thu gọn sản phẩm tương tự.
+- Hai nút mua hàng / so sánh nằm cân đối cùng hàng trên desktop.
+- Bảng thông số thẳng hàng với card sản phẩm phía trên.
