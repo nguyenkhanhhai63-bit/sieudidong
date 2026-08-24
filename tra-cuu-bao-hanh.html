@@ -191,5 +191,44 @@
   });
 })();
 </script>
+
+<script id="v324-zalo-analytics">
+(function(){
+  function visitorId(){
+    try{
+      var k="sdd-analytics-visitor-v2";
+      var id=localStorage.getItem(k);
+      if(!id){
+        id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+        localStorage.setItem(k,id);
+      }
+      return id;
+    }catch(_){
+      return "v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+    }
+  }
+  function device(){
+    var ua=navigator.userAgent||"";
+    if(/iPad|Tablet/i.test(ua)) return "tablet";
+    if(/Mobi|Android|iPhone/i.test(ua)) return "mobile";
+    return "desktop";
+  }
+  function track(source){
+    try{
+      fetch("/api/analytics",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:"zalo_click",visitorId:visitorId(),device:device(),source:source||"standalone_zalo"}),
+        keepalive:true
+      }).catch(function(){});
+    }catch(_){}
+  }
+  document.addEventListener("click",function(e){
+    var a=e.target && e.target.closest ? e.target.closest('a[href*="zalo.me"]') : null;
+    if(a) track(a.className||a.id||location.pathname);
+  },true);
+})();
+</script>
+
 </body>
 </html>

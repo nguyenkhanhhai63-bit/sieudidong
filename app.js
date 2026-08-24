@@ -142,6 +142,20 @@ function sendAnalytics(type,extra={}){
   }catch(_){}
 }
 
+// V324: Theo dõi mọi link Zalo trên website dùng app.js.
+// Các nút đã có handler riêng được đánh dấu để tránh cộng trùng.
+function installGlobalZaloTracking(){
+  document.addEventListener("click",(e)=>{
+    const a=e.target?.closest?.('a[href*="zalo.me"], a[data-zalo-link]');
+    if(!a || a.dataset.analyticsZaloBound==="1") return;
+    sendAnalytics("zalo_click",{
+      source:a.dataset.analyticsSource || a.id || a.className || "zalo_link"
+    });
+  },true);
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",installGlobalZaloTracking,{once:true});
+else installGlobalZaloTracking();
+
 // V262: Gửi page_view NGAY khi trang chạy.
 // Trước đây page_view phải chờ userAgentData.getHighEntropyValues(); trên một số
 // trình duyệt promise này có thể chậm/treo nên dashboard vẫn thấy heartbeat online
@@ -1996,9 +2010,10 @@ if(!inlineProductDetail) return;
   buyZaloBtn.href=SIEUDIDONG_ZALO_URL;
   buyZaloBtn.target="_blank";
   buyZaloBtn.rel="noopener noreferrer";
+  buyZaloBtn.dataset.analyticsZaloBound="1";
   buyZaloBtn.textContent="Liên hệ mua hàng";
   buyZaloBtn.addEventListener("click",()=>{
-    try{ sendAnalyticsEvent("zalo_click",{source:"product_detail",product:group.name}); }catch(_){}
+    try{ sendAnalytics("zalo_click",{source:"product_detail",product:group.name}); }catch(_){}
   });
 
   detailActions.append(buyZaloBtn,detailCompareBtn);
@@ -2569,7 +2584,7 @@ if(sortSelect){
 
 if(searchInput) searchInput.addEventListener("input",trackSearchQuery);
 const analyticsZaloButton=document.getElementById("zaloConsultBtn");
-if(analyticsZaloButton) analyticsZaloButton.addEventListener("click",()=>sendAnalytics("zalo_click"));
+if(analyticsZaloButton){ analyticsZaloButton.dataset.analyticsZaloBound="1"; analyticsZaloButton.addEventListener("click",()=>sendAnalytics("zalo_click",{source:"zalo_consult"})); }
 
 if(!location.pathname.startsWith("/san-pham/")) updateSeoForHome();
 
@@ -2937,8 +2952,9 @@ aiChatSuggestions?.addEventListener("click",e=>{
   if(btn) aiChatAsk(btn.dataset.aiQuestion||btn.textContent);
 });
 
+if(aiHumanZaloBtn) aiHumanZaloBtn.dataset.analyticsZaloBound="1";
 aiHumanZaloBtn?.addEventListener("click",()=>{
-  sendAnalytics("zalo_click");
+  sendAnalytics("zalo_click",{source:"ai_handoff"});
   sendAnalytics("filter_click",{action:"ai_chat_handoff_zalo"});
 });
 
@@ -2958,8 +2974,9 @@ window.visualViewport?.addEventListener("resize",aiChatAdjustForKeyboard);
 window.visualViewport?.addEventListener("scroll",aiChatAdjustForKeyboard);
 
 
+if(aiMobileZaloDirect) aiMobileZaloDirect.dataset.analyticsZaloBound="1";
 aiMobileZaloDirect?.addEventListener("click",()=>{
-  sendAnalytics("zalo_click");
+  sendAnalytics("zalo_click",{source:"ai_mobile_direct"});
   sendAnalytics("filter_click",{action:"ai_chat_mobile_direct_zalo"});
 });
 
