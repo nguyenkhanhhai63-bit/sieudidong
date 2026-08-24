@@ -1947,3 +1947,11 @@ Quy tắc:
 - Biểu đồ / tháng / thiết bị chia bố cục 6-3-3.
 - Các bảng bên dưới bố trí card đồng đều, giảm cảm giác rối.
 - Giữ nguyên toàn bộ logic và số liệu backend hiện tại.
+
+
+## V285 - Biểu đồ dashboard giống ảnh demo
+- Thay biểu đồ cột cũ bằng SVG line chart 2 series: Lượt truy cập + Khách truy cập.
+- Có grid, trục ngày, gradient area, point hover và tooltip.
+- Thiết bị truy cập chuyển thành donut chart + legend.
+- Tổng hợp tháng được polish thành progress bars.
+- Không dùng dữ liệu giả; biểu đồ đọc trực tiếp `daily`, `devices`, `monthly` từ API thống kê.

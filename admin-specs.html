@@ -3496,7 +3496,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v281-dashboard-scale-up">
-/* V284 - Tăng kích thước dashboard, dễ đọc hơn */
+/* V285 - Tăng kích thước dashboard, dễ đọc hơn */
 @media(min-width:1021px){
   #analyticsCard{
     width:min(1580px,calc(100% - 28px))!important;
@@ -3665,7 +3665,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v282-dashboard-fill-screen">
-/* V284: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
+/* V285: tận dụng chiều ngang, đưa nhiều nội dung lên màn hình đầu */
 @media(min-width:1281px){
   #analyticsCard{
     width:calc(100% - 52px)!important;
@@ -3767,7 +3767,7 @@ body.auth-pending #authLoading{
 
 
 <style id="v283-dashboard-balanced">
-/* V284: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
+/* V285: cân đối lại dashboard - không bé giữa màn hình, không kéo giãn quá mức */
 @media(min-width:1024px){
   #analyticsCard{
     width:calc(100% - 64px)!important;
@@ -4299,6 +4299,99 @@ body.authenticated{
 }
 </style>
 
+
+<style id="v285-chart-design">
+/* V285 - Biểu đồ thống kê chuyên nghiệp */
+.traffic-box{position:relative!important}
+.traffic-chart-shell{height:100%;padding:12px 14px 14px}
+.traffic-chart-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:8px;padding:0 2px;
+}
+.traffic-chart-legend{display:flex;align-items:center;gap:15px;font-size:9px;color:#667085}
+.traffic-legend-item{display:flex;align-items:center;gap:6px}
+.traffic-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.traffic-legend-dot.orange{background:#ff6b1a}
+.traffic-legend-dot.blue{background:#4f7cff}
+.traffic-chart-summary{font-size:9px;color:#98a2b3}
+.traffic-svg-wrap{
+  position:relative;width:100%;height:245px;border-radius:10px;overflow:hidden;
+  background:linear-gradient(180deg,#fff,#fcfdff);
+}
+.traffic-svg{width:100%;height:100%;display:block;overflow:visible}
+.traffic-grid-line{stroke:#e9edf3;stroke-width:1;stroke-dasharray:4 4}
+.traffic-axis-label{fill:#98a2b3;font-size:9px;font-family:Inter,system-ui,sans-serif}
+.traffic-line-orange{fill:none;stroke:#ff6b1a;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.traffic-line-blue{fill:none;stroke:#4f7cff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.traffic-area-orange{fill:url(#trafficOrangeGradient);opacity:.95}
+.traffic-area-blue{fill:url(#trafficBlueGradient);opacity:.55}
+.traffic-point{stroke:#fff;stroke-width:2;cursor:pointer;transition:r .15s}
+.traffic-point:hover{r:5}
+.traffic-hover-line{stroke:#cbd5e1;stroke-width:1;stroke-dasharray:3 3;opacity:0}
+.traffic-tooltip{
+  position:absolute;pointer-events:none;z-index:5;min-width:132px;
+  padding:9px 10px;border:1px solid #e5e9ef;border-radius:9px;background:rgba(255,255,255,.97);
+  box-shadow:0 8px 24px rgba(16,24,40,.12);font-size:9px;color:#475467;
+  opacity:0;transform:translate(-50%,-110%);transition:opacity .12s;
+}
+.traffic-tooltip.show{opacity:1}
+.traffic-tooltip strong{display:block;color:#101828;font-size:10px;margin-bottom:5px}
+.traffic-tooltip-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:3px 0}
+.traffic-tooltip-row b{color:#101828}
+.traffic-tooltip-bullet{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px}
+
+/* Donut */
+.device-chart-wrap{
+  min-height:250px;padding:18px 15px 14px;display:grid;
+  grid-template-columns:150px minmax(0,1fr);align-items:center;gap:18px;
+}
+.device-donut{
+  --mobile-deg:0deg;--desktop-deg:0deg;--tablet-deg:0deg;
+  width:142px;height:142px;border-radius:50%;position:relative;
+  background:conic-gradient(
+    #ff6b1a 0 var(--mobile-deg),
+    #4f7cff var(--mobile-deg) var(--desktop-deg),
+    #22b573 var(--desktop-deg) var(--tablet-deg),
+    #d7dde6 var(--tablet-deg) 360deg
+  );
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);
+}
+.device-donut-hole{
+  position:absolute;inset:27px;border-radius:50%;background:#fff;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  box-shadow:0 2px 10px rgba(16,24,40,.04)
+}
+.device-donut-hole strong{font-size:22px;line-height:1;color:#101828}
+.device-donut-hole span{font-size:8px;color:#98a2b3;margin-top:5px}
+.device-legend{padding:0!important}
+.device-legend .devrow{
+  display:grid!important;grid-template-columns:10px minmax(0,1fr) auto!important;gap:8px!important;
+  border-bottom:0!important;padding:7px 0!important;min-height:31px!important
+}
+.device-color-dot{width:8px;height:8px;border-radius:50%;align-self:center}
+.device-legend .devrow span:nth-child(2){color:#667085}
+.device-legend .devrow strong{font-size:10px;color:#101828}
+
+/* monthly block polished */
+.monthly-analytics{padding:10px 15px 14px!important}
+.month-row{grid-template-columns:62px 1fr 44px!important;gap:10px!important;padding:8px 0!important}
+.month-track{height:8px!important;background:#f1f4f7!important}
+.month-fill{background:linear-gradient(90deg,#ff995f,#ff5a00)!important}
+.month-value{font-size:10px!important}
+.month-meta{font-size:8px!important;color:#98a2b3!important}
+
+@media(max-width:1200px){
+  .device-chart-wrap{grid-template-columns:130px minmax(0,1fr)}
+  .device-donut{width:124px;height:124px}.device-donut-hole{inset:24px}
+}
+@media(max-width:760px){
+  .traffic-svg-wrap{height:220px}
+  .traffic-chart-toolbar{align-items:flex-start;flex-direction:column;gap:5px}
+  .device-chart-wrap{grid-template-columns:120px 1fr}
+  .device-donut{width:112px;height:112px}.device-donut-hole{inset:22px}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -4517,7 +4610,12 @@ body.authenticated{
       <div class="analytics-grid">
           <div class="abox traffic-box"><h2 id="trafficChartTitle">Xu hướng truy cập</h2><div id="trafficChart" class="chart"></div></div>
           <div class="abox monthly-box"><h2>Tổng hợp theo tháng</h2><div id="monthlyAnalytics" class="monthly-analytics"></div></div>
-          <div class="abox"><h2>Loại thiết bị truy cập</h2><div id="deviceList"></div></div>
+          <div class="abox device-box"><h2>Thiết bị truy cập</h2>
+  <div class="device-chart-wrap">
+    <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
+    <div id="deviceList" class="device-legend"></div>
+  </div>
+</div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Android thường nhận được model; iPhone có thể chỉ hiện iPhone do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
@@ -5297,6 +5395,153 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   renderTrafficForPeriod(d,period);
 }
 
+
+function renderTrafficLineChart(rows=[]){
+  const host=document.getElementById("trafficChart");
+  if(!host)return;
+  const data=(Array.isArray(rows)?rows:[]).slice(-30);
+  host.innerHTML="";
+
+  const shell=document.createElement("div");
+  shell.className="traffic-chart-shell";
+
+  const visitsTotal=data.reduce((a,x)=>a+Number(x.views||0),0);
+  const visitorTotal=data.reduce((a,x)=>a+Number(x.visitors||0),0);
+  shell.innerHTML=`
+    <div class="traffic-chart-toolbar">
+      <div class="traffic-chart-legend">
+        <span class="traffic-legend-item"><i class="traffic-legend-dot orange"></i>Lượt truy cập</span>
+        <span class="traffic-legend-item"><i class="traffic-legend-dot blue"></i>Khách truy cập</span>
+      </div>
+      <div class="traffic-chart-summary">${fmt(visitsTotal)} lượt · ${fmt(visitorTotal)} khách trong dữ liệu hiển thị</div>
+    </div>
+    <div class="traffic-svg-wrap">
+      <div class="traffic-tooltip"></div>
+    </div>`;
+  host.appendChild(shell);
+
+  const wrap=shell.querySelector(".traffic-svg-wrap");
+  const tooltip=shell.querySelector(".traffic-tooltip");
+
+  if(!data.length || !data.some(x=>Number(x.views||0)>0 || Number(x.visitors||0)>0)){
+    wrap.innerHTML='<div class="empty">Chưa có dữ liệu trong kỳ này.</div>';
+    return;
+  }
+
+  const W=760,H=235, L=38,R=14,T=14,B=28;
+  const cw=W-L-R,ch=H-T-B;
+  const maxValue=Math.max(1,...data.flatMap(x=>[Number(x.views||0),Number(x.visitors||0)]));
+  const steps=4;
+  const yMax=Math.max(steps,Math.ceil(maxValue/steps)*steps);
+  const xAt=i=>L+(data.length===1?cw/2:i*cw/(data.length-1));
+  const yAt=v=>T+ch-(Number(v||0)/yMax)*ch;
+  const points=(key)=>data.map((d,i)=>[xAt(i),yAt(d[key]||0)]);
+  const linePath=pts=>pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const areaPath=pts=>`${linePath(pts)} L ${pts[pts.length-1][0].toFixed(1)},${(T+ch).toFixed(1)} L ${pts[0][0].toFixed(1)},${(T+ch).toFixed(1)} Z`;
+
+  const vPts=points("views"), uPts=points("visitors");
+  const svgNS="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(svgNS,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.setAttribute("class","traffic-svg");
+
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="trafficOrangeGradient" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#ff7a32" stop-opacity=".20"/>
+        <stop offset="100%" stop-color="#ff7a32" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="trafficBlueGradient" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#4f7cff" stop-opacity=".14"/>
+        <stop offset="100%" stop-color="#4f7cff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>`;
+
+  // grid + Y labels
+  for(let i=0;i<=steps;i++){
+    const val=Math.round(yMax*(steps-i)/steps);
+    const y=T+ch*i/steps;
+    const line=document.createElementNS(svgNS,"line");
+    line.setAttribute("x1",L);line.setAttribute("x2",W-R);line.setAttribute("y1",y);line.setAttribute("y2",y);
+    line.setAttribute("class","traffic-grid-line");svg.appendChild(line);
+    const tx=document.createElementNS(svgNS,"text");
+    tx.setAttribute("x",L-8);tx.setAttribute("y",y+3);tx.setAttribute("text-anchor","end");tx.setAttribute("class","traffic-axis-label");tx.textContent=val;
+    svg.appendChild(tx);
+  }
+
+  // X labels
+  data.forEach((d,i)=>{
+    const show=i===0 || i===data.length-1 || i%Math.max(1,Math.floor(data.length/6))===0;
+    if(!show)return;
+    const tx=document.createElementNS(svgNS,"text");
+    tx.setAttribute("x",xAt(i));tx.setAttribute("y",H-7);tx.setAttribute("text-anchor","middle");tx.setAttribute("class","traffic-axis-label");
+    const raw=String(d.date||"");
+    tx.textContent=raw.length>=10?raw.slice(8,10)+"/"+raw.slice(5,7):raw;
+    svg.appendChild(tx);
+  });
+
+  const areaBlue=document.createElementNS(svgNS,"path");areaBlue.setAttribute("d",areaPath(uPts));areaBlue.setAttribute("class","traffic-area-blue");svg.appendChild(areaBlue);
+  const areaOrange=document.createElementNS(svgNS,"path");areaOrange.setAttribute("d",areaPath(vPts));areaOrange.setAttribute("class","traffic-area-orange");svg.appendChild(areaOrange);
+  const pBlue=document.createElementNS(svgNS,"path");pBlue.setAttribute("d",linePath(uPts));pBlue.setAttribute("class","traffic-line-blue");svg.appendChild(pBlue);
+  const pOrange=document.createElementNS(svgNS,"path");pOrange.setAttribute("d",linePath(vPts));pOrange.setAttribute("class","traffic-line-orange");svg.appendChild(pOrange);
+
+  const hover=document.createElementNS(svgNS,"line");
+  hover.setAttribute("y1",T);hover.setAttribute("y2",T+ch);hover.setAttribute("class","traffic-hover-line");svg.appendChild(hover);
+
+  data.forEach((d,i)=>{
+    [["views","#ff6b1a"],["visitors","#4f7cff"]].forEach(([key,color])=>{
+      const c=document.createElementNS(svgNS,"circle");
+      c.setAttribute("cx",xAt(i));c.setAttribute("cy",yAt(d[key]||0));c.setAttribute("r","3");
+      c.setAttribute("fill",color);c.setAttribute("class","traffic-point");
+      c.addEventListener("mouseenter",()=>{
+        hover.setAttribute("x1",xAt(i));hover.setAttribute("x2",xAt(i));hover.style.opacity="1";
+        const rect=wrap.getBoundingClientRect();
+        const px=(xAt(i)/W)*rect.width;
+        const py=(Math.min(yAt(d.views||0),yAt(d.visitors||0))/H)*rect.height;
+        tooltip.style.left=px+"px";tooltip.style.top=Math.max(55,py)+"px";
+        tooltip.innerHTML=`<strong>${String(d.date||"")}</strong>
+          <div class="traffic-tooltip-row"><span><i class="traffic-tooltip-bullet" style="background:#ff6b1a"></i>Lượt truy cập</span><b>${fmt(d.views||0)}</b></div>
+          <div class="traffic-tooltip-row"><span><i class="traffic-tooltip-bullet" style="background:#4f7cff"></i>Khách truy cập</span><b>${fmt(d.visitors||0)}</b></div>`;
+        tooltip.classList.add("show");
+      });
+      c.addEventListener("mouseleave",()=>{tooltip.classList.remove("show");hover.style.opacity="0"});
+      svg.appendChild(c);
+    });
+  });
+
+  wrap.appendChild(svg);
+}
+
+function renderDeviceDonut(dev={}){
+  const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"};
+  const colors={mobile:"#ff6b1a",desktop:"#4f7cff",tablet:"#22b573",other:"#d7dde6"};
+  const total=Object.values(dev||{}).reduce((s,v)=>s+Number(v||0),0);
+  const donut=document.getElementById("deviceDonut");
+  const totalEl=document.getElementById("deviceDonutTotal");
+  const list=document.getElementById("deviceList");
+  if(!donut||!list)return;
+  if(totalEl)totalEl.textContent=fmt(total);
+
+  let acc=0;
+  const deg={};
+  ["mobile","desktop","tablet","other"].forEach(k=>{
+    acc += total?Number(dev[k]||0)/total*360:0;
+    deg[k]=acc;
+  });
+  donut.style.setProperty("--mobile-deg",deg.mobile+"deg");
+  donut.style.setProperty("--desktop-deg",deg.desktop+"deg");
+  donut.style.setProperty("--tablet-deg",deg.tablet+"deg");
+
+  list.innerHTML="";
+  Object.entries(names).forEach(([k,label])=>{
+    const v=Number(dev[k]||0);
+    const row=document.createElement("div");
+    row.className="devrow";
+    row.innerHTML=`<i class="device-color-dot" style="background:${colors[k]}"></i><span>${label}</span><strong>${fmt(v)} (${total?Math.round(v/total*100):0}%)</strong>`;
+    list.appendChild(row);
+  });
+}
+
 async function loadAnalytics(){
   const loading=document.getElementById("analyticsLoading"), content=document.getElementById("analyticsContent");
   loading.textContent="Đang tải thống kê..."; loading.classList.remove("hidden"); content.classList.add("hidden");
@@ -5332,15 +5577,11 @@ async function loadAnalytics(){
     document.getElementById("mWarrantyFound30").textContent=`30 ngày: ${fmt(o.warrantyFound30)}`;
     const warrantySummary=document.getElementById("warrantyLookupSummary");
     if(warrantySummary) warrantySummary.textContent=`7 ngày: ${fmt(o.warrantyChecks7)} lượt · Tổng: ${fmt(o.warrantyChecksAll)} lượt`;
-    const chart=document.getElementById("trafficChart"); chart.innerHTML="";
-    const daily=d.daily||[], max=Math.max(1,...daily.map(x=>Number(x.views||0)));
-    daily.forEach((x,i)=>{const w=document.createElement("div");w.className="barwrap";w.title=`${x.date}: ${fmt(x.views)} lượt xem`;const b=document.createElement("div");b.className="bar";b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";const l=document.createElement("span");l.className="blabel";l.textContent=(i%5===0||i===daily.length-1)?x.date.slice(5):"";w.append(b,l);chart.appendChild(w);});
+    const daily=d.daily||[];
+    renderTrafficLineChart(daily);
     renderMonthlyAnalytics(d.monthly||[]);
     applyAnalyticsPeriod(d,analyticsPeriod);
-
-    const names={mobile:"Mobile",desktop:"Desktop",tablet:"Tablet",other:"Khác"}, dev=d.devices||{}, total=Object.values(dev).reduce((s,v)=>s+Number(v||0),0)||1;
-    const dh=document.getElementById("deviceList");dh.innerHTML="";
-    Object.entries(names).forEach(([k,label])=>{const v=Number(dev[k]||0),row=document.createElement("div");row.className="devrow";row.innerHTML=`<span>${label}</span><strong>${fmt(v)} (${Math.round(v/total*100)}%)</strong>`;dh.appendChild(row);});
+    renderDeviceDonut(d.devices||{});
     renderRank("deviceModelRanks",d.topDeviceModels);
     renderRank("deviceOsRanks",d.topDeviceOs);
     renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
