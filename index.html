@@ -60,132 +60,60 @@
   <link rel="stylesheet" href="/styles.css?v=261">
 
 
-<style id="v321-product-detail-clean">
-/* V321 - căn lại trang chi tiết, không sửa header, không đụng logic ảnh */
-@media (min-width:1180px){
-  #inlineProductDetail:not([hidden]){
-    width:min(1180px,calc(100% - 40px))!important;
-    max-width:1180px!important;
-    margin:24px auto 44px!important;
-    padding:0!important;
-  }
 
-  /* Các wrapper con không được tự co / lệch */
-  #inlineProductDetail > *,
-  #inlineProductDetail .detail-page,
-  #inlineProductDetail .detail-container,
-  #inlineProductDetail .detail-wrap,
-  #inlineProductDetail .product-detail-container{
-    width:100%!important;
-    max-width:none!important;
-    margin-left:0!important;
-    margin-right:0!important;
-  }
-
-  /* Card sản phẩm chính */
-  #inlineProductDetail .detail-main,
-  #inlineProductDetail .detail-card,
-  #inlineProductDetail .product-detail-card,
-  #inlineProductDetail .product-main-card,
-  #inlineProductDetail .detail-box{
-    width:100%!important;
-    max-width:none!important;
-    margin:0!important;
-    border-radius:18px!important;
-    box-sizing:border-box!important;
-  }
-
-  /* Nếu cấu trúc bên trong là grid thì chia cân đối 42 / 38 / 20 */
-  #inlineProductDetail .detail-grid,
-  #inlineProductDetail .detail-layout,
-  #inlineProductDetail .product-detail-grid{
-    width:100%!important;
-    display:grid!important;
-    grid-template-columns:minmax(340px,42fr) minmax(340px,38fr) minmax(250px,20fr)!important;
-    gap:18px!important;
-    align-items:start!important;
-  }
-
-  /* Ảnh */
-  #inlineProductDetail .detail-image,
-  #inlineProductDetail .product-image,
-  #inlineProductDetail .detail-gallery,
-  #inlineProductDetail .product-gallery{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    margin:0!important;
-  }
-
-  #inlineProductDetail .detail-image img,
-  #inlineProductDetail .product-image img,
-  #inlineProductDetail .detail-gallery img,
-  #inlineProductDetail .product-gallery img{
-    object-fit:contain!important;
-  }
-
-  /* Khối thông tin */
-  #inlineProductDetail .detail-info,
-  #inlineProductDetail .product-info,
-  #inlineProductDetail .buy-panel{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-  }
-
-  /* Cột sản phẩm tương tự không tràn ra ngoài */
-  #inlineProductDetail .similar-products,
-  #inlineProductDetail .related-products,
-  #inlineProductDetail .product-similar{
-    width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
-    margin:0!important;
-  }
-
-  /* Thông số kỹ thuật thẳng với card trên */
-  #inlineProductDetail .specs-section,
-  #inlineProductDetail .technical-specs,
-  #inlineProductDetail .product-specs{
-    width:100%!important;
-    max-width:none!important;
-    margin:20px 0 0!important;
-    box-sizing:border-box!important;
-  }
+<style id="v322-product-detail-runtime-align">
+/* V322 - không dùng width cố định, JS sẽ lấy width thật của header */
+#inlineProductDetail.v322-aligned{
+  max-width:none!important;
+  box-sizing:border-box!important;
 }
 
-/* Laptop */
-@media (min-width:900px) and (max-width:1179px){
-  #inlineProductDetail:not([hidden]){
-    width:calc(100% - 28px)!important;
-    max-width:none!important;
-    margin:18px auto 36px!important;
-  }
-  #inlineProductDetail .detail-grid,
-  #inlineProductDetail .detail-layout,
-  #inlineProductDetail .product-detail-grid{
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:16px!important;
-  }
-  #inlineProductDetail .similar-products,
-  #inlineProductDetail .related-products,
-  #inlineProductDetail .product-similar{
-    grid-column:1/-1!important;
-  }
+/* Những khối chính đã được JS nhận diện */
+#inlineProductDetail .v322-product-card{
+  width:100%!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  overflow:hidden!important;
 }
 
-/* Mobile */
-@media (max-width:899px){
-  #inlineProductDetail:not([hidden]){
+#inlineProductDetail .v322-spec-card{
+  width:100%!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+/* Sản phẩm tương tự phải nằm gọn trong card, không lòi qua cạnh phải */
+#inlineProductDetail .v322-similar-card{
+  position:static!important;
+  right:auto!important;
+  left:auto!important;
+  top:auto!important;
+  transform:none!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+
+/* Nếu parent của 3 cột là flex/grid, không cho cột phải vượt khung */
+#inlineProductDetail .v322-product-card > *,
+#inlineProductDetail .v322-product-card .v322-similar-card{
+  min-width:0!important;
+}
+
+/* Giữ ảnh ổn định */
+#inlineProductDetail img{
+  object-fit:contain;
+}
+
+/* Mobile vẫn theo chiều rộng màn hình */
+@media(max-width:899px){
+  #inlineProductDetail.v322-aligned{
     width:calc(100% - 16px)!important;
-    max-width:none!important;
-    margin:10px auto 28px!important;
-  }
-  #inlineProductDetail .detail-grid,
-  #inlineProductDetail .detail-layout,
-  #inlineProductDetail .product-detail-grid{
-    display:block!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
   }
 }
 </style>
@@ -460,6 +388,122 @@
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
+})();
+</script>
+
+
+<script id="v322-product-detail-runtime-align-js">
+(function(){
+  function cleanText(v){return String(v||"").replace(/\s+/g," ").trim().toLowerCase()}
+
+  function findByHeading(root,needle){
+    const headings=[...root.querySelectorAll("h1,h2,h3,h4,strong,.title,.section-title")];
+    return headings.find(el=>cleanText(el.textContent).includes(needle));
+  }
+
+  function findPanelFromHeading(heading,maxDepth){
+    let el=heading;
+    for(let i=0; el && i<(maxDepth||6); i++,el=el.parentElement){
+      const r=el.getBoundingClientRect();
+      const cs=getComputedStyle(el);
+      if(r.width>220 && r.height>80 &&
+         (cs.borderStyle!=="none" || parseFloat(cs.borderRadius)>0 || cs.backgroundColor!=="rgba(0, 0, 0, 0)")){
+        return el;
+      }
+    }
+    return heading?.parentElement || null;
+  }
+
+  function findProductCard(root,similarHeading){
+    // Đi từ khối sản phẩm tương tự lên tới ancestor chứa cả giá/nút mua và ảnh sản phẩm.
+    let el=similarHeading;
+    for(let i=0; el && i<9; i++,el=el.parentElement){
+      const txt=cleanText(el.textContent);
+      const imgs=el.querySelectorAll ? el.querySelectorAll("img").length : 0;
+      if(imgs>=2 && txt.includes("liên hệ mua hàng") && txt.includes("sản phẩm tương tự")){
+        return el;
+      }
+    }
+    return null;
+  }
+
+  function align(){
+    const root=document.getElementById("inlineProductDetail");
+    if(!root || root.hidden) return;
+
+    // Lấy CHÍNH XÁC container header/nav đang hiển thị.
+    const candidates=[
+      document.querySelector(".sdd-header-nav-inner"),
+      document.querySelector(".commerce-header-inner.sdd-header-main"),
+      document.querySelector(".sdd-top-strip-inner")
+    ].filter(Boolean);
+
+    let header=null;
+    let bestWidth=0;
+    candidates.forEach(el=>{
+      const r=el.getBoundingClientRect();
+      if(r.width>bestWidth && r.width<window.innerWidth){
+        bestWidth=r.width;
+        header=el;
+      }
+    });
+
+    if(header && window.innerWidth>=900){
+      const hr=header.getBoundingClientRect();
+      root.style.width=hr.width+"px";
+      root.style.maxWidth=hr.width+"px";
+      root.style.marginLeft="auto";
+      root.style.marginRight="auto";
+      root.classList.add("v322-aligned");
+    }
+
+    // Nhận diện khối Sản phẩm tương tự.
+    const similarHeading=findByHeading(root,"sản phẩm tương tự");
+    if(similarHeading){
+      const similarCard=findPanelFromHeading(similarHeading,5);
+      if(similarCard) similarCard.classList.add("v322-similar-card");
+
+      // Nhận diện card sản phẩm lớn chứa ảnh + giá + related.
+      const productCard=findProductCard(root,similarHeading);
+      if(productCard){
+        productCard.classList.add("v322-product-card");
+        productCard.style.width="100%";
+        productCard.style.maxWidth="none";
+      }
+    }
+
+    // Nhận diện bảng thông số để cho cùng chiều rộng card trên.
+    const specHeading=findByHeading(root,"thông số kỹ thuật");
+    if(specHeading){
+      const specCard=findPanelFromHeading(specHeading,5);
+      if(specCard){
+        specCard.classList.add("v322-spec-card");
+        specCard.style.width="100%";
+        specCard.style.maxWidth="none";
+      }
+    }
+  }
+
+  let timer=0;
+  function schedule(){
+    clearTimeout(timer);
+    timer=setTimeout(align,60);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+
+  // App render sản phẩm động nên chạy lại khi DOM thay đổi.
+  const observer=new MutationObserver(schedule);
+  observer.observe(document.body,{childList:true,subtree:true});
+
+  setTimeout(align,400);
+  setTimeout(align,1200);
 })();
 </script>
 

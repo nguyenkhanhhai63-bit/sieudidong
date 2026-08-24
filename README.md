@@ -2023,3 +2023,13 @@ Quy tắc:
 - Trang chi tiết desktop dùng một container 1180px căn giữa.
 - Card sản phẩm và bảng thông số dùng 100% cùng một trục.
 - Không can thiệp DOM hoặc logic ảnh.
+
+
+## V322 - Căn tự động theo header thật
+- Bỏ width cố định 1180px.
+- Khi trang chạy, lấy width thực tế của header/nav hiện tại.
+- Trang chi tiết tự dùng đúng width đó ở mọi độ phân giải.
+- Tự nhận diện card sản phẩm chứa ảnh + giá + Sản phẩm tương tự và ép vừa 100% container.
+- Khối Sản phẩm tương tự không được position/transform lòi ra ngoài.
+- Thông số kỹ thuật dùng cùng chiều rộng với card sản phẩm.
+- Không di chuyển DOM, không thay logic ảnh/màu/dung lượng.
