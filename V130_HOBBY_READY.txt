@@ -1,0 +1,19 @@
+SIÊU DI ĐỘNG V130 - VERCEL HOBBY READY
+
+Đã giảm Serverless Functions từ 15 xuống còn 10.
+6 API quản trị được gom qua 1 dynamic function /api/admin/[action].
+URL phía giao diện giữ nguyên, không cần đổi:
+- /api/admin/login
+- /api/admin/logout
+- /api/admin/analytics
+- /api/admin/ai-settings
+- /api/admin/seo-settings
+- /api/admin/spec-links
+
+Sau deploy kiểm tra:
+https://sieudidong.vn/api/version
+
+Kết quả phải có:
+version: V130
+hobbyOptimized: true
+serverlessFunctions: 10

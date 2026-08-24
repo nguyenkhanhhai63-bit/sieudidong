@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tra cứu bảo hành | Siêu Di Động</title>
+  <meta name="description" content="Tra cứu thông tin bảo hành sản phẩm đã mua tại Siêu Di Động.">
+  <link rel="stylesheet" href="/styles.css?v=215">
+</head>
+<body class="warranty-page-body">
+  <header class="warranty-page-header">
+    <div class="warranty-header-inner">
+      <a href="/" class="warranty-page-back">
+        <span class="warranty-back-icon">‹</span>
+        <span>Trang chủ</span>
+      </a>
+
+      <a href="/" class="warranty-page-brand warranty-page-brand-link" aria-label="Về trang chủ Siêu Di Động">
+        <span>
+          <strong>SIÊU DI ĐỘNG</strong>
+          <small>Chuyên Android giá tốt</small>
+        </span>
+        <img src="/assets/logo-square.jpg" alt="">
+      </a>
+    </div>
+  </header>
+
+  <main class="warranty-page-main">
+    <section class="warranty-page-card">
+      <div class="warranty-head">
+        <span class="warranty-icon">✓</span>
+        <div>
+          <h1>Tra cứu bảo hành</h1>
+          <p>Nhập số điện thoại đã dùng khi mua hàng tại Siêu Di Động.</p>
+        </div>
+      </div>
+
+      <form id="warrantyForm" class="warranty-form">
+        <label for="warrantyPhone">Số điện thoại mua hàng</label>
+        <div class="warranty-search-row">
+          <input id="warrantyPhone" inputmode="tel" autocomplete="tel" maxlength="14" placeholder="Ví dụ: 0353 105 423" required>
+          <button type="submit">Tra cứu</button>
+        </div>
+        <small>Dữ liệu được đối chiếu trực tiếp từ hệ thống.</small>
+      </form>
+
+      <div id="warrantyResult" class="warranty-result" aria-live="polite"></div>
+
+      <div class="warranty-policy-box">
+        <strong>Chính sách bảo hành</strong>
+        <p>Trong 30 ngày đầu, sản phẩm phát sinh lỗi do nhà sản xuất và đủ điều kiện sẽ được hỗ trợ đổi máy theo chính sách Siêu Di Động.</p>
+        <button type="button" class="warranty-policy-toggle" id="warrantyPolicyToggle" aria-expanded="false">
+          Xem chính sách chi tiết <span>⌄</span>
+        </button>
+
+        <div class="warranty-policy-details" id="warrantyPolicyDetails" hidden>
+          <div class="warranty-policy-section">
+            <h3>Bảo hành</h3>
+            <ul>
+              <li><strong>Mainboard:</strong> 12 tháng, áp dụng cho lỗi kỹ thuật do nhà sản xuất.</li>
+              <li><strong>Nguồn, màn hình, camera:</strong> 3 tháng; hỗ trợ đổi hoặc sửa nếu phát sinh lỗi trong thời gian bảo hành.</li>
+              <li><strong>Phụ kiện (sạc, cáp,...):</strong> 1 tháng, bảo hành lỗi kỹ thuật, không áp dụng với hao mòn tự nhiên.</li>
+              <li>Trong <strong>30 ngày đầu</strong>, sản phẩm lỗi do nhà sản xuất và còn đầy đủ tem, hóa đơn sẽ được hỗ trợ đổi máy theo chính sách.</li>
+              <li>Hỗ trợ cài đặt và cập nhật phần mềm miễn phí. Phần mềm không thuộc phạm vi bảo hành.</li>
+            </ul>
+          </div>
+
+          <div class="warranty-policy-section warranty-policy-exclude">
+            <h3>Trường hợp không bảo hành</h3>
+            <ul>
+              <li>Máy rơi, cong, móp, trầy xước nặng, vào nước, kể cả máy có khả năng chống nước.</li>
+              <li>Tự ý up ROM, root, sửa chữa hoặc thay linh kiện ngoài hệ thống.</li>
+              <li>Cháy nổ, chập nguồn, ẩm mốc, oxi hóa hoặc hư hỏng do va đập hay nguồn điện không ổn định.</li>
+              <li>Mất tem, rách tem, mất hóa đơn hoặc số IMEI không trùng khớp.</li>
+              <li>Màn hình sọc, chảy mực; hư cổng sạc, khay SIM, tai nghe, thẻ nhớ do người dùng gây ra.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <section class="warranty-extra warranty-process">
+        <div class="warranty-extra-head">
+          <span class="warranty-extra-kicker">QUY TRÌNH HỖ TRỢ</span>
+          <h2>Bảo hành đơn giản, rõ từng bước</h2>
+          <p>Tra cứu trước tại website để kiểm tra thông tin, sau đó mang máy đến cửa hàng khi cần hỗ trợ.</p>
+        </div>
+        <div class="warranty-steps">
+          <div class="warranty-step"><span>1</span><strong>Tra cứu</strong><small>Nhập số điện thoại mua hàng.</small></div>
+          <div class="warranty-step"><span>2</span><strong>Mang máy đến shop</strong><small>Kèm máy và phụ kiện liên quan nếu có.</small></div>
+          <div class="warranty-step"><span>3</span><strong>Kiểm tra tình trạng</strong><small>Nhân viên tiếp nhận và xác định lỗi thực tế.</small></div>
+          <div class="warranty-step"><span>4</span><strong>Xử lý bảo hành</strong><small>Tư vấn phương án phù hợp theo chính sách.</small></div>
+        </div>
+      </section>
+
+      <div class="warranty-bottom-grid">
+        <section class="warranty-extra warranty-note-card">
+          <div class="warranty-extra-head">
+            <span class="warranty-extra-kicker">LƯU Ý</span>
+            <h2>Trước khi mang máy bảo hành</h2>
+          </div>
+          <ul>
+            <li>Sao lưu dữ liệu quan trọng trước khi giao máy.</li>
+            <li>Đăng xuất hoặc cung cấp mật khẩu mở máy khi cần kiểm tra lỗi.</li>
+            <li>Mang theo phụ kiện liên quan nếu lỗi có thể xuất phát từ sạc, cáp hoặc thiết bị kết nối.</li>
+          </ul>
+        </section>
+
+        <section class="warranty-extra warranty-support-card">
+          <div class="warranty-extra-head">
+            <span class="warranty-extra-kicker">CẦN HỖ TRỢ?</span>
+            <h2>Liên hệ Siêu Di Động</h2>
+            <p>Nếu chưa rõ tình trạng bảo hành, bạn có thể nhắn nhân viên trước khi mang máy đến cửa hàng.</p>
+          </div>
+          <a class="warranty-zalo-btn" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo tư vấn</a>
+          <a class="warranty-home-btn" href="/">Xem sản phẩm tại Siêu Di Động</a>
+        </section>
+      </div>
+
+    </section>
+  </main>
+
+
+<script>
+(function(){
+  const btn=document.getElementById("warrantyPolicyToggle");
+  const box=document.getElementById("warrantyPolicyDetails");
+  if(!btn||!box) return;
+
+  // Mobile: mặc định thu gọn. Desktop: mặc định mở rộng.
+  if(!window.matchMedia("(max-width: 760px)").matches){
+    box.removeAttribute("hidden");
+    btn.setAttribute("aria-expanded","true");
+    btn.firstChild.nodeValue="Thu gọn chính sách ";
+  }
+
+  btn.addEventListener("click",function(){
+    const opening=box.hasAttribute("hidden");
+    if(opening) box.removeAttribute("hidden"); else box.setAttribute("hidden","");
+    btn.setAttribute("aria-expanded",opening?"true":"false");
+    btn.firstChild.nodeValue=opening?"Thu gọn chính sách ":"Xem chính sách chi tiết ";
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const form=document.getElementById("warrantyForm");
+  const phone=document.getElementById("warrantyPhone");
+  const result=document.getElementById("warrantyResult");
+  function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    const p=(phone.value||"").replace(/\D/g,"");
+    if(p.length<9){
+      result.innerHTML='<div class="warranty-alert error">Vui lòng nhập đúng số điện thoại mua hàng.</div>';
+      return;
+    }
+    const submit=form.querySelector('button[type="submit"]');
+    submit.disabled=true; submit.textContent="Đang tra cứu...";
+    result.innerHTML='<div class="warranty-loading">Đang đối chiếu dữ liệu từ hệ thống...</div>';
+    try{
+      const r=await fetch("/api/warranty-lookup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:p})});
+      let data={}; try{data=await r.json();}catch{}
+      if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
+      if(!data.found){
+        result.innerHTML='<div class="warranty-alert">'+esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")+'</div>';
+        return;
+      }
+      result.innerHTML=
+        '<div class="warranty-summary">Tìm thấy <strong>'+data.items.length+'</strong> sản phẩm đã mua</div>'+
+        '<div class="warranty-items">'+data.items.map(x=>`
+          <article class="warranty-item">
+            <div class="warranty-item-top">
+              <div><h3>${esc(x.productName)}</h3>${x.productCode?`<small>Mã hàng: ${esc(x.productCode)}</small>`:""}</div>
+              <span class="warranty-state ${x.inWarranty?"active":"expired"}">${x.inWarranty?"Còn bảo hành":"Hết bảo hành"}</span>
+            </div>
+            <div class="warranty-grid">
+              <div><span>Ngày mua</span><strong>${esc(x.purchaseDate)}</strong></div>
+              <div><span>Bảo hành đến</span><strong>${esc(x.warrantyEnd)}</strong></div>
+              <div><span>Hóa đơn</span><strong>${esc(x.invoiceCode)}</strong></div>
+              <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
+            </div>
+            ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
+            ${x.exchangeEnd?`<div class="warranty-note">Hỗ trợ đổi máy đến: <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
+          </article>`).join("")+'</div>';
+    }catch(err){
+      result.innerHTML='<div class="warranty-alert error">'+esc(err.message||"Chưa thể tra cứu. Vui lòng thử lại.")+'</div>';
+    }finally{
+      submit.disabled=false; submit.textContent="Tra cứu";
+    }
+  });
+})();
+</script>
+</body>
+</html>
