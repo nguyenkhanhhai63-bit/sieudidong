@@ -1,0 +1,6 @@
+V329 - Thêm mục Dịch vụ
+- Thêm tab Dịch vụ vào menu desktop và mobile.
+- Tạo /dich-vu.html.
+- Bảng Xiaomi & Redmi: Unlock bootloader 250K, Up ROM quốc tế 250K.
+- Bảng OnePlus: Unlock SIM 300K, Up ROM quốc tế 200K.
+- Giao diện responsive, theo màu Siêu Di Động.
