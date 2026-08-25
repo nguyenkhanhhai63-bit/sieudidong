@@ -1,6 +1,0 @@
-V353 - Sửa giao diện Tổng hợp Hôm nay/Hôm qua
-- Bỏ thanh progress dài khi chỉ có 1 ngày.
-- Hiển thị 5 ô compact:
-  Ngày thống kê / Lượt truy cập / So sánh / Bấm Zalo / Tra bảo hành.
-- 7 ngày, 30 ngày, Tháng này, Năm nay vẫn dùng tổng hợp dạng biểu đồ/thanh.
-- Responsive cho tablet/mobile.
