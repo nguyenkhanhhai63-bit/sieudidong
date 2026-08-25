@@ -119,18 +119,34 @@
 </style>
 
 
-<style id="v339-home-content-alignment">
-/* Giữ phần storefront và chi tiết sản phẩm cùng nhịp với header */
-.page,
-#inlineProductDetail:not([hidden]){
-  width:min(1280px,calc(100% - 32px))!important;
-  max-width:1280px!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
+
+<style id="v340-home-header-align">
+/* V340 - page uses actual header axis, not a guessed fixed width */
+.page.v340-header-aligned,
+#inlineProductDetail.v340-header-aligned{
+  max-width:none!important;
+  box-sizing:border-box!important;
+}
+
+/* Main storefront blocks must fill the aligned page container */
+.page.v340-header-aligned > *,
+.page.v340-header-aligned .catalog-overview,
+.page.v340-header-aligned .products-grid,
+.page.v340-header-aligned .sdd-catalog-showcase{
+  max-width:none!important;
+  box-sizing:border-box!important;
+}
+
+/* Keep cards centered inside the exact header axis */
+@media(min-width:900px){
+  .page.v340-header-aligned{
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
 }
 @media(max-width:899px){
-  .page,
-  #inlineProductDetail:not([hidden]){
+  .page.v340-header-aligned,
+  #inlineProductDetail.v340-header-aligned{
     width:100%!important;
     max-width:none!important;
   }
@@ -525,6 +541,60 @@
 
   setTimeout(align,400);
   setTimeout(align,1200);
+})();
+</script>
+
+
+<script id="v340-home-header-align-js">
+(function(){
+  function align(){
+    const header =
+      document.querySelector(".sdd-header-nav-inner") ||
+      document.querySelector(".commerce-header-inner.sdd-header-main") ||
+      document.querySelector(".sdd-top-strip-inner");
+
+    if(!header) return;
+
+    const page=document.querySelector("main.page");
+    const detail=document.getElementById("inlineProductDetail");
+    const r=header.getBoundingClientRect();
+
+    if(window.innerWidth>=900 && r.width>0){
+      [page,detail].forEach(el=>{
+        if(!el) return;
+        el.style.width=r.width+"px";
+        el.style.maxWidth=r.width+"px";
+        el.style.marginLeft="auto";
+        el.style.marginRight="auto";
+        el.classList.add("v340-header-aligned");
+      });
+    }else{
+      [page,detail].forEach(el=>{
+        if(!el) return;
+        el.style.width="";
+        el.style.maxWidth="";
+        el.style.marginLeft="";
+        el.style.marginRight="";
+        el.classList.add("v340-header-aligned");
+      });
+    }
+  }
+
+  let t=0;
+  function schedule(){
+    clearTimeout(t);
+    t=setTimeout(align,50);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+  setTimeout(align,300);
+  setTimeout(align,900);
 })();
 </script>
 

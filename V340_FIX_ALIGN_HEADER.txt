@@ -1,0 +1,6 @@
+V340 - Fix nội dung lệch với header
+- Gỡ rule V339 ép .page = 1280px riêng.
+- Khi trang chạy, lấy chính xác width thực tế của .sdd-header-nav-inner.
+- .page và #inlineProductDetail dùng đúng width đó.
+- Không thay đổi header, sản phẩm, bộ lọc hay logic website.
+- Responsive tự cập nhật khi resize.
