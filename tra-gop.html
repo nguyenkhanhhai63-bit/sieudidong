@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Trả góp | Siêu Di Động</title>
+  <meta name="description" content="Thông tin trả góp tại Siêu Di Động, công ty tài chính và nhân viên hỗ trợ Zalo.">
+  <link rel="stylesheet" href="/style.css?v=225">
+  
+<style>
+:root{
+  --orange:#ff5a00;
+  --orange2:#ff7a32;
+  --orangeSoft:#fff6f0;
+  --blue:#147df5;
+  --green:#17b26a;
+  --navy:#101828;
+  --text:#344054;
+  --muted:#7b8798;
+  --line:#e7ebf0;
+  --bg:#f4f7fa;
+  --shadow:0 16px 42px rgba(16,24,40,.07);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--navy);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.tg-page{min-height:100vh}
+.tg-topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.96);
+  border-top:3px solid var(--orange);
+  border-bottom:1px solid #ebeff3;
+  backdrop-filter:blur(10px);
+}
+.tg-topbar-inner{
+  max-width:1480px;margin:0 auto;height:66px;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.tg-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--navy);font-weight:900}
+.tg-brand img{width:40px;height:40px;border-radius:11px;object-fit:cover}
+.tg-brand span{font-size:15px}
+.tg-back{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:38px;padding:0 13px;border:1px solid var(--line);border-radius:10px;
+  background:#fff;color:#475467;text-decoration:none;font-size:12px;font-weight:800;
+}
+
+.tg-wrap{max-width:1480px;margin:0 auto;padding:22px 24px 44px}
+.tg-shell{
+  background:#fff;border:1px solid #e6eaf0;border-radius:24px;overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+/* HERO */
+.tg-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) 260px minmax(560px,.95fr);
+  gap:24px;align-items:center;
+  padding:30px 34px;
+  background:linear-gradient(110deg,#fff 0%,#fffaf6 100%);
+  border-bottom:1px solid #eef1f4;
+}
+.tg-eyebrow{
+  display:block;margin-bottom:10px;color:var(--orange);font-size:13px;font-weight:900;letter-spacing:.04em;
+}
+.tg-hero h1{margin:0 0 12px;font-size:34px;line-height:1.12;letter-spacing:-.8px}
+.tg-intro{margin:0;color:#667085;font-size:15px;line-height:1.65;max-width:690px}
+.tg-hero-visual{
+  min-height:180px;display:grid;place-items:center;position:relative;
+}
+.tg-phone-art{
+  width:170px;height:170px;border-radius:50%;background:linear-gradient(145deg,#fff1e7,#ffe4d3);
+  display:grid;place-items:center;position:relative;
+}
+.tg-phone-art:before{
+  content:"";width:78px;height:142px;border:4px solid #ff7a32;border-radius:18px;
+  background:#fff;transform:rotate(-7deg);box-shadow:0 14px 28px rgba(255,90,0,.14)
+}
+.tg-phone-art:after{
+  content:"🛍️";position:absolute;right:20px;bottom:15px;font-size:52px;
+}
+.tg-benefits{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+}
+.tg-benefit{
+  min-height:122px;padding:14px 12px;border:1px solid #f0e5de;border-radius:14px;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.tg-benefit-icon{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:#fff3eb;color:var(--orange);font-size:22px;margin-bottom:8px;
+}
+.tg-benefit strong{font-size:13px;margin-bottom:4px}
+.tg-benefit span{font-size:10px;color:#7d8998;line-height:1.4}
+
+/* BODY */
+.tg-content{padding:26px 34px 28px}
+.tg-section-title h2{margin:0 0 4px;font-size:19px}
+.tg-section-title p{margin:0 0 15px;font-size:11px;color:#98a2b3}
+
+.tg-provider-list{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;
+}
+.tg-provider{
+  border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff;
+  box-shadow:0 5px 18px rgba(16,24,40,.03);
+}
+.tg-provider-head{
+  display:flex;align-items:center;gap:14px;padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid #eef1f4;
+}
+.tg-logo,.tg-logo-fallback{
+  width:118px;height:72px;border-radius:13px;background:#fff8f4;object-fit:contain;padding:9px;flex:0 0 auto;
+}
+.tg-logo-fallback{display:flex;align-items:center;justify-content:center;text-align:center;color:#e64c05;font-weight:900;font-size:13px}
+.tg-provider-head h2{margin:0 0 4px;font-size:21px}
+.tg-provider-head small{font-size:11px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em}
+
+.tg-provider-features{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;
+}
+.tg-feature{
+  min-height:62px;padding:10px;border-radius:11px;background:#fbfcfd;
+  display:flex;align-items:center;gap:9px;
+}
+.tg-feature i{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  font-style:normal;background:#eef5ff;color:#147df5;font-size:15px;flex:0 0 30px;
+}
+.tg-feature strong{display:block;font-size:11px;margin-bottom:2px}
+.tg-feature span{display:block;font-size:9px;color:#7d8998}
+
+.tg-staff{display:grid;gap:9px}
+.tg-person{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;
+  padding:11px 12px;border:1px solid #e9edf2;border-radius:12px;background:#f9fbfd;
+}
+.tg-person-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
+.tg-person-copy strong{font-size:12px}
+.tg-person-copy span{font-size:10px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg-zalo{
+  height:40px;padding:0 16px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,#1782ff,#0f75e5);color:#fff;text-decoration:none;font-size:11px;font-weight:900;
+}
+.tg-provider:nth-child(2) .tg-zalo{
+  background:linear-gradient(90deg,#1fbf71,#13a85f);
+}
+.tg-provider:nth-child(2) .tg-feature i{
+  background:#ebfbf3;color:#14a860;
+}
+.tg-empty{font-size:11px;color:#98a2b3;padding:8px 0}
+
+/* PROCESS */
+.tg-process-wrap{
+  margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff;
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;
+}
+.tg-process h3{margin:0 0 14px;font-size:14px}
+.tg-steps{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;position:relative;
+}
+.tg-step{text-align:center;position:relative;padding:2px 8px 0}
+.tg-step-num{
+  width:30px;height:30px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;
+  background:var(--orange);color:#fff;font-size:11px;font-weight:900;
+}
+.tg-step strong{display:block;font-size:10px;margin-bottom:4px}
+.tg-step span{display:block;font-size:8.5px;color:#7d8998;line-height:1.45}
+.tg-step:not(:last-child):after{
+  content:"→";position:absolute;right:-10px;top:6px;color:#c7ced8;font-size:18px;
+}
+.tg-tip{
+  border:1px solid #ffe0cd;border-radius:13px;padding:16px;background:#fff8f3;
+}
+.tg-tip h4{margin:0 0 9px;font-size:13px;color:#f05a0d}
+.tg-tip p{margin:0;color:#667085;font-size:10px;line-height:1.6}
+
+.tg-footer-row{
+  margin-top:18px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;
+}
+.tg-note{
+  display:flex;gap:10px;align-items:flex-start;padding:14px 16px;
+  border:1px solid #ffe6d7;border-radius:13px;background:#fff8f3;color:#9a451d;
+  font-size:10px;line-height:1.55;
+}
+.tg-note:before{
+  content:"i";width:21px;height:21px;flex:0 0 21px;border-radius:50%;
+  display:grid;place-items:center;background:#ffead7;color:#e25108;font-weight:900;
+}
+.tg-support{
+  padding:13px 16px;border:1px solid var(--line);border-radius:13px;background:#fbfcfd;
+}
+.tg-support strong{display:block;font-size:11px;margin-bottom:7px}
+.tg-support div{font-size:10px;color:#667085;line-height:1.7}
+
+@media(max-width:1180px){
+  .tg-hero{grid-template-columns:1fr}
+  .tg-hero-visual{display:none}
+  .tg-benefits{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:900px){
+  .tg-provider-list{grid-template-columns:1fr}
+  .tg-process-wrap{grid-template-columns:1fr}
+  .tg-footer-row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .tg-topbar-inner{height:60px;padding:0 14px}
+  .tg-brand img{width:36px;height:36px}.tg-brand span{font-size:13px}
+  .tg-wrap{padding:12px 10px 28px}
+  .tg-shell{border-radius:18px}
+  .tg-hero{padding:20px 16px}
+  .tg-hero h1{font-size:27px}
+  .tg-intro{font-size:13px}
+  .tg-benefits{grid-template-columns:repeat(2,1fr)}
+  .tg-content{padding:18px 14px 20px}
+  .tg-provider{padding:14px}
+  .tg-provider-head{align-items:center}
+  .tg-logo,.tg-logo-fallback{width:90px;height:58px}
+  .tg-provider-head h2{font-size:18px}
+  .tg-provider-features{grid-template-columns:1fr}
+  .tg-person{grid-template-columns:1fr}
+  .tg-zalo{width:100%}
+  .tg-steps{grid-template-columns:1fr;gap:12px}
+  .tg-step{text-align:left;padding-left:42px}
+  .tg-step-num{position:absolute;left:0;top:0;margin:0}
+  .tg-step:not(:last-child):after{display:none}
+}
+</style>
+
+
+<style id="v309-installment-polish">
+@media(min-width:1181px){
+  .tg-wrap{max-width:1540px!important;padding-top:18px!important}
+  .tg-shell{border-radius:22px!important}
+
+  .tg-hero{
+    grid-template-columns:minmax(0,1.08fr) 230px minmax(520px,.92fr)!important;
+    min-height:278px!important;
+    padding:28px 38px!important;
+  }
+  .tg-hero h1{font-size:38px!important;letter-spacing:-1px!important}
+  .tg-intro{font-size:16px!important;line-height:1.7!important}
+  .tg-phone-art{width:185px!important;height:185px!important}
+  .tg-benefit{min-height:132px!important}
+  .tg-benefit-icon{width:48px!important;height:48px!important;font-size:22px!important}
+  .tg-benefit strong{font-size:14px!important}
+  .tg-benefit span{font-size:10.5px!important}
+
+  .tg-content{padding:28px 38px 30px!important}
+  .tg-provider{padding:20px!important}
+  .tg-provider-head{min-height:86px!important}
+  .tg-logo,.tg-logo-fallback{width:126px!important;height:74px!important}
+  .tg-provider-head h2{font-size:22px!important}
+
+  .tg-provider-features{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:14px!important;
+    margin:2px 0 16px!important;
+  }
+  .tg-feature{
+    min-height:68px!important;
+    background:#fff!important;
+    padding:8px 4px!important;
+  }
+  .tg-feature i{
+    width:34px!important;height:34px!important;
+    background:transparent!important;
+    font-size:20px!important;
+  }
+  .tg-feature strong{font-size:12px!important}
+  .tg-feature span{font-size:10px!important}
+
+  .tg-person{
+    grid-template-columns:40px minmax(0,1fr) auto!important;
+    min-height:68px!important;
+    padding:10px 12px!important;
+    background:linear-gradient(90deg,#f7faff,#fbfdff)!important;
+  }
+  .tg-provider:nth-child(2) .tg-person{
+    background:linear-gradient(90deg,#f4fcf7,#fbfffc)!important;
+  }
+  .tg-zalo-mini{
+    width:34px;height:34px;border-radius:9px;
+    display:grid;place-items:center;
+    background:#fff;color:#147df5;
+    border:1px solid #dce9ff;
+    font-size:9px;font-weight:900;
+  }
+  .tg-provider:nth-child(2) .tg-zalo-mini{
+    color:#12a95f;border-color:#d9f3e5;
+  }
+
+  .tg-process-wrap{
+    padding:20px!important;
+    grid-template-columns:minmax(0,1fr) 290px!important;
+  }
+  .tg-step-num{width:34px!important;height:34px!important}
+  .tg-step strong{font-size:11px!important}
+  .tg-step span{font-size:9px!important}
+  .tg-tip{padding:18px!important}
+}
+
+.tg-provider-title{min-width:0}
+.tg-zalo-mini{flex:0 0 auto}
+
+@media(max-width:640px){
+  .tg-zalo-mini{display:none}
+  .tg-person{grid-template-columns:1fr!important}
+}
+</style>
+
+
+<style id="v310-finance-visual">
+/* V310 - Hero illustration chuyên nghiệp hơn */
+.tg-finance-visual{
+  width:220px!important;
+  height:190px!important;
+  min-height:190px!important;
+  border-radius:42% 58% 52% 48% / 46% 42% 58% 54%!important;
+  background:
+    radial-gradient(circle at 30% 28%,rgba(255,255,255,.92) 0 10%,transparent 11%),
+    linear-gradient(145deg,#fff3ea 0%,#ffe3d0 100%)!important;
+  position:relative!important;
+  display:block!important;
+  overflow:visible!important;
+  box-shadow:inset 0 0 0 1px rgba(255,106,26,.06)!important;
+}
+.tg-finance-visual:before,
+.tg-finance-visual:after{
+  content:none!important;
+}
+.tg-visual-phone{
+  position:absolute;
+  left:58px;
+  top:15px;
+  width:94px;
+  height:164px;
+  padding:6px;
+  border:4px solid #ff6a1a;
+  border-radius:22px;
+  background:#fff;
+  transform:rotate(-6deg);
+  box-shadow:0 18px 36px rgba(255,90,0,.16);
+}
+.tg-visual-speaker{
+  width:24px;
+  height:4px;
+  border-radius:4px;
+  margin:1px auto 6px;
+  background:#d7dce2;
+}
+.tg-visual-screen{
+  height:139px;
+  border-radius:15px;
+  background:
+    radial-gradient(circle at 70% 18%,rgba(255,255,255,.32),transparent 32%),
+    linear-gradient(160deg,#ff7b31 0%,#ff5a00 55%,#ff8b4a 100%);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:12px 10px;
+}
+.tg-screen-logo{
+  width:28px;height:28px;border-radius:9px;
+  display:grid;place-items:center;
+  background:#fff;color:#ff5a00;
+  font-weight:1000;font-size:16px;
+  box-shadow:0 5px 12px rgba(0,0,0,.08);
+}
+.tg-screen-copy strong{
+  display:block;
+  font-size:12px;
+  line-height:1.2;
+  margin-bottom:4px;
+}
+.tg-screen-copy span{
+  display:block;
+  font-size:7px;
+  line-height:1.4;
+  opacity:.9;
+}
+.tg-visual-card{
+  position:absolute;
+  right:3px;
+  bottom:18px;
+  width:94px;
+  height:62px;
+  padding:9px 10px;
+  border-radius:13px;
+  background:#fff;
+  border:1px solid #ffe0cc;
+  box-shadow:0 14px 26px rgba(16,24,40,.11);
+  transform:rotate(5deg);
+}
+.tg-visual-card span{
+  display:block;
+  color:#9a5a36;
+  font-size:6px;
+  font-weight:900;
+  letter-spacing:.06em;
+  margin-bottom:2px;
+}
+.tg-visual-card strong{
+  display:inline-block;
+  color:#ff5a00;
+  font-size:25px;
+  line-height:1;
+  letter-spacing:-1px;
+}
+.tg-visual-card small{
+  color:#7c8796;
+  font-size:7px;
+  margin-left:3px;
+}
+.tg-visual-badge{
+  position:absolute;
+  left:30px;
+  bottom:22px;
+  width:34px;height:34px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:#18b76a;
+  color:#fff;
+  border:5px solid #fff;
+  box-shadow:0 7px 18px rgba(24,183,106,.18);
+  font-size:14px;
+  font-weight:900;
+}
+
+@media(max-width:1180px){
+  .tg-finance-visual{display:none!important}
+}
+</style>
+
+<link rel="stylesheet" href="/styles.css?v=335">
+
+
+<style id="v339-unified-page-system">
+:root{
+  --sdd-page-width:1280px;
+  --sdd-content-width:1180px;
+  --sdd-page-gap:18px;
+  --sdd-card-radius:18px;
+  --sdd-card-border:#e6eaf0;
+  --sdd-card-shadow:0 10px 28px rgba(15,23,42,.045);
+  --sdd-page-bg:#f4f6f9;
+  --sdd-orange:#ff5a00;
+  --sdd-text:#101828;
+  --sdd-muted:#667085;
+}
+
+/* Nền và khoảng cách chung dưới header */
+body{
+  background:var(--sdd-page-bg)!important;
+}
+body > main{
+  width:min(var(--sdd-page-width),calc(100% - 32px))!important;
+  max-width:var(--sdd-page-width)!important;
+  margin:18px auto 42px!important;
+  padding-left:0!important;
+  padding-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Mỗi trang có một khung nội dung chính cân theo header */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-title,
+body > main > .compare-page-ai,
+body > main > .compare-page-grid,
+body > main > .hero,
+body > main > #servicePricingMount,
+body > main > .price-note,
+body > main > .note-grid{
+  width:min(var(--sdd-content-width),100%)!important;
+  max-width:var(--sdd-content-width)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+}
+
+/* Card style chung */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-ai,
+body > main > .hero{
+  border:1px solid var(--sdd-card-border)!important;
+  border-radius:var(--sdd-card-radius)!important;
+  box-shadow:var(--sdd-card-shadow)!important;
+  background:#fff!important;
+}
+
+/* Tiêu đề trang */
+body > main h1{
+  color:var(--sdd-text)!important;
+  letter-spacing:-.35px!important;
+}
+body > main p{
+  color:var(--sdd-muted);
+}
+
+/* Dịch vụ */
+.wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.wrap .hero{
+  margin-top:0!important;
+}
+.wrap .service-card{
+  border-radius:16px!important;
+  border:1px solid var(--sdd-card-border)!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.025)!important;
+}
+.wrap .price-note{
+  margin-top:14px!important;
+}
+.wrap .note-grid{
+  margin-top:14px!important;
+}
+
+/* Trả góp */
+.tg-wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.tg-shell{
+  overflow:hidden!important;
+}
+.tg-shell .tg-hero{
+  padding-top:26px!important;
+}
+.tg-shell > *{
+  box-sizing:border-box!important;
+}
+
+/* Bảo hành */
+.warranty-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.warranty-page-card{
+  padding:26px!important;
+}
+.warranty-page-card .warranty-policy-box{
+  margin-top:22px!important;
+}
+.warranty-page-card .warranty-process{
+  margin-top:22px!important;
+}
+
+/* So sánh */
+.compare-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.compare-page-title{
+  margin-top:0!important;
+  margin-bottom:14px!important;
+}
+.compare-page-ai{
+  margin-bottom:14px!important;
+}
+.compare-page-grid{
+  margin-bottom:18px!important;
+}
+
+/* Desktop lớn: giữ nội dung gần đúng trục header, không co vào giữa quá mức */
+@media(min-width:1450px){
+  :root{
+    --sdd-page-width:1280px;
+    --sdd-content-width:1180px;
+  }
+}
+
+/* Laptop */
+@media(min-width:900px) and (max-width:1199px){
+  :root{
+    --sdd-page-width:calc(100vw - 28px);
+    --sdd-content-width:100%;
+  }
+  body > main{
+    width:calc(100% - 28px)!important;
+    margin-top:14px!important;
+  }
+  .warranty-page-card{
+    padding:20px!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:899px){
+  body > main{
+    width:100%!important;
+    max-width:none!important;
+    margin:10px auto 28px!important;
+    padding:0 10px!important;
+  }
+
+  body > main > .tg-shell,
+  body > main > .warranty-page-card,
+  body > main > .compare-page-title,
+  body > main > .compare-page-ai,
+  body > main > .compare-page-grid,
+  body > main > .hero,
+  body > main > #servicePricingMount,
+  body > main > .price-note,
+  body > main > .note-grid{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .warranty-page-card{
+    padding:14px!important;
+    border-radius:14px!important;
+  }
+  .tg-shell,
+  .hero,
+  .compare-page-ai{
+    border-radius:14px!important;
+  }
+
+  body > main h1{
+    font-size:20px!important;
+    line-height:1.2!important;
+  }
+}
+</style>
+
+
+<style id="v341-runtime-header-alignment">
+/* V341 - Các trang độc lập bám đúng trục header thực tế */
+.v341-header-axis{
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* Bỏ các width cố định cũ của V339 ở 3 trang này */
+main.wrap.v341-header-axis,
+main.tg-wrap.v341-header-axis,
+main.warranty-page-main.v341-header-axis{
+  max-width:none!important;
+}
+
+main.wrap.v341-header-axis > .hero,
+main.wrap.v341-header-axis > #servicePricingMount,
+main.wrap.v341-header-axis > .price-note,
+main.wrap.v341-header-axis > .note-grid,
+main.tg-wrap.v341-header-axis > .tg-shell,
+main.warranty-page-main.v341-header-axis > .warranty-page-card{
+  max-width:none!important;
+  width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Nội dung vẫn gọn nhưng không được lệch trục */
+@media(min-width:900px){
+  main.wrap.v341-header-axis,
+  main.tg-wrap.v341-header-axis,
+  main.warranty-page-main.v341-header-axis{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+}
+
+/* Mobile: full width như storefront */
+@media(max-width:899px){
+  main.wrap.v341-header-axis,
+  main.tg-wrap.v341-header-axis,
+  main.warranty-page-main.v341-header-axis{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+}
+</style>
+
+</head>
+<body>
+<header class="commerce-header sdd-header-v164">
+  <div class="sdd-top-strip">
+    <div class="sdd-top-strip-inner">
+      <span class="sdd-top-message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span></span>
+      <div class="sdd-top-benefits">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg>Hỗ trợ tư vấn</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.1-8 10-4.6-1.9-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Bảo hành uy tín</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Cửa hàng Quy Nhơn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="commerce-header-inner sdd-header-main">
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+
+    <div class="commerce-brand-block">
+      <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
+        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <span class="sdd-brand-copy">
+          <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+          <small>Chuyên Android giá tốt</small>
+        </span>
+      </a>
+    </div>
+
+    <div class="commerce-search sdd-header-search">
+      <span class="sdd-search-leading"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></span>
+      <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
+      <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      <button class="sdd-search-submit" type="button" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></button>
+      <div id="searchSuggestions" class="search-suggestions" hidden></div>
+    </div>
+
+    <div class="sdd-header-actions">
+      <button class="sdd-header-action" id="sddConsultAction" type="button">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg></span>
+        <span><strong>Tư vấn</strong><small>Online</small></span>
+      </button>
+      <a class="sdd-header-action sdd-store-action" href="/#products">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1-5H5l-1 5Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.5 1 2.5 2.5 2.5S9 11.5 9 10c0 1.5 1 2.5 3 2.5s3-1 3-2.5c0 1.5 1 2.5 2.5 2.5S20 11.5 20 10"/></svg></span>
+        <span><strong>Cửa hàng</strong><small>Quy Nhơn</small></span>
+      </a>
+    </div>
+
+    <div class="commerce-header-note">Tư vấn <span>•</span> Cửa hàng Quy Nhơn</div>
+  </div>
+
+  <div class="sdd-header-nav">
+    <div class="sdd-header-nav-inner">
+      <nav class="sdd-main-nav" aria-label="Điều hướng chính">
+        <a href="/">Trang chủ</a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone">Điện thoại</a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet">Máy tính bảng</a>
+        <a href="/may-cu" data-sdd-main-nav="used">Máy cũ</a>
+        <a href="/phu-kien">Phụ kiện</a>
+        <a href="/dich-vu">Dịch vụ</a>
+        <a href="/tra-gop" class="active">Trả góp</a>
+        <button id="sddNavConsultBtn" type="button">Tư vấn</button>
+        <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh">Tra cứu BH</a>
+      </nav>
+
+      <a class="sdd-nav-store" href="/#products">
+        <span>⌖</span>
+        <strong>Cửa hàng Quy Nhơn</strong>
+      </a>
+    </div>
+  </div>
+
+  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+    <div class="sdd-mobile-drawer-panel">
+      <div class="sdd-mobile-drawer-head">
+        <div class="sdd-mobile-drawer-title">
+          <img src="/assets/logo-square.jpg" alt="">
+          <div>
+            <strong>Danh mục</strong>
+            <small>Siêu Di Động Quy Nhơn</small>
+          </div>
+        </div>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+      </div>
+
+      <nav class="sdd-mobile-nav-list">
+        <a href="/" data-sdd-drawer-nav="home"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Trang chủ</span><b>›</b></a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone" data-sdd-drawer-nav="phone"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4"/><path d="M11 18.5h2"/></svg></span><span>Điện thoại</span><b>›</b></a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet" data-sdd-drawer-nav="tablet"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9.5 17h5"/></svg></span><span>Máy tính bảng</span><b>›</b></a>
+        <a href="/may-cu" data-sdd-main-nav="used" data-sdd-drawer-nav="used"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M10 6h4"/><path d="M9 15.5c1.7-2 4.3-2 6 0"/><path d="M10.5 18h3"/></svg></span><span>Máy cũ</span><b>›</b></a>
+        <a href="/phu-kien" data-sdd-drawer-nav="accessory"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6a4 4 0 0 1 8 0v2"/><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M9 12v1M15 12v1"/></svg></span><span>Phụ kiện</span><b>›</b></a>
+        <a href="/dich-vu" data-sdd-drawer-nav="service"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 17.5 3.5l3 3-3 3"/><path d="M4 20l8.5-8.5"/><path d="M5 4h5l1.5 1.5L8 9H4V5a1 1 0 0 1 1-1Z"/><path d="m12.5 14.5 2 2L13 18l-2-2"/></svg></span><span>Dịch vụ</span><b>›</b></a>
+        <a href="/tra-gop" data-sdd-drawer-nav="installment"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><span>Trả góp</span><b>›</b></a>
+        <a href="/tra-cuu-bao-hanh" class="sdd-mobile-warranty-menu-item" data-sdd-drawer-nav="warranty">
+          <span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.4 7 10 4.1-1.6 7-5.2 7-10V6l-7-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span>
+          <span>
+            <strong>Tra cứu bảo hành</strong>
+            <small>Kiểm tra bằng số điện thoại</small>
+          </span>
+          <b>›</b>
+        </a>
+      </nav>
+
+      <div class="sdd-mobile-drawer-footer">
+        <button id="sddMobileConsultBtn" type="button">
+          <span class="sdd-zalo-dot">Z</span>
+          <span>
+            <strong>Nhắn Zalo tư vấn ngay</strong>
+            <small>Nhân viên hỗ trợ trực tiếp</small>
+          </span>
+          <b>›</b>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="tg-page">
+  <main class="tg-wrap">
+  <section class="tg-shell">
+    <div class="tg-hero">
+      <div>
+        <span class="tg-eyebrow">HỖ TRỢ MUA MÁY</span>
+        <h1>Trả góp tại Siêu Di Động</h1>
+        <p id="tgIntro" class="tg-intro">Trả góp đơn giản chỉ với CCCD, dành cho khách hàng từ 18 tuổi. Mang CCCD đến shop làm hồ sơ hoặc gửi nhân viên tài chính kiểm tra điều kiện trước. Hỗ trợ trả trước 0đ, nhận máy ngay khi hồ sơ được duyệt.</p>
+      </div>
+
+      <div class="tg-hero-visual">
+        <div class="tg-phone-art tg-finance-visual">
+      <div class="tg-visual-phone">
+        <div class="tg-visual-speaker"></div>
+        <div class="tg-visual-screen">
+          <div class="tg-screen-logo">S</div>
+          <div class="tg-screen-copy">
+            <strong>Trả góp 0đ</strong>
+            <span>Duyệt nhanh · Nhận máy ngay</span>
+          </div>
+        </div>
+      </div>
+      <div class="tg-visual-card">
+        <span>HỖ TRỢ TRẢ GÓP</span>
+        <strong>0đ</strong>
+        <small>Trả trước</small>
+      </div>
+      <div class="tg-visual-badge">✓</div>
+    </div>
+      </div>
+
+      <div class="tg-benefits">
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">👥</div>
+          <strong>Từ 18 tuổi</strong>
+          <span>Chỉ cần CCCD hợp lệ</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">0đ</div>
+          <strong>Trả trước 0đ</strong>
+          <span>Tùy kết quả xét duyệt</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">◷</div>
+          <strong>Duyệt nhanh</strong>
+          <span>Nhận máy ngay</span>
+        </div>
+        <div class="tg-benefit">
+          <div class="tg-benefit-icon">🛡</div>
+          <strong>Bảo mật</strong>
+          <span>Thông tin an toàn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tg-content">
+      <div class="tg-section-title">
+        <h2>Chọn đơn vị tài chính</h2>
+        <p>Liên hệ nhân viên để kiểm tra điều kiện và phương án góp phù hợp.</p>
+      </div>
+
+      <div id="tgProviderList" class="tg-provider-list">
+        <div class="tg-loading">Đang tải thông tin...</div>
+      </div>
+
+      <div class="tg-process-wrap">
+        <div class="tg-process">
+          <h3>Quy trình trả góp</h3>
+          <div class="tg-steps">
+            <div class="tg-step">
+              <div class="tg-step-num">1</div>
+              <strong>Chọn sản phẩm</strong>
+              <span>Chọn máy và gói trả góp phù hợp</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">2</div>
+              <strong>Cung cấp CCCD</strong>
+              <span>Gửi CCCD cho nhân viên kiểm tra điều kiện</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">3</div>
+              <strong>Duyệt hồ sơ</strong>
+              <span>Hồ sơ được xét duyệt nhanh chóng</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">4</div>
+              <strong>Ký hợp đồng</strong>
+              <span>Ký hợp đồng điện tử hoặc tại shop</span>
+            </div>
+            <div class="tg-step">
+              <div class="tg-step-num">5</div>
+              <strong>Nhận máy</strong>
+              <span>Nhận máy ngay sau khi duyệt thành công</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="tg-tip">
+          <h4>💡 Mẹo nhỏ</h4>
+          <p>Có thể gửi CCCD để nhân viên kiểm tra điều kiện trước khi đến shop.</p>
+        </aside>
+      </div>
+
+      <div class="tg-footer-row">
+        <div class="tg-note">
+          Hồ sơ và kết quả duyệt do công ty tài chính quyết định. Số tiền trả trước, kỳ hạn và khoản góp hàng tháng sẽ được nhân viên xác nhận trước khi đăng ký.
+        </div>
+        <div class="tg-support">
+          <strong>Hỗ trợ trực tiếp tại Siêu Di Động</strong>
+          <div>📍 314 Nguyễn Thái Học, Quy Nhơn</div>
+          <div>💬 Nhắn Zalo nhân viên tài chính để được tư vấn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</div>
+<script>
+(function(){
+  const intro=document.getElementById('tgIntro');
+  const list=document.getElementById('tgProviderList');
+  const fallback={
+    intro:'Trả góp đơn giản với CCCD dành cho khách từ 18 tuổi. Có thể kiểm tra điều kiện trước và hỗ trợ trả trước 0đ tùy hồ sơ.',
+    providers:[
+      {id:'hd-saison',name:'HD SAISON',logo:'',enabled:true,staff:[]},
+      {id:'mirae-asset',name:'Mirae Asset',logo:'',enabled:true,staff:[]}
+    ]
+  };
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function zaloUrl(v){
+    let raw=String(v||'').trim();
+    if(!raw)return '';
+    if(/^https?:\/\//i.test(raw))return raw;
+    let n=raw.replace(/\D/g,'');
+    if(n.startsWith('0'))n='84'+n.slice(1);
+    return n?'https://zalo.me/'+n:'';
+  }
+  function render(data){
+    const settings=data&&typeof data==='object'?data:fallback;
+    intro.textContent=settings.intro||fallback.intro;
+    const providers=(Array.isArray(settings.providers)?settings.providers:[]).filter(p=>p&&p.enabled!==false);
+    list.innerHTML=providers.map(p=>{
+      const name=esc(p.name||'Công ty tài chính');
+      const logo=p.logo?`<img class="tg-logo" src="${esc(p.logo)}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:'';
+      const fallbackLogo=`<div class="tg-logo-fallback"${p.logo?' style="display:none"':''}>${name}</div>`;
+      const staff=(Array.isArray(p.staff)?p.staff:[]).filter(s=>s&&s.enabled!==false&&zaloUrl(s.zalo));
+      const staffHtml=staff.length?staff.map(s=>`<div class="tg-person">
+        <div class="tg-zalo-mini">Zalo</div>
+        <div class="tg-person-copy">
+          <strong>Nhân viên: ${esc(s.name||'Nhân viên tư vấn')}</strong>
+          <span>${esc(s.note||'Tư vấn trả góp')}</span>
+        </div>
+        <a class="tg-zalo" href="${esc(zaloUrl(s.zalo))}" target="_blank" rel="noopener noreferrer">💬 Nhắn Zalo</a>
+      </div>`).join(''):`<div class="tg-empty">Hiện chưa có nhân viên tư vấn trực tuyến cho đơn vị này.</div>`;
+      return `<article class="tg-provider">
+        <div class="tg-provider-head">
+          ${logo}${fallbackLogo}
+          <div class="tg-provider-title">
+            <h2>${name}</h2>
+            <small>Công ty tài chính</small>
+          </div>
+        </div>
+
+        <div class="tg-provider-features">
+          <div class="tg-feature">
+            <i>👤</i>
+            <div><strong>Hồ sơ đơn giản</strong><span>Chỉ cần CCCD</span></div>
+          </div>
+          <div class="tg-feature">
+            <i>◷</i>
+            <div><strong>Duyệt nhanh</strong><span>15 - 30 phút</span></div>
+          </div>
+          <div class="tg-feature">
+            <i>▦</i>
+            <div><strong>Kỳ hạn linh hoạt</strong><span>3 - 12 tháng</span></div>
+          </div>
+        </div>
+
+        <div class="tg-staff">${staffHtml}</div>
+      </article>`;
+    }).join('')||'<div class="tg-empty">Hiện chưa có đơn vị trả góp đang bật.</div>';
+  }
+  fetch('/api/installment-settings',{cache:'no-store'})
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(d=>render(d.settings||fallback))
+    .catch(()=>render(fallback));
+})();
+</script>
+
+<script id="v324-zalo-analytics">
+(function(){
+  function visitorId(){
+    try{
+      var k="sdd-analytics-visitor-v2";
+      var id=localStorage.getItem(k);
+      if(!id){
+        id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+        localStorage.setItem(k,id);
+      }
+      return id;
+    }catch(_){
+      return "v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+    }
+  }
+  function device(){
+    var ua=navigator.userAgent||"";
+    if(/iPad|Tablet/i.test(ua)) return "tablet";
+    if(/Mobi|Android|iPhone/i.test(ua)) return "mobile";
+    return "desktop";
+  }
+  function track(source){
+    try{
+      fetch("/api/analytics",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:"zalo_click",visitorId:visitorId(),device:device(),source:source||"standalone_zalo"}),
+        keepalive:true
+      }).catch(function(){});
+    }catch(_){}
+  }
+  document.addEventListener("click",function(e){
+    var a=e.target && e.target.closest ? e.target.closest('a[href*="zalo.me"]') : null;
+    if(a) track(a.className||a.id||location.pathname);
+  },true);
+})();
+</script>
+
+
+
+<script id="v335-header-runtime">
+(function(){
+  const menu=document.getElementById("sddMobileMenuBtn");
+  const drawer=document.getElementById("sddMobileDrawer");
+  const close=document.getElementById("sddMobileDrawerClose");
+
+  function openDrawer(){
+    if(!drawer)return;
+    drawer.hidden=false;
+    document.body.style.overflow="hidden";
+  }
+  function closeDrawer(){
+    if(!drawer)return;
+    drawer.hidden=true;
+    document.body.style.overflow="";
+  }
+
+  menu?.addEventListener("click",openDrawer);
+  close?.addEventListener("click",closeDrawer);
+  drawer?.addEventListener("click",e=>{if(e.target===drawer)closeDrawer()});
+  drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
+
+  const input=document.getElementById("searchInput");
+  const clear=document.getElementById("clearSearch");
+  const submit=document.querySelector(".sdd-search-submit");
+
+  function runSearch(){
+    const q=(input?.value||"").trim();
+    location.href=q?"/?q="+encodeURIComponent(q):"/#products";
+  }
+
+  submit?.addEventListener("click",runSearch);
+  input?.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){e.preventDefault();runSearch();}
+  });
+  clear?.addEventListener("click",()=>{
+    if(input){input.value="";input.focus();}
+  });
+
+  document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
+  document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+})();
+</script>
+
+
+<script id="v341-runtime-header-alignment-js">
+(function(){
+  function getHeaderAxis(){
+    return document.querySelector(".sdd-header-nav-inner")
+      || document.querySelector(".commerce-header-inner.sdd-header-main")
+      || document.querySelector(".sdd-top-strip-inner");
+  }
+
+  function align(){
+    const axis=getHeaderAxis();
+    const main=document.querySelector("main.tg-wrap");
+    if(!axis || !main) return;
+
+    if(window.innerWidth>=900){
+      const r=axis.getBoundingClientRect();
+      if(r.width>0){
+        main.style.width=r.width+"px";
+        main.style.maxWidth=r.width+"px";
+        main.style.marginLeft="auto";
+        main.style.marginRight="auto";
+        main.classList.add("v341-header-axis");
+      }
+    }else{
+      main.style.width="";
+      main.style.maxWidth="";
+      main.style.marginLeft="";
+      main.style.marginRight="";
+      main.classList.add("v341-header-axis");
+    }
+  }
+
+  let timer=0;
+  function schedule(){
+    clearTimeout(timer);
+    timer=setTimeout(align,50);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+  setTimeout(align,300);
+  setTimeout(align,900);
+})();
+</script>
+
+</body>
+</html>

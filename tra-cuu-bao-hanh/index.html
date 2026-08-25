@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tra cứu bảo hành | Siêu Di Động</title>
+  <meta name="description" content="Tra cứu thông tin bảo hành sản phẩm đã mua tại Siêu Di Động.">
+  <link rel="stylesheet" href="/styles.css?v=338">
+
+
+
+
+<style id="v344-warranty-exact-header-axis">
+/* V344 - Tra cứu bảo hành bám đúng trục header thực tế */
+@media(min-width:900px){
+  body > main.warranty-page-main.v344-exact-axis{
+    box-sizing:border-box!important;
+    max-width:none!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    transform:none!important;
+  }
+
+  body > main.warranty-page-main.v344-exact-axis > .warranty-page-card{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Các khối con trải đúng bề ngang card, không co thêm một lớp nữa */
+  .warranty-page-card .warranty-policy-box,
+  .warranty-page-card .warranty-process,
+  .warranty-page-card .warranty-before,
+  .warranty-page-card .warranty-support,
+  .warranty-page-card .warranty-result{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media(max-width:899px){
+  body > main.warranty-page-main.v344-exact-axis{
+    width:100%!important;
+    max-width:none!important;
+    margin:10px 0 28px!important;
+    padding:0 10px!important;
+  }
+
+  body > main.warranty-page-main.v344-exact-axis > .warranty-page-card{
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+</style>
+
+</head>
+<body class="warranty-page-body">
+<header class="commerce-header sdd-header-v164">
+  <div class="sdd-top-strip">
+    <div class="sdd-top-strip-inner">
+      <span class="sdd-top-message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span></span>
+      <div class="sdd-top-benefits">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg>Hỗ trợ tư vấn</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.1-8 10-4.6-1.9-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Bảo hành uy tín</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Cửa hàng Quy Nhơn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="commerce-header-inner sdd-header-main">
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+
+    <div class="commerce-brand-block">
+      <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
+        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <span class="sdd-brand-copy">
+          <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+          <small>Chuyên Android giá tốt</small>
+        </span>
+      </a>
+    </div>
+
+    <div class="commerce-search sdd-header-search">
+      <span class="sdd-search-leading"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></span>
+      <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
+      <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      <button class="sdd-search-submit" type="button" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></button>
+      <div id="searchSuggestions" class="search-suggestions" hidden></div>
+    </div>
+
+    <div class="sdd-header-actions">
+      <button class="sdd-header-action" id="sddConsultAction" type="button">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg></span>
+        <span><strong>Tư vấn</strong><small>Online</small></span>
+      </button>
+      <a class="sdd-header-action sdd-store-action" href="/#products">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1-5H5l-1 5Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.5 1 2.5 2.5 2.5S9 11.5 9 10c0 1.5 1 2.5 3 2.5s3-1 3-2.5c0 1.5 1 2.5 2.5 2.5S20 11.5 20 10"/></svg></span>
+        <span><strong>Cửa hàng</strong><small>Quy Nhơn</small></span>
+      </a>
+    </div>
+
+    <div class="commerce-header-note">Tư vấn <span>•</span> Cửa hàng Quy Nhơn</div>
+  </div>
+
+  <div class="sdd-header-nav">
+    <div class="sdd-header-nav-inner">
+      <nav class="sdd-main-nav" aria-label="Điều hướng chính">
+        <a href="/">Trang chủ</a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone">Điện thoại</a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet">Máy tính bảng</a>
+        <a href="/may-cu" data-sdd-main-nav="used">Máy cũ</a>
+        <a href="/phu-kien">Phụ kiện</a>
+        <a href="/dich-vu">Dịch vụ</a>
+        <a href="/tra-gop">Trả góp</a>
+        <button id="sddNavConsultBtn" type="button">Tư vấn</button>
+        <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn active" href="/tra-cuu-bao-hanh">Tra cứu BH</a>
+      </nav>
+
+      <a class="sdd-nav-store" href="/#products">
+        <span>⌖</span>
+        <strong>Cửa hàng Quy Nhơn</strong>
+      </a>
+    </div>
+  </div>
+
+  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+    <div class="sdd-mobile-drawer-panel">
+      <div class="sdd-mobile-drawer-head">
+        <div class="sdd-mobile-drawer-title">
+          <img src="/assets/logo-square.jpg" alt="">
+          <div>
+            <strong>Danh mục</strong>
+            <small>Siêu Di Động Quy Nhơn</small>
+          </div>
+        </div>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+      </div>
+
+      <nav class="sdd-mobile-nav-list">
+        <a href="/" data-sdd-drawer-nav="home"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Trang chủ</span><b>›</b></a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone" data-sdd-drawer-nav="phone"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4"/><path d="M11 18.5h2"/></svg></span><span>Điện thoại</span><b>›</b></a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet" data-sdd-drawer-nav="tablet"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9.5 17h5"/></svg></span><span>Máy tính bảng</span><b>›</b></a>
+        <a href="/may-cu" data-sdd-main-nav="used" data-sdd-drawer-nav="used"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M10 6h4"/><path d="M9 15.5c1.7-2 4.3-2 6 0"/><path d="M10.5 18h3"/></svg></span><span>Máy cũ</span><b>›</b></a>
+        <a href="/phu-kien" data-sdd-drawer-nav="accessory"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6a4 4 0 0 1 8 0v2"/><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M9 12v1M15 12v1"/></svg></span><span>Phụ kiện</span><b>›</b></a>
+        <a href="/dich-vu" data-sdd-drawer-nav="service"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 17.5 3.5l3 3-3 3"/><path d="M4 20l8.5-8.5"/><path d="M5 4h5l1.5 1.5L8 9H4V5a1 1 0 0 1 1-1Z"/><path d="m12.5 14.5 2 2L13 18l-2-2"/></svg></span><span>Dịch vụ</span><b>›</b></a>
+        <a href="/tra-gop" data-sdd-drawer-nav="installment"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><span>Trả góp</span><b>›</b></a>
+        <a href="/tra-cuu-bao-hanh" class="sdd-mobile-warranty-menu-item" data-sdd-drawer-nav="warranty">
+          <span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.4 7 10 4.1-1.6 7-5.2 7-10V6l-7-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span>
+          <span>
+            <strong>Tra cứu bảo hành</strong>
+            <small>Kiểm tra bằng số điện thoại</small>
+          </span>
+          <b>›</b>
+        </a>
+      </nav>
+
+      <div class="sdd-mobile-drawer-footer">
+        <button id="sddMobileConsultBtn" type="button">
+          <span class="sdd-zalo-dot">Z</span>
+          <span>
+            <strong>Nhắn Zalo tư vấn ngay</strong>
+            <small>Nhân viên hỗ trợ trực tiếp</small>
+          </span>
+          <b>›</b>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+  <main class="warranty-page-main">
+    <section class="warranty-page-card">
+      <div class="warranty-head">
+        <span class="warranty-icon">✓</span>
+        <div>
+          <h1>Tra cứu bảo hành</h1>
+          <p>Nhập số điện thoại đã dùng khi mua hàng tại Siêu Di Động.</p>
+        </div>
+      </div>
+
+      <form id="warrantyForm" class="warranty-form">
+        <label for="warrantyPhone">Số điện thoại mua hàng</label>
+        <div class="warranty-search-row">
+          <input id="warrantyPhone" inputmode="tel" autocomplete="tel" maxlength="14" placeholder="Ví dụ: 0353 105 423" required>
+          <button type="submit">Tra cứu</button>
+        </div>
+        <small>Dữ liệu được đối chiếu trực tiếp từ hệ thống.</small>
+      </form>
+
+      <div id="warrantyResult" class="warranty-result" aria-live="polite"></div>
+
+      <div class="warranty-policy-box">
+        <strong>Chính sách bảo hành</strong>
+        <p>Trong 30 ngày đầu, sản phẩm phát sinh lỗi do nhà sản xuất và đủ điều kiện sẽ được hỗ trợ đổi máy theo chính sách Siêu Di Động.</p>
+        <button type="button" class="warranty-policy-toggle" id="warrantyPolicyToggle" aria-expanded="false">
+          Xem chính sách chi tiết <span>⌄</span>
+        </button>
+
+        <div class="warranty-policy-details" id="warrantyPolicyDetails" hidden>
+          <div class="warranty-policy-section">
+            <h3>Bảo hành</h3>
+            <ul>
+              <li><strong>Mainboard:</strong> 12 tháng, áp dụng cho lỗi kỹ thuật do nhà sản xuất.</li>
+              <li><strong>Nguồn, màn hình, camera:</strong> 3 tháng; hỗ trợ đổi hoặc sửa nếu phát sinh lỗi trong thời gian bảo hành.</li>
+              <li><strong>Phụ kiện (sạc, cáp,...):</strong> 1 tháng, bảo hành lỗi kỹ thuật, không áp dụng với hao mòn tự nhiên.</li>
+              <li>Trong <strong>30 ngày đầu</strong>, sản phẩm lỗi do nhà sản xuất và còn đầy đủ tem, hóa đơn sẽ được hỗ trợ đổi máy theo chính sách.</li>
+              <li>Hỗ trợ cài đặt và cập nhật phần mềm miễn phí. Phần mềm không thuộc phạm vi bảo hành.</li>
+            </ul>
+          </div>
+
+          <div class="warranty-policy-section warranty-policy-exclude">
+            <h3>Trường hợp không bảo hành</h3>
+            <ul>
+              <li>Máy rơi, cong, móp, trầy xước nặng, vào nước, kể cả máy có khả năng chống nước.</li>
+              <li>Tự ý up ROM, root, sửa chữa hoặc thay linh kiện ngoài hệ thống.</li>
+              <li>Cháy nổ, chập nguồn, ẩm mốc, oxi hóa hoặc hư hỏng do va đập hay nguồn điện không ổn định.</li>
+              <li>Mất tem, rách tem, mất hóa đơn hoặc số IMEI không trùng khớp.</li>
+              <li>Màn hình sọc, chảy mực; hư cổng sạc, khay SIM, tai nghe, thẻ nhớ do người dùng gây ra.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <section class="warranty-extra warranty-process">
+        <div class="warranty-extra-head">
+          <span class="warranty-extra-kicker">QUY TRÌNH HỖ TRỢ</span>
+          <h2>Bảo hành đơn giản, rõ từng bước</h2>
+          <p>Tra cứu trước tại website để kiểm tra thông tin, sau đó mang máy đến cửa hàng khi cần hỗ trợ.</p>
+        </div>
+        <div class="warranty-steps">
+          <div class="warranty-step"><span>1</span><strong>Tra cứu</strong><small>Nhập số điện thoại mua hàng.</small></div>
+          <div class="warranty-step"><span>2</span><strong>Mang máy đến shop</strong><small>Kèm máy và phụ kiện liên quan nếu có.</small></div>
+          <div class="warranty-step"><span>3</span><strong>Kiểm tra tình trạng</strong><small>Nhân viên tiếp nhận và xác định lỗi thực tế.</small></div>
+          <div class="warranty-step"><span>4</span><strong>Xử lý bảo hành</strong><small>Tư vấn phương án phù hợp theo chính sách.</small></div>
+        </div>
+      </section>
+
+      <div class="warranty-bottom-grid">
+        <section class="warranty-extra warranty-note-card">
+          <div class="warranty-extra-head">
+            <span class="warranty-extra-kicker">LƯU Ý</span>
+            <h2>Trước khi mang máy bảo hành</h2>
+          </div>
+          <ul>
+            <li>Sao lưu dữ liệu quan trọng trước khi giao máy.</li>
+            <li>Đăng xuất hoặc cung cấp mật khẩu mở máy khi cần kiểm tra lỗi.</li>
+            <li>Mang theo phụ kiện liên quan nếu lỗi có thể xuất phát từ sạc, cáp hoặc thiết bị kết nối.</li>
+          </ul>
+        </section>
+
+        <section class="warranty-extra warranty-support-card">
+          <div class="warranty-extra-head">
+            <span class="warranty-extra-kicker">CẦN HỖ TRỢ?</span>
+            <h2>Liên hệ Siêu Di Động</h2>
+            <p>Nếu chưa rõ tình trạng bảo hành, bạn có thể nhắn nhân viên trước khi mang máy đến cửa hàng.</p>
+          </div>
+          <a class="warranty-zalo-btn" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo tư vấn</a>
+          <a class="warranty-home-btn" href="/">Xem sản phẩm tại Siêu Di Động</a>
+        </section>
+      </div>
+
+    </section>
+  </main>
+
+
+<script>
+(function(){
+  const btn=document.getElementById("warrantyPolicyToggle");
+  const box=document.getElementById("warrantyPolicyDetails");
+  if(!btn||!box) return;
+
+  // Mobile: mặc định thu gọn. Desktop: mặc định mở rộng.
+  if(!window.matchMedia("(max-width: 760px)").matches){
+    box.removeAttribute("hidden");
+    btn.setAttribute("aria-expanded","true");
+    btn.firstChild.nodeValue="Thu gọn chính sách ";
+  }
+
+  btn.addEventListener("click",function(){
+    const opening=box.hasAttribute("hidden");
+    if(opening) box.removeAttribute("hidden"); else box.setAttribute("hidden","");
+    btn.setAttribute("aria-expanded",opening?"true":"false");
+    btn.firstChild.nodeValue=opening?"Thu gọn chính sách ":"Xem chính sách chi tiết ";
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const form=document.getElementById("warrantyForm");
+  const phone=document.getElementById("warrantyPhone");
+  const result=document.getElementById("warrantyResult");
+  function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  form.addEventListener("submit",async function(e){
+    e.preventDefault();
+    const p=(phone.value||"").replace(/\D/g,"");
+    if(p.length<9){
+      result.innerHTML='<div class="warranty-alert error">Vui lòng nhập đúng số điện thoại mua hàng.</div>';
+      return;
+    }
+    const submit=form.querySelector('button[type="submit"]');
+    submit.disabled=true; submit.textContent="Đang tra cứu...";
+    result.innerHTML='<div class="warranty-loading">Đang đối chiếu dữ liệu từ hệ thống...</div>';
+    try{
+      const r=await fetch("/api/warranty-lookup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:p})});
+      let data={}; try{data=await r.json();}catch{}
+      if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
+      if(!data.found){
+        result.innerHTML='<div class="warranty-alert">'+esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")+'</div>';
+        return;
+      }
+      result.innerHTML=
+        '<div class="warranty-summary">Tìm thấy <strong>'+data.items.length+'</strong> sản phẩm đã mua</div>'+
+        '<div class="warranty-items">'+data.items.map(x=>`
+          <article class="warranty-item">
+            <div class="warranty-item-top">
+              <div><h3>${esc(x.productName)}</h3>${x.productCode?`<small>Mã hàng: ${esc(x.productCode)}</small>`:""}</div>
+              <span class="warranty-state ${x.inWarranty?"active":"expired"}">${x.inWarranty?"Còn bảo hành":"Hết bảo hành"}</span>
+            </div>
+            <div class="warranty-grid">
+              <div><span>Ngày mua</span><strong>${esc(x.purchaseDate)}</strong></div>
+              <div><span>Bảo hành đến</span><strong>${esc(x.warrantyEnd)}</strong></div>
+              <div><span>Hóa đơn</span><strong>${esc(x.invoiceCode)}</strong></div>
+              <div><span>Thời gian còn lại</span><strong>${x.inWarranty?esc(x.remainingDays+" ngày"):"Đã hết hạn"}</strong></div>
+            </div>
+            ${x.serialNumbers?`<div class="warranty-imei"><span>IMEI/Serial:</span> ${esc(x.serialNumbers)}</div>`:""}
+            ${x.exchangeEnd?`<div class="warranty-note">Hỗ trợ đổi máy đến: <strong>${esc(x.exchangeEnd)}</strong></div>`:""}
+          </article>`).join("")+'</div>';
+    }catch(err){
+      result.innerHTML='<div class="warranty-alert error">'+esc(err.message||"Chưa thể tra cứu. Vui lòng thử lại.")+'</div>';
+    }finally{
+      submit.disabled=false; submit.textContent="Tra cứu";
+    }
+  });
+})();
+</script>
+
+<script id="v324-zalo-analytics">
+(function(){
+  function visitorId(){
+    try{
+      var k="sdd-analytics-visitor-v2";
+      var id=localStorage.getItem(k);
+      if(!id){
+        id="v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+        localStorage.setItem(k,id);
+      }
+      return id;
+    }catch(_){
+      return "v_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+    }
+  }
+  function device(){
+    var ua=navigator.userAgent||"";
+    if(/iPad|Tablet/i.test(ua)) return "tablet";
+    if(/Mobi|Android|iPhone/i.test(ua)) return "mobile";
+    return "desktop";
+  }
+  function track(source){
+    try{
+      fetch("/api/analytics",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({type:"zalo_click",visitorId:visitorId(),device:device(),source:source||"standalone_zalo"}),
+        keepalive:true
+      }).catch(function(){});
+    }catch(_){}
+  }
+  document.addEventListener("click",function(e){
+    var a=e.target && e.target.closest ? e.target.closest('a[href*="zalo.me"]') : null;
+    if(a) track(a.className||a.id||location.pathname);
+  },true);
+})();
+</script>
+
+
+
+
+
+
+<script id="v344-warranty-exact-runtime-js">
+(function(){
+  function setImp(el,prop,val){
+    if(el) el.style.setProperty(prop,val,"important");
+  }
+
+  function alignWarranty(){
+    const main=document.querySelector("body > main.warranty-page-main");
+    if(!main) return;
+
+    main.classList.add("v344-exact-axis");
+
+    if(window.innerWidth < 900){
+      ["width","max-width","margin-left","margin-right"].forEach(p=>main.style.removeProperty(p));
+      return;
+    }
+
+    const axis =
+      document.querySelector(".sdd-header-nav-inner") ||
+      document.querySelector(".commerce-header-inner.sdd-header-main");
+
+    if(!axis) return;
+
+    const r=axis.getBoundingClientRect();
+    if(!r.width) return;
+
+    /* exact viewport coordinates of header */
+    setImp(main,"width",r.width+"px");
+    setImp(main,"max-width",r.width+"px");
+    setImp(main,"margin-left",r.left+"px");
+    setImp(main,"margin-right","0px");
+    setImp(main,"padding-left","0px");
+    setImp(main,"padding-right","0px");
+
+    const card=main.querySelector(":scope > .warranty-page-card");
+    if(card){
+      setImp(card,"width","100%");
+      setImp(card,"max-width","none");
+      setImp(card,"margin-left","0px");
+      setImp(card,"margin-right","0px");
+    }
+
+    [
+      ".warranty-policy-box",
+      ".warranty-process",
+      ".warranty-before",
+      ".warranty-support",
+      ".warranty-result"
+    ].forEach(sel=>{
+      main.querySelectorAll(sel).forEach(el=>{
+        setImp(el,"width","100%");
+        setImp(el,"max-width","none");
+      });
+    });
+  }
+
+  let timer=0;
+  function schedule(){
+    clearTimeout(timer);
+    timer=setTimeout(alignWarranty,40);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+  setTimeout(alignWarranty,150);
+  setTimeout(alignWarranty,500);
+  setTimeout(alignWarranty,1200);
+})();
+</script>
+
+</body>
+</html>
