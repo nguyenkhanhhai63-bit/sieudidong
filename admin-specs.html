@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V352 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V353 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -5990,6 +5990,71 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     inset:0!important;
     z-index:2147482999!important;
     background:rgba(15,23,42,.42)!important;
+  }
+}
+</style>
+
+
+<style id="v353-summary-today-css">
+.period-summary-single{
+  display:grid;
+  grid-template-columns:minmax(150px,1.35fr) repeat(4,minmax(110px,1fr));
+  gap:10px;
+  padding:14px;
+}
+.period-summary-date,
+.period-summary-stat{
+  min-height:78px;
+  border:1px solid #e7ebf0;
+  border-radius:12px;
+  background:#fff;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  box-sizing:border-box;
+}
+.period-summary-date{
+  background:linear-gradient(180deg,#fff9f5,#fff);
+  border-color:#ffd9c4;
+}
+.period-summary-date small,
+.period-summary-stat small{
+  font-size:10px;
+  color:#98a2b3;
+  margin-bottom:5px;
+}
+.period-summary-date strong{
+  font-size:17px;
+  color:#101828;
+  line-height:1.15;
+}
+.period-summary-stat strong{
+  font-size:20px;
+  color:#101828;
+  line-height:1.1;
+}
+.period-summary-stat.orange strong{color:#ff5a00}
+.period-summary-stat.blue strong{color:#175cd3}
+.period-summary-stat.green strong{color:#067647}
+.period-summary-stat.purple strong{color:#7f56d9}
+
+@media(max-width:900px){
+  .period-summary-single{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    padding:10px;
+  }
+  .period-summary-date{
+    grid-column:1/-1;
+  }
+}
+@media(max-width:520px){
+  .period-summary-single{
+    grid-template-columns:1fr;
+  }
+  .period-summary-date{
+    grid-column:auto;
   }
 }
 </style>
@@ -7086,24 +7151,48 @@ function renderSummaryForPeriod(d,period){
 
   const source=analyticsDaysForPeriod(d,period);
   if(!source.length){
-    host.innerHTML='<div style="padding:18px 0;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>';
+    host.innerHTML='<div style="padding:24px;color:#98a2b3;font-size:11px;text-align:center">Chưa có dữ liệu trong kỳ này.</div>';
     return;
   }
 
-  // Hôm nay/Hôm qua hiển thị đúng ngày; các kỳ dài hơn mới gom theo tháng.
+  /* Hôm nay / Hôm qua: không dùng progress bar dài.
+     Hiển thị 5 ô tóm tắt gọn để đọc nhanh. */
   if(period==="today" || period==="yesterday"){
     const x=source[source.length-1]||{};
     const raw=String(x.date||"");
-    const day=raw.replace(/^(\d{4})-(\d{2})-(\d{2})$/,(_,y,m,d)=>`${d}/${m}/${y}`);
-    host.innerHTML=`<div class="month-row">
-      <span class="month-label">${day||label}</span>
-      <div class="month-track"><div class="month-fill" style="width:100%"></div></div>
-      <span class="month-value">${fmt(x.views)}</span>
-      <span class="month-meta">${fmt(x.compare)} so sánh · ${fmt(x.zalo)} Zalo · ${fmt(x.warrantyChecks)} tra BH</span>
-    </div>`;
+    const dateText=raw.replace(/^(\d{4})-(\d{2})-(\d{2})$/,(_,y,m,d)=>`${d}/${m}/${y}`);
+
+    host.innerHTML=`
+      <div class="period-summary-single">
+        <div class="period-summary-date">
+          <small>Ngày thống kê</small>
+          <strong>${dateText||label}</strong>
+        </div>
+
+        <div class="period-summary-stat orange">
+          <small>Lượt truy cập</small>
+          <strong>${fmt(x.views)}</strong>
+        </div>
+
+        <div class="period-summary-stat blue">
+          <small>So sánh</small>
+          <strong>${fmt(x.compare)}</strong>
+        </div>
+
+        <div class="period-summary-stat green">
+          <small>Bấm Zalo</small>
+          <strong>${fmt(x.zalo)}</strong>
+        </div>
+
+        <div class="period-summary-stat purple">
+          <small>Tra bảo hành</small>
+          <strong>${fmt(x.warrantyChecks)}</strong>
+        </div>
+      </div>`;
     return;
   }
 
+  /* Các kỳ dài hơn mới dùng dạng tổng hợp theo tháng. */
   const grouped={};
   for(const x of source){
     const month=String(x.date||"").slice(0,7);
@@ -7116,6 +7205,11 @@ function renderSummaryForPeriod(d,period){
   }
 
   const rows=Object.values(grouped).sort((a,b)=>a.month.localeCompare(b.month)).reverse();
+  if(!rows.length){
+    host.innerHTML='<div style="padding:24px;color:#98a2b3;font-size:11px;text-align:center">Chưa có dữ liệu trong kỳ này.</div>';
+    return;
+  }
+
   const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
   host.innerHTML=rows.slice(0,12).map(x=>{
     const pct=Math.max(3,Math.round(Number(x.views||0)/max*100));
@@ -7154,7 +7248,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V352: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V353: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
