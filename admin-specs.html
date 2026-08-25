@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V349 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V350 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -6210,7 +6210,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
       </div>
       <div class="analytics-grid">
           <div class="abox traffic-box"><h2 id="trafficChartTitle">Xu hướng truy cập</h2><div id="trafficChart" class="chart"></div></div>
-          <div class="abox monthly-box"><h2>Tổng hợp theo tháng</h2><div id="monthlyAnalytics" class="monthly-analytics"></div></div>
+          <div class="abox monthly-box"><h2 id="monthlyAnalyticsTitle">Tổng hợp theo kỳ</h2><div id="monthlyAnalytics" class="monthly-analytics"></div></div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
   <div class="device-chart-wrap">
     <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
@@ -7061,6 +7061,60 @@ function renderMonthlyAnalytics(items=[]){
   }).join("");
 }
 
+
+function analyticsDaysForPeriod(d,period){
+  const history=Array.isArray(d?.history)?d.history:[];
+  if(!history.length)return[];
+  const last=history[history.length-1];
+  const today=String(last?.date||"");
+  if(period==="today")return history.slice(-1);
+  if(period==="yesterday")return history.slice(-2,-1);
+  if(period==="days7")return history.slice(-7);
+  if(period==="days30")return history.slice(-30);
+  if(period==="month")return history.filter(x=>String(x.date||"").slice(0,7)===today.slice(0,7));
+  if(period==="year")return history.filter(x=>String(x.date||"").slice(0,4)===today.slice(0,4));
+  return history.slice(-1);
+}
+
+function renderSummaryForPeriod(d,period){
+  const host=document.getElementById("monthlyAnalytics");
+  const title=document.getElementById("monthlyAnalyticsTitle");
+  if(!host)return;
+
+  const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
+  if(title)title.textContent=`Tổng hợp · ${label}`;
+
+  const source=analyticsDaysForPeriod(d,period);
+  const grouped={};
+  for(const x of source){
+    const month=String(x.date||"").slice(0,7);
+    if(!month)continue;
+    if(!grouped[month])grouped[month]={month,views:0,compare:0,zalo:0,warrantyChecks:0};
+    grouped[month].views+=Number(x.views||0);
+    grouped[month].compare+=Number(x.compare||0);
+    grouped[month].zalo+=Number(x.zalo||0);
+    grouped[month].warrantyChecks+=Number(x.warrantyChecks||0);
+  }
+
+  const rows=Object.values(grouped).sort((a,b)=>a.month.localeCompare(b.month)).reverse();
+  if(!rows.length){
+    host.innerHTML='<div style="padding:18px 0;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>';
+    return;
+  }
+
+  const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
+  host.innerHTML=rows.slice(0,12).map(x=>{
+    const pct=Math.max(3,Math.round(Number(x.views||0)/max*100));
+    const month=String(x.month||"").replace(/^(\d{4})-(\d{2})$/,(_,y,m)=>`${m}/${y}`);
+    return `<div class="month-row">
+      <span class="month-label">${month}</span>
+      <div class="month-track"><div class="month-fill" style="width:${pct}%"></div></div>
+      <span class="month-value">${fmt(x.views)}</span>
+      <span class="month-meta">${fmt(x.compare)} so sánh · ${fmt(x.zalo)} Zalo · ${fmt(x.warrantyChecks)} tra BH</span>
+    </div>`;
+  }).join("");
+}
+
 function applyAnalyticsPeriod(d,period=analyticsPeriod){
   currentAnalyticsData=d;
   analyticsPeriod=period;
@@ -7085,6 +7139,17 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mTodayWarrantyChecks").textContent=fmt(p.warrantyChecks); document.getElementById("mWarrantyChecks30").textContent=label;
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
+
+  // V350: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  const ranks=d?.rankingsByPeriod?.[period]||{};
+  renderDeviceDonut(ranks.devices||{});
+  renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
+  renderRank("deviceOsRanks",ranks.topDeviceOs||[]);
+  renderRank("productRanks",ranks.topProducts||[]);
+  renderRank("searchRanks",ranks.topSearches||[]);
+  renderRank("compareProductRanks",ranks.topCompareProducts||[]);
+  renderComparePairs(ranks.topComparePairs||[]);
+  renderSummaryForPeriod(d,period);
   renderTrafficForPeriod(d,period);
 }
 
@@ -7273,18 +7338,9 @@ async function loadAnalytics(){
     const warrantySummary=document.getElementById("warrantyLookupSummary");
     if(warrantySummary) warrantySummary.textContent=`7 ngày: ${fmt(o.warrantyChecks7)} lượt · Tổng: ${fmt(o.warrantyChecksAll)} lượt`;
     const daily=d.daily||[];
-    renderTrafficLineChart(daily);
-    renderMonthlyAnalytics(d.monthly||[]);
     applyAnalyticsPeriod(d,analyticsPeriod);
-    renderDeviceDonut(d.devices||{});
-    renderRank("deviceModelRanks",d.topDeviceModels);
-    renderRank("deviceOsRanks",d.topDeviceOs);
-    renderRank("productRanks",d.topProducts); renderRank("searchRanks",d.topSearches);
-    renderRank("compareProductRanks",d.topCompareProducts);
-    renderComparePairs(d.topComparePairs);
-    
-    
     renderWarrantyRecent(d.warrantyRecent||[]);
+
 
     if(!(d.daily||[]).some(x=>Number(x.views||0)>0) && Number(o.totalViews||0)===0){
       const note=document.createElement("div");
