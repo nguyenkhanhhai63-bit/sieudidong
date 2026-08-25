@@ -5753,6 +5753,31 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v345-remove-admin-bottom-nav">
+/* V345 - Xóa thanh menu nổi dưới cùng trong quản trị */
+.admin-bottom-nav,
+.mobile-bottom-nav,
+.bottom-nav,
+.admin-mobile-tabs,
+.mobile-tabbar,
+.admin-tabbar,
+.bottom-tabbar,
+.floating-admin-nav{
+  display:none!important;
+}
+
+/* Nội dung không cần chừa khoảng trống cho thanh dưới */
+@media(max-width:900px){
+  body,
+  .admin-main,
+  .admin-content,
+  main{
+    padding-bottom:16px!important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -8197,20 +8222,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
-<nav id="mobileAdminNav" class="mobile-admin-nav" aria-label="Điều hướng quản trị mobile">
-  <button type="button" class="mobile-admin-tab active" data-mobile-tab="analytics">
-    <span>▦</span><b>Thống kê</b>
-  </button>
-  <button type="button" class="mobile-admin-tab" data-mobile-tab="specs">
-    <span>⌁</span><b>Thông số</b>
-  </button>
-  <button type="button" class="mobile-admin-tab" data-mobile-tab="ai">
-    <span>✦</span><b>AI</b>
-  </button>
-  <button type="button" class="mobile-admin-tab" data-mobile-tab="seo">
-    <span>⌕</span><b>SEO</b>
-  </button>
-</nav>
+
 
 <div id="usedAdminToast" class="used-admin-toast" role="status" aria-live="polite"></div>
 
@@ -9203,6 +9215,47 @@ document.addEventListener("DOMContentLoaded",function(){
 
   setTimeout(setup,400);
   setTimeout(setup,1200);
+})();
+</script>
+
+
+<script id="v345-remove-admin-bottom-nav-js">
+(function(){
+  const labels=["Thống kê","Thông số","AI","SEO"];
+
+  function removeBar(){
+    const candidates=[...document.querySelectorAll("nav,div,section")];
+    for(const el of candidates){
+      const text=(el.innerText||"").replace(/\s+/g," ").trim();
+      if(!text) continue;
+
+      // Chỉ xóa khối nhỏ chứa đủ 4 tab này, tránh đụng sidebar/menu chính.
+      const hasAll=labels.every(x=>text.includes(x));
+      const r=el.getBoundingClientRect();
+      const cs=getComputedStyle(el);
+
+      if(hasAll && r.height>40 && r.height<130 && (
+          cs.position==="fixed" ||
+          cs.position==="sticky" ||
+          el.className.toString().toLowerCase().includes("bottom") ||
+          el.className.toString().toLowerCase().includes("mobile")
+      )){
+        el.remove();
+        break;
+      }
+    }
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",removeBar,{once:true});
+  }else{
+    removeBar();
+  }
+
+  setTimeout(removeBar,300);
+  setTimeout(removeBar,1000);
+
+  new MutationObserver(removeBar).observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 
