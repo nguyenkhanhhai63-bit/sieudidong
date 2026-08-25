@@ -1,0 +1,7 @@
+V359 - Fix triệt để menu mobile trang Tra cứu bảo hành
+- Lấy nguyên header storefront từ index.html.
+- Đảm bảo có đủ sddMobileMenuBtn + sddMobileDrawer + nút đóng.
+- Nếu drawer không có trong header thì tạo fallback drawer.
+- Dùng onclick trực tiếp + pointerup capture.
+- CSS drawer tự đủ, không phụ thuộc CSS cũ.
+- Bấm nút / X / nền ngoài / link đều hoạt động.
