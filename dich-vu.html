@@ -266,7 +266,7 @@ table{width:100%;border-collapse:collapse} th{background:var(--blue);color:#fff;
 
 
 <style id="v332-service-desktop">
-/* V332 - Tối ưu trang dịch vụ trên desktop */
+/* V333 - Tối ưu trang dịch vụ trên desktop */
 @media(min-width:761px){
   body{
     background:#f4f6f9!important;
@@ -436,6 +436,122 @@ table{width:100%;border-collapse:collapse} th{background:var(--blue);color:#fff;
 @media(min-width:1500px){
   .wrap{
     max-width:1260px!important;
+  }
+}
+</style>
+
+
+<style id="v333-service-header-fix">
+/* V333 - Header trang Dịch vụ đồng bộ kích thước với trang chủ */
+@media(min-width:761px){
+  .topstrip{
+    height:31px!important;
+    min-height:31px!important;
+    font-size:10px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+
+  .header{
+    background:#fff!important;
+    border-bottom:1px solid #e8edf2!important;
+  }
+
+  .head-inner{
+    width:min(1420px,calc(100% - 40px))!important;
+    max-width:1420px!important;
+    min-height:104px!important;
+    margin:0 auto!important;
+    padding:18px 0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:24px!important;
+  }
+
+  .brand{
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+    min-width:255px!important;
+  }
+  .brand img{
+    width:46px!important;
+    height:46px!important;
+    border-radius:12px!important;
+  }
+  .brand strong{
+    font-size:21px!important;
+    line-height:1.05!important;
+    letter-spacing:-.25px!important;
+  }
+  .brand small{
+    margin-top:5px!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+  }
+
+  .back{
+    min-height:40px!important;
+    padding:0 15px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:9px!important;
+    font-size:11px!important;
+  }
+
+  .nav{
+    background:#fff!important;
+    border-bottom:1px solid #e8edf2!important;
+  }
+  .nav-inner{
+    width:min(1420px,calc(100% - 40px))!important;
+    max-width:1420px!important;
+    min-height:52px!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:30px!important;
+  }
+  .nav a{
+    min-height:52px!important;
+    display:flex!important;
+    align-items:center!important;
+    padding:0!important;
+    font-size:12px!important;
+    font-weight:800!important;
+  }
+
+  /* Nội dung Dịch vụ giữ chiều rộng riêng, không làm co header */
+  .wrap{
+    max-width:1220px!important;
+    width:calc(100% - 40px)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+}
+
+/* Desktop rất rộng */
+@media(min-width:1500px){
+  .head-inner,
+  .nav-inner{
+    max-width:1480px!important;
+    width:min(1480px,calc(100% - 56px))!important;
+  }
+}
+
+/* Mobile vẫn giữ bố cục V331 */
+@media(max-width:760px){
+  .head-inner{
+    width:100%!important;
+    max-width:none!important;
+  }
+  .nav-inner{
+    width:100%!important;
+    max-width:none!important;
   }
 }
 </style>

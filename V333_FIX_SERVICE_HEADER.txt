@@ -1,0 +1,5 @@
+V333 - Fix header trang Dịch vụ
+- Header Dịch vụ không còn bị co nhỏ.
+- Tăng chiều cao, logo, chữ thương hiệu và khoảng cách menu giống tỷ lệ trang chủ.
+- Header/nav dùng container rộng riêng, không bị ảnh hưởng bởi max-width 1220px của nội dung bảng dịch vụ.
+- Giữ nguyên bảng giá, phần quản trị và giao diện mobile V331/V332.
