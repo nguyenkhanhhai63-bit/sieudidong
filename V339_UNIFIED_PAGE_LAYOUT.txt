@@ -1,7 +1,0 @@
-V339 - Chuẩn hóa giao diện tất cả trang theo header
-- Hệ lưới chung: page 1280px, content 1180px.
-- Dịch vụ, Trả góp, Tra cứu bảo hành, So sánh cùng khoảng cách từ header và cùng trục.
-- Đồng bộ radius, border, shadow, nền và khoảng cách section.
-- Homepage/chi tiết sản phẩm cũng căn trong trục 1280px.
-- Mobile tự full-width với padding 10px.
-- Không thay đổi API, logic tra cứu, AI, trả góp, dịch vụ hoặc so sánh.
