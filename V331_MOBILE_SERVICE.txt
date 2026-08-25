@@ -1,0 +1,8 @@
+V331 - Tối ưu trang Dịch vụ trên mobile
+- Không còn bảng rộng phải kéo ngang.
+- Mỗi model hiển thị thành card riêng.
+- Tên máy + giá chính ở hàng đầu.
+- Dịch vụ chính và dịch vụ bổ sung hiển thị rõ bên dưới.
+- Giá bổ sung dùng màu xanh để dễ phân biệt.
+- Thu gọn hero, menu, ghi chú và phần liên hệ cho màn hình nhỏ.
+- Không thay đổi dữ liệu hoặc chức năng quản trị bảng giá.

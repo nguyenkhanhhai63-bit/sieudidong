@@ -4,6 +4,7 @@ const handlers = {
   "ai-chat-icon": () => import("../../lib/admin-api/ai-chat-icon.js"),
   "analytics": () => import("../../lib/admin-api/analytics.js"),
   "installment-settings": () => import("../../lib/admin-api/installment-settings.js"),
+  "service-pricing": () => import("../../lib/admin-api/service-pricing.js"),
   "login": () => import("../../lib/admin-api/login.js"),
   "logout": () => import("../../lib/admin-api/logout.js"),
   "seo-settings": () => import("../../lib/admin-api/seo-settings.js"),

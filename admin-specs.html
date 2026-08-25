@@ -5723,6 +5723,36 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v330-service-admin-css">
+.service-admin-shell{padding:20px;display:grid;gap:14px}
+.service-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.service-admin-note{font-size:12px;color:#667085;margin:0}
+.service-groups{display:grid;gap:14px}
+.service-group-card{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.service-group-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#f8fafc;border-bottom:1px solid var(--line)}
+.service-group-name{flex:1;min-width:180px;height:38px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font-weight:900}
+.service-row-head,.service-row{display:grid;grid-template-columns:1.45fr 1.15fr .55fr 1.15fr .55fr 38px;gap:8px;align-items:center;padding:8px 12px}
+.service-row-head{font-size:11px;font-weight:900;color:#667085;background:#fbfcfd;border-bottom:1px solid #edf0f4}
+.service-row{border-bottom:1px solid #edf0f4}
+.service-row:last-child{border-bottom:0}
+.service-input{width:100%;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 9px;background:#fff;font:inherit;font-size:12px}
+.service-remove-row,.service-remove-group{height:36px;border:1px solid #f0c7c7;border-radius:8px;background:#fff;color:#b42318;font-weight:900;cursor:pointer}
+.service-add-row,.service-add-group{height:36px;padding:0 12px;border:1px solid #ffb58c;border-radius:8px;background:#fff;color:#e65300;font-weight:900;cursor:pointer}
+.service-group-foot{padding:10px 12px;background:#fbfcfd}
+.service-admin-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#servicePricingStatus{font-size:12px;font-weight:800}
+.service-note-box{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px}
+.service-note-box textarea{width:100%;min-height:78px;border:1px solid var(--line);border-radius:8px;padding:10px;resize:vertical;font:inherit}
+@media(max-width:900px){
+ .service-admin-shell{padding:12px}
+ .service-row-head{display:none}
+ .service-row{grid-template-columns:1fr 1fr}
+ .service-row .service-machine{grid-column:1/-1}
+ .service-remove-row{grid-column:1/-1}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -5744,6 +5774,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     <button class="admin-tab active" data-tab="analytics" type="button"><span class="nav-icon">▦</span><span>Thống kê</span></button>
     <button class="admin-tab" data-tab="specs" type="button"><span class="nav-icon">⌁</span><span>Link thông số</span></button>
     <button class="admin-tab" data-tab="installment" type="button"><span class="nav-icon">%</span><span>Trả góp</span></button>
+    <button class="admin-tab" data-tab="services" type="button"><span class="nav-icon">⚙</span><span>Dịch vụ</span></button>
     <!-- Routing tabs: dùng để các shortcut AI/SEO kích hoạt đúng panel nhưng không hiển thị lặp trong sidebar -->
     <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
     <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
@@ -6122,6 +6153,33 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
   </section>
 
   
+
+<section id="servicePricingCard" class="card panel" data-panel="services" style="display:none">
+  <div class="head">
+    <div>
+      <h1>Quản lý dịch vụ</h1>
+      <p>Chỉnh sửa bảng giá Unlock bootloader, Unlock SIM, Up ROM quốc tế hiển thị tại trang Dịch vụ.</p>
+    </div>
+    <button id="reloadServicePricing" class="secondary" type="button">Tải lại</button>
+  </div>
+  <div class="service-admin-shell">
+    <div class="service-toolbar">
+      <p class="service-admin-note">Có thể thêm nhóm hãng, thêm/xóa máy và sửa trực tiếp từng mức giá.</p>
+      <button id="addServiceGroup" class="service-add-group" type="button">+ Thêm nhóm hãng</button>
+    </div>
+    <div id="servicePricingGroups" class="service-groups"></div>
+    <div class="service-note-box">
+      <label class="installment-label" for="servicePricingNote">Ghi chú dưới bảng giá</label>
+      <textarea id="servicePricingNote" maxlength="1000"></textarea>
+    </div>
+    <div class="service-admin-actions">
+      <button id="saveServicePricing" class="primary" type="button">Lưu bảng giá dịch vụ</button>
+      <button id="resetServicePricing" class="secondary" type="button">Khôi phục mặc định</button>
+      <span id="servicePricingStatus"></span>
+    </div>
+  </div>
+</section>
+
 <section id="installmentCard" class="card panel" data-panel="installment" style="display:none">
   <div class="head">
     <div>
@@ -7471,6 +7529,7 @@ adminTabs.addEventListener("click",e=>{
   const showAi = tab==="ai";
   const showSeo = tab==="seo";
   const showInstallment = tab==="installment";
+  const showServices = tab==="services";
   const showUsed = tab==="used";
 
   adminCard.classList.toggle("active", showSpecs);
@@ -7478,6 +7537,7 @@ adminTabs.addEventListener("click",e=>{
   aiSettingsCard.classList.toggle("active", showAi);
   seoCard.classList.toggle("active", showSeo);
   installmentCard.classList.toggle("active", showInstallment);
+  servicePricingCard.classList.toggle("active", showServices);
   usedProductsCard.classList.toggle("active", showUsed);
 
   adminCard.style.display = showSpecs ? "" : "none";
@@ -7485,10 +7545,12 @@ adminTabs.addEventListener("click",e=>{
   aiSettingsCard.style.display = showAi ? "" : "none";
   seoCard.style.display = showSeo ? "" : "none";
   installmentCard.style.display = showInstallment ? "" : "none";
+  servicePricingCard.style.display = showServices ? "" : "none";
   usedProductsCard.style.display = showUsed ? "" : "none";
 
   if(showAnalytics){ loadAnalytics(); }
   if(showInstallment){ loadInstallmentSettings(); }
+  if(showServices){ loadServicePricing(); }
   if(showUsed){ loadUsedProducts(); }
   if(showAi){
     (async()=>{
@@ -7707,6 +7769,147 @@ if(refreshSeo) refreshSeo.addEventListener("click",loadSeoStatus);
    V163 - Admin shell interactions
    ========================================================= */
 
+
+/* V330 - Service pricing admin */
+const servicePricingCard=document.getElementById("servicePricingCard");
+const servicePricingGroups=document.getElementById("servicePricingGroups");
+const servicePricingNote=document.getElementById("servicePricingNote");
+const saveServicePricing=document.getElementById("saveServicePricing");
+const reloadServicePricing=document.getElementById("reloadServicePricing");
+const resetServicePricing=document.getElementById("resetServicePricing");
+const addServiceGroup=document.getElementById("addServiceGroup");
+const servicePricingStatus=document.getElementById("servicePricingStatus");
+let servicePricingData=null;
+
+function escService(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function defaultServicePricing(){
+  return {groups:[
+    {id:"xiaomi-redmi",name:"XIAOMI & REDMI",rows:[
+      ["Redmi Turbo 4","Unlock bootloader","250K","Up rom quốc tế","250K"],
+      ["Redmi Turbo 4 Pro","Unlock bootloader","250K","Up rom quốc tế","250K"]
+    ]},
+    {id:"oneplus",name:"ONEPLUS",rows:[
+      ["OnePlus ACE 6","Unlock SIM","300K","","200K"],
+      ["OnePlus ACE 6T","Unlock SIM","300K","Up rom quốc tế","200K"]
+    ]}
+  ],note:"Giá có thể thay đổi tùy tình trạng máy và phiên bản phần mềm."};
+}
+function renderServicePricing(){
+  if(!servicePricingData) servicePricingData=defaultServicePricing();
+  servicePricingNote.value=servicePricingData.note||"";
+  servicePricingGroups.innerHTML=(servicePricingData.groups||[]).map((g,gi)=>`
+    <div class="service-group-card" data-group="${gi}">
+      <div class="service-group-head">
+        <input class="service-group-name" value="${escService(g.name)}" placeholder="Tên nhóm hãng">
+        <button class="service-remove-group" type="button" title="Xóa nhóm">×</button>
+      </div>
+      <div class="service-row-head"><span>Tên máy</span><span>Dịch vụ</span><span>Giá</span><span>Dịch vụ bổ sung</span><span>Giá</span><span></span></div>
+      <div class="service-row-list">
+        ${(g.rows||[]).map((r,ri)=>`
+          <div class="service-row" data-row="${ri}">
+            <input class="service-input service-machine" value="${escService(r[0])}" placeholder="Tên máy">
+            <input class="service-input service-main" value="${escService(r[1])}" placeholder="VD: Unlock SIM">
+            <input class="service-input service-price" value="${escService(r[2])}" placeholder="250K">
+            <input class="service-input service-extra" value="${escService(r[3])}" placeholder="Up rom quốc tế">
+            <input class="service-input service-extra-price" value="${escService(r[4])}" placeholder="250K">
+            <button class="service-remove-row" type="button">×</button>
+          </div>`).join("")}
+      </div>
+      <div class="service-group-foot"><button class="service-add-row" type="button">+ Thêm máy</button></div>
+    </div>`).join("");
+}
+function collectServicePricing(){
+  const groups=[...servicePricingGroups.querySelectorAll(".service-group-card")].map((card,gi)=>({
+    id:servicePricingData?.groups?.[gi]?.id||`group-${gi+1}`,
+    name:card.querySelector(".service-group-name").value.trim(),
+    rows:[...card.querySelectorAll(".service-row")].map(row=>[
+      row.querySelector(".service-machine").value.trim(),
+      row.querySelector(".service-main").value.trim(),
+      row.querySelector(".service-price").value.trim(),
+      row.querySelector(".service-extra").value.trim(),
+      row.querySelector(".service-extra-price").value.trim()
+    ]).filter(r=>r.some(Boolean))
+  }));
+  return {groups,note:servicePricingNote.value.trim()};
+}
+async function loadServicePricing(force=false){
+  if(servicePricingData && !force){renderServicePricing();return}
+  servicePricingStatus.textContent="Đang tải...";
+  try{
+    const r=await fetch("/api/admin/service-pricing",{cache:"no-store",credentials:"same-origin"});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Không tải được");
+    servicePricingData=d.settings||defaultServicePricing();
+    renderServicePricing();
+    servicePricingStatus.textContent="";
+  }catch(e){
+    servicePricingStatus.textContent=e.message||"Không tải được";
+    servicePricingStatus.style.color="#b42318";
+  }
+}
+servicePricingGroups?.addEventListener("click",e=>{
+  const card=e.target.closest(".service-group-card");
+  if(!card)return;
+  const gi=Number(card.dataset.group);
+  if(e.target.closest(".service-add-row")){
+    servicePricingData=collectServicePricing();
+    servicePricingData.groups[gi].rows.push(["","","","",""]);
+    renderServicePricing();return;
+  }
+  const rr=e.target.closest(".service-remove-row");
+  if(rr){
+    const ri=Number(rr.closest(".service-row").dataset.row);
+    servicePricingData=collectServicePricing();
+    servicePricingData.groups[gi].rows.splice(ri,1);
+    renderServicePricing();return;
+  }
+  if(e.target.closest(".service-remove-group")){
+    if(!confirm("Xóa nhóm dịch vụ này?"))return;
+    servicePricingData=collectServicePricing();
+    servicePricingData.groups.splice(gi,1);
+    renderServicePricing();
+  }
+});
+addServiceGroup?.addEventListener("click",()=>{
+  servicePricingData=collectServicePricing();
+  servicePricingData.groups.push({id:`group-${Date.now()}`,name:"NHÓM MỚI",rows:[["","","","",""]]});
+  renderServicePricing();
+});
+saveServicePricing?.addEventListener("click",async()=>{
+  saveServicePricing.disabled=true;servicePricingStatus.textContent="Đang lưu...";
+  try{
+    const payload=collectServicePricing();
+    const r=await fetch("/api/admin/service-pricing",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Không lưu được");
+    servicePricingData=d.settings;
+    renderServicePricing();
+    servicePricingStatus.textContent="✓ Đã lưu bảng giá dịch vụ";
+    servicePricingStatus.style.color="#15803d";
+  }catch(e){
+    servicePricingStatus.textContent=e.message||"Không lưu được";
+    servicePricingStatus.style.color="#b42318";
+  }finally{saveServicePricing.disabled=false}
+});
+reloadServicePricing?.addEventListener("click",()=>loadServicePricing(true));
+resetServicePricing?.addEventListener("click",async()=>{
+  if(!confirm("Khôi phục toàn bộ bảng giá dịch vụ mặc định?"))return;
+  resetServicePricing.disabled=true;
+  try{
+    const r=await fetch("/api/admin/service-pricing",{method:"DELETE",credentials:"same-origin"});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||"Không khôi phục được");
+    servicePricingData=d.settings;
+    renderServicePricing();
+    servicePricingStatus.textContent="✓ Đã khôi phục bảng giá mặc định";
+    servicePricingStatus.style.color="#15803d";
+  }catch(e){
+    servicePricingStatus.textContent=e.message||"Không khôi phục được";
+    servicePricingStatus.style.color="#b42318";
+  }finally{resetServicePricing.disabled=false}
+});
+
+
 /* V223 - Installment settings */
 const installmentCard=document.getElementById("installmentCard");
 const installmentIntro=document.getElementById("installmentIntro");
@@ -7838,7 +8041,8 @@ const ADMIN_PAGE_META={
   specs:["Link thông số","Quản lý nguồn thông số kỹ thuật của sản phẩm"],
   ai:["Đào tạo AI","Điều chỉnh cách AI so sánh và tư vấn khách"],
   seo:["SEO & Google","Quản lý nội dung hiển thị trên Google và công cụ SEO"],
-  installment:["Trả góp","Quản lý HD SAISON, Mirae Asset và nhân viên Zalo tư vấn"]
+  installment:["Trả góp","Quản lý HD SAISON, Mirae Asset và nhân viên Zalo tư vấn"],
+  services:["Dịch vụ","Quản lý bảng giá Unlock SIM, Unlock bootloader và Up ROM"]
 };
 
 function syncAdminShell(tab){

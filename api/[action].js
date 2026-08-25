@@ -4,6 +4,7 @@ const handlers = {
   "analytics": () => import("../lib/public-api/analytics.js"),
   "bestsellers": () => import("../lib/public-api/bestsellers.js"),
   "installment-settings": () => import("../lib/public-api/installment-settings.js"),
+  "service-pricing": () => import("../lib/public-api/service-pricing.js"),
   "compare-ai": () => import("../lib/public-api/compare-ai.js"),
   "products": () => import("../lib/public-api/products.js"),
   "search-popular": () => import("../lib/public-api/search-popular.js"),

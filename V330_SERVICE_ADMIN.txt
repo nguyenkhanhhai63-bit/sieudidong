@@ -1,0 +1,7 @@
+V330 - Quản lý bảng giá Dịch vụ trong Admin
+- Thêm tab Dịch vụ trong /admin.
+- Sửa tên nhóm hãng, tên máy, dịch vụ, giá, dịch vụ bổ sung và giá bổ sung.
+- Thêm/xóa máy và thêm/xóa nhóm hãng.
+- Lưu Redis qua /api/admin/service-pricing.
+- Trang /dich-vu.html đọc dữ liệu động từ /api/service-pricing.
+- Có nút tải lại và khôi phục mặc định.
