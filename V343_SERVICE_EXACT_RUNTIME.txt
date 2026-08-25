@@ -1,6 +1,0 @@
-V343 - Dịch vụ bám đúng vị trí header
-- Không dùng max-width cố định.
-- Đọc getBoundingClientRect() của .sdd-header-nav-inner.
-- Gán trực tiếp left + width thật của header vào main bằng inline !important.
-- Hero, bảng Xiaomi/Redmi, OnePlus, lưu ý và liên hệ dùng 100% main.
-- Chạy lại sau khi bảng giá API render và khi resize.
