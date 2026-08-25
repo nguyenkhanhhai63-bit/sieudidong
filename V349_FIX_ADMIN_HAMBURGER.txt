@@ -1,7 +1,0 @@
-V349 - Fix nút 3 gạch không mở menu
-- Xóa listener sidebarToggle cũ.
-- Clone nút để loại sạch listener legacy.
-- Mobile/tablet <=1100px: mở sidebar bằng inline styles ưu tiên cao.
-- Ép transform=0, visibility=visible, pointer-events=auto và z-index cao.
-- Backdrop click để đóng.
-- Desktop vẫn thu gọn/mở sidebar bình thường.
