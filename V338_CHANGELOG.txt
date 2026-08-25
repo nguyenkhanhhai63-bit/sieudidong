@@ -1,6 +1,0 @@
-V338 - Sửa triệt để header Tra cứu bảo hành
-- Phát hiện file warranty trước đó thực tế không còn HTML header.
-- Chèn nguyên header thật từ / vào tra-cuu-bao-hanh.
-- Active Tra cứu BH.
-- Dùng đúng styles.css storefront.
-- Giữ nguyên toàn bộ nội dung/form/chính sách bảo hành.
