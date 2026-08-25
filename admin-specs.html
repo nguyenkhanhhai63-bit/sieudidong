@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V355 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V356 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -6102,6 +6102,98 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v356-ai-history-more-css">
+.ai-history-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.ai-history-more-btn{
+  height:34px;
+  padding:0 13px;
+  border:1px solid #ffb98f;
+  border-radius:9px;
+  background:#fff8f4;
+  color:#ff5a00;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.ai-history-more-btn:hover{
+  background:#fff0e7;
+}
+.ai-history-more-btn[hidden]{
+  display:none!important;
+}
+
+.ai-question-history{
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+.ai-history-pager{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 14px 13px;
+  border-top:1px solid #eef1f4;
+  background:#fbfcfd;
+}
+
+.ai-history-pager-left{
+  font-size:10px;
+  color:#667085;
+}
+.ai-history-pager-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.ai-history-page-btn{
+  min-width:30px;
+  height:30px;
+  padding:0 8px;
+  border:1px solid #dfe4ea;
+  border-radius:8px;
+  background:#fff;
+  color:#344054;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+.ai-history-page-btn.active{
+  border-color:#ff5a00;
+  background:#ff5a00;
+  color:#fff;
+}
+.ai-history-page-btn:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+.ai-history-row{
+  grid-template-columns:78px 82px minmax(0,1fr)!important;
+}
+
+@media(max-width:700px){
+  .ai-history-head{
+    align-items:flex-start;
+  }
+  .ai-history-pager{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .ai-history-pager-actions{
+    flex-wrap:wrap;
+  }
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -6324,8 +6416,10 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
       <h2>Lịch sử khách hỏi AI chatbox</h2>
       <p id="aiHistoryPeriodLabel">Theo khoảng thời gian đang chọn</p>
     </div>
+    <button id="aiHistoryMoreBtn" class="ai-history-more-btn" type="button">Xem thêm</button>
   </div>
   <div id="aiQuestionHistory" class="ai-question-history"></div>
+  <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
 </div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
   <div class="device-chart-wrap">
@@ -7194,37 +7288,157 @@ function analyticsDaysForPeriod(d,period){
 
 
 
-function renderAiQuestionHistory(items=[],period="today"){
+
+let aiHistoryState={
+  items:[],
+  period:"today",
+  expanded:false,
+  page:1,
+  pageSize:10
+};
+
+function formatAiHistoryTime(ts){
+  const d=ts?new Date(Number(ts)):null;
+  if(!d || Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("vi-VN",{
+    timeZone:"Asia/Ho_Chi_Minh",
+    hour:"2-digit",
+    minute:"2-digit",
+    day:"2-digit",
+    month:"2-digit"
+  });
+}
+
+function escapeAiHistory(v){
+  return String(v??"").replace(/[&<>"]/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    "\"":"&quot;"
+  }[c]));
+}
+
+function renderAiHistoryRows(){
   const host=document.getElementById("aiQuestionHistory");
-  const periodLabel=document.getElementById("aiHistoryPeriodLabel");
-  if(!host)return;
+  const moreBtn=document.getElementById("aiHistoryMoreBtn");
+  const pager=document.getElementById("aiHistoryPager");
+  if(!host) return;
 
-  const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
-  if(periodLabel)periodLabel.textContent=`Câu hỏi khách đã gửi · ${label}`;
+  const items=Array.isArray(aiHistoryState.items)?aiHistoryState.items:[];
+  const compactLimit=5;
 
-  if(!Array.isArray(items)||!items.length){
+  if(!items.length){
     host.innerHTML='<div class="ai-history-empty">Chưa có câu hỏi AI trong khoảng thời gian này.</div>';
+    if(moreBtn) moreBtn.hidden=true;
+    if(pager) pager.hidden=true;
     return;
   }
 
-  const escape=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
-  host.innerHTML=items.slice(0,50).map(x=>{
-    const d=x.ts?new Date(Number(x.ts)):null;
-    const time=d&&!Number.isNaN(d.getTime())
-      ? d.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"})
-      : "—";
+  if(moreBtn){
+    moreBtn.hidden=items.length<=compactLimit;
+    moreBtn.textContent=aiHistoryState.expanded?"Thu gọn":"Xem thêm";
+  }
 
+  let visible=[];
+  if(aiHistoryState.expanded){
+    const start=(aiHistoryState.page-1)*aiHistoryState.pageSize;
+    visible=items.slice(start,start+aiHistoryState.pageSize);
+  }else{
+    visible=items.slice(0,compactLimit);
+  }
+
+  host.innerHTML=visible.map(x=>{
     const visitor=String(x.visitorId||"Khách");
-    const shortVisitor=visitor.length>10 ? visitor.slice(0,4)+"…"+visitor.slice(-4) : visitor;
-    const q=escape(x.question||"");
+    const shortVisitor=visitor.length>10
+      ? visitor.slice(0,4)+"…"+visitor.slice(-4)
+      : visitor;
 
     return `<div class="ai-history-row">
-      <div class="ai-history-time">${time}</div>
-      <div><span class="ai-history-visitor" title="${escape(visitor)}">${escape(shortVisitor)}</span></div>
-      <div class="ai-history-question">${q||"—"}</div>
+      <div class="ai-history-time">${formatAiHistoryTime(x.ts)}</div>
+      <div>
+        <span class="ai-history-visitor" title="${escapeAiHistory(visitor)}">
+          ${escapeAiHistory(shortVisitor)}
+        </span>
+      </div>
+      <div class="ai-history-question">${escapeAiHistory(x.question||"—")}</div>
     </div>`;
   }).join("");
+
+  if(!pager) return;
+
+  if(!aiHistoryState.expanded){
+    pager.hidden=true;
+    pager.innerHTML="";
+    return;
+  }
+
+  const totalPages=Math.max(1,Math.ceil(items.length/aiHistoryState.pageSize));
+  if(aiHistoryState.page>totalPages) aiHistoryState.page=totalPages;
+
+  const pageButtons=[];
+  const current=aiHistoryState.page;
+  const maxButtons=5;
+  let from=Math.max(1,current-2);
+  let to=Math.min(totalPages,from+maxButtons-1);
+  from=Math.max(1,to-maxButtons+1);
+
+  for(let i=from;i<=to;i++){
+    pageButtons.push(
+      `<button class="ai-history-page-btn ${i===current?"active":""}" data-ai-page="${i}" type="button">${i}</button>`
+    );
+  }
+
+  const first=(current-1)*aiHistoryState.pageSize+1;
+  const last=Math.min(items.length,current*aiHistoryState.pageSize);
+
+  pager.hidden=false;
+  pager.innerHTML=`
+    <div class="ai-history-pager-left">Hiển thị ${first} - ${last} trong ${items.length} câu hỏi</div>
+    <div class="ai-history-pager-actions">
+      <button class="ai-history-page-btn" data-ai-page="prev" type="button" ${current<=1?"disabled":""}>‹</button>
+      ${pageButtons.join("")}
+      <button class="ai-history-page-btn" data-ai-page="next" type="button" ${current>=totalPages?"disabled":""}>›</button>
+    </div>`;
 }
+
+function renderAiQuestionHistory(items=[],period="today"){
+  const periodLabel=document.getElementById("aiHistoryPeriodLabel");
+
+  aiHistoryState.items=Array.isArray(items)?items:[];
+  aiHistoryState.period=period;
+  aiHistoryState.page=1;
+  aiHistoryState.expanded=false;
+
+  const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
+  if(periodLabel) periodLabel.textContent=`Câu hỏi khách đã gửi · ${label}`;
+
+  renderAiHistoryRows();
+}
+
+document.getElementById("aiHistoryMoreBtn")?.addEventListener("click",()=>{
+  aiHistoryState.expanded=!aiHistoryState.expanded;
+  aiHistoryState.page=1;
+  renderAiHistoryRows();
+});
+
+document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-ai-page]");
+  if(!btn) return;
+
+  const value=btn.dataset.aiPage;
+  const totalPages=Math.max(1,Math.ceil(aiHistoryState.items.length/aiHistoryState.pageSize));
+
+  if(value==="prev"){
+    aiHistoryState.page=Math.max(1,aiHistoryState.page-1);
+  }else if(value==="next"){
+    aiHistoryState.page=Math.min(totalPages,aiHistoryState.page+1);
+  }else{
+    const page=Number(value);
+    if(Number.isFinite(page)) aiHistoryState.page=Math.min(totalPages,Math.max(1,page));
+  }
+
+  renderAiHistoryRows();
+});
 
 function applyAnalyticsPeriod(d,period=analyticsPeriod){
   currentAnalyticsData=d;
@@ -7251,7 +7465,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V355: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V356: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
@@ -7605,7 +7819,7 @@ async function loadAnalytics(){
     loading.classList.add("hidden");
     content.classList.remove("hidden");
 
-    // V355: Hôm nay hiển thị trước; sau đó tải ngầm các kỳ còn lại vào cache.
+    // V356: Hôm nay hiển thị trước; sau đó tải ngầm các kỳ còn lại vào cache.
     scheduleAnalyticsBackgroundPrefetch();
   }catch(e){
     console.error("Analytics admin:", e);

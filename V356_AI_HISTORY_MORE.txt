@@ -1,0 +1,10 @@
+V356 - Xem thêm lịch sử khách hỏi AI
+
+- Mặc định chỉ hiện 5 câu hỏi gần nhất.
+- Có nút Xem thêm ở góc phải.
+- Bấm Xem thêm mở danh sách phân trang.
+- Mỗi trang 10 câu hỏi.
+- Có nút Trang trước / Trang sau và số trang.
+- Hiển thị tổng số câu hỏi trong kỳ.
+- Bấm Thu gọn quay lại 5 câu gần nhất.
+- Khi đổi Hôm nay / Hôm qua / 7 ngày / 30 ngày / Tháng / Năm, danh sách tự reset về trạng thái thu gọn.
