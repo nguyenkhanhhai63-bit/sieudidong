@@ -9,78 +9,65 @@
 
     if(!btn || !drawer) return;
 
+    // hidden làm drawer xuất hiện tức thì, bỏ hoàn toàn để animation chạy.
+    drawer.removeAttribute("hidden");
+
     function openMenu(){
-      drawer.hidden = false;
-      drawer.removeAttribute("hidden");
       drawer.setAttribute("aria-hidden","false");
       btn.setAttribute("aria-expanded","true");
 
-      drawer.style.setProperty("display","block","important");
-      drawer.style.setProperty("visibility","visible","important");
-      drawer.style.setProperty("opacity","1","important");
-      drawer.style.setProperty("pointer-events","auto","important");
+      // đảm bảo browser ghi nhận trạng thái đóng trước khi mở
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          drawer.classList.add("is-open");
+        });
+      });
 
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow="hidden";
+      document.body.style.overflow="hidden";
     }
 
     function closeMenu(){
-      drawer.hidden = true;
-      drawer.setAttribute("hidden","");
+      drawer.classList.remove("is-open");
       drawer.setAttribute("aria-hidden","true");
       btn.setAttribute("aria-expanded","false");
-
-      drawer.style.removeProperty("display");
-      drawer.style.removeProperty("visibility");
-      drawer.style.removeProperty("opacity");
-      drawer.style.removeProperty("pointer-events");
-
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
+      document.documentElement.style.overflow="";
+      document.body.style.overflow="";
     }
 
-    // Capture phase để thắng các listener khác nếu có.
-    btn.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
+    function toggleMenu(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if(drawer.classList.contains("is-open")) closeMenu();
+      else openMenu();
+    }
 
-      if(drawer.hasAttribute("hidden")) openMenu();
-      else closeMenu();
-    }, true);
-
-    btn.addEventListener("touchend", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-
-      if(drawer.hasAttribute("hidden")) openMenu();
-      else closeMenu();
-    }, {capture:true, passive:false});
+    btn.onclick = toggleMenu;
 
     if(closeBtn){
-      closeBtn.addEventListener("click", function(e){
+      closeBtn.onclick = function(e){
         e.preventDefault();
         e.stopPropagation();
         closeMenu();
-      }, true);
+      };
     }
 
-    drawer.addEventListener("click", function(e){
-      if(e.target === drawer) closeMenu();
-    }, true);
+    drawer.addEventListener("click",function(e){
+      if(e.target===drawer) closeMenu();
+    });
 
     drawer.querySelectorAll("a").forEach(function(a){
-      a.addEventListener("click", function(){
-        setTimeout(closeMenu, 20);
-      });
+      a.addEventListener("click",closeMenu);
     });
 
     closeMenu();
   }
 
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", initWarrantyMobileMenu, {once:true});
-  } else {
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",initWarrantyMobileMenu,{once:true});
+  }else{
     initWarrantyMobileMenu();
   }
 })();
