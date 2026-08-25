@@ -264,6 +264,182 @@ table{width:100%;border-collapse:collapse} th{background:var(--blue);color:#fff;
 }
 </style>
 
+
+<style id="v332-service-desktop">
+/* V332 - Tối ưu trang dịch vụ trên desktop */
+@media(min-width:761px){
+  body{
+    background:#f4f6f9!important;
+  }
+
+  .wrap{
+    max-width:1220px!important;
+    margin:24px auto 48px!important;
+    padding:0 20px!important;
+  }
+
+  /* Hero cân hơn, bớt chiếm chiều cao */
+  .hero{
+    grid-template-columns:82px minmax(0,1fr) auto!important;
+    gap:22px!important;
+    padding:22px 26px!important;
+    border-radius:18px!important;
+    box-shadow:0 10px 30px rgba(15,23,42,.045)!important;
+  }
+  .hero-logo{
+    width:76px!important;
+    height:76px!important;
+    border-radius:18px!important;
+  }
+  .hero h1{
+    font-size:27px!important;
+    line-height:1.12!important;
+    letter-spacing:-.4px!important;
+  }
+  .hero h1 span{
+    font-size:24px!important;
+    margin-top:4px!important;
+  }
+  .hero p{
+    font-size:11.5px!important;
+    margin-top:8px!important;
+  }
+  .hero-badges{
+    display:grid!important;
+    grid-template-columns:repeat(3,auto)!important;
+    gap:8px!important;
+  }
+  .badge{
+    padding:9px 11px!important;
+    border-radius:10px!important;
+    font-size:10px!important;
+  }
+
+  /* Hai bảng hãng */
+  .service-card{
+    margin-top:16px!important;
+    border-radius:16px!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.025)!important;
+    overflow:hidden!important;
+  }
+
+  .section-title{
+    min-height:42px!important;
+    display:flex!important;
+    align-items:center!important;
+    padding:0 16px!important;
+    font-size:15px!important;
+    letter-spacing:.15px!important;
+  }
+  .section-title:after{
+    width:100px!important;
+  }
+
+  /* Table compact + dễ quét */
+  .service-card table{
+    table-layout:fixed!important;
+    width:100%!important;
+  }
+  .service-card th{
+    height:38px!important;
+    padding:0 14px!important;
+    font-size:11px!important;
+    font-weight:900!important;
+    vertical-align:middle!important;
+  }
+  .service-card td{
+    height:39px!important;
+    padding:0 14px!important;
+    font-size:10.5px!important;
+    vertical-align:middle!important;
+    color:#344054!important;
+  }
+  .service-card td:first-child{
+    font-size:11px!important;
+    font-weight:900!important;
+    color:#101828!important;
+  }
+
+  /* Cột cân đối */
+  .service-card th:nth-child(1),
+  .service-card td:nth-child(1){width:29%!important}
+  .service-card th:nth-child(2),
+  .service-card td:nth-child(2){width:21%!important}
+  .service-card th:nth-child(3),
+  .service-card td:nth-child(3){width:12%!important;text-align:center!important}
+  .service-card th:nth-child(4),
+  .service-card td:nth-child(4){width:24%!important}
+  .service-card th:nth-child(5),
+  .service-card td:nth-child(5){width:14%!important;text-align:center!important}
+
+  /* Giá nổi bật */
+  .service-card td:nth-child(3){
+    color:#ff5a00!important;
+    font-weight:900!important;
+    font-size:11px!important;
+  }
+  .service-card td:nth-child(5){
+    color:#0877c9!important;
+    font-weight:900!important;
+    font-size:11px!important;
+  }
+
+  /* Zebra rất nhẹ để đọc dòng nhanh hơn */
+  .service-card tbody tr:nth-child(even){
+    background:#fbfcfd!important;
+  }
+  .service-card tbody tr:hover{
+    background:#fff7f2!important;
+  }
+
+  /* OnePlus không cần quá nhiều khoảng trống */
+  .service-card + .service-card{
+    margin-top:16px!important;
+  }
+
+  /* Ghi chú cảnh báo */
+  .price-note{
+    margin-top:16px!important;
+    padding:12px 14px!important;
+    border-radius:12px!important;
+    font-size:10.5px!important;
+    line-height:1.55!important;
+  }
+
+  /* Lưu ý / liên hệ cân 2 cột */
+  .note-grid{
+    grid-template-columns:minmax(0,1.65fr) minmax(300px,.75fr)!important;
+    gap:14px!important;
+    margin-top:16px!important;
+  }
+  .note,.contact{
+    min-height:140px!important;
+    padding:18px!important;
+    border-radius:14px!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.02)!important;
+  }
+  .note h3,.contact h3{
+    font-size:15px!important;
+    margin-bottom:8px!important;
+  }
+  .note ul{
+    font-size:10.5px!important;
+    line-height:1.65!important;
+  }
+  .contact p{
+    font-size:10.5px!important;
+    line-height:1.6!important;
+  }
+}
+
+/* Màn hình desktop lớn: vẫn giới hạn chiều rộng để không bị loãng */
+@media(min-width:1500px){
+  .wrap{
+    max-width:1260px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="topstrip">Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</div>
