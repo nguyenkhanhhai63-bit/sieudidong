@@ -1,8 +1,0 @@
-V341 - Căn Dịch vụ, Trả góp và Tra cứu bảo hành theo header
-- Ba trang lấy đúng width thực tế của .sdd-header-nav-inner.
-- Không dùng width cố định 1180/1280 cho trục chính nữa.
-- Dịch vụ: hero, bảng giá, lưu ý, liên hệ cùng trục header.
-- Trả góp: toàn bộ tg-shell cùng trục header.
-- Tra cứu bảo hành: toàn bộ warranty card cùng trục header.
-- Mobile giữ full-width responsive.
-- Không thay đổi API hoặc logic chức năng.
