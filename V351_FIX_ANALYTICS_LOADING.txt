@@ -1,0 +1,9 @@
+V351 - Fix dashboard đứng ở Đang tải thống kê
+Nguyên nhân V350: mỗi request tính ranking chi tiết cho cả 6 kỳ và đọc thiết bị theo từng ngày bằng hàng trăm/hàng nghìn lệnh Redis.
+
+Sửa:
+- Mở dashboard chỉ tính kỳ đang chọn (mặc định Hôm nay).
+- Bấm kỳ khác mới tải ranking của kỳ đó.
+- Ranking đã tải được cache trong trình duyệt để bấm lại tức thì.
+- Device stats được gom bằng 1 Lua Redis round-trip thay vì 3 x số ngày.
+- Giữ lọc đồng bộ toàn bộ module theo Hôm nay/Hôm qua/7 ngày/30 ngày/Tháng/Năm.

@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V350 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V351 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -7140,7 +7140,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V350: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V351: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
@@ -7153,6 +7153,48 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   renderTrafficForPeriod(d,period);
 }
 
+
+
+async function loadAnalyticsPeriod(period){
+  if(!period)period="today";
+
+  // Nếu kỳ này đã có ranking trong bộ nhớ thì đổi ngay, không gọi server lại.
+  if(currentAnalyticsData?.rankingsByPeriod?.[period]){
+    applyAnalyticsPeriod(currentAnalyticsData,period);
+    return;
+  }
+
+  const btn=document.querySelector(`.period-tab[data-period="${period}"]`);
+  const oldText=btn?.textContent;
+  if(btn){btn.disabled=true;btn.textContent="Đang tải...";}
+
+  try{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),15000);
+    let r;
+    try{
+      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v351&period="+encodeURIComponent(period),{
+        cache:"no-store",
+        credentials:"same-origin",
+        signal:controller.signal
+      });
+    }finally{clearTimeout(timer)}
+
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||"Không tải được thống kê");
+
+    // Giữ cache ranking các kỳ đã xem để bấm qua lại tức thì.
+    const cached=currentAnalyticsData?.rankingsByPeriod||{};
+    d.rankingsByPeriod={...cached,...(d.rankingsByPeriod||{})};
+    currentAnalyticsData=d;
+    applyAnalyticsPeriod(d,period);
+  }catch(e){
+    console.error("Analytics period:",e);
+    try{showToast(e?.name==="AbortError"?"Kỳ thống kê tải quá lâu. Hãy thử lại.":(e.message||"Không tải được kỳ thống kê"),"error")}catch(_){}
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=oldText||ANALYTICS_PERIOD_LABELS[period]||"Xem";}
+  }
+}
 
 function renderTrafficLineChart(rows=[]){
   const host=document.getElementById("trafficChart");
@@ -7308,7 +7350,7 @@ async function loadAnalytics(){
     const timeout=setTimeout(()=>controller.abort(),15000);
     let r;
     try{
-      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v278-fixed",{
+      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v351&period="+encodeURIComponent(analyticsPeriod),{
         cache:"no-store",
         credentials:"same-origin",
         signal:controller.signal
@@ -7879,7 +7921,7 @@ refreshAnalytics.addEventListener("click",loadAnalytics);
 document.getElementById("analyticsPeriodTabs")?.addEventListener("click",e=>{
   const btn=e.target.closest(".period-tab");
   if(!btn) return;
-  applyAnalyticsPeriod(currentAnalyticsData||{},btn.dataset.period||"today");
+  loadAnalyticsPeriod(btn.dataset.period||"today");
 });
 
 
