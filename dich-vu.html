@@ -632,6 +632,61 @@ body > main p{
 }
 </style>
 
+
+<style id="v341-runtime-header-alignment">
+/* V341 - Các trang độc lập bám đúng trục header thực tế */
+.v341-header-axis{
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* Bỏ các width cố định cũ của V339 ở 3 trang này */
+main.wrap.v341-header-axis,
+main.tg-wrap.v341-header-axis,
+main.warranty-page-main.v341-header-axis{
+  max-width:none!important;
+}
+
+main.wrap.v341-header-axis > .hero,
+main.wrap.v341-header-axis > #servicePricingMount,
+main.wrap.v341-header-axis > .price-note,
+main.wrap.v341-header-axis > .note-grid,
+main.tg-wrap.v341-header-axis > .tg-shell,
+main.warranty-page-main.v341-header-axis > .warranty-page-card{
+  max-width:none!important;
+  width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Nội dung vẫn gọn nhưng không được lệch trục */
+@media(min-width:900px){
+  main.wrap.v341-header-axis,
+  main.tg-wrap.v341-header-axis,
+  main.warranty-page-main.v341-header-axis{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+}
+
+/* Mobile: full width như storefront */
+@media(max-width:899px){
+  main.wrap.v341-header-axis,
+  main.tg-wrap.v341-header-axis,
+  main.warranty-page-main.v341-header-axis{
+    width:100%!important;
+    max-width:none!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="commerce-header sdd-header-v164">
@@ -835,6 +890,56 @@ body > main p{
   document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
   document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
   document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+})();
+</script>
+
+
+<script id="v341-runtime-header-alignment-js">
+(function(){
+  function getHeaderAxis(){
+    return document.querySelector(".sdd-header-nav-inner")
+      || document.querySelector(".commerce-header-inner.sdd-header-main")
+      || document.querySelector(".sdd-top-strip-inner");
+  }
+
+  function align(){
+    const axis=getHeaderAxis();
+    const main=document.querySelector("main.wrap");
+    if(!axis || !main) return;
+
+    if(window.innerWidth>=900){
+      const r=axis.getBoundingClientRect();
+      if(r.width>0){
+        main.style.width=r.width+"px";
+        main.style.maxWidth=r.width+"px";
+        main.style.marginLeft="auto";
+        main.style.marginRight="auto";
+        main.classList.add("v341-header-axis");
+      }
+    }else{
+      main.style.width="";
+      main.style.maxWidth="";
+      main.style.marginLeft="";
+      main.style.marginRight="";
+      main.classList.add("v341-header-axis");
+    }
+  }
+
+  let timer=0;
+  function schedule(){
+    clearTimeout(timer);
+    timer=setTimeout(align,50);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+  setTimeout(align,300);
+  setTimeout(align,900);
 })();
 </script>
 
