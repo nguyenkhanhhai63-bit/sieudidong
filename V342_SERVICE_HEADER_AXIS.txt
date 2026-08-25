@@ -1,6 +1,0 @@
-V342 - Fix riêng trang Dịch vụ
-- Main Dịch vụ dùng chính xác width storefront header: min(1360px, 100%-32px).
-- Bỏ runtime V341 trên Dịch vụ.
-- Hero, bảng giá Xiaomi/Redmi, OnePlus, lưu ý và liên hệ full 100% theo cùng trục.
-- Override đặt cuối file để thắng các max-width 1180/1220/1280 cũ.
-- Mobile giữ layout card V331.
