@@ -1,5 +1,0 @@
-V345
-- Xóa thanh menu nổi dưới cùng trong trang quản trị.
-- Thanh gồm: Thống kê / Thông số / AI / SEO.
-- Không ảnh hưởng menu quản trị chính.
-- Bỏ phần padding-bottom dư trên mobile.
