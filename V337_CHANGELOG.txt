@@ -1,6 +1,0 @@
-V337 - Đồng bộ Tra cứu bảo hành với storefront
-- Gỡ CSS khóa V336.
-- Reset các rule body/main/wrapper gây co giữa.
-- Header dùng container 1280px giống storefront.
-- Nội dung warranty mở rộng tối đa 1120px nhưng cùng tâm với header.
-- Xóa header/nav legacy còn sót nếu có.
