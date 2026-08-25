@@ -633,144 +633,46 @@ body > main p{
 </style>
 
 
-<style id="v341-runtime-header-alignment">
-/* V342 - Các trang độc lập bám đúng trục header thực tế */
-.v341-header-axis{
-  max-width:none!important;
-  box-sizing:border-box!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
 
-/* Bỏ các width cố định cũ của V339 ở 3 trang này */
-main.wrap.v341-header-axis,
-main.tg-wrap.v341-header-axis,
-main.warranty-page-main.v341-header-axis{
-  max-width:none!important;
-}
-
-main.wrap.v341-header-axis > .hero,
-main.wrap.v341-header-axis > #servicePricingMount,
-main.wrap.v341-header-axis > .price-note,
-main.wrap.v341-header-axis > .note-grid,
-main.tg-wrap.v341-header-axis > .tg-shell,
-main.warranty-page-main.v341-header-axis > .warranty-page-card{
-  max-width:none!important;
-  width:100%!important;
-  margin-left:0!important;
-  margin-right:0!important;
-  box-sizing:border-box!important;
-}
-
-/* Nội dung vẫn gọn nhưng không được lệch trục */
+<style id="v343-service-exact-runtime-css">
+/* V343: JS sets exact left + width from real header nav rect */
 @media(min-width:900px){
-  main.wrap.v341-header-axis,
-  main.tg-wrap.v341-header-axis,
-  main.warranty-page-main.v341-header-axis{
+  body > main.wrap.v343-exact-axis{
+    box-sizing:border-box!important;
+    max-width:none!important;
     padding-left:0!important;
     padding-right:0!important;
-  }
-}
-
-/* Mobile: full width như storefront */
-@media(max-width:899px){
-  main.wrap.v341-header-axis,
-  main.tg-wrap.v341-header-axis,
-  main.warranty-page-main.v341-header-axis{
-    width:100%!important;
-    max-width:none!important;
-    padding-left:10px!important;
-    padding-right:10px!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
-  }
-}
-</style>
-
-
-<style id="v342-service-exact-header-axis">
-/* =========================================================
-   V342 - Trang Dịch vụ bám đúng trục header storefront
-   Header dùng: width:min(1360px,calc(100% - 32px))
-   ========================================================= */
-@media(min-width:900px){
-  body > main.wrap{
-    width:min(1360px,calc(100% - 32px))!important;
-    max-width:1360px!important;
-    margin:18px auto 44px!important;
-    padding:0!important;
     transform:none!important;
-    left:auto!important;
-    right:auto!important;
-    box-sizing:border-box!important;
   }
 
-  /* Gỡ toàn bộ khung 1180/1220 cũ bên trong */
-  body > main.wrap > .hero,
-  body > main.wrap > #servicePricingMount,
-  body > main.wrap > .price-note,
-  body > main.wrap > .note-grid{
+  body > main.wrap.v343-exact-axis > .hero,
+  body > main.wrap.v343-exact-axis > #servicePricingMount,
+  body > main.wrap.v343-exact-axis > .price-note,
+  body > main.wrap.v343-exact-axis > .note-grid{
+    box-sizing:border-box!important;
     width:100%!important;
     max-width:none!important;
-    min-width:0!important;
     margin-left:0!important;
     margin-right:0!important;
-    box-sizing:border-box!important;
   }
 
-  /* Các bảng render động cũng phải full theo trục header */
-  body > main.wrap #servicePricingMount{
-    display:block!important;
-  }
-
-  body > main.wrap #servicePricingMount > .service-card,
-  body > main.wrap .service-card{
+  body > main.wrap.v343-exact-axis #servicePricingMount > .service-card,
+  body > main.wrap.v343-exact-axis .service-card,
+  body > main.wrap.v343-exact-axis .service-card table{
     width:100%!important;
     max-width:none!important;
     margin-left:0!important;
     margin-right:0!important;
     box-sizing:border-box!important;
   }
-
-  body > main.wrap .service-card table{
-    width:100%!important;
-    max-width:none!important;
-  }
-
-  /* Hero không còn co 1180px */
-  body > main.wrap > .hero{
-    grid-template-columns:82px minmax(0,1fr) auto!important;
-  }
-
-  /* Lưu ý/liên hệ dùng hết bề ngang rồi tự chia cột */
-  body > main.wrap > .note-grid{
-    grid-template-columns:minmax(0,1.65fr) minmax(300px,.75fr)!important;
-  }
 }
 
-/* Laptop nhỏ */
-@media(min-width:900px) and (max-width:1199px){
-  body > main.wrap{
-    width:calc(100% - 28px)!important;
-    max-width:none!important;
-  }
-}
-
-/* Mobile giữ layout card V331 */
 @media(max-width:899px){
-  body > main.wrap{
+  body > main.wrap.v343-exact-axis{
     width:100%!important;
     max-width:none!important;
-    margin:10px auto 28px!important;
+    margin:10px 0 28px!important;
     padding:0 10px!important;
-  }
-
-  body > main.wrap > .hero,
-  body > main.wrap > #servicePricingMount,
-  body > main.wrap > .price-note,
-  body > main.wrap > .note-grid{
-    width:100%!important;
-    max-width:none!important;
   }
 }
 </style>
@@ -981,6 +883,91 @@ main.warranty-page-main.v341-header-axis > .warranty-page-card{
 })();
 </script>
 
+
+
+<script id="v343-service-exact-runtime-js">
+(function(){
+  function setImp(el,prop,val){
+    if(el) el.style.setProperty(prop,val,"important");
+  }
+
+  function alignService(){
+    const main=document.querySelector("body > main.wrap");
+    if(!main) return;
+
+    main.classList.add("v343-exact-axis");
+
+    if(window.innerWidth < 900){
+      ["width","max-width","margin-left","margin-right"].forEach(p=>main.style.removeProperty(p));
+      return;
+    }
+
+    // Use the same horizontal axis as the real desktop nav/header.
+    const axis =
+      document.querySelector(".sdd-header-nav-inner") ||
+      document.querySelector(".commerce-header-inner.sdd-header-main");
+
+    if(!axis) return;
+
+    const r=axis.getBoundingClientRect();
+    if(!r.width) return;
+
+    // Exact viewport coordinates — no guessed max-width or auto-centering.
+    setImp(main,"width",r.width+"px");
+    setImp(main,"max-width",r.width+"px");
+    setImp(main,"margin-left",r.left+"px");
+    setImp(main,"margin-right","0px");
+    setImp(main,"padding-left","0px");
+    setImp(main,"padding-right","0px");
+
+    const blocks=[
+      main.querySelector(":scope > .hero"),
+      main.querySelector(":scope > #servicePricingMount"),
+      main.querySelector(":scope > .price-note"),
+      main.querySelector(":scope > .note-grid")
+    ].filter(Boolean);
+
+    blocks.forEach(el=>{
+      setImp(el,"width","100%");
+      setImp(el,"max-width","none");
+      setImp(el,"margin-left","0px");
+      setImp(el,"margin-right","0px");
+    });
+
+    // Dynamic service cards are rendered after API load.
+    main.querySelectorAll(".service-card").forEach(el=>{
+      setImp(el,"width","100%");
+      setImp(el,"max-width","none");
+      setImp(el,"margin-left","0px");
+      setImp(el,"margin-right","0px");
+    });
+  }
+
+  let timer=0;
+  function schedule(){
+    clearTimeout(timer);
+    timer=setTimeout(alignService,40);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+  }else{
+    schedule();
+  }
+
+  window.addEventListener("resize",schedule);
+
+  // service table is rendered asynchronously from API
+  const mount=document.getElementById("servicePricingMount");
+  if(mount){
+    new MutationObserver(schedule).observe(mount,{childList:true,subtree:true});
+  }
+
+  setTimeout(alignService,150);
+  setTimeout(alignService,500);
+  setTimeout(alignService,1200);
+})();
+</script>
 
 </body>
 </html>
