@@ -9,384 +9,49 @@
 
 
 
-<style id="v337-warranty-storefront-layout">
-/* Header tuyệt đối theo storefront, không bị CSS trang bảo hành tác động */
-body{
-  margin:0!important;
-  padding:0!important;
-}
 
-body > .commerce-header.sdd-header-v164{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  border-radius:0!important;
-  background:#fff!important;
-  box-shadow:none!important;
-  position:relative!important;
-  inset:auto!important;
-  transform:none!important;
-}
-
-/* Các container header giữ đúng kích thước storefront */
-body > .commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-body > .commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-body > .commerce-header.sdd-header-v164 .sdd-header-nav-inner{
-  width:min(1280px,calc(100% - 32px))!important;
-  max-width:1280px!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-  padding-left:0!important;
-  padding-right:0!important;
-}
-
-/* Không cho CSS generic của trang warranty áp vào header */
-body > .commerce-header.sdd-header-v164 header,
-body > .commerce-header.sdd-header-v164 nav,
-body > .commerce-header.sdd-header-v164 div{
-  max-width:none;
-}
-
-/* Nội dung warranty dùng đúng trục storefront thay vì card 960px co giữa */
-body > main,
-body > .warranty-page,
-body > .warranty-shell{
-  width:min(1280px,calc(100% - 32px))!important;
-  max-width:1280px!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
-
-/* Card nội dung bên trong có thể gọn hơn nhưng phải cùng tâm */
-body > main > .wrap,
-body > main > .container,
-body > main > .warranty-wrap,
-body > .warranty-page > .wrap,
-body > .warranty-shell > .wrap{
-  width:100%!important;
-  max-width:none!important;
-  margin-left:0!important;
-  margin-right:0!important;
-}
-
-/* Nếu trang có wrapper trực tiếp vốn max-width ~960/1000, mở rộng vừa phải */
-.warranty-card,
-.warranty-container,
-.lookup-shell,
-.lookup-page,
-.lookup-card{
-  max-width:none!important;
-}
-
-/* Desktop: card chính 1120px, cùng tâm với header, không quá bé */
+<style id="v344-warranty-exact-header-axis">
+/* V344 - Tra cứu bảo hành bám đúng trục header thực tế */
 @media(min-width:900px){
-  main .warranty-container,
-  main .warranty-card,
-  main .lookup-shell,
-  main .lookup-page,
-  main > .wrap,
-  body > .warranty-page,
-  body > .warranty-shell{
-    width:min(1120px,100%)!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
+  body > main.warranty-page-main.v344-exact-axis{
+    box-sizing:border-box!important;
+    max-width:none!important;
+    padding-left:0!important;
+    padding-right:0!important;
+    transform:none!important;
+  }
+
+  body > main.warranty-page-main.v344-exact-axis > .warranty-page-card{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Các khối con trải đúng bề ngang card, không co thêm một lớp nữa */
+  .warranty-page-card .warranty-policy-box,
+  .warranty-page-card .warranty-process,
+  .warranty-page-card .warranty-before,
+  .warranty-page-card .warranty-support,
+  .warranty-page-card .warranty-result{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
   }
 }
 
-/* Mobile */
 @media(max-width:899px){
-  body > .commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-  body > .commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-  body > .commerce-header.sdd-header-v164 .sdd-header-nav-inner{
+  body > main.warranty-page-main.v344-exact-axis{
     width:100%!important;
     max-width:none!important;
-  }
-  body > main,
-  body > .warranty-page,
-  body > .warranty-shell{
-    width:100%!important;
-    max-width:none!important;
-    padding-left:10px!important;
-    padding-right:10px!important;
-  }
-}
-</style>
-
-
-<style id="v338-warranty-real-header">
-/* Header này là nguyên storefront, không cho CSS warranty thay đổi */
-.warranty-page-body > .commerce-header.sdd-header-v164{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-  padding:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  position:relative!important;
-  inset:auto!important;
-  transform:none!important;
-}
-
-.warranty-page-body > .commerce-header.sdd-header-v164 .sdd-top-strip,
-.warranty-page-body > .commerce-header.sdd-header-v164 .sdd-header-nav{
-  width:100%!important;
-  max-width:none!important;
-}
-
-.warranty-page-body > .commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-.warranty-page-body > .commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-.warranty-page-body > .commerce-header.sdd-header-v164 .sdd-header-nav-inner{
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
-
-/* Nội dung bảo hành độc lập phía dưới */
-.warranty-page-body > .warranty-page-main{
-  margin-top:0!important;
-}
-</style>
-
-
-<style id="v339-unified-page-system">
-:root{
-  --sdd-page-width:1280px;
-  --sdd-content-width:1180px;
-  --sdd-page-gap:18px;
-  --sdd-card-radius:18px;
-  --sdd-card-border:#e6eaf0;
-  --sdd-card-shadow:0 10px 28px rgba(15,23,42,.045);
-  --sdd-page-bg:#f4f6f9;
-  --sdd-orange:#ff5a00;
-  --sdd-text:#101828;
-  --sdd-muted:#667085;
-}
-
-/* Nền và khoảng cách chung dưới header */
-body{
-  background:var(--sdd-page-bg)!important;
-}
-body > main{
-  width:min(var(--sdd-page-width),calc(100% - 32px))!important;
-  max-width:var(--sdd-page-width)!important;
-  margin:18px auto 42px!important;
-  padding-left:0!important;
-  padding-right:0!important;
-  box-sizing:border-box!important;
-}
-
-/* Mỗi trang có một khung nội dung chính cân theo header */
-body > main > .tg-shell,
-body > main > .warranty-page-card,
-body > main > .compare-page-title,
-body > main > .compare-page-ai,
-body > main > .compare-page-grid,
-body > main > .hero,
-body > main > #servicePricingMount,
-body > main > .price-note,
-body > main > .note-grid{
-  width:min(var(--sdd-content-width),100%)!important;
-  max-width:var(--sdd-content-width)!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-  box-sizing:border-box!important;
-}
-
-/* Card style chung */
-body > main > .tg-shell,
-body > main > .warranty-page-card,
-body > main > .compare-page-ai,
-body > main > .hero{
-  border:1px solid var(--sdd-card-border)!important;
-  border-radius:var(--sdd-card-radius)!important;
-  box-shadow:var(--sdd-card-shadow)!important;
-  background:#fff!important;
-}
-
-/* Tiêu đề trang */
-body > main h1{
-  color:var(--sdd-text)!important;
-  letter-spacing:-.35px!important;
-}
-body > main p{
-  color:var(--sdd-muted);
-}
-
-/* Dịch vụ */
-.wrap{
-  max-width:var(--sdd-page-width)!important;
-}
-.wrap .hero{
-  margin-top:0!important;
-}
-.wrap .service-card{
-  border-radius:16px!important;
-  border:1px solid var(--sdd-card-border)!important;
-  box-shadow:0 5px 16px rgba(15,23,42,.025)!important;
-}
-.wrap .price-note{
-  margin-top:14px!important;
-}
-.wrap .note-grid{
-  margin-top:14px!important;
-}
-
-/* Trả góp */
-.tg-wrap{
-  max-width:var(--sdd-page-width)!important;
-}
-.tg-shell{
-  overflow:hidden!important;
-}
-.tg-shell .tg-hero{
-  padding-top:26px!important;
-}
-.tg-shell > *{
-  box-sizing:border-box!important;
-}
-
-/* Bảo hành */
-.warranty-page-main{
-  max-width:var(--sdd-page-width)!important;
-}
-.warranty-page-card{
-  padding:26px!important;
-}
-.warranty-page-card .warranty-policy-box{
-  margin-top:22px!important;
-}
-.warranty-page-card .warranty-process{
-  margin-top:22px!important;
-}
-
-/* So sánh */
-.compare-page-main{
-  max-width:var(--sdd-page-width)!important;
-}
-.compare-page-title{
-  margin-top:0!important;
-  margin-bottom:14px!important;
-}
-.compare-page-ai{
-  margin-bottom:14px!important;
-}
-.compare-page-grid{
-  margin-bottom:18px!important;
-}
-
-/* Desktop lớn: giữ nội dung gần đúng trục header, không co vào giữa quá mức */
-@media(min-width:1450px){
-  :root{
-    --sdd-page-width:1280px;
-    --sdd-content-width:1180px;
-  }
-}
-
-/* Laptop */
-@media(min-width:900px) and (max-width:1199px){
-  :root{
-    --sdd-page-width:calc(100vw - 28px);
-    --sdd-content-width:100%;
-  }
-  body > main{
-    width:calc(100% - 28px)!important;
-    margin-top:14px!important;
-  }
-  .warranty-page-card{
-    padding:20px!important;
-  }
-}
-
-/* Mobile */
-@media(max-width:899px){
-  body > main{
-    width:100%!important;
-    max-width:none!important;
-    margin:10px auto 28px!important;
+    margin:10px 0 28px!important;
     padding:0 10px!important;
   }
 
-  body > main > .tg-shell,
-  body > main > .warranty-page-card,
-  body > main > .compare-page-title,
-  body > main > .compare-page-ai,
-  body > main > .compare-page-grid,
-  body > main > .hero,
-  body > main > #servicePricingMount,
-  body > main > .price-note,
-  body > main > .note-grid{
+  body > main.warranty-page-main.v344-exact-axis > .warranty-page-card{
     width:100%!important;
     max-width:none!important;
-  }
-
-  .warranty-page-card{
-    padding:14px!important;
-    border-radius:14px!important;
-  }
-  .tg-shell,
-  .hero,
-  .compare-page-ai{
-    border-radius:14px!important;
-  }
-
-  body > main h1{
-    font-size:20px!important;
-    line-height:1.2!important;
-  }
-}
-</style>
-
-
-<style id="v341-runtime-header-alignment">
-/* V341 - Các trang độc lập bám đúng trục header thực tế */
-.v341-header-axis{
-  max-width:none!important;
-  box-sizing:border-box!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
-
-/* Bỏ các width cố định cũ của V339 ở 3 trang này */
-main.wrap.v341-header-axis,
-main.tg-wrap.v341-header-axis,
-main.warranty-page-main.v341-header-axis{
-  max-width:none!important;
-}
-
-main.wrap.v341-header-axis > .hero,
-main.wrap.v341-header-axis > #servicePricingMount,
-main.wrap.v341-header-axis > .price-note,
-main.wrap.v341-header-axis > .note-grid,
-main.tg-wrap.v341-header-axis > .tg-shell,
-main.warranty-page-main.v341-header-axis > .warranty-page-card{
-  max-width:none!important;
-  width:100%!important;
-  margin-left:0!important;
-  margin-right:0!important;
-  box-sizing:border-box!important;
-}
-
-/* Nội dung vẫn gọn nhưng không được lệch trục */
-@media(min-width:900px){
-  main.wrap.v341-header-axis,
-  main.tg-wrap.v341-header-axis,
-  main.warranty-page-main.v341-header-axis{
-    padding-left:0!important;
-    padding-right:0!important;
-  }
-}
-
-/* Mobile: full width như storefront */
-@media(max-width:899px){
-  main.wrap.v341-header-axis,
-  main.tg-wrap.v341-header-axis,
-  main.warranty-page-main.v341-header-axis{
-    width:100%!important;
-    max-width:none!important;
-    padding-left:10px!important;
-    padding-right:10px!important;
-    margin-left:auto!important;
-    margin-right:auto!important;
   }
 }
 </style>
@@ -714,87 +379,67 @@ main.warranty-page-main.v341-header-axis > .warranty-page-card{
 
 
 
-<script id="v338-header-runtime">
+
+<script id="v344-warranty-exact-runtime-js">
 (function(){
-  const drawer=document.getElementById("sddMobileDrawer");
-  const open=document.getElementById("sddMobileMenuBtn");
-  const close=document.getElementById("sddMobileDrawerClose");
-
-  function openDrawer(){
-    if(!drawer)return;
-    drawer.hidden=false;
-    document.body.style.overflow="hidden";
-  }
-  function closeDrawer(){
-    if(!drawer)return;
-    drawer.hidden=true;
-    document.body.style.overflow="";
+  function setImp(el,prop,val){
+    if(el) el.style.setProperty(prop,val,"important");
   }
 
-  open?.addEventListener("click",openDrawer);
-  close?.addEventListener("click",closeDrawer);
-  drawer?.addEventListener("click",e=>{ if(e.target===drawer) closeDrawer(); });
-  drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
+  function alignWarranty(){
+    const main=document.querySelector("body > main.warranty-page-main");
+    if(!main) return;
 
-  const input=document.getElementById("searchInput");
-  const clear=document.getElementById("clearSearch");
-  const submit=document.querySelector(".sdd-search-submit");
+    main.classList.add("v344-exact-axis");
 
-  function doSearch(){
-    const q=(input?.value||"").trim();
-    location.href=q?"/?q="+encodeURIComponent(q):"/#products";
-  }
-
-  submit?.addEventListener("click",doSearch);
-  input?.addEventListener("keydown",e=>{
-    if(e.key==="Enter"){ e.preventDefault(); doSearch(); }
-  });
-  clear?.addEventListener("click",()=>{
-    if(input){ input.value=""; input.focus(); }
-  });
-
-  document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-})();
-</script>
-
-
-<script id="v341-runtime-header-alignment-js">
-(function(){
-  function getHeaderAxis(){
-    return document.querySelector(".sdd-header-nav-inner")
-      || document.querySelector(".commerce-header-inner.sdd-header-main")
-      || document.querySelector(".sdd-top-strip-inner");
-  }
-
-  function align(){
-    const axis=getHeaderAxis();
-    const main=document.querySelector("main.warranty-page-main");
-    if(!axis || !main) return;
-
-    if(window.innerWidth>=900){
-      const r=axis.getBoundingClientRect();
-      if(r.width>0){
-        main.style.width=r.width+"px";
-        main.style.maxWidth=r.width+"px";
-        main.style.marginLeft="auto";
-        main.style.marginRight="auto";
-        main.classList.add("v341-header-axis");
-      }
-    }else{
-      main.style.width="";
-      main.style.maxWidth="";
-      main.style.marginLeft="";
-      main.style.marginRight="";
-      main.classList.add("v341-header-axis");
+    if(window.innerWidth < 900){
+      ["width","max-width","margin-left","margin-right"].forEach(p=>main.style.removeProperty(p));
+      return;
     }
+
+    const axis =
+      document.querySelector(".sdd-header-nav-inner") ||
+      document.querySelector(".commerce-header-inner.sdd-header-main");
+
+    if(!axis) return;
+
+    const r=axis.getBoundingClientRect();
+    if(!r.width) return;
+
+    /* exact viewport coordinates of header */
+    setImp(main,"width",r.width+"px");
+    setImp(main,"max-width",r.width+"px");
+    setImp(main,"margin-left",r.left+"px");
+    setImp(main,"margin-right","0px");
+    setImp(main,"padding-left","0px");
+    setImp(main,"padding-right","0px");
+
+    const card=main.querySelector(":scope > .warranty-page-card");
+    if(card){
+      setImp(card,"width","100%");
+      setImp(card,"max-width","none");
+      setImp(card,"margin-left","0px");
+      setImp(card,"margin-right","0px");
+    }
+
+    [
+      ".warranty-policy-box",
+      ".warranty-process",
+      ".warranty-before",
+      ".warranty-support",
+      ".warranty-result"
+    ].forEach(sel=>{
+      main.querySelectorAll(sel).forEach(el=>{
+        setImp(el,"width","100%");
+        setImp(el,"max-width","none");
+      });
+    });
   }
 
   let timer=0;
   function schedule(){
     clearTimeout(timer);
-    timer=setTimeout(align,50);
+    timer=setTimeout(alignWarranty,40);
   }
 
   if(document.readyState==="loading"){
@@ -804,8 +449,9 @@ main.warranty-page-main.v341-header-axis > .warranty-page-card{
   }
 
   window.addEventListener("resize",schedule);
-  setTimeout(align,300);
-  setTimeout(align,900);
+  setTimeout(alignWarranty,150);
+  setTimeout(alignWarranty,500);
+  setTimeout(alignWarranty,1200);
 })();
 </script>
 
