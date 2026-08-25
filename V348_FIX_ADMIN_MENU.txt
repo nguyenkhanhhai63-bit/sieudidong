@@ -1,0 +1,7 @@
+V348 - Fix triệt để nút 3 gạch quản trị
+- Xóa nút mobileAdminMenuBtn bị trùng.
+- Chỉ giữ #sidebarToggle nằm trong admin-topbar.
+- Desktop: nút thu gọn/mở sidebar.
+- Tablet/mobile: nút mở drawer sidebar + backdrop.
+- Không còn nút fixed đè lên chữ Tổng quan.
+- Gỡ controller V263/V267 cũ gây xung đột.

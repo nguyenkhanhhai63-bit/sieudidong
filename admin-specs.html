@@ -5779,69 +5779,191 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 </style>
 
 
-<style id="v347-admin-hamburger-fix">
-/* V347 - sửa nút 3 gạch quản trị */
-@media (min-width: 901px){
-  .admin-topbar,
-  .admin-header,
-  .admin-main-header{
-    overflow:visible!important;
+
+<style id="v348-single-admin-menu-css">
+/* =========================================================
+   V348 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   ========================================================= */
+
+#mobileAdminMenuBtn,
+.mobile-admin-menu-btn{
+  display:none!important;
+}
+
+/* Nút nằm đúng trong topbar */
+#sidebarToggle{
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  flex:0 0 38px!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:38px!important;
+  margin:0!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #e1e6ec!important;
+  border-radius:10px!important;
+  background:#f8fafc!important;
+  color:#344054!important;
+  font-size:20px!important;
+  line-height:1!important;
+  cursor:pointer!important;
+  box-sizing:border-box!important;
+  box-shadow:none!important;
+}
+
+#sidebarToggle:hover{
+  background:#f1f4f7!important;
+}
+
+.admin-topbar-left{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+
+.admin-topbar-left > div{
+  min-width:0!important;
+}
+
+/* ---------- Desktop ---------- */
+@media(min-width:1021px){
+  .admin-sidebar{
+    display:flex!important;
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:230px!important;
+    transform:translateX(0)!important;
+    transition:transform .2s ease!important;
   }
 
-  /* Nút menu luôn nằm gọn trong header, không đè chữ Tổng quan */
-  .admin-menu-toggle,
-  .sidebar-toggle,
-  .menu-toggle,
-  button[aria-label*="menu" i],
-  button[aria-label*="danh mục" i]{
-    position:relative!important;
-    left:auto!important;
-    top:auto!important;
-    transform:none!important;
-    flex:0 0 42px!important;
-    width:42px!important;
-    min-width:42px!important;
-    height:42px!important;
-    margin:0 14px 0 0!important;
-    padding:0!important;
-    display:inline-flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    border-radius:10px!important;
-    box-sizing:border-box!important;
-    z-index:3!important;
+  .admin-topbar{
+    left:230px!important;
+    width:calc(100% - 230px)!important;
+    padding-left:18px!important;
+    transition:left .2s ease,width .2s ease!important;
   }
 
-  .admin-page-title,
-  .admin-header-title,
-  .admin-title-wrap{
-    min-width:0!important;
-    margin-left:0!important;
-    padding-left:0!important;
+  .wrap{
+    padding-left:258px!important;
+    transition:padding-left .2s ease!important;
+  }
+
+  /* Thu gọn sidebar bằng đúng nút trong topbar */
+  body.sidebar-collapsed .admin-sidebar{
+    transform:translateX(-100%)!important;
+  }
+
+  body.sidebar-collapsed .admin-topbar{
+    left:0!important;
+    width:100%!important;
+  }
+
+  body.sidebar-collapsed .wrap{
+    padding-left:28px!important;
+  }
+
+  #mobileAdminDrawerBackdrop{
+    display:none!important;
   }
 }
 
-@media (max-width:900px){
-  .admin-menu-toggle,
-  .sidebar-toggle,
-  .menu-toggle,
-  button[aria-label*="menu" i],
-  button[aria-label*="danh mục" i]{
+/* ---------- Tablet + Mobile ---------- */
+@media(max-width:1020px){
+  .admin-sidebar{
+    display:flex!important;
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:min(86vw,320px)!important;
+    max-width:320px!important;
+    transform:translateX(-105%)!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transition:transform .22s ease,visibility .22s ease!important;
+    z-index:1200!important;
+  }
+
+  .admin-sidebar.mobile-open{
+    transform:translateX(0)!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+
+  .admin-topbar{
+    left:0!important;
+    width:100%!important;
+    padding-left:12px!important;
+  }
+
+  .wrap{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+
+  #sidebarToggle{
+    flex-basis:40px!important;
     width:40px!important;
     min-width:40px!important;
     height:40px!important;
-    margin-right:10px!important;
-    left:auto!important;
-    transform:none!important;
+  }
+
+  #mobileAdminDrawerBackdrop{
+    display:block!important;
+    position:fixed!important;
+    inset:0!important;
+    z-index:1198!important;
+    background:rgba(15,23,42,.38)!important;
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transition:opacity .2s ease,visibility .2s ease!important;
+  }
+
+  #mobileAdminDrawerBackdrop.show{
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+}
+
+/* Mobile nhỏ: không để nút đè tiêu đề */
+@media(max-width:600px){
+  .admin-topbar{
+    height:62px!important;
+    gap:8px!important;
+  }
+
+  .admin-topbar-left{
+    gap:9px!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+  }
+
+  #adminPageTitle{
+    font-size:18px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  #adminPageSubtitle{
+    max-width:58vw!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
   }
 }
 </style>
 
 </head>
 <body class="auth-pending">
-<button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
-  <span></span><span></span><span></span>
-</button>
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
 
 <aside id="adminSidebar" class="admin-sidebar">
@@ -8515,58 +8637,6 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 <script>
-/* V263 - Mobile admin drawer controller */
-(function(){
-  const btn=document.getElementById('mobileAdminMenuBtn');
-  const backdrop=document.getElementById('mobileAdminDrawerBackdrop');
-
-  function findSidebar(){
-    return document.querySelector('.sidebar,.admin-sidebar') ||
-      [...document.querySelectorAll('aside,nav,div')].find(el=>el.querySelector?.('.admin-tab'));
-  }
-
-  function closeDrawer(){
-    const sidebar=findSidebar();
-    sidebar?.classList.remove('mobile-open');
-    backdrop?.classList.remove('show');
-    btn?.classList.remove('open');
-    btn?.setAttribute('aria-expanded','false');
-    document.documentElement.style.overflow='';
-  }
-
-  function openDrawer(){
-    const sidebar=findSidebar();
-    if(!sidebar)return;
-    sidebar.classList.add('mobile-open');
-    backdrop?.classList.add('show');
-    btn?.classList.add('open');
-    btn?.setAttribute('aria-expanded','true');
-    document.documentElement.style.overflow='hidden';
-  }
-
-  btn?.addEventListener('click',()=>{
-    const sidebar=findSidebar();
-    if(sidebar?.classList.contains('mobile-open')) closeDrawer();
-    else openDrawer();
-  });
-
-  backdrop?.addEventListener('click',closeDrawer);
-
-  document.addEventListener('click',e=>{
-    if(window.innerWidth>760)return;
-    if(e.target.closest('.admin-tab,[data-go-tab],.sidebar-shortcut')){
-      setTimeout(closeDrawer,80);
-    }
-  });
-
-  window.addEventListener('resize',()=>{
-    if(window.innerWidth>760)closeDrawer();
-  });
-})();
-</script>
-
-
-<script>
 /* V266 - bảo đảm các routing tab ẩn không bao giờ xuất hiện */
 (function(){
   function markRoutingTabs(){
@@ -8579,29 +8649,6 @@ document.addEventListener("DOMContentLoaded",function(){
   markRoutingTabs();
 })();
 </script>
-
-
-<script>
-/* V267 - luôn reset drawer về trạng thái đóng khi vào/reload trang */
-(function(){
-  function resetMobileDrawer(){
-    document.querySelectorAll('.admin-sidebar').forEach(el=>el.classList.remove('mobile-open'));
-    document.body.classList.remove('mobile-sidebar-open');
-    document.getElementById('mobileAdminDrawerBackdrop')?.classList.remove('show');
-    const btn=document.getElementById('mobileAdminMenuBtn');
-    btn?.classList.remove('open');
-    btn?.setAttribute('aria-expanded','false');
-    document.documentElement.style.overflow='';
-  }
-
-  resetMobileDrawer();
-  document.addEventListener('DOMContentLoaded', resetMobileDrawer, {once:true});
-  window.addEventListener('pageshow', resetMobileDrawer);
-})();
-</script>
-
-
-
 
 
 <script>
@@ -9319,35 +9366,76 @@ document.addEventListener("DOMContentLoaded",function(){
 </script>
 
 
-<script id="v347-admin-hamburger-fix-js">
+
+<script id="v348-single-admin-menu-js">
 (function(){
-  function fix(){
-    const title=[...document.querySelectorAll("h1,h2,.admin-page-title,.admin-header-title")]
-      .find(x => /Tổng quan/i.test((x.textContent||"").trim()));
-    if(!title) return;
+  const btn=document.getElementById("sidebarToggle");
+  const sidebar=document.getElementById("adminSidebar");
+  const backdrop=document.getElementById("mobileAdminDrawerBackdrop");
 
-    const header=title.closest("header,.admin-topbar,.admin-header,.admin-main-header") || title.parentElement;
-    if(!header) return;
+  if(!btn || !sidebar) return;
 
-    const buttons=[...header.querySelectorAll("button")];
-    const btn=buttons.find(b=>{
-      const t=(b.textContent||"").trim();
-      const a=(b.getAttribute("aria-label")||"").toLowerCase();
-      return a.includes("menu") || a.includes("danh mục") || (!t && b.querySelector("svg"));
-    });
-    if(!btn) return;
-
-    btn.classList.add("admin-menu-toggle");
-    header.style.setProperty("display","flex","important");
-    header.style.setProperty("align-items","center","important");
-    header.style.setProperty("gap","0","important");
-    title.style.setProperty("margin-left","0","important");
+  function isMobile(){
+    return window.matchMedia("(max-width:1020px)").matches;
   }
 
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",fix,{once:true});
-  else fix();
-  setTimeout(fix,300);
-  setTimeout(fix,900);
+  function closeMobile(){
+    sidebar.classList.remove("mobile-open");
+    backdrop?.classList.remove("show");
+    btn.setAttribute("aria-expanded","false");
+    document.documentElement.style.overflow="";
+  }
+
+  function openMobile(){
+    sidebar.classList.add("mobile-open");
+    backdrop?.classList.add("show");
+    btn.setAttribute("aria-expanded","true");
+    document.documentElement.style.overflow="hidden";
+  }
+
+  /* Loại bỏ listener cũ bằng clone nút, sau đó bind đúng một lần */
+  const cleanBtn=btn.cloneNode(true);
+  btn.replaceWith(cleanBtn);
+
+  cleanBtn.addEventListener("click",function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(isMobile()){
+      if(sidebar.classList.contains("mobile-open")) closeMobile();
+      else openMobile();
+    }else{
+      document.body.classList.toggle("sidebar-collapsed");
+      cleanBtn.setAttribute(
+        "aria-expanded",
+        String(!document.body.classList.contains("sidebar-collapsed"))
+      );
+    }
+  });
+
+  backdrop?.addEventListener("click",closeMobile);
+
+  document.addEventListener("click",function(e){
+    if(!isMobile()) return;
+    if(!sidebar.classList.contains("mobile-open")) return;
+    if(sidebar.contains(e.target) || cleanBtn.contains(e.target)) return;
+    closeMobile();
+  });
+
+  sidebar.querySelectorAll(".admin-tab,[data-go-tab]").forEach(el=>{
+    el.addEventListener("click",()=>{
+      if(isMobile()) closeMobile();
+    });
+  });
+
+  window.addEventListener("resize",function(){
+    if(!isMobile()){
+      closeMobile();
+    }
+  });
+
+  cleanBtn.setAttribute("aria-label","Mở hoặc thu gọn menu quản trị");
+  cleanBtn.setAttribute("aria-expanded","true");
 })();
 </script>
 
