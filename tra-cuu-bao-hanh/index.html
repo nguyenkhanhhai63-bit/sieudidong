@@ -205,12 +205,12 @@
 </style>
 
 
-<style id="v369-warranty-align-header">
-/* V369 - Nội dung Tra cứu bảo hành ngang đúng trục header desktop */
-@media (min-width:1081px){
+<style id="v370-warranty-align-header-exact">
+/* V370 - Tra cứu bảo hành dùng đúng bề ngang container của Header */
+@media (min-width:1251px){
   body > main.warranty-page-main{
-    width:min(1280px,calc(100% - 40px))!important;
-    max-width:none!important;
+    width:min(1680px,calc(100% - 80px))!important;
+    max-width:1680px!important;
     margin:24px auto 52px!important;
     padding:0!important;
     box-sizing:border-box!important;
@@ -222,10 +222,23 @@
     box-sizing:border-box!important;
   }
 }
-@media (min-width:900px) and (max-width:1080px){
+@media (min-width:1251px) and (max-width:1550px){
   body > main.warranty-page-main{
-    width:calc(100% - 28px)!important;
+    width:calc(100% - 56px)!important;
+  }
+}
+@media (min-width:901px) and (max-width:1250px){
+  body > main.warranty-page-main{
+    width:min(1540px,calc(100% - 72px))!important;
     max-width:none!important;
+    margin:24px auto 52px!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+  }
+  body > main.warranty-page-main > .warranty-page-card{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
   }
 }
 </style>
