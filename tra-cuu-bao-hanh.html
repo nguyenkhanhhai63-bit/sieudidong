@@ -56,6 +56,31 @@
 }
 </style>
 
+
+<style id="v358-warranty-mobile-menu-css">
+/* V358 - khóa hành vi menu mobile trang Tra cứu bảo hành */
+@media(max-width:899px){
+  #sddMobileMenuBtn{
+    position:relative!important;
+    z-index:2147483001!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    cursor:pointer!important;
+  }
+
+  #sddMobileDrawer[hidden]{
+    display:none!important;
+  }
+
+  #sddMobileDrawer:not([hidden]){
+    display:block!important;
+    position:fixed!important;
+    inset:0!important;
+    z-index:2147483000!important;
+  }
+}
+</style>
+
 </head>
 <body class="warranty-page-body">
 <header class="commerce-header sdd-header-v164">
@@ -380,78 +405,72 @@
 
 
 
-<script id="v344-warranty-exact-runtime-js">
+
+<script id="v358-warranty-mobile-menu-js">
 (function(){
-  function setImp(el,prop,val){
-    if(el) el.style.setProperty(prop,val,"important");
-  }
+  function initWarrantyMobileMenu(){
+    const oldBtn=document.getElementById("sddMobileMenuBtn");
+    const drawer=document.getElementById("sddMobileDrawer");
+    const close=document.getElementById("sddMobileDrawerClose");
 
-  function alignWarranty(){
-    const main=document.querySelector("body > main.warranty-page-main");
-    if(!main) return;
+    if(!oldBtn || !drawer) return;
 
-    main.classList.add("v344-exact-axis");
+    // Clone để loại sạch listener cũ bị xung đột trên trang bảo hành.
+    const btn=oldBtn.cloneNode(true);
+    oldBtn.replaceWith(btn);
 
-    if(window.innerWidth < 900){
-      ["width","max-width","margin-left","margin-right"].forEach(p=>main.style.removeProperty(p));
-      return;
+    function openDrawer(){
+      drawer.hidden=false;
+      drawer.setAttribute("aria-hidden","false");
+      btn.setAttribute("aria-expanded","true");
+      document.documentElement.style.overflow="hidden";
+      document.body.style.overflow="hidden";
     }
 
-    const axis =
-      document.querySelector(".sdd-header-nav-inner") ||
-      document.querySelector(".commerce-header-inner.sdd-header-main");
-
-    if(!axis) return;
-
-    const r=axis.getBoundingClientRect();
-    if(!r.width) return;
-
-    /* exact viewport coordinates of header */
-    setImp(main,"width",r.width+"px");
-    setImp(main,"max-width",r.width+"px");
-    setImp(main,"margin-left",r.left+"px");
-    setImp(main,"margin-right","0px");
-    setImp(main,"padding-left","0px");
-    setImp(main,"padding-right","0px");
-
-    const card=main.querySelector(":scope > .warranty-page-card");
-    if(card){
-      setImp(card,"width","100%");
-      setImp(card,"max-width","none");
-      setImp(card,"margin-left","0px");
-      setImp(card,"margin-right","0px");
+    function closeDrawer(){
+      drawer.hidden=true;
+      drawer.setAttribute("aria-hidden","true");
+      btn.setAttribute("aria-expanded","false");
+      document.documentElement.style.overflow="";
+      document.body.style.overflow="";
     }
 
-    [
-      ".warranty-policy-box",
-      ".warranty-process",
-      ".warranty-before",
-      ".warranty-support",
-      ".warranty-result"
-    ].forEach(sel=>{
-      main.querySelectorAll(sel).forEach(el=>{
-        setImp(el,"width","100%");
-        setImp(el,"max-width","none");
-      });
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      if(drawer.hidden) openDrawer();
+      else closeDrawer();
+    },true);
+
+    close?.addEventListener("click",function(e){
+      e.preventDefault();
+      closeDrawer();
     });
-  }
 
-  let timer=0;
-  function schedule(){
-    clearTimeout(timer);
-    timer=setTimeout(alignWarranty,40);
+    drawer.addEventListener("click",function(e){
+      // Bấm vùng nền ngoài panel thì đóng
+      if(e.target===drawer) closeDrawer();
+    });
+
+    drawer.querySelectorAll("a").forEach(a=>{
+      a.addEventListener("click",()=>setTimeout(closeDrawer,20));
+    });
+
+    window.addEventListener("keydown",e=>{
+      if(e.key==="Escape" && !drawer.hidden) closeDrawer();
+    });
+
+    // trạng thái ban đầu
+    closeDrawer();
   }
 
   if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",schedule,{once:true});
+    document.addEventListener("DOMContentLoaded",initWarrantyMobileMenu,{once:true});
   }else{
-    schedule();
+    initWarrantyMobileMenu();
   }
-
-  window.addEventListener("resize",schedule);
-  setTimeout(alignWarranty,150);
-  setTimeout(alignWarranty,500);
-  setTimeout(alignWarranty,1200);
 })();
 </script>
 
