@@ -1,5 +1,0 @@
-SIÊU DI ĐỘNG - V129
-Bản này được đóng gói để upload trực tiếp lên Vercel.
-Khi upload, các file /, vercel.json, package.json và thư mục api phải nằm ở thư mục gốc.
-Sau deploy kiểm tra: https://sieudidong.vn/api/version
-Kết quả đúng: version V129, seoAdmin true, uploadReady true
