@@ -1,0 +1,6 @@
+V334 - Đồng bộ header tất cả trang
+- Lấy nguyên header của storefront/trang Điện thoại làm chuẩn.
+- Áp dụng cho Dịch vụ, Trả góp, Tra cứu bảo hành, So sánh.
+- Logo, tìm kiếm, Tư vấn, Cửa hàng và menu dùng cùng markup/classes.
+- Header không còn co/nhảy vị trí giữa các trang.
+- Mobile drawer có JS tối thiểu để mở/đóng trên trang độc lập.
