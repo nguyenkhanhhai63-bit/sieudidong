@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V353 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V354 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -6059,6 +6059,49 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v354-ai-history-css">
+.ai-history-box{min-height:290px!important}
+.ai-history-head{padding:13px 15px 9px;border-bottom:1px solid #edf0f3}
+.ai-history-head h2{padding:0!important;border:0!important;font-size:14px!important}
+.ai-history-head p{margin:4px 0 0;color:#98a2b3;font-size:10px}
+.ai-question-history{padding:4px 14px 10px;max-height:330px;overflow:auto}
+.ai-history-row{
+  display:grid;
+  grid-template-columns:92px 78px minmax(0,1fr);
+  gap:10px;
+  align-items:start;
+  padding:10px 0;
+  border-bottom:1px solid #f0f2f5;
+}
+.ai-history-row:last-child{border-bottom:0}
+.ai-history-time{font-size:10px;color:#667085;line-height:1.45}
+.ai-history-visitor{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  padding:4px 7px;
+  border-radius:999px;
+  background:#f2f4f7;
+  color:#475467;
+  font-size:9px;
+  font-weight:800;
+}
+.ai-history-question{
+  font-size:11px;
+  line-height:1.45;
+  color:#101828;
+  font-weight:650;
+  word-break:break-word;
+}
+.ai-history-empty{padding:42px 12px;text-align:center;color:#98a2b3;font-size:11px}
+@media(max-width:700px){
+  .ai-history-row{grid-template-columns:1fr;gap:5px}
+  .ai-question-history{max-height:420px}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -6275,7 +6318,15 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
       </div>
       <div class="analytics-grid">
           <div class="abox traffic-box"><h2 id="trafficChartTitle">Xu hướng truy cập</h2><div id="trafficChart" class="chart"></div></div>
-          <div class="abox monthly-box"><h2 id="monthlyAnalyticsTitle">Tổng hợp theo kỳ</h2><div id="monthlyAnalytics" class="monthly-analytics"></div></div>
+          <div class="abox monthly-box ai-history-box">
+  <div class="ai-history-head">
+    <div>
+      <h2>Lịch sử khách hỏi AI chatbox</h2>
+      <p id="aiHistoryPeriodLabel">Theo khoảng thời gian đang chọn</p>
+    </div>
+  </div>
+  <div id="aiQuestionHistory" class="ai-question-history"></div>
+</div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
   <div class="device-chart-wrap">
     <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
@@ -7141,84 +7192,36 @@ function analyticsDaysForPeriod(d,period){
   return history.slice(-1);
 }
 
-function renderSummaryForPeriod(d,period){
-  const host=document.getElementById("monthlyAnalytics");
-  const title=document.getElementById("monthlyAnalyticsTitle");
+
+
+function renderAiQuestionHistory(items=[],period="today"){
+  const host=document.getElementById("aiQuestionHistory");
+  const periodLabel=document.getElementById("aiHistoryPeriodLabel");
   if(!host)return;
 
   const label=ANALYTICS_PERIOD_LABELS[period]||"Kỳ đang chọn";
-  if(title)title.textContent=`Tổng hợp · ${label}`;
+  if(periodLabel)periodLabel.textContent=`Câu hỏi khách đã gửi · ${label}`;
 
-  const source=analyticsDaysForPeriod(d,period);
-  if(!source.length){
-    host.innerHTML='<div style="padding:24px;color:#98a2b3;font-size:11px;text-align:center">Chưa có dữ liệu trong kỳ này.</div>';
+  if(!Array.isArray(items)||!items.length){
+    host.innerHTML='<div class="ai-history-empty">Chưa có câu hỏi AI trong khoảng thời gian này.</div>';
     return;
   }
 
-  /* Hôm nay / Hôm qua: không dùng progress bar dài.
-     Hiển thị 5 ô tóm tắt gọn để đọc nhanh. */
-  if(period==="today" || period==="yesterday"){
-    const x=source[source.length-1]||{};
-    const raw=String(x.date||"");
-    const dateText=raw.replace(/^(\d{4})-(\d{2})-(\d{2})$/,(_,y,m,d)=>`${d}/${m}/${y}`);
+  const escape=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+  host.innerHTML=items.slice(0,50).map(x=>{
+    const d=x.ts?new Date(Number(x.ts)):null;
+    const time=d&&!Number.isNaN(d.getTime())
+      ? d.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"})
+      : "—";
 
-    host.innerHTML=`
-      <div class="period-summary-single">
-        <div class="period-summary-date">
-          <small>Ngày thống kê</small>
-          <strong>${dateText||label}</strong>
-        </div>
+    const visitor=String(x.visitorId||"Khách");
+    const shortVisitor=visitor.length>10 ? visitor.slice(0,4)+"…"+visitor.slice(-4) : visitor;
+    const q=escape(x.question||"");
 
-        <div class="period-summary-stat orange">
-          <small>Lượt truy cập</small>
-          <strong>${fmt(x.views)}</strong>
-        </div>
-
-        <div class="period-summary-stat blue">
-          <small>So sánh</small>
-          <strong>${fmt(x.compare)}</strong>
-        </div>
-
-        <div class="period-summary-stat green">
-          <small>Bấm Zalo</small>
-          <strong>${fmt(x.zalo)}</strong>
-        </div>
-
-        <div class="period-summary-stat purple">
-          <small>Tra bảo hành</small>
-          <strong>${fmt(x.warrantyChecks)}</strong>
-        </div>
-      </div>`;
-    return;
-  }
-
-  /* Các kỳ dài hơn mới dùng dạng tổng hợp theo tháng. */
-  const grouped={};
-  for(const x of source){
-    const month=String(x.date||"").slice(0,7);
-    if(!month)continue;
-    if(!grouped[month])grouped[month]={month,views:0,compare:0,zalo:0,warrantyChecks:0};
-    grouped[month].views+=Number(x.views||0);
-    grouped[month].compare+=Number(x.compare||0);
-    grouped[month].zalo+=Number(x.zalo||0);
-    grouped[month].warrantyChecks+=Number(x.warrantyChecks||0);
-  }
-
-  const rows=Object.values(grouped).sort((a,b)=>a.month.localeCompare(b.month)).reverse();
-  if(!rows.length){
-    host.innerHTML='<div style="padding:24px;color:#98a2b3;font-size:11px;text-align:center">Chưa có dữ liệu trong kỳ này.</div>';
-    return;
-  }
-
-  const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
-  host.innerHTML=rows.slice(0,12).map(x=>{
-    const pct=Math.max(3,Math.round(Number(x.views||0)/max*100));
-    const month=String(x.month||"").replace(/^(\d{4})-(\d{2})$/,(_,y,m)=>`${m}/${y}`);
-    return `<div class="month-row">
-      <span class="month-label">${month}</span>
-      <div class="month-track"><div class="month-fill" style="width:${pct}%"></div></div>
-      <span class="month-value">${fmt(x.views)}</span>
-      <span class="month-meta">${fmt(x.compare)} so sánh · ${fmt(x.zalo)} Zalo · ${fmt(x.warrantyChecks)} tra BH</span>
+    return `<div class="ai-history-row">
+      <div class="ai-history-time">${time}</div>
+      <div><span class="ai-history-visitor" title="${escape(visitor)}">${escape(shortVisitor)}</span></div>
+      <div class="ai-history-question">${q||"—"}</div>
     </div>`;
   }).join("");
 }
@@ -7248,7 +7251,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V353: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V354: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
@@ -7257,7 +7260,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   renderRank("searchRanks",ranks.topSearches||[]);
   renderRank("compareProductRanks",ranks.topCompareProducts||[]);
   renderComparePairs(ranks.topComparePairs||[]);
-  renderSummaryForPeriod(d,period);
+  renderAiQuestionHistory(ranks.aiQuestionHistory||[],period);
   renderTrafficForPeriod(d,period);
 }
 

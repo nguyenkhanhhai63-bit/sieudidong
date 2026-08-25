@@ -2902,7 +2902,7 @@ async function aiChatAsk(question){
     aiChatAppend("user",text);
     aiChatAppend("assistant","Được, tôi chuyển bạn sang nhân viên tư vấn trực tiếp. Bấm nút Nhắn Zalo ngay bên dưới.");
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
-    sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested"});
+    sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
   }
 
@@ -2916,7 +2916,7 @@ async function aiChatAsk(question){
 
   aiChatInput.value="";
   aiChatTyping(true);
-  sendAnalytics("ai_chat_question",{action:"ai_chat_question"});
+  sendAnalytics("ai_chat_question",{action:"ai_chat_question",question:text});
 
   try{
     const r=await fetch("/api/ai-chat",{
