@@ -147,6 +147,195 @@ body > .warranty-shell > .wrap{
 }
 </style>
 
+
+<style id="v339-unified-page-system">
+:root{
+  --sdd-page-width:1280px;
+  --sdd-content-width:1180px;
+  --sdd-page-gap:18px;
+  --sdd-card-radius:18px;
+  --sdd-card-border:#e6eaf0;
+  --sdd-card-shadow:0 10px 28px rgba(15,23,42,.045);
+  --sdd-page-bg:#f4f6f9;
+  --sdd-orange:#ff5a00;
+  --sdd-text:#101828;
+  --sdd-muted:#667085;
+}
+
+/* Nền và khoảng cách chung dưới header */
+body{
+  background:var(--sdd-page-bg)!important;
+}
+body > main{
+  width:min(var(--sdd-page-width),calc(100% - 32px))!important;
+  max-width:var(--sdd-page-width)!important;
+  margin:18px auto 42px!important;
+  padding-left:0!important;
+  padding-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Mỗi trang có một khung nội dung chính cân theo header */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-title,
+body > main > .compare-page-ai,
+body > main > .compare-page-grid,
+body > main > .hero,
+body > main > #servicePricingMount,
+body > main > .price-note,
+body > main > .note-grid{
+  width:min(var(--sdd-content-width),100%)!important;
+  max-width:var(--sdd-content-width)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+}
+
+/* Card style chung */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-ai,
+body > main > .hero{
+  border:1px solid var(--sdd-card-border)!important;
+  border-radius:var(--sdd-card-radius)!important;
+  box-shadow:var(--sdd-card-shadow)!important;
+  background:#fff!important;
+}
+
+/* Tiêu đề trang */
+body > main h1{
+  color:var(--sdd-text)!important;
+  letter-spacing:-.35px!important;
+}
+body > main p{
+  color:var(--sdd-muted);
+}
+
+/* Dịch vụ */
+.wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.wrap .hero{
+  margin-top:0!important;
+}
+.wrap .service-card{
+  border-radius:16px!important;
+  border:1px solid var(--sdd-card-border)!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.025)!important;
+}
+.wrap .price-note{
+  margin-top:14px!important;
+}
+.wrap .note-grid{
+  margin-top:14px!important;
+}
+
+/* Trả góp */
+.tg-wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.tg-shell{
+  overflow:hidden!important;
+}
+.tg-shell .tg-hero{
+  padding-top:26px!important;
+}
+.tg-shell > *{
+  box-sizing:border-box!important;
+}
+
+/* Bảo hành */
+.warranty-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.warranty-page-card{
+  padding:26px!important;
+}
+.warranty-page-card .warranty-policy-box{
+  margin-top:22px!important;
+}
+.warranty-page-card .warranty-process{
+  margin-top:22px!important;
+}
+
+/* So sánh */
+.compare-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.compare-page-title{
+  margin-top:0!important;
+  margin-bottom:14px!important;
+}
+.compare-page-ai{
+  margin-bottom:14px!important;
+}
+.compare-page-grid{
+  margin-bottom:18px!important;
+}
+
+/* Desktop lớn: giữ nội dung gần đúng trục header, không co vào giữa quá mức */
+@media(min-width:1450px){
+  :root{
+    --sdd-page-width:1280px;
+    --sdd-content-width:1180px;
+  }
+}
+
+/* Laptop */
+@media(min-width:900px) and (max-width:1199px){
+  :root{
+    --sdd-page-width:calc(100vw - 28px);
+    --sdd-content-width:100%;
+  }
+  body > main{
+    width:calc(100% - 28px)!important;
+    margin-top:14px!important;
+  }
+  .warranty-page-card{
+    padding:20px!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:899px){
+  body > main{
+    width:100%!important;
+    max-width:none!important;
+    margin:10px auto 28px!important;
+    padding:0 10px!important;
+  }
+
+  body > main > .tg-shell,
+  body > main > .warranty-page-card,
+  body > main > .compare-page-title,
+  body > main > .compare-page-ai,
+  body > main > .compare-page-grid,
+  body > main > .hero,
+  body > main > #servicePricingMount,
+  body > main > .price-note,
+  body > main > .note-grid{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .warranty-page-card{
+    padding:14px!important;
+    border-radius:14px!important;
+  }
+  .tg-shell,
+  .hero,
+  .compare-page-ai{
+    border-radius:14px!important;
+  }
+
+  body > main h1{
+    font-size:20px!important;
+    line-height:1.2!important;
+  }
+}
+</style>
+
 </head>
 <body class="warranty-page-body">
 <header class="commerce-header sdd-header-v164">

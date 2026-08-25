@@ -118,6 +118,25 @@
 }
 </style>
 
+
+<style id="v339-home-content-alignment">
+/* Giữ phần storefront và chi tiết sản phẩm cùng nhịp với header */
+.page,
+#inlineProductDetail:not([hidden]){
+  width:min(1280px,calc(100% - 32px))!important;
+  max-width:1280px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+@media(max-width:899px){
+  .page,
+  #inlineProductDetail:not([hidden]){
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
