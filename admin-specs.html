@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V354 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V355 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -7251,7 +7251,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V354: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V355: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
@@ -7266,10 +7266,74 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
 
 
 
-async function loadAnalyticsPeriod(period){
-  if(!period)period="today";
 
-  // Nếu kỳ này đã có ranking trong bộ nhớ thì đổi ngay, không gọi server lại.
+const analyticsPeriodRequests=new Map();
+let analyticsBackgroundPrefetchStarted=false;
+
+function mergeAnalyticsPeriodResponse(d){
+  if(!d || typeof d!=="object") return currentAnalyticsData;
+
+  if(!currentAnalyticsData){
+    currentAnalyticsData=d;
+    return currentAnalyticsData;
+  }
+
+  // Chỉ nhập thêm dữ liệu kỳ mới vào cache; không làm thay đổi kỳ đang hiển thị.
+  currentAnalyticsData={
+    ...currentAnalyticsData,
+    ...d,
+    periods:{...(currentAnalyticsData.periods||{}),...(d.periods||{})},
+    rankingsByPeriod:{
+      ...(currentAnalyticsData.rankingsByPeriod||{}),
+      ...(d.rankingsByPeriod||{})
+    }
+  };
+  return currentAnalyticsData;
+}
+
+async function fetchAnalyticsPeriodForCache(period){
+  if(!period) period="today";
+
+  // Đã có sẵn trong cache.
+  if(currentAnalyticsData?.rankingsByPeriod?.[period]){
+    return currentAnalyticsData;
+  }
+
+  // Nếu background đang tải đúng kỳ này, thao tác bấm của người dùng dùng chung request đó.
+  if(analyticsPeriodRequests.has(period)){
+    return analyticsPeriodRequests.get(period);
+  }
+
+  const request=(async()=>{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),15000);
+    try{
+      const r=await fetch(
+        "/api/admin/analytics?ts="+Date.now()+"&client=v355&period="+encodeURIComponent(period),
+        {
+          cache:"no-store",
+          credentials:"same-origin",
+          signal:controller.signal
+        }
+      );
+
+      const d=await r.json();
+      if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
+      return mergeAnalyticsPeriodResponse(d);
+    }finally{
+      clearTimeout(timer);
+      analyticsPeriodRequests.delete(period);
+    }
+  })();
+
+  analyticsPeriodRequests.set(period,request);
+  return request;
+}
+
+async function loadAnalyticsPeriod(period){
+  if(!period) period="today";
+
+  // Có cache thì chuyển kỳ ngay.
   if(currentAnalyticsData?.rankingsByPeriod?.[period]){
     applyAnalyticsPeriod(currentAnalyticsData,period);
     return;
@@ -7277,35 +7341,71 @@ async function loadAnalyticsPeriod(period){
 
   const btn=document.querySelector(`.period-tab[data-period="${period}"]`);
   const oldText=btn?.textContent;
-  if(btn){btn.disabled=true;btn.textContent="Đang tải...";}
+
+  if(btn){
+    btn.disabled=true;
+    btn.textContent="Đang tải...";
+  }
 
   try{
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),15000);
-    let r;
-    try{
-      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v351&period="+encodeURIComponent(period),{
-        cache:"no-store",
-        credentials:"same-origin",
-        signal:controller.signal
-      });
-    }finally{clearTimeout(timer)}
-
-    const d=await r.json();
-    if(!r.ok)throw new Error(d.error||"Không tải được thống kê");
-
-    // Giữ cache ranking các kỳ đã xem để bấm qua lại tức thì.
-    const cached=currentAnalyticsData?.rankingsByPeriod||{};
-    d.rankingsByPeriod={...cached,...(d.rankingsByPeriod||{})};
-    currentAnalyticsData=d;
-    applyAnalyticsPeriod(d,period);
+    const data=await fetchAnalyticsPeriodForCache(period);
+    applyAnalyticsPeriod(data||currentAnalyticsData||{},period);
   }catch(e){
     console.error("Analytics period:",e);
-    try{showToast(e?.name==="AbortError"?"Kỳ thống kê tải quá lâu. Hãy thử lại.":(e.message||"Không tải được kỳ thống kê"),"error")}catch(_){}
+    try{
+      showToast(
+        e?.name==="AbortError"
+          ?"Kỳ thống kê tải quá lâu. Hãy thử lại."
+          :(e.message||"Không tải được kỳ thống kê"),
+        "error"
+      );
+    }catch(_){}
   }finally{
-    if(btn){btn.disabled=false;btn.textContent=oldText||ANALYTICS_PERIOD_LABELS[period]||"Xem";}
+    if(btn){
+      btn.disabled=false;
+      btn.textContent=oldText||ANALYTICS_PERIOD_LABELS[period]||"Xem";
+    }
   }
 }
+
+function sleepAnalyticsPrefetch(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function prefetchAnalyticsPeriodsInBackground(){
+  if(analyticsBackgroundPrefetchStarted) return;
+  analyticsBackgroundPrefetchStarted=true;
+
+  // Hôm nay đã tải xong. Các kỳ còn lại tải tuần tự để không dồn request vào Redis.
+  const queue=["yesterday","days7","days30","month","year"];
+
+  for(const period of queue){
+    // Nếu người dùng đã bấm và kỳ này đã có cache thì bỏ qua.
+    if(currentAnalyticsData?.rankingsByPeriod?.[period]) continue;
+
+    try{
+      await fetchAnalyticsPeriodForCache(period);
+    }catch(e){
+      // Background prefetch thất bại không làm hiện lỗi/không ảnh hưởng dashboard.
+      console.debug("Analytics prefetch skipped:",period,e?.message||e);
+    }
+
+    // Nghỉ nhẹ giữa các request để ưu tiên thao tác thật của người dùng.
+    await sleepAnalyticsPrefetch(180);
+  }
+}
+
+function scheduleAnalyticsBackgroundPrefetch(){
+  const start=()=>prefetchAnalyticsPeriodsInBackground();
+
+  // Chờ dashboard Hôm nay render xong rồi mới chạy ngầm.
+  if("requestIdleCallback" in window){
+    window.requestIdleCallback(start,{timeout:1200});
+  }else{
+    setTimeout(start,450);
+  }
+}
+
 
 function renderTrafficLineChart(rows=[]){
   const host=document.getElementById("trafficChart");
@@ -7461,7 +7561,7 @@ async function loadAnalytics(){
     const timeout=setTimeout(()=>controller.abort(),15000);
     let r;
     try{
-      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v351&period="+encodeURIComponent(analyticsPeriod),{
+      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v355&period="+encodeURIComponent(analyticsPeriod),{
         cache:"no-store",
         credentials:"same-origin",
         signal:controller.signal
@@ -7501,7 +7601,12 @@ async function loadAnalytics(){
       note.textContent="Chưa có dữ liệu truy cập. Hệ thống sẽ bắt đầu ghi nhận từ khi bản thống kê được deploy và có khách truy cập website.";
       content.appendChild(note);
     }
-    analyticsLoaded=true; loading.classList.add("hidden"); content.classList.remove("hidden");
+    analyticsLoaded=true;
+    loading.classList.add("hidden");
+    content.classList.remove("hidden");
+
+    // V355: Hôm nay hiển thị trước; sau đó tải ngầm các kỳ còn lại vào cache.
+    scheduleAnalyticsBackgroundPrefetch();
   }catch(e){
     console.error("Analytics admin:", e);
     loading.classList.remove("hidden");

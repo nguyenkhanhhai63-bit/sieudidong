@@ -1,0 +1,16 @@
+V355 - Tải ngầm các khoảng thời gian thống kê
+
+Luồng mới:
+1. Mở quản trị: chỉ chờ dữ liệu Hôm nay.
+2. Hôm nay render xong và trang usable ngay.
+3. Khi trình duyệt rảnh, âm thầm tải lần lượt:
+   - Hôm qua
+   - 7 ngày
+   - 30 ngày
+   - Tháng này
+   - Năm nay
+4. Mỗi kỳ được cache trong currentAnalyticsData.
+5. Bấm kỳ đã tải ngầm: hiển thị ngay, không gọi API lại.
+6. Nếu người dùng bấm đúng kỳ đang prefetch: dùng chung request đang chạy, không tạo request trùng.
+7. Prefetch chạy tuần tự + nghỉ nhẹ 180ms để không dồn tải Redis.
+8. Lỗi prefetch ngầm không làm hiện lỗi hoặc ảnh hưởng dashboard Hôm nay.
