@@ -1,0 +1,7 @@
+V335 - Header tất cả trang giống nguyên trang Điện thoại
+- Dùng nguyên markup header từ index.html/storefront.
+- Xóa topstrip/header/nav cũ trên Dịch vụ, Trả góp, Tra cứu bảo hành, So sánh.
+- Xóa override V333/V334 làm thay đổi chiều rộng/vị trí header.
+- Dùng trực tiếp /styles.css của storefront.
+- Chỉ giữ một header duy nhất trên mỗi trang.
+- Menu active đổi theo trang, nhưng vị trí logo/search/tư vấn/cửa hàng không thay đổi.

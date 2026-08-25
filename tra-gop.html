@@ -437,44 +437,11 @@ body{
 }
 </style>
 
-<link rel="stylesheet" href="/styles.css?v=334">
-
-<style id="v334-header-consistency">
-/* Header luôn dùng đúng kích thước chuẩn của storefront */
-.commerce-header.sdd-header-v164{
-  width:100%!important;
-  max-width:none!important;
-  margin:0!important;
-}
-.commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-.commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-.commerce-header.sdd-header-v164 .sdd-header-nav-inner{
-  max-width:1280px!important;
-  width:calc(100% - 32px)!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
-@media(min-width:1500px){
-  .commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-  .commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-  .commerce-header.sdd-header-v164 .sdd-header-nav-inner{
-    max-width:1280px!important;
-  }
-}
-@media(max-width:760px){
-  .commerce-header.sdd-header-v164 .sdd-top-strip-inner,
-  .commerce-header.sdd-header-v164 .commerce-header-inner.sdd-header-main,
-  .commerce-header.sdd-header-v164 .sdd-header-nav-inner{
-    width:100%!important;
-    max-width:none!important;
-  }
-}
-</style>
+<link rel="stylesheet" href="/styles.css?v=335">
 
 </head>
 <body>
-<div class="tg-page">
-  <header class="commerce-header sdd-header-v164">
+<header class="commerce-header sdd-header-v164">
   <div class="sdd-top-strip">
     <div class="sdd-top-strip-inner">
       <span class="sdd-top-message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span></span>
@@ -586,9 +553,8 @@ body{
     </div>
   </div>
 </header>
-
-  
-<main class="tg-wrap">
+<div class="tg-page">
+  <main class="tg-wrap">
   <section class="tg-shell">
     <div class="tg-hero">
       <div>
@@ -816,31 +782,49 @@ body{
 </script>
 
 
-<script id="v334-unified-header-js">
+
+<script id="v335-header-runtime">
 (function(){
   const menu=document.getElementById("sddMobileMenuBtn");
   const drawer=document.getElementById("sddMobileDrawer");
   const close=document.getElementById("sddMobileDrawerClose");
-  function openDrawer(){if(drawer){drawer.hidden=false;document.body.style.overflow="hidden";}}
-  function closeDrawer(){if(drawer){drawer.hidden=true;document.body.style.overflow="";}}
+
+  function openDrawer(){
+    if(!drawer)return;
+    drawer.hidden=false;
+    document.body.style.overflow="hidden";
+  }
+  function closeDrawer(){
+    if(!drawer)return;
+    drawer.hidden=true;
+    document.body.style.overflow="";
+  }
+
   menu?.addEventListener("click",openDrawer);
   close?.addEventListener("click",closeDrawer);
   drawer?.addEventListener("click",e=>{if(e.target===drawer)closeDrawer()});
   drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
 
   const input=document.getElementById("searchInput");
-  const submit=document.querySelector(".sdd-search-submit");
   const clear=document.getElementById("clearSearch");
-  function search(){
+  const submit=document.querySelector(".sdd-search-submit");
+
+  function runSearch(){
     const q=(input?.value||"").trim();
     location.href=q?"/?q="+encodeURIComponent(q):"/#products";
   }
-  submit?.addEventListener("click",search);
-  input?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();search();}});
-  clear?.addEventListener("click",()=>{if(input){input.value="";input.focus();}});
+
+  submit?.addEventListener("click",runSearch);
+  input?.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){e.preventDefault();runSearch();}
+  });
+  clear?.addEventListener("click",()=>{
+    if(input){input.value="";input.focus();}
+  });
 
   document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
   document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
 })();
 </script>
 
