@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V348 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V349 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -5958,6 +5958,38 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     white-space:nowrap!important;
     overflow:hidden!important;
     text-overflow:ellipsis!important;
+  }
+}
+</style>
+
+
+<style id="v349-force-admin-drawer-css">
+#sidebarToggle{
+  pointer-events:auto!important;
+  touch-action:manipulation!important;
+  cursor:pointer!important;
+  position:relative!important;
+  z-index:2147483001!important;
+}
+
+/* Drawer mode for tablet/mobile/narrow admin windows */
+@media(max-width:1100px){
+  #adminSidebar{
+    position:fixed!important;
+    top:0!important;
+    bottom:0!important;
+    left:0!important;
+    width:min(86vw,320px)!important;
+    max-width:320px!important;
+    height:100dvh!important;
+    z-index:2147483000!important;
+  }
+
+  #mobileAdminDrawerBackdrop{
+    position:fixed!important;
+    inset:0!important;
+    z-index:2147482999!important;
+    background:rgba(15,23,42,.42)!important;
   }
 }
 </style>
@@ -8261,14 +8293,6 @@ function syncAdminShell(tab){
   });
 }
 
-sidebarToggle?.addEventListener("click",()=>{
-  if(window.matchMedia("(max-width:760px)").matches){
-    document.body.classList.toggle("mobile-sidebar-open");
-  }else{
-    document.body.classList.toggle("sidebar-collapsed");
-  }
-});
-
 document.querySelectorAll("[data-go-tab]").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const target=adminTabs?.querySelector(`[data-tab="${btn.dataset.goTab}"]`);
@@ -8305,15 +8329,6 @@ syncAdminShell("analytics");
 
 
 /* V163 - mobile sidebar behavior */
-document.addEventListener("click",e=>{
-  if(!window.matchMedia("(max-width:760px)").matches) return;
-  if(!document.body.classList.contains("mobile-sidebar-open")) return;
-  const sidebar=document.getElementById("adminSidebar");
-  const toggle=document.getElementById("sidebarToggle");
-  if(sidebar?.contains(e.target) || toggle?.contains(e.target)) return;
-  document.body.classList.remove("mobile-sidebar-open");
-});
-
 window.addEventListener("resize",()=>{
   if(!window.matchMedia("(max-width:760px)").matches){
     document.body.classList.remove("mobile-sidebar-open");
@@ -9367,75 +9382,131 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
-<script id="v348-single-admin-menu-js">
+
+<script id="v349-force-admin-drawer-js">
 (function(){
-  const btn=document.getElementById("sidebarToggle");
-  const sidebar=document.getElementById("adminSidebar");
-  const backdrop=document.getElementById("mobileAdminDrawerBackdrop");
+  function init(){
+    const oldBtn=document.getElementById("sidebarToggle");
+    const sidebar=document.getElementById("adminSidebar");
+    const backdrop=document.getElementById("mobileAdminDrawerBackdrop");
+    if(!oldBtn || !sidebar) return;
 
-  if(!btn || !sidebar) return;
+    // Replace the button one final time to guarantee zero legacy click listeners.
+    const btn=oldBtn.cloneNode(true);
+    oldBtn.replaceWith(btn);
 
-  function isMobile(){
-    return window.matchMedia("(max-width:1020px)").matches;
-  }
+    let opened=false;
 
-  function closeMobile(){
-    sidebar.classList.remove("mobile-open");
-    backdrop?.classList.remove("show");
-    btn.setAttribute("aria-expanded","false");
-    document.documentElement.style.overflow="";
-  }
-
-  function openMobile(){
-    sidebar.classList.add("mobile-open");
-    backdrop?.classList.add("show");
-    btn.setAttribute("aria-expanded","true");
-    document.documentElement.style.overflow="hidden";
-  }
-
-  /* Loại bỏ listener cũ bằng clone nút, sau đó bind đúng một lần */
-  const cleanBtn=btn.cloneNode(true);
-  btn.replaceWith(cleanBtn);
-
-  cleanBtn.addEventListener("click",function(e){
-    e.preventDefault();
-    e.stopPropagation();
-
-    if(isMobile()){
-      if(sidebar.classList.contains("mobile-open")) closeMobile();
-      else openMobile();
-    }else{
-      document.body.classList.toggle("sidebar-collapsed");
-      cleanBtn.setAttribute(
-        "aria-expanded",
-        String(!document.body.classList.contains("sidebar-collapsed"))
-      );
+    function drawerMode(){
+      return window.innerWidth <= 1100;
     }
-  });
 
-  backdrop?.addEventListener("click",closeMobile);
+    function forceOpen(){
+      opened=true;
 
-  document.addEventListener("click",function(e){
-    if(!isMobile()) return;
-    if(!sidebar.classList.contains("mobile-open")) return;
-    if(sidebar.contains(e.target) || cleanBtn.contains(e.target)) return;
-    closeMobile();
-  });
+      // Clear legacy classes that can hide/collapse the menu.
+      document.body.classList.remove("sidebar-collapsed","mobile-sidebar-open");
+      sidebar.classList.add("mobile-open");
 
-  sidebar.querySelectorAll(".admin-tab,[data-go-tab]").forEach(el=>{
-    el.addEventListener("click",()=>{
-      if(isMobile()) closeMobile();
+      // Inline !important-equivalent priority so old CSS cannot keep it offscreen.
+      sidebar.style.setProperty("display","flex","important");
+      sidebar.style.setProperty("position","fixed","important");
+      sidebar.style.setProperty("left","0px","important");
+      sidebar.style.setProperty("top","0px","important");
+      sidebar.style.setProperty("bottom","0px","important");
+      sidebar.style.setProperty("width","min(86vw, 320px)","important");
+      sidebar.style.setProperty("max-width","320px","important");
+      sidebar.style.setProperty("height","100dvh","important");
+      sidebar.style.setProperty("transform","translate3d(0,0,0)","important");
+      sidebar.style.setProperty("visibility","visible","important");
+      sidebar.style.setProperty("opacity","1","important");
+      sidebar.style.setProperty("pointer-events","auto","important");
+      sidebar.style.setProperty("z-index","2147483000","important");
+
+      if(backdrop){
+        backdrop.classList.add("show");
+        backdrop.style.setProperty("display","block","important");
+        backdrop.style.setProperty("visibility","visible","important");
+        backdrop.style.setProperty("opacity","1","important");
+        backdrop.style.setProperty("pointer-events","auto","important");
+        backdrop.style.setProperty("z-index","2147482999","important");
+      }
+
+      btn.setAttribute("aria-expanded","true");
+      document.documentElement.style.overflow="hidden";
+    }
+
+    function forceClose(){
+      opened=false;
+      sidebar.classList.remove("mobile-open");
+
+      if(drawerMode()){
+        sidebar.style.setProperty("transform","translate3d(-105%,0,0)","important");
+        sidebar.style.setProperty("visibility","hidden","important");
+        sidebar.style.setProperty("opacity","1","important");
+        sidebar.style.setProperty("pointer-events","none","important");
+      }else{
+        // Return desktop sidebar to stylesheet control.
+        [
+          "display","position","left","top","bottom","width","max-width","height",
+          "transform","visibility","opacity","pointer-events","z-index"
+        ].forEach(x=>sidebar.style.removeProperty(x));
+      }
+
+      if(backdrop){
+        backdrop.classList.remove("show");
+        backdrop.style.setProperty("opacity","0","important");
+        backdrop.style.setProperty("visibility","hidden","important");
+        backdrop.style.setProperty("pointer-events","none","important");
+      }
+
+      btn.setAttribute("aria-expanded","false");
+      document.documentElement.style.overflow="";
+    }
+
+    btn.onclick=function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      if(drawerMode()){
+        opened ? forceClose() : forceOpen();
+      }else{
+        // Desktop: only collapse/expand the normal left sidebar.
+        document.body.classList.toggle("sidebar-collapsed");
+        btn.setAttribute(
+          "aria-expanded",
+          String(!document.body.classList.contains("sidebar-collapsed"))
+        );
+      }
+      return false;
+    };
+
+    backdrop?.addEventListener("click",function(e){
+      e.preventDefault();
+      forceClose();
     });
-  });
 
-  window.addEventListener("resize",function(){
-    if(!isMobile()){
-      closeMobile();
-    }
-  });
+    sidebar.addEventListener("click",function(e){
+      const nav=e.target.closest(".admin-tab,[data-go-tab]");
+      if(nav && drawerMode()) setTimeout(forceClose,30);
+    });
 
-  cleanBtn.setAttribute("aria-label","Mở hoặc thu gọn menu quản trị");
-  cleanBtn.setAttribute("aria-expanded","true");
+    window.addEventListener("resize",function(){
+      if(!drawerMode() && opened) forceClose();
+    });
+
+    // Initial mobile state must be closed.
+    if(drawerMode()) forceClose();
+
+    btn.setAttribute("aria-label","Mở menu quản trị");
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",init,{once:true});
+  }else{
+    init();
+  }
 })();
 </script>
 
