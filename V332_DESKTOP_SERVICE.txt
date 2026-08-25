@@ -1,9 +1,0 @@
-V332 - Tối ưu trang Dịch vụ trên desktop
-- Giới hạn khung nội dung ~1220px để không bị loãng.
-- Thu gọn hero.
-- Bảng giá compact hơn, căn lại tỷ lệ cột.
-- Giá chính màu cam, giá bổ sung màu xanh.
-- Zebra row nhẹ + hover.
-- Lưu ý / Liên hệ cân lại 2 cột.
-- Giữ nguyên giao diện mobile của V331.
-- Không thay đổi dữ liệu hoặc phần quản trị giá.
