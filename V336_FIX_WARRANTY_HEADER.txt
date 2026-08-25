@@ -1,0 +1,6 @@
+V336 - Fix header Tra cứu bảo hành
+- Lấy nguyên header của index/storefront.
+- Xóa header/nav/topstrip cũ của trang Tra cứu bảo hành.
+- Khóa CSS header để CSS riêng của warranty page không làm co/lệch.
+- Tra cứu BH được active trên menu.
+- Giữ nguyên toàn bộ form tra cứu, chính sách bảo hành, quy trình và Zalo.
