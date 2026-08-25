@@ -1,0 +1,20 @@
+V352 - Kiểm tra và gia cố thống kê hôm nay
+
+Đã kiểm tra code:
+- Xem chi tiết sản phẩm: có gửi product_view và ghi analytics:v5:product_views:<ngày>.
+- So sánh: có gửi compare_create và ghi sản phẩm/cặp máy theo ngày.
+- Từ khóa tìm kiếm: có gửi search và ghi analytics:v5:searches:<ngày>.
+- Zalo: có tracking toàn cục + tracking nút riêng.
+- AI chatbox: có ai_chat_open và ai_chat_question.
+- Thiết bị: lưu theo visitor/ngày.
+- Tra bảo hành: API riêng vẫn ghi nhận.
+
+Gia cố V352:
+- Từ khóa không còn dễ bị mất khi khách gõ xong bấm/chuyển trang quá nhanh.
+- Gửi từ khóa khi dừng gõ, Enter, change và pagehide; có chống cộng trùng cùng từ khóa.
+- Tổng hợp Hôm nay/Hôm qua hiển thị đúng ngày thay vì chỉ 08/2026.
+- Giữ cơ chế V351 tải ranking theo kỳ để tránh timeout.
+
+Lưu ý:
+Nếu một ô 'Chưa có dữ liệu' trong Hôm nay thì sau V352 nó có nghĩa là hôm đó chưa phát sinh sự kiện tương ứng,
+không phải tự động là lỗi tải dashboard.

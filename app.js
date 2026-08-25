@@ -131,15 +131,29 @@ async function analyticsDeviceInfo(){
   return fallback;
 }
 
+function analyticsPayload(type,extra={}){
+  return {type,visitorId:analyticsVisitorId(),device:analyticsDevice(),...extra};
+}
 function sendAnalytics(type,extra={}){
   try{
+    const body=JSON.stringify(analyticsPayload(type,extra));
     fetch("/api/analytics",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({type,visitorId:analyticsVisitorId(),device:analyticsDevice(),...extra}),
+      body,
       keepalive:true
     }).catch(()=>{});
   }catch(_){}
+}
+function sendAnalyticsBeacon(type,extra={}){
+  try{
+    const body=JSON.stringify(analyticsPayload(type,extra));
+    if(navigator.sendBeacon){
+      const blob=new Blob([body],{type:"application/json"});
+      if(navigator.sendBeacon("/api/analytics",blob)) return;
+    }
+    sendAnalytics(type,extra);
+  }catch(_){ sendAnalytics(type,extra); }
 }
 
 // V324: Theo dõi mọi link Zalo trên website dùng app.js.
@@ -169,12 +183,17 @@ analyticsDeviceInfo()
   .catch(()=>{});
 
 let analyticsSearchTimer=null;
+let analyticsLastSearch="";
+function commitSearchAnalytics(useBeacon=false){
+  clearTimeout(analyticsSearchTimer);
+  const query=String(searchInput?.value||"").trim();
+  if(query.length<2 || query===analyticsLastSearch) return;
+  analyticsLastSearch=query;
+  (useBeacon?sendAnalyticsBeacon:sendAnalytics)("search",{query});
+}
 function trackSearchQuery(){
   clearTimeout(analyticsSearchTimer);
-  analyticsSearchTimer=setTimeout(()=>{
-    const query=String(searchInput?.value||"").trim();
-    if(query.length>=2) sendAnalytics("search",{query});
-  },900);
+  analyticsSearchTimer=setTimeout(()=>commitSearchAnalytics(false),700);
 }
 
 
@@ -2582,7 +2601,12 @@ if(sortSelect){
 }
 
 
-if(searchInput) searchInput.addEventListener("input",trackSearchQuery);
+if(searchInput){
+  searchInput.addEventListener("input",trackSearchQuery);
+  searchInput.addEventListener("change",()=>commitSearchAnalytics(false));
+  searchInput.addEventListener("keydown",e=>{if(e.key==="Enter")commitSearchAnalytics(false);});
+}
+window.addEventListener("pagehide",()=>commitSearchAnalytics(true));
 const analyticsZaloButton=document.getElementById("zaloConsultBtn");
 if(analyticsZaloButton){ analyticsZaloButton.dataset.analyticsZaloBound="1"; analyticsZaloButton.addEventListener("click",()=>sendAnalytics("zalo_click",{source:"zalo_consult"})); }
 

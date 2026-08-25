@@ -5782,7 +5782,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="v348-single-admin-menu-css">
 /* =========================================================
-   V351 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
+   V352 - CHỈ MỘT NÚT 3 GẠCH: #sidebarToggle
    ========================================================= */
 
 #mobileAdminMenuBtn,
@@ -7085,6 +7085,25 @@ function renderSummaryForPeriod(d,period){
   if(title)title.textContent=`Tổng hợp · ${label}`;
 
   const source=analyticsDaysForPeriod(d,period);
+  if(!source.length){
+    host.innerHTML='<div style="padding:18px 0;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>';
+    return;
+  }
+
+  // Hôm nay/Hôm qua hiển thị đúng ngày; các kỳ dài hơn mới gom theo tháng.
+  if(period==="today" || period==="yesterday"){
+    const x=source[source.length-1]||{};
+    const raw=String(x.date||"");
+    const day=raw.replace(/^(\d{4})-(\d{2})-(\d{2})$/,(_,y,m,d)=>`${d}/${m}/${y}`);
+    host.innerHTML=`<div class="month-row">
+      <span class="month-label">${day||label}</span>
+      <div class="month-track"><div class="month-fill" style="width:100%"></div></div>
+      <span class="month-value">${fmt(x.views)}</span>
+      <span class="month-meta">${fmt(x.compare)} so sánh · ${fmt(x.zalo)} Zalo · ${fmt(x.warrantyChecks)} tra BH</span>
+    </div>`;
+    return;
+  }
+
   const grouped={};
   for(const x of source){
     const month=String(x.date||"").slice(0,7);
@@ -7097,11 +7116,6 @@ function renderSummaryForPeriod(d,period){
   }
 
   const rows=Object.values(grouped).sort((a,b)=>a.month.localeCompare(b.month)).reverse();
-  if(!rows.length){
-    host.innerHTML='<div style="padding:18px 0;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>';
-    return;
-  }
-
   const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
   host.innerHTML=rows.slice(0,12).map(x=>{
     const pct=Math.max(3,Math.round(Number(x.views||0)/max*100));
@@ -7140,7 +7154,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
 
-  // V351: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
+  // V352: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
