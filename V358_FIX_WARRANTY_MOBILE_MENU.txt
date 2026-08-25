@@ -1,6 +1,0 @@
-V358 - Fix menu 3 gạch trang Tra cứu bảo hành trên mobile
-- Xóa listener/runtime cũ gây xung đột.
-- Chỉ bind 1 nút #sddMobileMenuBtn.
-- Bấm mở/đóng #sddMobileDrawer.
-- Bấm nút X, nền ngoài, link menu hoặc ESC đều đóng được.
-- Không ảnh hưởng logic tra cứu bảo hành.
