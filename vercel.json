@@ -14,11 +14,11 @@
     },
     {
       "source": "/san-pham/(.*)",
-      "destination": "/index.html"
+      "destination": "/"
     },
     {
       "source": "/",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [

@@ -27,7 +27,7 @@ assets/logo-square.jpg
 assets/logo-wide.jpg
 assets/zalo-contact-hd.png
 assets/zalo-contact.png
-index.html
+/
 lib/admin-auth.js
 lib/redis.js
 package.json

@@ -5778,6 +5778,65 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="v347-admin-hamburger-fix">
+/* V347 - sửa nút 3 gạch quản trị */
+@media (min-width: 901px){
+  .admin-topbar,
+  .admin-header,
+  .admin-main-header{
+    overflow:visible!important;
+  }
+
+  /* Nút menu luôn nằm gọn trong header, không đè chữ Tổng quan */
+  .admin-menu-toggle,
+  .sidebar-toggle,
+  .menu-toggle,
+  button[aria-label*="menu" i],
+  button[aria-label*="danh mục" i]{
+    position:relative!important;
+    left:auto!important;
+    top:auto!important;
+    transform:none!important;
+    flex:0 0 42px!important;
+    width:42px!important;
+    min-width:42px!important;
+    height:42px!important;
+    margin:0 14px 0 0!important;
+    padding:0!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:10px!important;
+    box-sizing:border-box!important;
+    z-index:3!important;
+  }
+
+  .admin-page-title,
+  .admin-header-title,
+  .admin-title-wrap{
+    min-width:0!important;
+    margin-left:0!important;
+    padding-left:0!important;
+  }
+}
+
+@media (max-width:900px){
+  .admin-menu-toggle,
+  .sidebar-toggle,
+  .menu-toggle,
+  button[aria-label*="menu" i],
+  button[aria-label*="danh mục" i]{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    margin-right:10px!important;
+    left:auto!important;
+    transform:none!important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <button id="mobileAdminMenuBtn" class="mobile-admin-menu-btn" type="button" aria-label="Mở menu quản trị" aria-expanded="false">
@@ -9256,6 +9315,39 @@ document.addEventListener("DOMContentLoaded",function(){
   setTimeout(removeBar,1000);
 
   new MutationObserver(removeBar).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+
+<script id="v347-admin-hamburger-fix-js">
+(function(){
+  function fix(){
+    const title=[...document.querySelectorAll("h1,h2,.admin-page-title,.admin-header-title")]
+      .find(x => /Tổng quan/i.test((x.textContent||"").trim()));
+    if(!title) return;
+
+    const header=title.closest("header,.admin-topbar,.admin-header,.admin-main-header") || title.parentElement;
+    if(!header) return;
+
+    const buttons=[...header.querySelectorAll("button")];
+    const btn=buttons.find(b=>{
+      const t=(b.textContent||"").trim();
+      const a=(b.getAttribute("aria-label")||"").toLowerCase();
+      return a.includes("menu") || a.includes("danh mục") || (!t && b.querySelector("svg"));
+    });
+    if(!btn) return;
+
+    btn.classList.add("admin-menu-toggle");
+    header.style.setProperty("display","flex","important");
+    header.style.setProperty("align-items","center","important");
+    header.style.setProperty("gap","0","important");
+    title.style.setProperty("margin-left","0","important");
+  }
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",fix,{once:true});
+  else fix();
+  setTimeout(fix,300);
+  setTimeout(fix,900);
 })();
 </script>
 

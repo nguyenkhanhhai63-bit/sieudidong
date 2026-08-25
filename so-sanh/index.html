@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>So sánh sản phẩm | Siêu Di Động</title>
+  <meta name="description" content="So sánh 2 điện thoại về giá, tình trạng và thông số kỹ thuật tại Siêu Di Động.">
+  <link rel="stylesheet" href="/styles.css?v=335">
+
+
+<style id="v339-unified-page-system">
+:root{
+  --sdd-page-width:1280px;
+  --sdd-content-width:1180px;
+  --sdd-page-gap:18px;
+  --sdd-card-radius:18px;
+  --sdd-card-border:#e6eaf0;
+  --sdd-card-shadow:0 10px 28px rgba(15,23,42,.045);
+  --sdd-page-bg:#f4f6f9;
+  --sdd-orange:#ff5a00;
+  --sdd-text:#101828;
+  --sdd-muted:#667085;
+}
+
+/* Nền và khoảng cách chung dưới header */
+body{
+  background:var(--sdd-page-bg)!important;
+}
+body > main{
+  width:min(var(--sdd-page-width),calc(100% - 32px))!important;
+  max-width:var(--sdd-page-width)!important;
+  margin:18px auto 42px!important;
+  padding-left:0!important;
+  padding-right:0!important;
+  box-sizing:border-box!important;
+}
+
+/* Mỗi trang có một khung nội dung chính cân theo header */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-title,
+body > main > .compare-page-ai,
+body > main > .compare-page-grid,
+body > main > .hero,
+body > main > #servicePricingMount,
+body > main > .price-note,
+body > main > .note-grid{
+  width:min(var(--sdd-content-width),100%)!important;
+  max-width:var(--sdd-content-width)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  box-sizing:border-box!important;
+}
+
+/* Card style chung */
+body > main > .tg-shell,
+body > main > .warranty-page-card,
+body > main > .compare-page-ai,
+body > main > .hero{
+  border:1px solid var(--sdd-card-border)!important;
+  border-radius:var(--sdd-card-radius)!important;
+  box-shadow:var(--sdd-card-shadow)!important;
+  background:#fff!important;
+}
+
+/* Tiêu đề trang */
+body > main h1{
+  color:var(--sdd-text)!important;
+  letter-spacing:-.35px!important;
+}
+body > main p{
+  color:var(--sdd-muted);
+}
+
+/* Dịch vụ */
+.wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.wrap .hero{
+  margin-top:0!important;
+}
+.wrap .service-card{
+  border-radius:16px!important;
+  border:1px solid var(--sdd-card-border)!important;
+  box-shadow:0 5px 16px rgba(15,23,42,.025)!important;
+}
+.wrap .price-note{
+  margin-top:14px!important;
+}
+.wrap .note-grid{
+  margin-top:14px!important;
+}
+
+/* Trả góp */
+.tg-wrap{
+  max-width:var(--sdd-page-width)!important;
+}
+.tg-shell{
+  overflow:hidden!important;
+}
+.tg-shell .tg-hero{
+  padding-top:26px!important;
+}
+.tg-shell > *{
+  box-sizing:border-box!important;
+}
+
+/* Bảo hành */
+.warranty-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.warranty-page-card{
+  padding:26px!important;
+}
+.warranty-page-card .warranty-policy-box{
+  margin-top:22px!important;
+}
+.warranty-page-card .warranty-process{
+  margin-top:22px!important;
+}
+
+/* So sánh */
+.compare-page-main{
+  max-width:var(--sdd-page-width)!important;
+}
+.compare-page-title{
+  margin-top:0!important;
+  margin-bottom:14px!important;
+}
+.compare-page-ai{
+  margin-bottom:14px!important;
+}
+.compare-page-grid{
+  margin-bottom:18px!important;
+}
+
+/* Desktop lớn: giữ nội dung gần đúng trục header, không co vào giữa quá mức */
+@media(min-width:1450px){
+  :root{
+    --sdd-page-width:1280px;
+    --sdd-content-width:1180px;
+  }
+}
+
+/* Laptop */
+@media(min-width:900px) and (max-width:1199px){
+  :root{
+    --sdd-page-width:calc(100vw - 28px);
+    --sdd-content-width:100%;
+  }
+  body > main{
+    width:calc(100% - 28px)!important;
+    margin-top:14px!important;
+  }
+  .warranty-page-card{
+    padding:20px!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:899px){
+  body > main{
+    width:100%!important;
+    max-width:none!important;
+    margin:10px auto 28px!important;
+    padding:0 10px!important;
+  }
+
+  body > main > .tg-shell,
+  body > main > .warranty-page-card,
+  body > main > .compare-page-title,
+  body > main > .compare-page-ai,
+  body > main > .compare-page-grid,
+  body > main > .hero,
+  body > main > #servicePricingMount,
+  body > main > .price-note,
+  body > main > .note-grid{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .warranty-page-card{
+    padding:14px!important;
+    border-radius:14px!important;
+  }
+  .tg-shell,
+  .hero,
+  .compare-page-ai{
+    border-radius:14px!important;
+  }
+
+  body > main h1{
+    font-size:20px!important;
+    line-height:1.2!important;
+  }
+}
+</style>
+
+</head>
+<body class="compare-page-body">
+  <main class="compare-page-main">
+    <div class="compare-page-title">
+      <div>
+        <h1>So sánh 2 sản phẩm</h1>
+        <p>Đối chiếu trực tiếp giá, tình trạng và thông số kỹ thuật.</p>
+      </div>
+      <a href="/" class="compare-change-btn">Đổi máy so sánh</a>
+    </div>
+
+    <section class="compare-page-ai">
+      <div class="compare-page-ai-head">
+        <div>
+          <strong>Gemini AI phân tích</strong>
+          <span>Chọn nhu cầu để AI kết luận máy nào phù hợp hơn.</span>
+        </div>
+        <div class="compare-page-ai-actions">
+          <select id="compareNeed">
+            <option value="Cân bằng">Nhu cầu: Cân bằng</option>
+            <option value="Chơi game / hiệu năng">Ưu tiên: Chơi game</option>
+            <option value="Chụp ảnh / camera">Ưu tiên: Camera</option>
+            <option value="Pin lâu / sử dụng nhiều">Ưu tiên: Pin lâu</option>
+            <option value="Giá / hiệu năng">Ưu tiên: Giá / hiệu năng</option>
+          </select>
+          <button id="compareAiBtn" type="button">✨ Gemini phân tích</button>
+          <div id="compareVoiceBar" class="compare-page-voicebar compare-page-voicebar-inline" hidden>
+            <span>Lười đọc? Nghe AI tư vấn</span>
+            <button id="compareVoiceBtn" type="button">🔊 Nghe tư vấn</button>
+          </div>
+        </div>
+      </div>
+      <div id="compareAiResult" class="compare-page-ai-result">Chọn nhu cầu rồi bấm “Gemini phân tích” để nhận gợi ý.</div>
+    </section>
+
+    <section id="comparePageContent" class="compare-page-content">
+      <div class="compare-page-loading">Đang tải dữ liệu so sánh...</div>
+    </section>
+  </main>
+
+<script>
+const STORAGE_KEY="sieudidong-compare-v1";
+
+function money(v){
+  const n=Number(v||0);
+  return n>0 ? new Intl.NumberFormat("vi-VN").format(n)+" đ" : "Liên hệ";
+}
+function esc(s){
+  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function escapeRegExp(text){
+  return String(text||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+}
+function attributeValue(attrs,keys){
+  for(const a of (Array.isArray(attrs)?attrs:[])){
+    const n=String(a?.name||"").trim().toLowerCase();
+    const v=String(a?.value||"").trim();
+    if(v && keys.some(k=>n.includes(k))) return v;
+  }
+  return "";
+}
+function getMemory(attrs,name){
+  const v=attributeValue(attrs,["dung lượng","dung luong","bộ nhớ","bo nho","ram/rom","rom","memory","capacity"]);
+  if(v) return v;
+  const m=String(name||"").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
+  return m?`${m[1]}/${m[2]}`:"";
+}
+function getColor(attrs,name){
+  const v=attributeValue(attrs,["màu","mau","color","colour"]);
+  if(v) return v;
+  const colors=["Xanh Dương","Xanh Lá","Xanh Biển","Xanh Ngọc","Xanh Mint","Đen Bạc","Đen Xám","Trắng Bạc","Titan Xám","Titan Đen","Titan Trắng","Đen","Trắng","Xanh","Đỏ","Hồng","Tím","Bạc","Titan","Cam","Vàng","Green","Blue","Black","White","Silver"];
+  const text=String(name||"");
+  for(const c of colors.sort((a,b)=>b.length-a.length)){
+    if(new RegExp(`(?:^|\\s-\\s)${escapeRegExp(c)}(?:\\s-\\s|$)`,"i").test(text)) return c;
+  }
+  return "";
+}
+function normalizeBase(fullName,color,memory){
+  let s=String(fullName||"").trim();
+  if(memory){
+    const x=escapeRegExp(memory);
+    s=s.replace(new RegExp(`\\s*-\\s*${x}\\s*$`,"i"),"").replace(new RegExp(`\\s+${x}\\s*$`,"i"),"");
+  }
+  if(color){
+    const x=escapeRegExp(color);
+    s=s.replace(new RegExp(`\\s*-\\s*${x}\\s*$`,"i"),"").replace(new RegExp(`\\s+${x}\\s*$`,"i"),"");
+  }
+  return s.replace(/\s+-\s*$/,"").replace(/\s{2,}/g," ").trim();
+}
+function flattenProducts(raw){
+  const items=[];
+  (raw||[]).forEach(p=>{
+    (p.variants||[]).forEach(v=>{
+      const attrs=Array.isArray(v.attributes)&&v.attributes.length?v.attributes:(p.attributes||[]);
+      const fullName=v.name||p.name||"";
+      const memory=getMemory(attrs,fullName);
+      const color=getColor(attrs,fullName);
+      items.push({
+        fullName,
+        baseName:normalizeBase(fullName,color,memory),
+        price:Number(v.price||0),
+        onHand:Number(v.onHand||0),
+        image:v.image||p.image||""
+      });
+    });
+  });
+  return items;
+}
+function groupProducts(items){
+  const map=new Map();
+  items.forEach(x=>{
+    const key=x.baseName||x.fullName;
+    if(!map.has(key)) map.set(key,{name:key,image:x.image||"",items:[]});
+    const g=map.get(key);
+    if(!g.image&&x.image) g.image=x.image;
+    g.items.push(x);
+  });
+  return [...map.values()];
+}
+function defaultVariant(g){
+  return [...(g?.items||[])].sort((a,b)=>{
+    const stock=(b.onHand>0)-(a.onHand>0);
+    if(stock) return stock;
+    return Number(a.price||0)-Number(b.price||0);
+  })[0]||null;
+}
+async function specsFor(name){
+  try{
+    const r=await fetch("/api/specs?v=219&name="+encodeURIComponent(name),{cache:"default"});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Không tải được thông số");
+    return Array.isArray(d.specs)?d.specs:[];
+  }catch(_){
+    return [];
+  }
+}
+function specMap(rows){
+  const m=new Map();
+  (rows||[]).forEach(x=>{
+    if(x?.label) m.set(String(x.label).trim(),String(x.value||"").trim());
+  });
+  return m;
+}
+let CURRENT_GROUPS=[];
+let CURRENT_SPECS=[];
+
+async function init(){
+  const host=document.getElementById("comparePageContent");
+  let saved=[];
+  try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{}
+  const names=(Array.isArray(saved)?saved:[]).map(x=>typeof x==="string"?x:x?.name).filter(Boolean).slice(0,2);
+
+  if(names.length<2){
+    host.innerHTML='<div class="compare-page-empty"><strong>Chưa chọn đủ 2 máy.</strong><span>Quay lại trang chủ và chọn 2 sản phẩm để so sánh.</span><a href="/">Chọn sản phẩm</a></div>';
+    return;
+  }
+
+  let groups=[];
+  try{
+    const r=await fetch("/api/products?ts="+Date.now(),{cache:"no-store"});
+    const d=await r.json();
+    if(r.ok && Array.isArray(d.products)){
+      const all=groupProducts(flattenProducts(d.products));
+      groups=names.map(name=>all.find(g=>g.name===name)).filter(Boolean);
+    }
+  }catch(_){}
+
+  // fallback from richer localStorage if product API fails
+  if(groups.length<2){
+    groups=(Array.isArray(saved)?saved:[]).slice(0,2).map(x=>({
+      name:typeof x==="string"?x:x.name,
+      image:typeof x==="string"?"":(x.image||""),
+      items:[{
+        price:typeof x==="string"?0:Number(x.price||0),
+        onHand:typeof x==="string"?0:Number(x.onHand||0)
+      }]
+    }));
+  }
+
+  if(groups.length<2){
+    host.innerHTML='<div class="compare-page-empty"><strong>Không tải được 2 sản phẩm đã chọn.</strong><a href="/">Chọn lại sản phẩm</a></div>';
+    return;
+  }
+
+  CURRENT_GROUPS=groups.slice(0,2);
+  CURRENT_SPECS=await Promise.all(CURRENT_GROUPS.map(g=>specsFor(g.name)));
+  const maps=CURRENT_SPECS.map(specMap);
+
+  const preferred=["Màn hình","Hệ điều hành","Camera sau","Camera trước","CPU","RAM","Bộ nhớ trong","Thẻ SIM","Dung lượng pin","Thiết kế"];
+  const labels=[...new Set(CURRENT_SPECS.flat().map(x=>String(x.label||"").trim()).filter(Boolean))];
+  labels.sort((a,b)=>{
+    const ai=preferred.indexOf(a),bi=preferred.indexOf(b);
+    if(ai!==-1||bi!==-1){
+      if(ai===-1)return 1;if(bi===-1)return -1;return ai-bi;
+    }
+    return a.localeCompare(b,"vi");
+  });
+
+  const productCells=CURRENT_GROUPS.map(g=>{
+    const v=defaultVariant(g);
+    return `<div class="compare-page-product">
+      <div class="compare-page-product-image">${g.image?`<img src="${esc(g.image)}" alt="${esc(g.name)}" referrerpolicy="no-referrer">`:'<span>Chưa có ảnh</span>'}</div>
+      <h2>${esc(g.name)}</h2>
+      <div class="compare-page-product-price">${money(v?.price)}</div>
+      <div class="compare-page-stock ${Number(v?.onHand||0)>0?"in":"out"}">${Number(v?.onHand||0)>0?"✓ Còn hàng":"Hết hàng"}</div>
+    </div>`;
+  }).join("");
+
+  const rows=labels.map(label=>`
+    <div class="compare-page-row">
+      <div class="compare-page-label">${esc(label)}</div>
+      <div class="compare-page-value">${esc(maps[0].get(label)||"—")}</div>
+      <div class="compare-page-value">${esc(maps[1].get(label)||"—")}</div>
+    </div>`).join("");
+
+  host.innerHTML=`
+    <div class="compare-page-table">
+      <div class="compare-page-row compare-page-products-row">
+        <div class="compare-page-label">Sản phẩm</div>
+        ${productCells}
+      </div>
+      ${rows || '<div class="compare-page-empty-inline">Chưa có đủ thông số để so sánh.</div>'}
+    </div>`;
+}
+
+
+let compareSpeechUtterance=null;
+let compareSpeechText="";
+
+function cleanSpeechText(text=""){
+  return String(text||"")
+    .replace(/[#*_`>-]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function getVietnameseVoice(){
+  if(!("speechSynthesis" in window)) return null;
+  const voices=speechSynthesis.getVoices?.()||[];
+  return voices.find(v=>String(v.lang||"").toLowerCase()==="vi-vn")
+    || voices.find(v=>/^vi(?:-|_)/i.test(String(v.lang||"")))
+    || voices.find(v=>/vietnamese|tiếng việt|tieng viet/i.test(String(v.name||"")))
+    || null;
+}
+
+async function waitForVietnameseVoice(timeoutMs=1800){
+  const found=getVietnameseVoice();
+  if(found) return found;
+
+  return new Promise(resolve=>{
+    let done=false;
+    const finish=v=>{
+      if(done) return;
+      done=true;
+      clearTimeout(timer);
+      try{speechSynthesis.removeEventListener("voiceschanged",onChange);}catch(_){}
+      resolve(v||null);
+    };
+    const onChange=()=>{
+      const v=getVietnameseVoice();
+      if(v) finish(v);
+    };
+    try{
+      speechSynthesis.addEventListener("voiceschanged",onChange);
+      speechSynthesis.getVoices?.();
+    }catch(_){}
+    const timer=setTimeout(()=>finish(getVietnameseVoice()),timeoutMs);
+  });
+}
+
+function stopCompareVoice(){
+  try{speechSynthesis.cancel();}catch(_){}
+  compareSpeechUtterance=null;
+  const btn=document.getElementById("compareVoiceBtn");
+  if(btn){
+    btn.classList.remove("speaking");
+    btn.textContent="🔊 Nghe tư vấn";
+  }
+}
+
+async function playCompareVoice(){
+  const btn=document.getElementById("compareVoiceBtn");
+  const result=document.getElementById("compareAiResult");
+  const text=cleanSpeechText(result?.textContent||"");
+
+  if(!text || /chọn nhu cầu/i.test(text)){
+    return;
+  }
+
+  if(!("speechSynthesis" in window)){
+    btn.textContent="Không hỗ trợ giọng đọc";
+    setTimeout(()=>btn.textContent="🔊 Nghe tư vấn",1800);
+    return;
+  }
+
+  if(speechSynthesis.speaking && compareSpeechText===text){
+    stopCompareVoice();
+    return;
+  }
+
+  stopCompareVoice();
+  btn.disabled=true;
+  btn.textContent="Đang chuẩn bị giọng...";
+  const voice=await waitForVietnameseVoice();
+  btn.disabled=false;
+
+  if(!voice){
+    btn.textContent="Thiết bị chưa có giọng Việt";
+    setTimeout(()=>btn.textContent="🔊 Nghe tư vấn",2200);
+    return;
+  }
+
+  compareSpeechText=text;
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang="vi-VN";
+  utter.voice=voice;
+  utter.rate=1.02;
+  utter.pitch=1;
+  utter.volume=1;
+
+  utter.onstart=()=>{
+    btn.classList.add("speaking");
+    btn.textContent="⏹ Dừng đọc";
+  };
+  utter.onend=stopCompareVoice;
+  utter.onerror=stopCompareVoice;
+
+  compareSpeechUtterance=utter;
+  speechSynthesis.speak(utter);
+}
+
+document.getElementById("compareVoiceBtn")?.addEventListener("click",playCompareVoice);
+window.addEventListener("beforeunload",stopCompareVoice);
+
+document.getElementById("compareAiBtn").addEventListener("click",async()=>{
+  const btn=document.getElementById("compareAiBtn");
+  const result=document.getElementById("compareAiResult");
+  if(CURRENT_GROUPS.length<2) return;
+  btn.disabled=true;
+  const old=btn.textContent;
+  btn.textContent="Đang phân tích...";
+  result.textContent="Gemini đang đối chiếu hai máy...";
+  document.getElementById("compareVoiceBar")?.setAttribute("hidden","");
+  stopCompareVoice();
+  try{
+    const products=CURRENT_GROUPS.map((g,i)=>{
+      const v=defaultVariant(g);
+      return {
+        name:g.name,
+        price:Number(v?.price||0),
+        inStock:Boolean(Number(v?.onHand||0)>0),
+        specs:CURRENT_SPECS[i]||[]
+      };
+    });
+    const r=await fetch("/api/compare-ai",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        requestId:"cmp_"+Date.now().toString(36),
+        need:document.getElementById("compareNeed").value,
+        products
+      })
+    });
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||"AI đang bận.");
+    result.textContent=d.text||"Chưa có kết luận.";
+    const voiceBar=document.getElementById("compareVoiceBar");
+    if(voiceBar && d.text) voiceBar.hidden=false;
+    stopCompareVoice();
+  }catch(e){
+    result.textContent=e.message||"AI đang bận. Vui lòng thử lại.";
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+  }
+});
+
+init();
+</script>
+
+
+<script id="v335-header-runtime">
+(function(){
+  const menu=document.getElementById("sddMobileMenuBtn");
+  const drawer=document.getElementById("sddMobileDrawer");
+  const close=document.getElementById("sddMobileDrawerClose");
+
+  function openDrawer(){
+    if(!drawer)return;
+    drawer.hidden=false;
+    document.body.style.overflow="hidden";
+  }
+  function closeDrawer(){
+    if(!drawer)return;
+    drawer.hidden=true;
+    document.body.style.overflow="";
+  }
+
+  menu?.addEventListener("click",openDrawer);
+  close?.addEventListener("click",closeDrawer);
+  drawer?.addEventListener("click",e=>{if(e.target===drawer)closeDrawer()});
+  drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
+
+  const input=document.getElementById("searchInput");
+  const clear=document.getElementById("clearSearch");
+  const submit=document.querySelector(".sdd-search-submit");
+
+  function runSearch(){
+    const q=(input?.value||"").trim();
+    location.href=q?"/?q="+encodeURIComponent(q):"/#products";
+  }
+
+  submit?.addEventListener("click",runSearch);
+  input?.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){e.preventDefault();runSearch();}
+  });
+  clear?.addEventListener("click",()=>{
+    if(input){input.value="";input.focus();}
+  });
+
+  document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
+  document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
+})();
+</script>
+
+</body>
+</html>

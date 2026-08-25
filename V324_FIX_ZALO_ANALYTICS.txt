@@ -1,7 +1,7 @@
 V324 - Fix thống kê Bấm Zalo
 - Sửa product detail gọi nhầm sendAnalyticsEvent (hàm không tồn tại) -> sendAnalytics.
 - Theo dõi mọi link zalo.me trên trang chính.
-- Thêm tracking Zalo cho tra-gop.html và tra-cuu-bao-hanh.html vì hai trang này không load app.js.
+- Thêm tracking Zalo cho tra-gop và tra-cuu-bao-hanh vì hai trang này không load app.js.
 - Giữ backend hiện có: /api/analytics đã nhận zalo_click và cộng analytics:v5:day:<ngày>.zalo.
 - Chống cộng trùng với các nút đã có listener riêng.
 - Đổi cache app.js thành ?v=324.

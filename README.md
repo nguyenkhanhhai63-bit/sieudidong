@@ -31,7 +31,7 @@ Tạo một GitHub repository mới, ví dụ:
 kiotviet-bao-gia
 
 Upload toàn bộ:
-- index.html
+- /
 - styles.css
 - app.js
 - api/products.js
@@ -476,8 +476,8 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 
 
 ## V45 - Fix header thật sự
-- V44 trước đó đóng gói nhầm index.html cũ nên giao diện không thay đổi.
-- V45 thay toàn bộ index.html bằng header thương mại điện tử mới.
+- V44 trước đó đóng gói nhầm / cũ nên giao diện không thay đổi.
+- V45 thay toàn bộ / bằng header thương mại điện tử mới.
 - Có thanh cam, logo, Danh mục, khu vực Quy Nhơn, search, Liên hệ, Cửa hàng, giỏ hàng, tài khoản.
 - Không còn `Bảng giá Siêu Di Động` và không còn nút giao diện tối.
 - Giữ nguyên toàn bộ app.js/API hiện có.
@@ -504,7 +504,7 @@ Các thông số phụ khác từ nguồn sẽ không hiển thị.
 - Mở trực tiếp link sản phẩm sẽ tự tải đúng trang chi tiết.
 - Nút Back của trình duyệt quay lại danh sách.
 - Sản phẩm tương tự khi bấm cũng đổi sang URL của sản phẩm đó.
-- `vercel.json` có rewrite `/san-pham/(.*)` về `index.html` để link trực tiếp không bị 404.
+- `vercel.json` có rewrite `/san-pham/(.*)` về `/` để link trực tiếp không bị 404.
 
 
 ## V49 - Xây lại khu vực Sản phẩm nổi bật
@@ -1466,7 +1466,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 
 ## V199 - Tra cứu bảo hành thành trang riêng
 - `Tra cứu BH` không còn mở popup/cửa sổ trên trang chủ.
-- Desktop và mobile đều chuyển tới `/tra-cuu-bao-hanh.html`.
+- Desktop và mobile đều chuyển tới `/tra-cuu-bao-hanh`.
 - Trang riêng có form số điện thoại, kết quả bảo hành và chính sách 1 đổi 1.
 - API `/api/warranty-lookup` giữ nguyên nên vẫn đối chiếu dữ liệu hệ thống như trước.
 - Trang chủ nhẹ và gọn hơn vì đã bỏ modal bảo hành.
@@ -1481,7 +1481,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 ## V201 - Đưa Tra cứu bảo hành vào Danh mục mobile
 - Thêm `Tra cứu bảo hành` thành một mục riêng trong menu Danh mục.
 - Có dòng phụ `Kiểm tra bằng số điện thoại`.
-- Bấm sẽ mở trang riêng `/tra-cuu-bao-hanh.html`.
+- Bấm sẽ mở trang riêng `/tra-cuu-bao-hanh`.
 - Xóa nút Tra cứu bảo hành nổi riêng ngoài menu trên mobile.
 - Desktop vẫn giữ mục Tra cứu BH trên thanh điều hướng.
 
@@ -1489,7 +1489,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - AI nhận biết các câu hỏi như `máy tôi còn bảo hành không`, `tra cứu bảo hành`, `1 đổi 1 còn không`.
 - Nếu khách chưa gửi SĐT, AI chỉ hỏi đúng một câu xin số điện thoại mua hàng.
 - Nếu khách gửi SĐT ở tin nhắn kế tiếp, AI hiểu ngữ cảnh và tự tra cứu.
-- Kết quả lấy trực tiếp từ hệ thống bảo hành dùng chung với trang `/tra-cuu-bao-hanh.html`.
+- Kết quả lấy trực tiếp từ hệ thống bảo hành dùng chung với trang `/tra-cuu-bao-hanh`.
 - AI trả lời máy đã mua, ngày mua, ngày hết bảo hành, số ngày còn lại và mốc 1 đổi 1 nếu còn áp dụng.
 - Dữ liệu bảo hành và số điện thoại KHÔNG được gửi sang Gemini; xử lý xác định hoàn toàn ở server.
 - Nếu một SĐT có nhiều máy, AI liệt kê các máy; nếu câu hỏi có tên máy thì ưu tiên đúng máy đó.
@@ -1607,7 +1607,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 
 ## V219 - So sánh mở thành trang riêng
 - Bỏ hoàn toàn popup/modal so sánh.
-- Khi chọn đủ 2 máy và bấm `So sánh 2 máy`, website chuyển sang `/so-sanh.html`.
+- Khi chọn đủ 2 máy và bấm `So sánh 2 máy`, website chuyển sang `/so-sanh`.
 - Trang so sánh có header riêng, nút quay lại chọn máy và bảng 2 cột cân đối.
 - Gemini AI phân tích vẫn hoạt động trực tiếp trên trang so sánh.
 - Dữ liệu 2 máy được lưu trong localStorage và trang riêng tự lấy thông số từ API.
@@ -1651,7 +1651,7 @@ Không cần thêm biến môi trường mới; dùng Redis hiện tại.
 - Nút Nhắn Zalo hỗ trợ cả số điện thoại và URL Zalo; tối ưu giao diện mobile.
 
 ## V225 - Trang trả góp riêng
-- Menu Trả góp desktop/mobile chuyển sang `/tra-gop.html` thay vì popup.
+- Menu Trả góp desktop/mobile chuyển sang `/tra-gop` thay vì popup.
 - Có URL riêng để mở trực tiếp/chia sẻ.
 - Trang trả góp tiếp tục lấy dữ liệu từ `/api/installment-settings` và phần quản trị hiện có.
 
@@ -1996,7 +1996,7 @@ Quy tắc:
 
 
 ## V318 - Khôi phục ảnh trang chi tiết sản phẩm
-- Khôi phục index.html ổn định của V315 cho phần storefront/product detail.
+- Khôi phục / ổn định của V315 cho phần storefront/product detail.
 - Loại bỏ toàn bộ CSS/JS V316-V317 can thiệp gallery và selector `[class*=main-image]`.
 - Ảnh sản phẩm dùng lại logic gốc của app.js, nên đổi màu/dung lượng không bị co hoặc biến mất.
 - Các file quản trị/API khác giữ nguyên từ V317.

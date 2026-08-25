@@ -1586,7 +1586,7 @@ async function openCompareModal(){
 
   // V219: So sánh mở thành TRANG RIÊNG, không dùng popup/modal.
   saveCompareItems();
-  window.location.href="/so-sanh.html";
+  window.location.href="/so-sanh";
 }
 
 function render(){

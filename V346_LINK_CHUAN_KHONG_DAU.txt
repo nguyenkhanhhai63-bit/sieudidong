@@ -1,0 +1,10 @@
+V346 - Chuẩn hóa link website
+- Link nội bộ dùng chữ thường, không dấu, phân cách bằng dấu gạch ngang.
+- Bỏ .html ở URL người dùng nhìn thấy.
+- /dich-vu
+- /tra-gop
+- /tra-cuu-bao-hanh
+- /so-sanh
+- Trang chủ: /
+- Tạo thêm thư mục route/index.html để tương thích hosting tĩnh.
+- Không đổi chữ hiển thị trên menu; chỉ đổi đường dẫn URL.
