@@ -58,16 +58,22 @@
 
 
 
-<style id="v359-warranty-mobile-menu-css">
+
+<style id="v362-warranty-menu-route-fix">
 @media(max-width:899px){
   #sddMobileMenuBtn{
     display:inline-flex!important;
     align-items:center!important;
     justify-content:center!important;
-    pointer-events:auto!important;
-    cursor:pointer!important;
     position:relative!important;
     z-index:2147483646!important;
+    pointer-events:auto!important;
+    touch-action:manipulation!important;
+    cursor:pointer!important;
+  }
+
+  #sddMobileDrawer{
+    z-index:2147483645!important;
   }
 
   #sddMobileDrawer[hidden]{
@@ -78,86 +84,25 @@
     display:block!important;
     position:fixed!important;
     inset:0!important;
-    z-index:2147483645!important;
-    background:rgba(15,23,42,.38)!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
   }
 
   #sddMobileDrawer .sdd-mobile-drawer-panel{
-    display:block!important;
     position:absolute!important;
     left:0!important;
     top:0!important;
     bottom:0!important;
-    width:min(86vw,330px)!important;
-    background:#fff!important;
-    box-shadow:0 20px 60px rgba(15,23,42,.25)!important;
-    overflow:auto!important;
     transform:none!important;
     visibility:visible!important;
     opacity:1!important;
-  }
-
-  #sddMobileDrawer .sdd-mobile-drawer-head{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:space-between!important;
-    min-height:60px!important;
-    padding:0 16px!important;
-    border-bottom:1px solid #eef1f4!important;
-  }
-
-  #sddMobileDrawerClose{
-    width:38px!important;
-    height:38px!important;
-    border:1px solid #e5e7eb!important;
-    border-radius:10px!important;
-    background:#fff!important;
-    font-size:24px!important;
-    line-height:1!important;
-    cursor:pointer!important;
-  }
-
-  #sddMobileDrawer .sdd-mobile-drawer-nav{
-    display:flex!important;
-    flex-direction:column!important;
-    padding:10px!important;
-  }
-
-  #sddMobileDrawer .sdd-mobile-drawer-nav a{
-    display:flex!important;
-    align-items:center!important;
-    min-height:46px!important;
-    padding:0 12px!important;
-    border-radius:9px!important;
-    color:#101828!important;
-    text-decoration:none!important;
-    font-weight:750!important;
-  }
-
-  #sddMobileDrawer .sdd-mobile-drawer-nav a.active{
-    background:#fff2ea!important;
-    color:#ff5a00!important;
+    pointer-events:auto!important;
   }
 }
 </style>
 
-
-<script id="v360-menu-head-fallback">
-(function(){
-  document.addEventListener('click',function(e){
-    var b=e.target&&e.target.closest?e.target.closest('#sddMobileMenuBtn'):null;
-    if(!b)return;
-    var d=document.getElementById('sddMobileDrawer');
-    if(!d)return;
-    if(!d.hasAttribute('hidden')) return; /* inline handler may already have opened it */
-    d.removeAttribute('hidden');
-    d.setAttribute('aria-hidden','false');
-    b.setAttribute('aria-expanded','true');
-    document.documentElement.style.overflow='hidden';
-    document.body.style.overflow='hidden';
-  },true);
-})();
-</script>
+<script src="/warranty-mobile-menu.js?v=362" defer></script>
 </head>
 <body class="warranty-page-body">
 <header class="commerce-header sdd-header-v164">
@@ -173,8 +118,7 @@
   </div>
 
   <div class="commerce-header-inner sdd-header-main">
-    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục" aria-expanded="false"
-  onclick="(function(b){var d=document.getElementById('sddMobileDrawer');if(!d)return false;var open=d.hasAttribute('hidden');if(open){d.removeAttribute('hidden');d.setAttribute('aria-hidden','false');b.setAttribute('aria-expanded','true');document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';}else{d.setAttribute('hidden','');d.setAttribute('aria-hidden','true');b.setAttribute('aria-expanded','false');document.documentElement.style.overflow='';document.body.style.overflow='';}return false;})(this);return false;">☰</button>
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục" aria-expanded="false">☰</button>
 
     <div class="commerce-brand-block">
       <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
@@ -239,8 +183,7 @@
             <small>Siêu Di Động Quy Nhơn</small>
           </div>
         </div>
-        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng"
-  onclick="var d=document.getElementById('sddMobileDrawer'),b=document.getElementById('sddMobileMenuBtn');if(d){d.setAttribute('hidden','');d.setAttribute('aria-hidden','true');}if(b)b.setAttribute('aria-expanded','false');document.documentElement.style.overflow='';document.body.style.overflow='';return false;">×</button>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
       </div>
 
       <nav class="sdd-mobile-nav-list">
@@ -487,8 +430,5 @@
 
 
 
-<script id="v360-drawer-backdrop">
-(function(){var d=document.getElementById('sddMobileDrawer');if(!d)return;d.addEventListener('click',function(e){if(e.target!==d)return;d.setAttribute('hidden','');d.setAttribute('aria-hidden','true');var b=document.getElementById('sddMobileMenuBtn');if(b)b.setAttribute('aria-expanded','false');document.documentElement.style.overflow='';document.body.style.overflow='';});})();
-</script>
 </body>
 </html>
