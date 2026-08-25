@@ -382,6 +382,32 @@ function slugParam(value=""){
   return String(value || "").trim();
 }
 
+function sddMainCategoryPath(kind){
+  if(kind === "tablet") return "/may-tinh-bang";
+  if(kind === "used") return "/may-cu";
+  return "/dien-thoai";
+}
+function sddKindFromPath(pathname=location.pathname){
+  const p=String(pathname||"").toLowerCase().replace(/\/+$/,"");
+  if(p==="/may-tinh-bang") return "tablet";
+  if(p==="/may-cu") return "used";
+  if(p==="/dien-thoai") return "phone";
+  return "";
+}
+function sddCleanLegacyCategoryUrl(){
+  const params=new URLSearchParams(location.search);
+  const c=params.get("category")||"";
+  if(!c) return;
+  let kind="";
+  if(/máy\s*cũ|like\s*new|likenew|used|secondhand/i.test(c)) kind="used";
+  else if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)) kind="tablet";
+  else if(/điện\s*thoại|smartphone|phone/i.test(c)) kind="phone";
+  if(!kind) return;
+  params.delete("category");
+  const qs=params.toString();
+  history.replaceState(history.state,"",sddMainCategoryPath(kind)+(qs?"?"+qs:""));
+}
+
 function updateUrlFromState(){
   const url = new URL(location.href);
   const q = searchInput?.value?.trim() || "";
@@ -389,8 +415,9 @@ function updateUrlFromState(){
   // Giữ URL trang chi tiết riêng biệt, chỉ sync filter ở trang danh sách.
   if(location.pathname.startsWith("/san-pham/")) return;
 
-  if(ACTIVE_MAIN_CATEGORY) url.searchParams.set("category", ACTIVE_MAIN_CATEGORY);
-  else url.searchParams.delete("category");
+  url.searchParams.delete("category");
+  const cleanKind = ACTIVE_NAV_KIND || sddKindFromPath(url.pathname);
+  if(cleanKind) url.pathname = sddMainCategoryPath(cleanKind);
 
   if(ACTIVE_CATEGORY && ACTIVE_CATEGORY !== "Tất cả")
     url.searchParams.set("brand", ACTIVE_CATEGORY);
@@ -422,7 +449,9 @@ function loadStateFromUrl(){
   const sort = params.get("sort");
   const q = params.get("q");
 
-  if(category) ACTIVE_MAIN_CATEGORY = category;
+  const pathKind=sddKindFromPath(location.pathname);
+  if(pathKind){ ACTIVE_NAV_KIND=pathKind; ACTIVE_MAIN_CATEGORY=""; }
+  else if(category) ACTIVE_MAIN_CATEGORY = category;
   if(brand) ACTIVE_CATEGORY = brand;
   if(price && PRICE_FILTERS.some(x=>x.label===price)) ACTIVE_PRICE_FILTER = price;
   if(["default","price-asc","price-desc","name-asc"].includes(sort || "")) ACTIVE_SORT = sort;
@@ -3513,11 +3542,13 @@ function sddActivateMainCategory(kind){
   sddUpdateMainNavActive(ACTIVE_NAV_KIND);
 
   const url = new URL(location.href);
-  url.searchParams.set("category", ACTIVE_NAV_KIND === "tablet" ? "Máy tính bảng" : (ACTIVE_NAV_KIND === "used" ? "Máy cũ" : "Điện thoại"));
+  url.pathname = sddMainCategoryPath(ACTIVE_NAV_KIND);
+  url.searchParams.delete("category");
   url.searchParams.delete("brand");
   url.searchParams.delete("price");
   url.searchParams.delete("q");
-  history.replaceState(history.state, "", url.pathname + "?" + url.searchParams.toString());
+  const qs=url.searchParams.toString();
+  history.replaceState(history.state, "", url.pathname + (qs ? "?"+qs : ""));
 
   requestAnimationFrame(()=>document.getElementById("productGrid")?.scrollIntoView({behavior:"smooth",block:"start"}));
   return true;
@@ -3535,10 +3566,13 @@ document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
 
 // Nếu URL được mở trực tiếp với ?category=Điện thoại / Máy tính bảng thì kích hoạt đúng tab.
 (function sddInitNavFromUrl(){
+  const pathKind=sddKindFromPath(location.pathname);
   const c=new URLSearchParams(location.search).get("category") || "";
-  if(/máy\s*cũ|like\s*new|likenew|used|secondhand/i.test(c)){ ACTIVE_NAV_KIND="used"; ACTIVE_MAIN_CATEGORY=""; }
+  if(pathKind){ ACTIVE_NAV_KIND=pathKind; ACTIVE_MAIN_CATEGORY=""; }
+  else if(/máy\s*cũ|like\s*new|likenew|used|secondhand/i.test(c)){ ACTIVE_NAV_KIND="used"; ACTIVE_MAIN_CATEGORY=""; }
   else if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)){ ACTIVE_NAV_KIND="tablet"; ACTIVE_MAIN_CATEGORY=""; }
   else if(/điện\s*thoại|smartphone|phone/i.test(c)){ ACTIVE_NAV_KIND="phone"; ACTIVE_MAIN_CATEGORY=""; }
+  sddCleanLegacyCategoryUrl();
 })();
 
 // Đồng bộ trạng thái menu sau khi dữ liệu sản phẩm được nạp.

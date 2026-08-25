@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/dien-thoai",
+      "destination": "/"
+    },
+    {
+      "source": "/may-tinh-bang",
+      "destination": "/"
+    },
+    {
+      "source": "/may-cu",
+      "destination": "/"
+    },
+    {
+      "source": "/phu-kien",
+      "destination": "/"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
