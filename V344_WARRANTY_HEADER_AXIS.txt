@@ -1,6 +1,0 @@
-V344 - Tra cứu bảo hành bám đúng vị trí header
-- Không dùng max-width cố định.
-- Đọc getBoundingClientRect() của .sdd-header-nav-inner.
-- Gán trực tiếp left + width thật của header cho warranty-page-main.
-- Card tra cứu, chính sách, quy trình, lưu ý và hỗ trợ dùng 100% cùng trục.
-- Mobile vẫn full-width responsive.
