@@ -6193,26 +6193,38 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
   }
 }
 
-/* V381 - Quản lý ẩn/hiện sản phẩm theo yêu cầu */
-.order-visibility-admin .head{align-items:flex-start}
-.order-admin-actions{display:flex;gap:8px;flex-wrap:wrap}
-.order-admin-toolbar{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;justify-content:space-between}
-.order-admin-summary{font-size:13px;color:var(--muted);font-weight:700}
-.order-admin-status{min-height:22px;padding:10px 20px 0;font-size:13px;color:var(--muted)}
-.order-admin-rows{padding:8px 12px 16px}
-.order-vis-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 10px;border-bottom:1px solid #eef0f2}
-.order-vis-row:last-child{border-bottom:0}
-.order-vis-name{min-width:0}.order-vis-name strong{display:block;font-size:14px}.order-vis-name small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
-.order-vis-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+/* V383 - Giao diện quản lý Sản phẩm theo yêu cầu */
+.order-visibility-admin{background:#f6f7f9!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+.order-visibility-admin .head{align-items:center;padding:22px 24px;background:#fff;border:1px solid #e8ebef;border-radius:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(16,24,40,.04)}
+.order-visibility-admin .head h1{font-size:22px;margin:0 0 5px;color:#101828}
+.order-visibility-admin .head p{margin:0;color:#667085;line-height:1.5;max-width:760px}
+.order-admin-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.order-admin-actions button{min-height:40px;border-radius:10px!important;padding:0 15px!important;font-weight:800!important}
+.order-admin-toolbar{position:sticky;top:61px;z-index:8;padding:14px 16px;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border:1px solid #e8ebef;border-radius:14px;display:grid;grid-template-columns:minmax(260px,520px) 1fr;align-items:center;gap:14px;box-shadow:0 4px 14px rgba(16,24,40,.04)}
+.order-admin-toolbar .search{width:100%!important;min-height:42px!important;border-radius:11px!important;background:#f9fafb!important;border:1px solid #dfe3e8!important;padding-left:14px!important;font-size:13px!important}
+.order-admin-toolbar .search:focus{background:#fff!important;border-color:#ff5a0a!important;box-shadow:0 0 0 3px rgba(255,90,10,.10)!important}
+.order-admin-summary{justify-self:end;font-size:12px;color:#475467;font-weight:800;background:#f2f4f7;border:1px solid #e4e7ec;border-radius:999px;padding:8px 12px;white-space:nowrap}
+.order-admin-status{min-height:22px;padding:10px 4px 2px;font-size:12px;color:#667085;font-weight:650}
+.order-admin-rows{padding:8px 0 24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.order-vis-row{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:126px;padding:16px;background:#fff;border:1px solid #e7eaf0;border-radius:14px;box-shadow:0 2px 8px rgba(16,24,40,.035);transition:.16s ease}
+.order-vis-row:hover{transform:translateY(-1px);border-color:#d4d9e2;box-shadow:0 7px 18px rgba(16,24,40,.07)}
+.order-vis-row.is-hidden{background:#fbfbfc;border-color:#eceef2}
+.order-vis-name{min-width:0;padding-right:4px}
+.order-vis-name strong{display:block;font-size:14px;line-height:1.35;color:#101828;overflow-wrap:anywhere}
+.order-vis-name small{display:inline-flex;align-items:center;margin-top:8px;font-size:11px;font-weight:750;color:#067647;background:#ecfdf3;border:1px solid #d1fadf;padding:4px 7px;border-radius:999px}
+.order-vis-row.is-hidden .order-vis-name small{color:#b42318;background:#fef3f2;border-color:#fee4e2}
+.order-vis-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none;border-top:1px solid #f0f1f3;padding-top:12px}
 .order-vis-toggle input{position:absolute;opacity:0;pointer-events:none}
-.order-vis-switch{width:44px;height:24px;border-radius:999px;background:#cfd4dc;position:relative;transition:.18s}
-.order-vis-switch:after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.18s}
-.order-vis-toggle input:checked + .order-vis-switch{background:#16a34a}
-.order-vis-toggle input:checked + .order-vis-switch:after{transform:translateX(20px)}
-.order-vis-label{min-width:62px;font-size:12px;font-weight:800;color:#b42318}
-.order-vis-toggle input:checked ~ .order-vis-label{color:#15803d}
-.order-admin-empty{padding:40px 20px;text-align:center;color:var(--muted)}
-@media(max-width:760px){.order-visibility-admin .head{display:block}.order-admin-actions{margin-top:12px}.order-admin-toolbar{display:block}.order-admin-summary{margin-top:10px}.order-vis-row{padding:13px 4px}}
+.order-vis-switch{width:42px;height:23px;border-radius:999px;background:#d0d5dd;position:relative;transition:.18s;flex:0 0 auto;order:2}
+.order-vis-switch:after{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:.18s}
+.order-vis-toggle input:checked + .order-vis-switch{background:#12b76a}
+.order-vis-toggle input:checked + .order-vis-switch:after{transform:translateX(19px)}
+.order-vis-label{font-size:12px;font-weight:850;color:#b42318;order:1}
+.order-vis-toggle input:checked ~ .order-vis-label{color:#067647}
+.order-admin-empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:#667085;background:#fff;border:1px dashed #d0d5dd;border-radius:14px}
+@media(max-width:1500px){.order-admin-rows{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1050px){.order-admin-rows{grid-template-columns:repeat(2,minmax(0,1fr))}.order-admin-toolbar{top:55px}}
+@media(max-width:760px){.order-visibility-admin .head{display:block;padding:17px}.order-visibility-admin .head h1{font-size:19px}.order-admin-actions{margin-top:14px}.order-admin-actions button{flex:1}.order-admin-toolbar{position:relative;top:auto;display:block;padding:12px}.order-admin-summary{display:inline-block;margin-top:10px}.order-admin-rows{grid-template-columns:1fr;gap:9px}.order-vis-row{min-height:auto;padding:14px}.order-admin-status{padding-left:2px}}
 </style>
 
 </head>
@@ -10155,7 +10167,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(!list.length){rowsEl.innerHTML='<div class="order-admin-empty">Không tìm thấy model phù hợp.</div>';return;}
     rowsEl.innerHTML=list.map(name=>{
       const visible=!isHidden(name);
-      return `<div class="order-vis-row" data-model="${esc(name)}"><div class="order-vis-name"><strong>${esc(name)}</strong><small>${visible?'Đang hiển thị ngoài website':'Đang ẩn khỏi khách hàng'}</small></div><label class="order-vis-toggle"><input type="checkbox" ${visible?'checked':''} data-order-visible><span class="order-vis-switch"></span><span class="order-vis-label">${visible?'Hiển thị':'Đang ẩn'}</span></label></div>`;
+      return `<div class="order-vis-row${visible?'':' is-hidden'}" data-model="${esc(name)}"><div class="order-vis-name"><strong>${esc(name)}</strong><small>${visible?'Đang hiển thị':'Đang ẩn'}</small></div><label class="order-vis-toggle"><input type="checkbox" ${visible?'checked':''} data-order-visible><span class="order-vis-switch"></span><span class="order-vis-label">${visible?'Hiển thị trên web':'Ẩn khỏi web'}</span></label></div>`;
     }).join('');
   }
 
@@ -10193,8 +10205,9 @@ document.addEventListener("DOMContentLoaded",function(){
     setHidden(name,!cb.checked);
     const small=row?.querySelector('.order-vis-name small');
     const label=row?.querySelector('.order-vis-label');
-    if(small)small.textContent=cb.checked?'Đang hiển thị ngoài website':'Đang ẩn khỏi khách hàng';
-    if(label)label.textContent=cb.checked?'Hiển thị':'Đang ẩn';
+    if(small)small.textContent=cb.checked?'Đang hiển thị':'Đang ẩn';
+    if(label)label.textContent=cb.checked?'Hiển thị trên web':'Ẩn khỏi web';
+    if(row)row.classList.toggle('is-hidden',!cb.checked);
     const hiddenCount=sourceModels.filter(isHidden).length;
     if(summaryEl)summaryEl.textContent=`${sourceModels.length-hiddenCount} hiển thị • ${hiddenCount} đang ẩn • ${sourceModels.length} model trong nguồn`;
     if(statusEl){statusEl.textContent='Có thay đổi chưa lưu.';statusEl.style.color='#b45309';}
