@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Order máy | Siêu Di Động</title>
-<meta name="description" content="Danh sách điện thoại có thể order tại Siêu Di Động. Liên hệ nhân viên để kiểm tra giá và thời gian hàng về.">
+<meta name="description" content="Danh sách điện thoại có thể đặt theo nhu cầu tại Siêu Di Động. Liên hệ nhân viên để kiểm tra tình trạng nguồn hàng, phiên bản và thời gian dự kiến.">
 <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
 <link rel="stylesheet" href="/styles.css?v=261">
 <style>
@@ -166,11 +166,11 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
   <div class="order-hero-top">
     <div class="order-title-wrap">
       <span class="order-title-icon"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span>
-      <div><h1 class="order-title">Danh sách máy có thể Order</h1><p class="order-sub">Tìm máy bạn cần. Siêu Di Động sẽ kiểm tra nguồn hàng, giá và thời gian hàng về trước khi xác nhận.</p></div>
+      <div><h1 class="order-title">Danh sách máy có thể Order</h1><p class="order-sub">Tìm máy bạn cần. Siêu Di Động sẽ kiểm tra tình trạng nguồn hàng, phiên bản và thời gian dự kiến trước khi xác nhận đơn.</p></div>
     </div>
     <a class="order-contact-top" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Liên hệ nhân viên</a>
   </div>
-  <div class="order-note"><span>ⓘ</span><div><strong>Không hiển thị giá trên website.</strong> Giá order và thời gian hàng về có thể thay đổi theo từng thời điểm, vui lòng liên hệ nhân viên để được xác nhận.</div></div>
+  <div class="order-note"><span>ⓘ</span><div><strong>Thông tin đặt hàng.</strong> Siêu Di Động chỉ xác nhận đơn sau khi kiểm tra nguồn cung và hồ sơ hàng hóa theo quy định. Thông tin xuất xứ, bảo hành và chứng từ của từng sản phẩm sẽ được nhân viên cung cấp trước khi khách chốt đơn.</div></div>
   <div class="order-controls">
     <label class="order-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="orderSearch" type="search" placeholder="Tìm tên máy, ví dụ Redmi K90..." autocomplete="off"></label>
     <select id="orderBrand" class="order-select"><option value="all">Tất cả hãng</option></select>
@@ -178,7 +178,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
   </div>
 </section>
 <section class="order-list-card">
-  <div class="order-list-head"><h2>Máy có thể Order</h2><small>Dữ liệu dùng để khách tham khảo model, không công khai giá</small></div>
+  <div class="order-list-head"><h2>Máy có thể Order</h2><small>Danh sách model nhận đặt theo tình trạng nguồn hàng</small></div>
   <div id="orderGrid" class="order-grid"><div class="order-empty">Đang tải danh sách...</div></div>
 </section>
 <div class="order-footer-help"><div><strong>Không thấy máy bạn cần?</strong><p>Nhắn tên máy cho nhân viên, shop sẽ kiểm tra nguồn hàng trực tiếp.</p></div><a href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo nhân viên</a></div>
@@ -265,7 +265,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
    const rows=products.filter(p=>(b==='all'||p.brand===b)&&(!q||norm(p.name+' '+p.versions.join(' ')+' '+p.colors.join(' ')+' '+p.brand).includes(q)));
    count.textContent=rows.length;
    if(!rows.length){grid.innerHTML='<div class="order-empty"><strong>Không tìm thấy máy phù hợp</strong>Thử tên máy khác hoặc chọn lại hãng.</div>';return;}
-   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc(p.versions.join(' · '))}<br><strong>Màu:</strong> ${esc(p.colors.join(' · '))}<br>Giá & thời gian về hàng: liên hệ nhân viên</div><div class="order-item-bottom"><span class="order-no-price">Không công khai giá</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
+   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc(p.versions.join(' · '))}<br><strong>Màu:</strong> ${esc(p.colors.join(' · '))}<br>Thông tin đặt hàng: liên hệ nhân viên để xác nhận</div><div class="order-item-bottom"><span class="order-no-price">Kiểm tra nguồn hàng trước khi xác nhận</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
  }
 
  async function refreshProducts(){
