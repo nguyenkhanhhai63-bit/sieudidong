@@ -1,0 +1,280 @@
+{
+  "source": "https://noibo.sieudidong.vn/",
+  "products": [
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi 14C",
+      "versions": [
+        "4/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi 15C",
+      "versions": [
+        "4/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi 15",
+      "versions": [
+        "6/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi Note 13 Pro 5G",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi Note 14 Pro 5G",
+      "versions": [
+        "8/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi Turbo 4",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi Turbo 4 Pro",
+      "versions": [
+        "12/256",
+        "16/256",
+        "12/512"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi Turbo 5 Max",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "POCO X8 Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "POCO X8 Pro Max",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi K80",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi K90",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi K90 Max",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Redmi K90 Pro Max",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 15",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 15T",
+      "versions": [
+        "12/512"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 15T Pro",
+      "versions": [
+        "12/512"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 17T",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 17 Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi 17 Pro Max",
+      "versions": [
+        "12/512"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi Pad 2",
+      "versions": [
+        "4/128",
+        "8/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Xiaomi",
+      "name": "Xiaomi Pad 7",
+      "versions": [
+        "8/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "vivo / iQOO",
+      "name": "iQOO Z10X",
+      "versions": [
+        "8/128"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "vivo / iQOO",
+      "name": "iQOO Z9",
+      "versions": [
+        "8/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "vivo / iQOO",
+      "name": "iQOO Z10 Turbo",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "vivo / iQOO",
+      "name": "iQOO Z10 Turbo Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "vivo / iQOO",
+      "name": "vivo X300 Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "OPPO",
+      "name": "OPPO K13 Turbo Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "OPPO",
+      "name": "OPPO K15 Pro",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "OnePlus",
+      "name": "OnePlus Ace 6",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "OnePlus",
+      "name": "OnePlus Ace 6T",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "OnePlus",
+      "name": "OnePlus 15",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Honor",
+      "name": "Honor Win",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    },
+    {
+      "brand": "Honor",
+      "name": "Honor Win RT",
+      "versions": [
+        "12/256"
+      ],
+      "note": "Có thể order"
+    }
+  ]
+}

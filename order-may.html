@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order máy | Siêu Di Động</title>
+<meta name="description" content="Danh sách điện thoại có thể order tại Siêu Di Động. Liên hệ nhân viên để kiểm tra giá và thời gian hàng về.">
+<link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
+<link rel="stylesheet" href="/styles.css?v=261">
+<style>
+:root{--om-orange:#ff5a00;--om-text:#111827;--om-muted:#667085;--om-line:#e7e9ee;--om-bg:#f5f6f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--om-bg);color:var(--om-text)}
+.order-page{width:min(1680px,calc(100% - 56px));margin:26px auto 60px}
+.order-hero{background:#fff;border:1px solid var(--om-line);border-radius:22px;padding:28px 30px;box-shadow:0 8px 30px rgba(17,24,39,.04)}
+.order-hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.order-title-wrap{display:flex;gap:16px;align-items:center}
+.order-title-icon{width:54px;height:54px;border-radius:16px;background:#fff3ec;border:1px solid #ffd6c0;display:grid;place-items:center;color:var(--om-orange);flex:0 0 auto}
+.order-title-icon svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.order-title{margin:0;font-size:28px;line-height:1.15;font-weight:900}
+.order-sub{margin:6px 0 0;color:var(--om-muted);font-size:14px;line-height:1.5}
+.order-contact-top{display:inline-flex;align-items:center;gap:9px;border:0;border-radius:12px;background:var(--om-orange);color:#fff;padding:13px 18px;text-decoration:none;font-weight:800;white-space:nowrap;box-shadow:0 7px 16px rgba(255,90,0,.18)}
+.order-contact-top:hover{filter:brightness(.97)}
+.order-note{margin-top:22px;border:1px solid #ffd8c4;background:#fff8f4;border-radius:14px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#7a3b1e}
+.order-note strong{color:#c5480b}
+.order-controls{margin-top:20px;display:grid;grid-template-columns:minmax(280px,1.15fr) minmax(200px,.55fr) auto;gap:12px;align-items:center}
+.order-search{height:48px;border:1px solid #dfe3e8;border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 14px;gap:10px}
+.order-search:focus-within{border-color:#ff9b65;box-shadow:0 0 0 3px rgba(255,90,0,.08)}
+.order-search svg{width:20px;height:20px;fill:none;stroke:#98a2b3;stroke-width:2}
+.order-search input{border:0;outline:0;width:100%;font:inherit;font-size:14px;background:transparent}
+.order-select{height:48px;border:1px solid #dfe3e8;border-radius:12px;padding:0 13px;background:#fff;font:inherit;font-weight:700;color:#344054;outline:none}
+.order-count{height:48px;border:1px solid #eceff2;background:#fafafa;border-radius:12px;display:flex;align-items:center;padding:0 15px;white-space:nowrap;color:#667085;font-size:13px}.order-count strong{color:#111827;margin-right:5px}
+.order-list-card{margin-top:18px;background:#fff;border:1px solid var(--om-line);border-radius:22px;overflow:hidden;box-shadow:0 8px 30px rgba(17,24,39,.035)}
+.order-list-head{padding:19px 22px;border-bottom:1px solid #edf0f3;display:flex;justify-content:space-between;align-items:center;gap:12px}.order-list-head h2{font-size:18px;margin:0;font-weight:900}.order-list-head small{color:#98a2b3}
+.order-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:18px}
+.order-item{border:1px solid #e8eaee;border-radius:16px;padding:17px;background:#fff;transition:.15s ease;min-width:0}.order-item:hover{border-color:#ffc7a8;box-shadow:0 8px 24px rgba(17,24,39,.055);transform:translateY(-1px)}
+.order-item-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.order-brand{font-size:10px;line-height:1;text-transform:uppercase;letter-spacing:.06em;color:#ff5a00;font-weight:900;background:#fff3ec;border-radius:999px;padding:7px 9px}.order-status{font-size:11px;color:#0a7f49;background:#edf9f2;border:1px solid #d6f1e1;border-radius:999px;padding:6px 9px;font-weight:800;white-space:nowrap}
+.order-name{font-size:18px;font-weight:900;margin:14px 0 8px;line-height:1.3}.order-meta{min-height:38px;color:#667085;font-size:12px;line-height:1.5}.order-meta strong{color:#344054}
+.order-item-bottom{margin-top:15px;padding-top:14px;border-top:1px solid #f0f1f3;display:flex;align-items:center;justify-content:space-between;gap:10px}.order-no-price{font-size:12px;color:#98a2b3}.order-zalo{border:0;border-radius:10px;background:#ff5a00;color:#fff;text-decoration:none;padding:10px 13px;font-size:12px;font-weight:900;white-space:nowrap}.order-zalo:hover{filter:brightness(.97)}
+.order-empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:#667085}.order-empty strong{display:block;color:#111827;font-size:18px;margin-bottom:5px}
+.order-footer-help{margin-top:18px;background:#fff;border:1px solid var(--om-line);border-radius:18px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}.order-footer-help strong{font-size:15px}.order-footer-help p{margin:4px 0 0;color:#667085;font-size:12px}.order-footer-help a{background:#1677ff;color:#fff;text-decoration:none;font-weight:900;padding:12px 16px;border-radius:11px;white-space:nowrap}
+@media(max-width:1150px){.order-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.order-controls{grid-template-columns:1fr 220px}.order-count{grid-column:1/-1;width:max-content}}
+@media(max-width:899px){.order-page{width:100%;margin:0 auto 30px;padding:12px}.order-hero{border-radius:16px;padding:18px 15px}.order-hero-top{display:block}.order-title-icon{width:46px;height:46px;border-radius:13px}.order-title{font-size:22px}.order-sub{font-size:12px}.order-contact-top{margin-top:15px;width:100%;justify-content:center}.order-note{margin-top:15px;font-size:12px}.order-controls{grid-template-columns:1fr;margin-top:15px;gap:9px}.order-select,.order-search,.order-count{width:100%;height:46px}.order-count{grid-column:auto}.order-list-card{border-radius:16px;margin-top:12px}.order-list-head{padding:15px}.order-grid{grid-template-columns:1fr;padding:10px;gap:9px}.order-item{padding:14px}.order-name{font-size:16px}.order-item-bottom{align-items:center}.order-zalo{padding:10px 12px}.order-footer-help{display:block;border-radius:15px}.order-footer-help a{display:block;text-align:center;margin-top:12px}}
+@media(max-width:420px){.order-title-wrap{align-items:flex-start}.order-status{font-size:10px}.order-item-bottom{gap:6px}.order-no-price{font-size:11px}}
+/* make page header search usable as order search */
+.sdd-header-search .search-suggestions{display:none!important}
+</style>
+</head>
+<body>
+<header class="commerce-header sdd-header-v164">
+  <div class="sdd-top-strip">
+    <div class="sdd-top-strip-inner">
+      <span class="sdd-top-message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span></span>
+      <div class="sdd-top-benefits">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg>Hỗ trợ tư vấn</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.1-8 10-4.6-1.9-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Bảo hành uy tín</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Cửa hàng Quy Nhơn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="commerce-header-inner sdd-header-main">
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+
+    <div class="commerce-brand-block">
+      <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
+        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <span class="sdd-brand-copy">
+          <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+          <small>Chuyên Android giá tốt</small>
+        </span>
+      </a>
+    </div>
+
+    <div class="commerce-search sdd-header-search">
+      <span class="sdd-search-leading"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></span>
+      <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
+      <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      <button class="sdd-search-submit" type="button" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></button>
+      <div id="searchSuggestions" class="search-suggestions" hidden></div>
+    </div>
+
+    <div class="sdd-header-actions">
+      <button class="sdd-header-action" id="sddConsultAction" type="button">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg></span>
+        <span><strong>Tư vấn</strong><small>Online</small></span>
+      </button>
+      <a class="sdd-header-action sdd-store-action" href="/">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1-5H5l-1 5Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.5 1 2.5 2.5 2.5S9 11.5 9 10c0 1.5 1 2.5 3 2.5s3-1 3-2.5c0 1.5 1 2.5 2.5 2.5S20 11.5 20 10"/></svg></span>
+        <span><strong>Cửa hàng</strong><small>Quy Nhơn</small></span>
+      </a>
+    </div>
+
+    <div class="commerce-header-note">Tư vấn <span>•</span> Cửa hàng Quy Nhơn</div>
+  </div>
+
+  <div class="sdd-header-nav">
+    <div class="sdd-header-nav-inner">
+      <nav class="sdd-main-nav" aria-label="Điều hướng chính">
+        <a href="/">Trang chủ</a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone">Điện thoại</a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet">Máy tính bảng</a>
+        <a href="/may-cu" data-sdd-main-nav="used">Máy cũ</a>
+        <a href="/phu-kien">Phụ kiện</a>
+        <a href="/dich-vu">Dịch vụ</a>
+        <a href="/tra-gop">Trả góp</a>
+        <a href="/order-may" class="active">Order máy</a>
+        <button id="sddNavConsultBtn" type="button">Tư vấn</button>
+        <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh">Tra cứu BH</a>
+      </nav>
+
+      <a class="sdd-nav-store" href="/">
+        <span>⌖</span>
+        <strong>Cửa hàng Quy Nhơn</strong>
+      </a>
+    </div>
+  </div>
+
+  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+    <div class="sdd-mobile-drawer-panel">
+      <div class="sdd-mobile-drawer-head">
+        <div class="sdd-mobile-drawer-title">
+          <img src="/assets/logo-square.jpg" alt="">
+          <div>
+            <strong>Danh mục</strong>
+            <small>Siêu Di Động Quy Nhơn</small>
+          </div>
+        </div>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+      </div>
+
+      <nav class="sdd-mobile-nav-list">
+        <a href="/" data-sdd-drawer-nav="home"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Trang chủ</span><b>›</b></a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone" data-sdd-drawer-nav="phone"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4"/><path d="M11 18.5h2"/></svg></span><span>Điện thoại</span><b>›</b></a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet" data-sdd-drawer-nav="tablet"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9.5 17h5"/></svg></span><span>Máy tính bảng</span><b>›</b></a>
+        <a href="/may-cu" data-sdd-main-nav="used" data-sdd-drawer-nav="used"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M10 6h4"/><path d="M9 15.5c1.7-2 4.3-2 6 0"/><path d="M10.5 18h3"/></svg></span><span>Máy cũ</span><b>›</b></a>
+        <a href="/phu-kien" data-sdd-drawer-nav="accessory"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6a4 4 0 0 1 8 0v2"/><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M9 12v1M15 12v1"/></svg></span><span>Phụ kiện</span><b>›</b></a>
+        <a href="/dich-vu" data-sdd-drawer-nav="service"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 17.5 3.5l3 3-3 3"/><path d="M4 20l8.5-8.5"/><path d="M5 4h5l1.5 1.5L8 9H4V5a1 1 0 0 1 1-1Z"/><path d="m12.5 14.5 2 2L13 18l-2-2"/></svg></span><span>Dịch vụ</span><b>›</b></a>
+        <a href="/tra-gop" data-sdd-drawer-nav="installment"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><span>Trả góp</span><b>›</b></a>
+        <a href="/order-may" data-sdd-drawer-nav="order"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span><span>Order máy</span><b>›</b></a>
+        <a href="/tra-cuu-bao-hanh" class="sdd-mobile-warranty-menu-item" data-sdd-drawer-nav="warranty">
+          <span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.4 7 10 4.1-1.6 7-5.2 7-10V6l-7-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span>
+          <span>
+            <strong>Tra cứu bảo hành</strong>
+            <small>Kiểm tra bằng số điện thoại</small>
+          </span>
+          <b>›</b>
+        </a>
+      </nav>
+
+      <div class="sdd-mobile-drawer-footer">
+        <button id="sddMobileConsultBtn" type="button">
+          <span class="sdd-zalo-dot">Z</span>
+          <span>
+            <strong>Nhắn Zalo tư vấn ngay</strong>
+            <small>Nhân viên hỗ trợ trực tiếp</small>
+          </span>
+          <b>›</b>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="order-page">
+<section class="order-hero">
+  <div class="order-hero-top">
+    <div class="order-title-wrap">
+      <span class="order-title-icon"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span>
+      <div><h1 class="order-title">Danh sách máy có thể Order</h1><p class="order-sub">Tìm máy bạn cần. Siêu Di Động sẽ kiểm tra nguồn hàng, giá và thời gian hàng về trước khi xác nhận.</p></div>
+    </div>
+    <a class="order-contact-top" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Liên hệ nhân viên</a>
+  </div>
+  <div class="order-note"><span>ⓘ</span><div><strong>Không hiển thị giá trên website.</strong> Giá order và thời gian hàng về có thể thay đổi theo từng thời điểm, vui lòng liên hệ nhân viên để được xác nhận.</div></div>
+  <div class="order-controls">
+    <label class="order-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="orderSearch" type="search" placeholder="Tìm tên máy, ví dụ Redmi K90..." autocomplete="off"></label>
+    <select id="orderBrand" class="order-select"><option value="all">Tất cả hãng</option></select>
+    <div class="order-count"><strong id="orderCount">0</strong> máy có thể order</div>
+  </div>
+</section>
+<section class="order-list-card">
+  <div class="order-list-head"><h2>Máy có thể Order</h2><small>Dữ liệu dùng để khách tham khảo model, không công khai giá</small></div>
+  <div id="orderGrid" class="order-grid"><div class="order-empty">Đang tải danh sách...</div></div>
+</section>
+<div class="order-footer-help"><div><strong>Không thấy máy bạn cần?</strong><p>Nhắn tên máy cho nhân viên, shop sẽ kiểm tra nguồn hàng trực tiếp.</p></div><a href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo nhân viên</a></div>
+</main>
+<script>
+(()=>{
+ const ZALO='https://zalo.me/0353105423';
+ const grid=document.getElementById('orderGrid'), search=document.getElementById('orderSearch'), brand=document.getElementById('orderBrand'), count=document.getElementById('orderCount');
+ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ let products=[];
+ function render(){
+   const q=norm(search.value), b=brand.value;
+   const rows=products.filter(p=>(b==='all'||p.brand===b)&&(!q||norm(p.name+' '+(p.versions||[]).join(' ')+' '+p.brand).includes(q)));
+   count.textContent=rows.length;
+   if(!rows.length){grid.innerHTML='<div class="order-empty"><strong>Không tìm thấy máy phù hợp</strong>Thử tên máy khác hoặc chọn lại hãng.</div>';return;}
+   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc((p.versions||[]).join(' · ')||'Liên hệ nhân viên')}<br>Giá & thời gian về hàng: liên hệ nhân viên</div><div class="order-item-bottom"><span class="order-no-price">Không công khai giá</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
+ }
+ fetch('/order-products.json',{cache:'no-store'}).then(r=>r.json()).then(data=>{
+   products=Array.isArray(data.products)?data.products:[];
+   [...new Set(products.map(x=>x.brand).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi')).forEach(x=>brand.insertAdjacentHTML('beforeend',`<option value="${esc(x)}">${esc(x)}</option>`));
+   render();
+ }).catch(()=>{grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách</strong>Vui lòng thử lại hoặc liên hệ nhân viên.</div>'});
+ search.addEventListener('input',render);brand.addEventListener('change',render);
+ const topSearch=document.getElementById('searchInput'); if(topSearch){topSearch.placeholder='Tìm máy có thể order...';topSearch.addEventListener('input',()=>{search.value=topSearch.value;render()})}
+ const clear=document.getElementById('clearSearch');if(clear)clear.onclick=()=>{if(topSearch)topSearch.value='';search.value='';render()};
+ const submit=document.querySelector('.sdd-search-submit');if(submit)submit.onclick=()=>{search.value=topSearch?.value||'';render();document.querySelector('.order-list-card')?.scrollIntoView({behavior:'smooth'})};
+ const drawer=document.getElementById('sddMobileDrawer'), open=document.getElementById('sddMobileMenuBtn'), close=document.getElementById('sddMobileDrawerClose');
+ const setDrawer=v=>{if(!drawer)return;drawer.hidden=!v;document.body.style.overflow=v?'hidden':''};
+ open?.addEventListener('click',()=>setDrawer(true));close?.addEventListener('click',()=>setDrawer(false));drawer?.addEventListener('click',e=>{if(e.target===drawer)setDrawer(false)});
+ [document.getElementById('sddConsultAction'),document.getElementById('sddNavConsultBtn'),document.getElementById('sddMobileConsultBtn')].forEach(el=>el?.addEventListener('click',()=>window.open(ZALO,'_blank','noopener')));
+})();
+</script>
+</body></html>

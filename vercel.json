@@ -25,6 +25,10 @@
       "destination": "/admin-specs.html"
     },
     {
+      "source": "/order-may",
+      "destination": "/order-may.html"
+    },
+    {
       "source": "/admin-specs",
       "destination": "/admin-redirect.html"
     },
