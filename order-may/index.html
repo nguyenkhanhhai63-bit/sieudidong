@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Order máy | Siêu Di Động</title>
+<title>Theo yêu cầu | Siêu Di Động</title>
 <meta name="description" content="Danh sách điện thoại có thể đặt theo nhu cầu tại Siêu Di Động. Liên hệ nhân viên để kiểm tra tình trạng nguồn hàng, phiên bản và thời gian dự kiến.">
 <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
 <link rel="stylesheet" href="/styles.css?v=261">
@@ -104,7 +104,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
         <a href="/phu-kien">Phụ kiện</a>
         <a href="/dich-vu">Dịch vụ</a>
         <a href="/tra-gop">Trả góp</a>
-        <a href="/order-may" class="active">Order máy</a>
+        <a href="/order-may" class="active">Theo yêu cầu</a>
         <button id="sddNavConsultBtn" type="button">Tư vấn</button>
         <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh">Tra cứu BH</a>
       </nav>
@@ -137,7 +137,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
         <a href="/phu-kien" data-sdd-drawer-nav="accessory"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6a4 4 0 0 1 8 0v2"/><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M9 12v1M15 12v1"/></svg></span><span>Phụ kiện</span><b>›</b></a>
         <a href="/dich-vu" data-sdd-drawer-nav="service"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 17.5 3.5l3 3-3 3"/><path d="M4 20l8.5-8.5"/><path d="M5 4h5l1.5 1.5L8 9H4V5a1 1 0 0 1 1-1Z"/><path d="m12.5 14.5 2 2L13 18l-2-2"/></svg></span><span>Dịch vụ</span><b>›</b></a>
         <a href="/tra-gop" data-sdd-drawer-nav="installment"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><span>Trả góp</span><b>›</b></a>
-        <a href="/order-may" data-sdd-drawer-nav="order"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span><span>Order máy</span><b>›</b></a>
+        <a href="/order-may" data-sdd-drawer-nav="order"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span><span>Theo yêu cầu</span><b>›</b></a>
         <a href="/tra-cuu-bao-hanh" class="sdd-mobile-warranty-menu-item" data-sdd-drawer-nav="warranty">
           <span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.4 7 10 4.1-1.6 7-5.2 7-10V6l-7-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span>
           <span>
@@ -166,7 +166,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
   <div class="order-hero-top">
     <div class="order-title-wrap">
       <span class="order-title-icon"><svg viewBox="0 0 24 24"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span>
-      <div><h1 class="order-title">Danh sách máy có thể Order</h1><p class="order-sub">Tìm máy bạn cần. Siêu Di Động sẽ kiểm tra tình trạng nguồn hàng, phiên bản và thời gian dự kiến trước khi xác nhận đơn.</p></div>
+      <div><h1 class="order-title">Sản phẩm theo yêu cầu</h1><p class="order-sub">Tìm máy bạn cần. Siêu Di Động sẽ kiểm tra tình trạng nguồn hàng, phiên bản và thời gian dự kiến trước khi xác nhận đơn.</p></div>
     </div>
     <a class="order-contact-top" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Liên hệ nhân viên</a>
   </div>
@@ -174,11 +174,11 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
   <div class="order-controls">
     <label class="order-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><input id="orderSearch" type="search" placeholder="Tìm tên máy, ví dụ Redmi K90..." autocomplete="off"></label>
     <select id="orderBrand" class="order-select"><option value="all">Tất cả hãng</option></select>
-    <div class="order-count"><strong id="orderCount">0</strong> máy có thể order</div>
+    <div class="order-count"><strong id="orderCount">0</strong> sản phẩm có thể đặt</div>
   </div>
 </section>
 <section class="order-list-card">
-  <div class="order-list-head"><h2>Máy có thể Order</h2><small>Danh sách model nhận đặt theo tình trạng nguồn hàng</small></div>
+  <div class="order-list-head"><h2>Sản phẩm theo yêu cầu</h2><small>Danh sách model nhận đặt theo tình trạng nguồn hàng</small></div>
   <div id="orderGrid" class="order-grid"><div class="order-empty">Đang tải danh sách...</div></div>
 </section>
 <div class="order-footer-help"><div><strong>Không thấy máy bạn cần?</strong><p>Nhắn tên máy cho nhân viên, shop sẽ kiểm tra nguồn hàng trực tiếp.</p></div><a href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo nhân viên</a></div>
@@ -265,7 +265,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
    const rows=products.filter(p=>(b==='all'||p.brand===b)&&(!q||norm(p.name+' '+p.versions.join(' ')+' '+p.colors.join(' ')+' '+p.brand).includes(q)));
    count.textContent=rows.length;
    if(!rows.length){grid.innerHTML='<div class="order-empty"><strong>Không tìm thấy máy phù hợp</strong>Thử tên máy khác hoặc chọn lại hãng.</div>';return;}
-   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc(p.versions.join(' · '))}<br><strong>Màu:</strong> ${esc(p.colors.join(' · '))}<br>Thông tin đặt hàng: liên hệ nhân viên để xác nhận</div><div class="order-item-bottom"><span class="order-no-price">Kiểm tra nguồn hàng trước khi xác nhận</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
+   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể đặt</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc(p.versions.join(' · '))}<br><strong>Màu:</strong> ${esc(p.colors.join(' · '))}<br>Thông tin đặt hàng: liên hệ nhân viên để xác nhận</div><div class="order-item-bottom"><span class="order-no-price">Kiểm tra nguồn hàng trước khi xác nhận</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
  }
 
  async function refreshProducts(){
@@ -283,15 +283,15 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
      rebuildBrandFilter();
      render();
    }catch(err){
-     console.error('Order sync error:',err);
+     console.error('Product request sync error:',err);
      // Không dùng dữ liệu tĩnh/cũ khi đồng bộ lỗi để tránh xuất hiện máy ngoài nguồn.
      products=[]; count.textContent='0';
-     grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách Order</strong>Đang thử kết nối lại dữ liệu nguồn. Vui lòng tải lại trang sau ít giây.</div>';
+     grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách sản phẩm</strong>Đang thử kết nối lại dữ liệu nguồn. Vui lòng tải lại trang sau ít giây.</div>';
    }finally{refreshing=false;}
  }
 
  search.addEventListener('input',render); brand.addEventListener('change',render);
- const topSearch=document.getElementById('searchInput'); if(topSearch){topSearch.placeholder='Tìm máy có thể order...';topSearch.addEventListener('input',()=>{search.value=topSearch.value;render()})}
+ const topSearch=document.getElementById('searchInput'); if(topSearch){topSearch.placeholder='Tìm sản phẩm có thể đặt...';topSearch.addEventListener('input',()=>{search.value=topSearch.value;render()})}
  const clear=document.getElementById('clearSearch');if(clear)clear.onclick=()=>{if(topSearch)topSearch.value='';search.value='';render()};
  const submit=document.querySelector('.sdd-search-submit');if(submit)submit.onclick=()=>{search.value=topSearch?.value||'';render();document.querySelector('.order-list-card')?.scrollIntoView({behavior:'smooth'})};
  const drawer=document.getElementById('sddMobileDrawer'), open=document.getElementById('sddMobileMenuBtn'), close=document.getElementById('sddMobileDrawerClose');
