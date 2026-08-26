@@ -14084,3 +14084,29 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
     padding:24px!important;
   }
 }
+
+/* =========================================================
+   V384 - Giữ header mobile khi cuộn danh sách sản phẩm
+   ========================================================= */
+@media(max-width:720px){
+  .sdd-header-v164{
+    position:sticky!important;
+    top:0!important;
+    z-index:10050!important;
+    width:100%!important;
+    background:#fff!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.08)!important;
+  }
+
+  /* Chỉ giữ đúng hàng Menu | Logo | Tìm kiếm trên mobile */
+  .sdd-header-v164 .commerce-header-inner.sdd-header-main{
+    position:relative!important;
+    z-index:2!important;
+    background:#fff!important;
+  }
+
+  /* Gợi ý tìm kiếm luôn nổi trên danh sách sản phẩm */
+  .sdd-header-v164 .search-suggestions{
+    z-index:10060!important;
+  }
+}
