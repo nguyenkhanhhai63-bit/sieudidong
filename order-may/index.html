@@ -196,6 +196,7 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
  const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c));
  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
  let products=[];
+ let hiddenModels=new Set();
  let refreshing=false;
 
  function parseCSV(text){
@@ -285,17 +286,29 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
      const sourceUrl=`https://docs.google.com/spreadsheets/d/${SOURCE_SHEET_ID}/gviz/tq?tqx=out:csv&tq&gid=${SOURCE_GID}&range=A:D&headers=1&_=${Date.now()}`;
      const controller=new AbortController();
      const timeout=setTimeout(()=>controller.abort(),12000);
-     const res=await fetch(sourceUrl,{cache:'no-store',signal:controller.signal});
+     const [res,visibilityRes]=await Promise.all([
+       fetch(sourceUrl,{cache:'no-store',signal:controller.signal}),
+       fetch('/api/order-visibility?_='+Date.now(),{cache:'no-store',credentials:'same-origin',signal:controller.signal})
+     ]);
      clearTimeout(timeout);
-     if(!res.ok)throw new Error('HTTP '+res.status);
-     const next=buildProducts(parseCSV(await res.text()));
-     if(!next.length)throw new Error('Danh sách nguồn trống');
+     if(!res.ok)throw new Error('HTTP nguồn '+res.status);
+     if(!visibilityRes.ok)throw new Error('HTTP cấu hình hiển thị '+visibilityRes.status);
+     const visibility=await visibilityRes.json();
+     if(!visibility || visibility.ok!==true || !Array.isArray(visibility.hiddenModels))throw new Error('Cấu hình hiển thị không hợp lệ');
+     hiddenModels=new Set(visibility.hiddenModels.map(x=>norm(x)));
+     const next=buildProducts(parseCSV(await res.text())).filter(x=>!hiddenModels.has(norm(x.name)));
+     if(!next.length){
+       products=[];
+       rebuildBrandFilter();
+       render();
+       return;
+     }
      products=next;
      rebuildBrandFilter();
      render();
    }catch(err){
      console.error('Product request sync error:',err);
-     // Không dùng dữ liệu tĩnh/cũ khi đồng bộ lỗi để tránh xuất hiện máy ngoài nguồn.
+     // Không dùng dữ liệu tĩnh/cũ khi nguồn hoặc cấu hình ẩn/hiện bị lỗi để tránh hiển thị sai.
      products=[]; count.textContent='0';
      grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách sản phẩm</strong>Đang thử kết nối lại dữ liệu nguồn. Vui lòng tải lại trang sau ít giây.</div>';
    }finally{refreshing=false;}

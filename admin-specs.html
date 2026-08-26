@@ -6192,6 +6192,27 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     flex-wrap:wrap;
   }
 }
+
+/* V381 - Quản lý ẩn/hiện sản phẩm theo yêu cầu */
+.order-visibility-admin .head{align-items:flex-start}
+.order-admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.order-admin-toolbar{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;justify-content:space-between}
+.order-admin-summary{font-size:13px;color:var(--muted);font-weight:700}
+.order-admin-status{min-height:22px;padding:10px 20px 0;font-size:13px;color:var(--muted)}
+.order-admin-rows{padding:8px 12px 16px}
+.order-vis-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 10px;border-bottom:1px solid #eef0f2}
+.order-vis-row:last-child{border-bottom:0}
+.order-vis-name{min-width:0}.order-vis-name strong{display:block;font-size:14px}.order-vis-name small{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.order-vis-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.order-vis-toggle input{position:absolute;opacity:0;pointer-events:none}
+.order-vis-switch{width:44px;height:24px;border-radius:999px;background:#cfd4dc;position:relative;transition:.18s}
+.order-vis-switch:after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.18s}
+.order-vis-toggle input:checked + .order-vis-switch{background:#16a34a}
+.order-vis-toggle input:checked + .order-vis-switch:after{transform:translateX(20px)}
+.order-vis-label{min-width:62px;font-size:12px;font-weight:800;color:#b42318}
+.order-vis-toggle input:checked ~ .order-vis-label{color:#15803d}
+.order-admin-empty{padding:40px 20px;text-align:center;color:var(--muted)}
+@media(max-width:760px){.order-visibility-admin .head{display:block}.order-admin-actions{margin-top:12px}.order-admin-toolbar{display:block}.order-admin-summary{margin-top:10px}.order-vis-row{padding:13px 4px}}
 </style>
 
 </head>
@@ -6217,6 +6238,7 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
     <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
     <button class="admin-tab routing-tab" data-tab="used" type="button" aria-hidden="true" tabindex="-1"><span>Máy cũ</span></button>
+    <button class="admin-tab routing-tab" data-tab="orderVisibility" type="button" aria-hidden="true" tabindex="-1"><span>Sản phẩm theo yêu cầu</span></button>
   </div></div>
 
   <div class="sidebar-section-title">SẢN PHẨM</div>
@@ -6225,6 +6247,11 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
       <span class="shortcut-icon">▣</span>
       <span>Danh sách máy cũ</span>
       <b>Riêng</b>
+    </button>
+    <button type="button" class="sidebar-shortcut" data-go-tab="orderVisibility">
+      <span class="shortcut-icon">◉</span>
+      <span>Sản phẩm theo yêu cầu</span>
+      <b>Ẩn/Hiện</b>
     </button>
   </div>
 
@@ -6667,6 +6694,25 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 <div class="used-admin-listbox"><div class="used-list-head"><div><h2>Máy đã nhập</h2><p class="used-admin-help" style="margin:3px 0 0">Máy đã bán vẫn giữ lịch sử nhưng tự ẩn khỏi website.</p></div><div class="used-list-tools"><input id="usedListSearch" class="used-list-search" placeholder="Tìm tên máy, IMEI..."><select id="usedListFilter"><option value="all">Tất cả</option><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div></div><div id="usedProductsList"></div></div>
 </div></section>
 
+<section id="orderVisibilityCard" class="card panel order-visibility-admin" data-panel="orderVisibility" style="display:none">
+  <div class="head">
+    <div>
+      <h1>Sản phẩm theo yêu cầu</h1>
+      <p>Chọn model được phép hiển thị ngoài website. Danh sách model được đọc trực tiếp từ nguồn nội bộ.</p>
+    </div>
+    <div class="order-admin-actions">
+      <button id="reloadOrderVisibility" class="secondary" type="button">Tải lại</button>
+      <button id="saveOrderVisibility" class="primary" type="button">Lưu thay đổi</button>
+    </div>
+  </div>
+  <div class="order-admin-toolbar">
+    <input id="orderVisibilitySearch" class="search" type="search" placeholder="Tìm tên máy...">
+    <div class="order-admin-summary" id="orderVisibilitySummary">Đang tải danh sách...</div>
+  </div>
+  <div id="orderVisibilityStatus" class="order-admin-status"></div>
+  <div id="orderVisibilityRows" class="order-admin-rows"><div class="aload">Đang tải...</div></div>
+</section>
+
 <section id="seoCard" class="card panel" data-panel="seo" style="display:none">
     <div class="head">
       <div><h1>SEO & hiển thị Google</h1><p>Chỉnh tiêu đề, mô tả, tên website, logo nhỏ Google và kiểm tra Sitemap.</p></div>
@@ -6838,6 +6884,8 @@ function setLoggedIn(value){
     aiSettingsCard.style.display="none";
     seoCard.style.display="none";
     if(usedProductsCard) usedProductsCard.style.display="none";
+    const orderVisibilityCard=document.getElementById("orderVisibilityCard");
+    if(orderVisibilityCard) orderVisibilityCard.style.display="none";
 
     adminCard.classList.remove("active");
     analyticsCard.classList.add("active");
@@ -6857,6 +6905,8 @@ function setLoggedIn(value){
     aiSettingsCard.style.display="none";
     seoCard.style.display="none";
     if(usedProductsCard) usedProductsCard.style.display="none";
+    const orderVisibilityCard=document.getElementById("orderVisibilityCard");
+    if(orderVisibilityCard) orderVisibilityCard.style.display="none";
     loginCard.classList.remove("hidden");
   }
 }
@@ -10038,5 +10088,150 @@ document.addEventListener("DOMContentLoaded",function(){
 })();
 </script>
 
+<script id="v381-order-visibility-admin-js">
+(()=>{
+  const SOURCE_SHEET_ID='1B0lsfTAz0T2YL2-J5D3ufloYwqlJeZbdqxn06VRbTno';
+  const SOURCE_GID='731021545';
+  const card=document.getElementById('orderVisibilityCard');
+  const rowsEl=document.getElementById('orderVisibilityRows');
+  const searchEl=document.getElementById('orderVisibilitySearch');
+  const summaryEl=document.getElementById('orderVisibilitySummary');
+  const statusEl=document.getElementById('orderVisibilityStatus');
+  const saveBtn=document.getElementById('saveOrderVisibility');
+  const reloadBtn=document.getElementById('reloadOrderVisibility');
+  let sourceModels=[];
+  let hiddenModels=new Set();
+  let loaded=false;
+
+  const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]||c));
+  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+
+  function parseCSV(text){
+    const out=[];let row=[],cell='',quoted=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i],n=text[i+1];
+      if(c==='"'&&quoted&&n==='"'){cell+='"';i++;}
+      else if(c==='"')quoted=!quoted;
+      else if(c===','&&!quoted){row.push(cell);cell='';}
+      else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&n==='\n')i++;row.push(cell);if(row.some(x=>String(x).trim()))out.push(row);row=[];cell='';}
+      else cell+=c;
+    }
+    if(cell.length||row.length){row.push(cell);if(row.some(x=>String(x).trim()))out.push(row);}
+    return out;
+  }
+
+  function modelsFromRows(rows){
+    if(rows.length<2)return [];
+    const h=rows[0].map(x=>String(x).trim().toLowerCase());
+    const mi=h.indexOf('model');
+    if(mi<0)throw new Error('Nguồn dữ liệu không đúng cấu trúc');
+    const seen=new Set(), list=[];
+    rows.slice(1).forEach(r=>{
+      const name=String(r[mi]||'').trim();
+      const key=norm(name);
+      if(name&&!seen.has(key)){seen.add(key);list.push(name);}
+    });
+    return list;
+  }
+
+  function isHidden(name){
+    const key=norm(name);
+    return [...hiddenModels].some(x=>norm(x)===key);
+  }
+
+  function setHidden(name,hidden){
+    const same=[...hiddenModels].find(x=>norm(x)===norm(name));
+    if(hidden){if(!same)hiddenModels.add(name);}
+    else if(same)hiddenModels.delete(same);
+  }
+
+  function render(){
+    if(!rowsEl)return;
+    const q=norm(searchEl?.value);
+    const list=sourceModels.filter(name=>!q||norm(name).includes(q));
+    const hiddenCount=sourceModels.filter(isHidden).length;
+    const visibleCount=sourceModels.length-hiddenCount;
+    if(summaryEl)summaryEl.textContent=`${visibleCount} hiển thị • ${hiddenCount} đang ẩn • ${sourceModels.length} model trong nguồn`;
+    if(!list.length){rowsEl.innerHTML='<div class="order-admin-empty">Không tìm thấy model phù hợp.</div>';return;}
+    rowsEl.innerHTML=list.map(name=>{
+      const visible=!isHidden(name);
+      return `<div class="order-vis-row" data-model="${esc(name)}"><div class="order-vis-name"><strong>${esc(name)}</strong><small>${visible?'Đang hiển thị ngoài website':'Đang ẩn khỏi khách hàng'}</small></div><label class="order-vis-toggle"><input type="checkbox" ${visible?'checked':''} data-order-visible><span class="order-vis-switch"></span><span class="order-vis-label">${visible?'Hiển thị':'Đang ẩn'}</span></label></div>`;
+    }).join('');
+  }
+
+  async function load(force=false){
+    if(loaded&&!force){render();return;}
+    if(statusEl){statusEl.textContent='Đang tải danh sách và cấu hình hiển thị...';statusEl.style.color='#6b7280';}
+    if(rowsEl)rowsEl.innerHTML='<div class="aload">Đang tải...</div>';
+    try{
+      const sourceUrl=`https://docs.google.com/spreadsheets/d/${SOURCE_SHEET_ID}/gviz/tq?tqx=out:csv&tq&gid=${SOURCE_GID}&range=A:D&headers=1&_=${Date.now()}`;
+      const [srcRes,cfgRes]=await Promise.all([
+        fetch(sourceUrl,{cache:'no-store'}),
+        fetch('/api/admin/order-visibility?_='+Date.now(),{cache:'no-store',credentials:'same-origin'})
+      ]);
+      if(!srcRes.ok)throw new Error('Không tải được danh sách nguồn');
+      if(!cfgRes.ok)throw new Error('Không tải được cấu hình ẩn/hiện');
+      const cfg=await cfgRes.json();
+      sourceModels=modelsFromRows(parseCSV(await srcRes.text()));
+      hiddenModels=new Set(Array.isArray(cfg.hiddenModels)?cfg.hiddenModels:[]);
+      loaded=true;
+      render();
+      if(statusEl){statusEl.textContent='✓ Đã tải dữ liệu mới nhất.';statusEl.style.color='#15803d';}
+    }catch(err){
+      console.error('Order visibility admin load:',err);
+      sourceModels=[];loaded=false;
+      if(rowsEl)rowsEl.innerHTML='<div class="order-admin-empty">Không tải được danh sách. Vui lòng thử lại.</div>';
+      if(statusEl){statusEl.textContent=err.message||'Không tải được dữ liệu';statusEl.style.color='#b42318';}
+    }
+  }
+
+  rowsEl?.addEventListener('change',e=>{
+    const cb=e.target.closest('[data-order-visible]');
+    if(!cb)return;
+    const row=cb.closest('[data-model]');
+    const name=row?.dataset.model||'';
+    setHidden(name,!cb.checked);
+    const small=row?.querySelector('.order-vis-name small');
+    const label=row?.querySelector('.order-vis-label');
+    if(small)small.textContent=cb.checked?'Đang hiển thị ngoài website':'Đang ẩn khỏi khách hàng';
+    if(label)label.textContent=cb.checked?'Hiển thị':'Đang ẩn';
+    const hiddenCount=sourceModels.filter(isHidden).length;
+    if(summaryEl)summaryEl.textContent=`${sourceModels.length-hiddenCount} hiển thị • ${hiddenCount} đang ẩn • ${sourceModels.length} model trong nguồn`;
+    if(statusEl){statusEl.textContent='Có thay đổi chưa lưu.';statusEl.style.color='#b45309';}
+  });
+
+  searchEl?.addEventListener('input',render);
+  reloadBtn?.addEventListener('click',()=>load(true));
+  saveBtn?.addEventListener('click',async()=>{
+    saveBtn.disabled=true;
+    if(statusEl){statusEl.textContent='Đang lưu...';statusEl.style.color='#6b7280';}
+    try{
+      const r=await fetch('/api/admin/order-visibility',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({hiddenModels:[...hiddenModels]})});
+      const d=await r.json();
+      if(!r.ok)throw new Error(d.error||'Không lưu được');
+      hiddenModels=new Set(Array.isArray(d.hiddenModels)?d.hiddenModels:[]);
+      render();
+      if(statusEl){statusEl.textContent='✓ Đã lưu. Website khách sẽ áp dụng trong lần tải dữ liệu kế tiếp.';statusEl.style.color='#15803d';}
+    }catch(err){
+      if(statusEl){statusEl.textContent=err.message||'Không lưu được';statusEl.style.color='#b42318';}
+    }finally{saveBtn.disabled=false;}
+  });
+
+  const tabs=document.getElementById('adminTabs');
+  tabs?.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-tab]');
+    if(!btn)return;
+    const active=btn.dataset.tab==='orderVisibility';
+    if(card){card.classList.toggle('active',active);card.style.display=active?'':'none';}
+    if(active){
+      const title=document.getElementById('adminPageTitle');
+      const subtitle=document.getElementById('adminPageSubtitle');
+      if(title)title.textContent='Sản phẩm theo yêu cầu';
+      if(subtitle)subtitle.textContent='Chọn model hiển thị hoặc ẩn khỏi website khách hàng';
+      load();
+    }
+  });
+})();
+</script>\n
 </body>
 </html>
