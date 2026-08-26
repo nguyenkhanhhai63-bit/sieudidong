@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/products/(.*)",
+      "destination": "/api/legacy-product?path=$1"
+    },
+    {
+      "source": "/c/(.*)",
+      "destination": "/api/legacy-product?path=$1"
+    },
+    {
       "source": "/dien-thoai",
       "destination": "/"
     },
@@ -34,7 +42,7 @@
     },
     {
       "source": "/san-pham/(.*)",
-      "destination": "/"
+      "destination": "/api/product-page?slug=$1"
     },
     {
       "source": "/",
