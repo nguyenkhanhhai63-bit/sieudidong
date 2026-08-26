@@ -13,7 +13,8 @@ const handlers = {
   "specs": () => import("../lib/public-api/specs.js"),
   "version": () => import("../lib/public-api/version.js"),
   "warranty-lookup": () => import("../lib/public-api/warranty-lookup.js"),
-  "used-products": () => import("../lib/public-api/used-products.js")
+  "used-products": () => import("../lib/public-api/used-products.js"),
+  "order-products": () => import("../lib/public-api/order-products.js")
 };
 
 export default async function handler(req,res){

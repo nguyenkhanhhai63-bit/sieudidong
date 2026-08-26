@@ -197,8 +197,8 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
    if(!rows.length){grid.innerHTML='<div class="order-empty"><strong>Không tìm thấy máy phù hợp</strong>Thử tên máy khác hoặc chọn lại hãng.</div>';return;}
    grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc((p.versions||[]).join(' · ')||'Liên hệ nhân viên')}<br><strong>Màu:</strong> ${esc((p.colors||[]).join(' · ')||'Liên hệ nhân viên')}<br>Giá & thời gian về hàng: liên hệ nhân viên</div><div class="order-item-bottom"><span class="order-no-price">Không công khai giá</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
  }
- fetch('/order-products.json',{cache:'no-store'}).then(r=>r.json()).then(data=>{
-   products=Array.isArray(data.products)?data.products:[];
+ fetch('/api/order-products',{cache:'no-store'}).then(r=>r.json()).then(data=>{
+   products=Array.isArray(data.products)?data.products:[]; if(!products.length){grid.innerHTML='<div class="order-empty"><strong>Chưa đồng bộ được danh sách từ noibo.sieudidong.vn</strong>Không hiển thị dữ liệu cũ để tránh xuất hiện máy ngoài danh sách nguồn.</div>'; count.textContent='0'; return;}
    [...new Set(products.map(x=>x.brand).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi')).forEach(x=>brand.insertAdjacentHTML('beforeend',`<option value="${esc(x)}">${esc(x)}</option>`));
    render();
  }).catch(()=>{grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách</strong>Vui lòng thử lại hoặc liên hệ nhân viên.</div>'});
