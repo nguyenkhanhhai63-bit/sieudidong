@@ -186,23 +186,111 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
 <script>
 (()=>{
  const ZALO='https://zalo.me/0353105423';
+ // Dùng đúng nguồn dữ liệu của noibo.sieudidong.vn.
+ // Không dùng danh sách tĩnh và tuyệt đối không đọc giá ra giao diện công khai.
+ const SOURCE_SHEET_ID='1B0lsfTAz0T2YL2-J5D3ufloYwqlJeZbdqxn06VRbTno';
+ const SOURCE_GID='731021545';
+ const AUTO_REFRESH_MS=60000;
  const grid=document.getElementById('orderGrid'), search=document.getElementById('orderSearch'), brand=document.getElementById('orderBrand'), count=document.getElementById('orderCount');
- const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c));
  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
  let products=[];
+ let refreshing=false;
+
+ function parseCSV(text){
+   const rows=[]; let row=[],cell='',q=false;
+   for(let i=0;i<text.length;i++){
+     const c=text[i],n=text[i+1];
+     if(c==='"'&&q&&n==='"'){cell+='"';i++;}
+     else if(c==='"'){q=!q;}
+     else if(c===','&&!q){row.push(cell);cell='';}
+     else if((c==='\n'||c==='\r')&&!q){
+       if(c==='\r'&&n==='\n')i++;
+       row.push(cell);
+       if(row.some(x=>String(x).trim()!==''))rows.push(row);
+       row=[];cell='';
+     }else cell+=c;
+   }
+   if(cell.length||row.length){row.push(cell);if(row.some(x=>String(x).trim()!==''))rows.push(row);}
+   return rows;
+ }
+
+ function detectBrand(name){
+   const n=norm(name);
+   if(n.includes('oneplus')||/^1\+/.test(n))return 'ONEPLUS';
+   if(n.includes('oppo'))return 'OPPO';
+   if(n.includes('honor'))return 'HONOR';
+   if(n.includes('iqoo'))return 'VIVO / IQOO';
+   if(n.includes('vivo'))return 'VIVO / IQOO';
+   if(n.includes('pad'))return 'TABLET';
+   if(n.includes('redmi')||n.includes('xiaomi')||n.includes('poco')||/^mi\s/.test(n))return 'XIAOMI / REDMI';
+   return 'KHÁC';
+ }
+
+ function buildProducts(rows){
+   if(rows.length<2)return [];
+   const h=rows[0].map(x=>String(x).trim().toLowerCase());
+   const modelIndex=h.indexOf('model');
+   const memIndex=h.indexOf('mem');
+   const colorIndex=h.indexOf('color');
+   if([modelIndex,memIndex,colorIndex].some(i=>i<0))throw new Error('Nguồn dữ liệu không đúng cấu trúc');
+   const order=[]; const map=new Map();
+   rows.slice(1).forEach(r=>{
+     const model=String(r[modelIndex]||'').trim();
+     const mem=String(r[memIndex]||'').trim();
+     const color=String(r[colorIndex]||'').trim();
+     // Giống noibo: chỉ một dòng sản phẩm hợp lệ mới được đưa vào danh sách.
+     if(!model||!mem||!color)return;
+     if(!map.has(model)){
+       map.set(model,{name:model,brand:detectBrand(model),versions:new Set(),colors:new Set()});
+       order.push(model);
+     }
+     const x=map.get(model); x.versions.add(mem); x.colors.add(color);
+   });
+   return order.map(name=>{
+     const x=map.get(name);
+     return {name:x.name,brand:x.brand,versions:[...x.versions],colors:[...x.colors]};
+   });
+ }
+
+ function rebuildBrandFilter(){
+   const current=brand.value;
+   brand.innerHTML='<option value="all">Tất cả hãng</option>';
+   [...new Set(products.map(x=>x.brand).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi')).forEach(x=>brand.insertAdjacentHTML('beforeend',`<option value="${esc(x)}">${esc(x)}</option>`));
+   if([...brand.options].some(o=>o.value===current))brand.value=current;
+ }
+
  function render(){
    const q=norm(search.value), b=brand.value;
-   const rows=products.filter(p=>(b==='all'||p.brand===b)&&(!q||norm(p.name+' '+(p.versions||[]).join(' ')+' '+(p.colors||[]).join(' ')+' '+p.brand).includes(q)));
+   const rows=products.filter(p=>(b==='all'||p.brand===b)&&(!q||norm(p.name+' '+p.versions.join(' ')+' '+p.colors.join(' ')+' '+p.brand).includes(q)));
    count.textContent=rows.length;
    if(!rows.length){grid.innerHTML='<div class="order-empty"><strong>Không tìm thấy máy phù hợp</strong>Thử tên máy khác hoặc chọn lại hãng.</div>';return;}
-   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc((p.versions||[]).join(' · ')||'Liên hệ nhân viên')}<br><strong>Màu:</strong> ${esc((p.colors||[]).join(' · ')||'Liên hệ nhân viên')}<br>Giá & thời gian về hàng: liên hệ nhân viên</div><div class="order-item-bottom"><span class="order-no-price">Không công khai giá</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
+   grid.innerHTML=rows.map(p=>`<article class="order-item"><div class="order-item-top"><span class="order-brand">${esc(p.brand)}</span><span class="order-status">Có thể Order</span></div><div class="order-name">${esc(p.name)}</div><div class="order-meta"><strong>Phiên bản:</strong> ${esc(p.versions.join(' · '))}<br><strong>Màu:</strong> ${esc(p.colors.join(' · '))}<br>Giá & thời gian về hàng: liên hệ nhân viên</div><div class="order-item-bottom"><span class="order-no-price">Không công khai giá</span><a class="order-zalo" href="${ZALO}" target="_blank" rel="noopener noreferrer" data-order-name="${esc(p.name)}">Liên hệ nhân viên</a></div></article>`).join('');
  }
- fetch('/api/order-products',{cache:'no-store'}).then(r=>r.json()).then(data=>{
-   products=Array.isArray(data.products)?data.products:[]; if(!products.length){grid.innerHTML='<div class="order-empty"><strong>Chưa đồng bộ được danh sách từ noibo.sieudidong.vn</strong>Không hiển thị dữ liệu cũ để tránh xuất hiện máy ngoài danh sách nguồn.</div>'; count.textContent='0'; return;}
-   [...new Set(products.map(x=>x.brand).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi')).forEach(x=>brand.insertAdjacentHTML('beforeend',`<option value="${esc(x)}">${esc(x)}</option>`));
-   render();
- }).catch(()=>{grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách</strong>Vui lòng thử lại hoặc liên hệ nhân viên.</div>'});
- search.addEventListener('input',render);brand.addEventListener('change',render);
+
+ async function refreshProducts(){
+   if(refreshing)return; refreshing=true;
+   try{
+     const sourceUrl=`https://docs.google.com/spreadsheets/d/${SOURCE_SHEET_ID}/gviz/tq?tqx=out:csv&tq&gid=${SOURCE_GID}&range=A:D&headers=1&_=${Date.now()}`;
+     const controller=new AbortController();
+     const timeout=setTimeout(()=>controller.abort(),12000);
+     const res=await fetch(sourceUrl,{cache:'no-store',signal:controller.signal});
+     clearTimeout(timeout);
+     if(!res.ok)throw new Error('HTTP '+res.status);
+     const next=buildProducts(parseCSV(await res.text()));
+     if(!next.length)throw new Error('Danh sách nguồn trống');
+     products=next;
+     rebuildBrandFilter();
+     render();
+   }catch(err){
+     console.error('Order sync error:',err);
+     // Không dùng dữ liệu tĩnh/cũ khi đồng bộ lỗi để tránh xuất hiện máy ngoài nguồn.
+     products=[]; count.textContent='0';
+     grid.innerHTML='<div class="order-empty"><strong>Chưa tải được danh sách Order</strong>Đang thử kết nối lại dữ liệu nguồn. Vui lòng tải lại trang sau ít giây.</div>';
+   }finally{refreshing=false;}
+ }
+
+ search.addEventListener('input',render); brand.addEventListener('change',render);
  const topSearch=document.getElementById('searchInput'); if(topSearch){topSearch.placeholder='Tìm máy có thể order...';topSearch.addEventListener('input',()=>{search.value=topSearch.value;render()})}
  const clear=document.getElementById('clearSearch');if(clear)clear.onclick=()=>{if(topSearch)topSearch.value='';search.value='';render()};
  const submit=document.querySelector('.sdd-search-submit');if(submit)submit.onclick=()=>{search.value=topSearch?.value||'';render();document.querySelector('.order-list-card')?.scrollIntoView({behavior:'smooth'})};
@@ -210,6 +298,9 @@ body{margin:0;background:var(--om-bg);color:var(--om-text)}
  const setDrawer=v=>{if(!drawer)return;drawer.hidden=!v;document.body.style.overflow=v?'hidden':''};
  open?.addEventListener('click',()=>setDrawer(true));close?.addEventListener('click',()=>setDrawer(false));drawer?.addEventListener('click',e=>{if(e.target===drawer)setDrawer(false)});
  [document.getElementById('sddConsultAction'),document.getElementById('sddNavConsultBtn'),document.getElementById('sddMobileConsultBtn')].forEach(el=>el?.addEventListener('click',()=>window.open(ZALO,'_blank','noopener')));
+
+ refreshProducts();
+ setInterval(refreshProducts,AUTO_REFRESH_MS);
 })();
 </script>
 </body></html>
