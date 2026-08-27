@@ -6295,8 +6295,30 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 #seoCard .seo-tool-card small{font-size:9.5px;color:#7a8495;line-height:1.4;flex:1}
 #seoCard .seo-tool-card b{font-size:9.5px;color:#475467;background:#f8fafc;border:1px solid #e5e9ef;border-radius:6px;padding:6px 8px;margin-top:10px;font-weight:700}
 #seoCard .seo-bottom-message{font-size:10px;color:#7a8495;margin-top:12px}
-@media(max-width:1180px){#seoCard .seo-config-layout{grid-template-columns:1fr}#seoCard .seo-status-grid{grid-template-columns:repeat(2,1fr)}#seoCard .seo-tools-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){#seoCard .seo-page-head{padding:15px 14px}#seoCard .seo-v387-wrap{padding:12px}#seoCard .seo-box{padding:14px;border-radius:13px}#seoCard .seo-form-grid{grid-template-columns:1fr!important}#seoCard .seo-wide{grid-column:auto!important}#seoCard .seo-console-row{align-items:flex-start;flex-direction:column}#seoCard .seo-console-actions{width:100%;justify-content:flex-start}#seoCard .seo-status-grid{grid-template-columns:1fr}#seoCard .seo-tools-grid{grid-template-columns:1fr 1fr}}
+
+#seoCard .seo-audit-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px}
+#seoCard .seo-audit-panel{border:1px solid #e6ebf1;border-radius:13px;background:#fff;padding:14px;min-width:0}
+#seoCard .seo-audit-panel h3{margin:0 0 4px;font-size:12px;color:#172033;font-weight:900}
+#seoCard .seo-audit-panel>p{margin:0 0 12px;font-size:9.5px;color:#7a8495;line-height:1.45}
+#seoCard .seo-audit-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#seoCard .seo-url-input{flex:1;min-width:220px;border:1px solid #dce3eb;border-radius:8px;padding:9px 10px;font-size:11px;outline:0}
+#seoCard .seo-url-input:focus{border-color:#ff6a1a;box-shadow:0 0 0 3px rgba(255,106,26,.1)}
+#seoCard .seo-audit-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+#seoCard .seo-audit-kpi{border:1px solid #edf0f4;border-radius:10px;padding:10px;background:#fafbfc;min-width:0}
+#seoCard .seo-audit-kpi span{display:block;font-size:9px;color:#7a8495;margin-bottom:3px}
+#seoCard .seo-audit-kpi strong{font-size:15px;color:#172033}
+#seoCard .seo-audit-list{margin-top:12px;display:flex;flex-direction:column;gap:7px;max-height:250px;overflow:auto}
+#seoCard .seo-audit-item{display:flex;align-items:flex-start;gap:8px;border:1px solid #edf0f4;border-radius:9px;padding:9px 10px;background:#fff}
+#seoCard .seo-audit-dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:10px;font-weight:900}
+#seoCard .seo-audit-dot.ok{background:#e9f8ef;color:#159455}.seo-audit-dot.warn{background:#fff3e6;color:#d97706}.seo-audit-dot.bad{background:#ffebee;color:#dc2626}
+#seoCard .seo-audit-item div{min-width:0;flex:1}.seo-audit-item strong{display:block;font-size:10px;color:#172033;margin-bottom:2px}.seo-audit-item small{display:block;font-size:9px;color:#7a8495;line-height:1.35;overflow-wrap:anywhere}
+#seoCard .seo-progress{height:7px;background:#f1f3f6;border-radius:999px;overflow:hidden;margin-top:10px;display:none}
+#seoCard .seo-progress>i{display:block;height:100%;width:0;background:#ff5a00;border-radius:inherit;transition:width .2s}
+#seoCard .seo-canonical-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:800;background:#eef2f6;color:#475467;margin-top:7px}
+#seoCard .seo-canonical-pill.ok{background:#e9f8ef;color:#15803d}.seo-canonical-pill.bad{background:#ffebee;color:#b91c1c}
+
+@media(max-width:1180px){#seoCard .seo-config-layout{grid-template-columns:1fr}#seoCard .seo-status-grid{grid-template-columns:repeat(2,1fr)}#seoCard .seo-tools-grid{grid-template-columns:repeat(3,1fr)}#seoCard .seo-audit-grid{grid-template-columns:1fr}}
+@media(max-width:760px){#seoCard .seo-page-head{padding:15px 14px}#seoCard .seo-v387-wrap{padding:12px}#seoCard .seo-box{padding:14px;border-radius:13px}#seoCard .seo-form-grid{grid-template-columns:1fr!important}#seoCard .seo-wide{grid-column:auto!important}#seoCard .seo-console-row{align-items:flex-start;flex-direction:column}#seoCard .seo-console-actions{width:100%;justify-content:flex-start}#seoCard .seo-status-grid{grid-template-columns:1fr}#seoCard .seo-tools-grid{grid-template-columns:1fr 1fr}#seoCard .seo-audit-summary{grid-template-columns:1fr 1fr}#seoCard .seo-url-input{min-width:100%;width:100%}}
 @media(max-width:460px){#seoCard .seo-tools-grid{grid-template-columns:1fr}#seoCard .seo-page-head h1{font-size:21px!important}}
 </style>
 
@@ -6874,6 +6896,34 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
       </div>
     </section>
 
+
+
+    <section class="seo-box seo-audit-box">
+      <div class="seo-box-title">
+        <div><h2>Kiểm tra SEO tự động</h2><p>Quét nhanh title, mô tả, canonical, sitemap và robots.txt để phát hiện lỗi trước khi Google thu thập.</p></div>
+        <span class="seo-mini-badge">Mới</span>
+      </div>
+      <div class="seo-audit-grid">
+        <div class="seo-audit-panel">
+          <h3>Kiểm tra một URL</h3>
+          <p>Dùng cho trang sản phẩm mới hoặc URL đang gặp vấn đề lập chỉ mục.</p>
+          <div class="seo-audit-actions">
+            <input id="seoAuditUrl" class="seo-url-input" type="url" value="https://sieudidong.vn/" placeholder="https://sieudidong.vn/san-pham/..."><button id="seoAuditOne" class="seo-btn seo-btn-primary" type="button">Kiểm tra URL</button>
+          </div>
+          <div id="seoAuditOneCanonical" class="seo-canonical-pill">Canonical: chưa kiểm tra</div>
+          <div id="seoAuditOneResult" class="seo-audit-list"><div class="seo-audit-item"><span class="seo-audit-dot warn">!</span><div><strong>Chưa có kết quả</strong><small>Nhập URL rồi bấm Kiểm tra URL.</small></div></div></div>
+        </div>
+        <div class="seo-audit-panel">
+          <h3>Quét các URL trong Sitemap</h3>
+          <p>Kiểm tra một nhóm URL để phát hiện canonical thiếu/sai và nội dung SEO cơ bản.</p>
+          <div class="seo-audit-actions"><button id="seoAuditSitemap" class="seo-btn seo-btn-light" type="button">Quét Sitemap</button><span id="seoAuditStatus" style="font-size:10px;color:#667085">Chưa quét</span></div>
+          <div class="seo-progress" id="seoAuditProgress"><i></i></div>
+          <div class="seo-audit-summary"><div class="seo-audit-kpi"><span>Đã kiểm tra</span><strong id="seoAuditChecked">0</strong></div><div class="seo-audit-kpi"><span>Canonical OK</span><strong id="seoAuditCanonicalOk">0</strong></div><div class="seo-audit-kpi"><span>Cảnh báo</span><strong id="seoAuditWarnings">0</strong></div><div class="seo-audit-kpi"><span>Lỗi</span><strong id="seoAuditErrors">0</strong></div></div>
+          <div id="seoAuditSitemapResult" class="seo-audit-list"></div>
+        </div>
+      </div>
+    </section>
+
     <section class="seo-box seo-tools-box">
       <div class="seo-box-title"><div><h2>Công cụ SEO</h2><p>Các công cụ hỗ trợ tối ưu và kiểm tra nhanh website.</p></div></div>
       <div class="seo-tools-grid">
@@ -6958,6 +7008,14 @@ const saveSeoSettings=document.getElementById("saveSeoSettings");
 const reloadSeoSettings=document.getElementById("reloadSeoSettings");
 const resetSeoSettings=document.getElementById("resetSeoSettings");
 const seoSettingsStatus=document.getElementById("seoSettingsStatus");
+const seoAuditUrl=document.getElementById("seoAuditUrl");
+const seoAuditOne=document.getElementById("seoAuditOne");
+const seoAuditOneResult=document.getElementById("seoAuditOneResult");
+const seoAuditOneCanonical=document.getElementById("seoAuditOneCanonical");
+const seoAuditSitemap=document.getElementById("seoAuditSitemap");
+const seoAuditStatus=document.getElementById("seoAuditStatus");
+const seoAuditProgress=document.getElementById("seoAuditProgress");
+const seoAuditSitemapResult=document.getElementById("seoAuditSitemapResult");
 const refreshAnalytics=document.getElementById("refreshAnalytics");
 let analyticsLoaded=false;
 
@@ -8682,6 +8740,83 @@ async function persistSeoSettings(){
 if(saveSeoSettings)saveSeoSettings.addEventListener("click",persistSeoSettings);
 if(reloadSeoSettings)reloadSeoSettings.addEventListener("click",loadSeoSettings);
 if(resetSeoSettings)resetSeoSettings.addEventListener("click",async()=>{if(!confirm("Khôi phục nội dung SEO mặc định?"))return;await fetch("/api/admin/seo-settings",{method:"DELETE"});loadSeoSettings();});
+
+
+function seoAuditItem(type,title,detail){
+  const icon=type==="ok"?"✓":type==="bad"?"×":"!";
+  return `<div class="seo-audit-item"><span class="seo-audit-dot ${type}">${icon}</span><div><strong>${escapeHtml(title)}</strong><small>${escapeHtml(detail||"")}</small></div></div>`;
+}
+function seoAbsUrl(raw){
+  try{return new URL(String(raw||"/").trim(),location.origin).href}catch(_){return ""}
+}
+function seoNormalizeUrl(raw){
+  try{const u=new URL(raw);u.hash="";if(u.pathname!=="/")u.pathname=u.pathname.replace(/\/+$/,'');return u.href}catch(_){return raw||""}
+}
+async function seoFetchHtml(url){
+  const u=new URL(url,location.origin);
+  if(u.origin!==location.origin) throw new Error("Chỉ kiểm tra URL thuộc sieudidong.vn");
+  const r=await fetch(u.href,{cache:"no-store",redirect:"follow"});
+  const text=await r.text();
+  return {ok:r.ok,status:r.status,finalUrl:r.url||u.href,text,contentType:r.headers.get("content-type")||""};
+}
+async function seoAuditPage(url){
+  const requested=seoAbsUrl(url); if(!requested) throw new Error("URL không hợp lệ");
+  const page=await seoFetchHtml(requested);
+  const doc=new DOMParser().parseFromString(page.text,"text/html");
+  const title=(doc.querySelector("title")?.textContent||"").trim();
+  const desc=(doc.querySelector('meta[name="description"]')?.getAttribute("content")||"").trim();
+  const robots=(doc.querySelector('meta[name="robots"]')?.getAttribute("content")||"").trim();
+  const canonicalRaw=(doc.querySelector('link[rel="canonical"]')?.getAttribute("href")||"").trim();
+  const canonical=canonicalRaw?seoAbsUrl(canonicalRaw):"";
+  const finalUrl=seoNormalizeUrl(page.finalUrl||requested), canonicalNorm=seoNormalizeUrl(canonical);
+  const canonicalOk=!!canonical && canonicalNorm===finalUrl;
+  const checks=[];
+  checks.push(page.ok?{type:"ok",title:`HTTP ${page.status}`,detail:"Trang truy cập bình thường."}:{type:"bad",title:`HTTP ${page.status}`,detail:"Trang trả về mã lỗi."});
+  if(title) checks.push({type:title.length>=25&&title.length<=65?"ok":"warn",title:`Title: ${title.length} ký tự`,detail:title}); else checks.push({type:"bad",title:"Thiếu thẻ title",detail:"Nên có tiêu đề riêng cho trang."});
+  if(desc) checks.push({type:desc.length>=70&&desc.length<=180?"ok":"warn",title:`Meta description: ${desc.length} ký tự`,detail:desc}); else checks.push({type:"warn",title:"Thiếu meta description",detail:"Google có thể tự tạo mô tả từ nội dung trang."});
+  if(canonical) checks.push({type:canonicalOk?"ok":"bad",title:canonicalOk?"Canonical đúng":"Canonical không khớp URL cuối",detail:`Canonical: ${canonical} | URL cuối: ${page.finalUrl}`}); else checks.push({type:"bad",title:"Thiếu canonical",detail:"Trang nên khai báo một URL chính tắc."});
+  if(/noindex/i.test(robots)) checks.push({type:"bad",title:"Trang đang noindex",detail:`meta robots: ${robots}`});
+  return {requested,page,title,desc,canonical,canonicalOk,checks};
+}
+async function runSeoAuditOne(){
+  if(!seoAuditOne||!seoAuditOneResult)return;
+  seoAuditOne.disabled=true;seoAuditOne.textContent="Đang kiểm tra...";seoAuditOneResult.innerHTML=seoAuditItem("warn","Đang tải URL","Vui lòng chờ...");
+  try{
+    const result=await seoAuditPage(seoAuditUrl.value);
+    seoAuditOneResult.innerHTML=result.checks.map(x=>seoAuditItem(x.type,x.title,x.detail)).join("");
+    seoAuditOneCanonical.textContent=result.canonical?`Canonical: ${result.canonicalOk?"OK":"Cần kiểm tra"}`:"Canonical: Thiếu";
+    seoAuditOneCanonical.className="seo-canonical-pill "+(result.canonicalOk?"ok":"bad");
+  }catch(e){seoAuditOneResult.innerHTML=seoAuditItem("bad","Không kiểm tra được",e.message||String(e));seoAuditOneCanonical.textContent="Canonical: chưa xác định";seoAuditOneCanonical.className="seo-canonical-pill bad"}
+  finally{seoAuditOne.disabled=false;seoAuditOne.textContent="Kiểm tra URL"}
+}
+async function runSeoSitemapAudit(){
+  if(!seoAuditSitemap)return;seoAuditSitemap.disabled=true;seoAuditStatus.textContent="Đang đọc sitemap...";seoAuditSitemapResult.innerHTML="";
+  seoAuditProgress.style.display="block";seoAuditProgress.querySelector("i").style.width="3%";
+  let checked=0,ok=0,warns=0,errors=0;
+  try{
+    const sm=await fetch('/sitemap.xml?audit='+Date.now(),{cache:'no-store'});if(!sm.ok)throw new Error('Sitemap HTTP '+sm.status);
+    const xml=new DOMParser().parseFromString(await sm.text(),'application/xml');
+    const urls=[...xml.querySelectorAll('url > loc')].map(x=>x.textContent.trim()).filter(Boolean);
+    const sample=urls.slice(0,Math.min(urls.length,20));
+    seoAuditStatus.textContent=`Đang quét ${sample.length}/${urls.length} URL (giới hạn 20 URL/lần)`;
+    for(let i=0;i<sample.length;i++){
+      try{
+        const r=await seoAuditPage(sample[i]);checked++;
+        const bad=r.checks.filter(x=>x.type==='bad').length, warn=r.checks.filter(x=>x.type==='warn').length;
+        if(r.canonicalOk)ok++; warns+=warn; errors+=bad;
+        if(bad||warn){seoAuditSitemapResult.insertAdjacentHTML('beforeend',seoAuditItem(bad?'bad':'warn',new URL(sample[i]).pathname,`${bad} lỗi · ${warn} cảnh báo · canonical ${r.canonicalOk?'OK':'cần kiểm tra'}`));}
+      }catch(e){checked++;errors++;seoAuditSitemapResult.insertAdjacentHTML('beforeend',seoAuditItem('bad',sample[i],e.message||String(e)))}
+      document.getElementById('seoAuditChecked').textContent=checked;document.getElementById('seoAuditCanonicalOk').textContent=ok;document.getElementById('seoAuditWarnings').textContent=warns;document.getElementById('seoAuditErrors').textContent=errors;
+      seoAuditProgress.querySelector('i').style.width=`${Math.max(5,Math.round((i+1)/sample.length*100))}%`;
+    }
+    if(!seoAuditSitemapResult.innerHTML)seoAuditSitemapResult.innerHTML=seoAuditItem('ok','Không phát hiện lỗi trong mẫu quét',`Đã kiểm tra ${checked} URL đầu tiên trong sitemap.`);
+    seoAuditStatus.textContent=`Hoàn tất: ${checked} URL · ${errors} lỗi · ${warns} cảnh báo`;
+  }catch(e){seoAuditStatus.textContent='Quét thất bại';seoAuditSitemapResult.innerHTML=seoAuditItem('bad','Không quét được sitemap',e.message||String(e))}
+  finally{seoAuditSitemap.disabled=false;setTimeout(()=>{seoAuditProgress.style.display='none'},700)}
+}
+if(seoAuditOne)seoAuditOne.addEventListener('click',runSeoAuditOne);
+if(seoAuditUrl)seoAuditUrl.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSeoAuditOne()}});
+if(seoAuditSitemap)seoAuditSitemap.addEventListener('click',runSeoSitemapAudit);
 
 async function loadSeoStatus(){
   const lastCheckEl=document.getElementById("seoLastCheck");
