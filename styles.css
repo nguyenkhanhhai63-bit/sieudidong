@@ -14258,3 +14258,46 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
   .sdd-footer-brand-new img{width:46px;height:46px}.sdd-footer-brand-new strong{font-size:18px}
   .sdd-footer-copy{align-items:flex-start;text-align:left}
 }
+
+/* V392 - Footer palette refinement: lighter, softer, closer to main Siêu Di Động UI */
+.sdd-site-footer{
+  background:linear-gradient(135deg,#17212a 0%,#141e27 52%,#18232c 100%);
+  color:#eef3f7;
+  border-top-color:rgba(255,91,0,.48);
+  box-shadow:0 -10px 32px rgba(15,23,42,.05);
+}
+.sdd-footer-col{border-left-color:rgba(255,255,255,.09)}
+.sdd-footer-col h3{color:#f8fafc}
+.sdd-footer-icon,.sdd-service-icon{color:#ff5a00}
+.sdd-store-card strong,.sdd-hotline b,.sdd-footer-links a span{color:#ff6a12}
+.sdd-store-card p,.sdd-commit-box p{color:#dce4ea}
+.sdd-store-actions a{border-color:rgba(255,91,0,.48);color:#ff7a2b;background:rgba(255,91,0,.08)}
+.sdd-hotline,.sdd-commit-box,.sdd-payment-box{
+  background:#1d2933;
+  border-color:rgba(255,255,255,.11);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.sdd-hotline small,.sdd-footer-muted,.sdd-payment-box>span{color:#b6c1ca}
+.sdd-footer-links a{color:#dce4ea}
+.sdd-footer-links a:hover{color:#ff761f}
+.sdd-commit-box p span,.sdd-social-badge{background:#ff5a00}
+.sdd-social-list a{color:#edf2f6}
+.sdd-contact-note{border-top-color:rgba(255,255,255,.09)}
+.sdd-contact-note span{color:#b1bdc6}
+.sdd-service-grid{background:#1a2630;border-color:rgba(255,255,255,.11)}
+.sdd-service-grid a{color:#f4f7f9;border-right-color:rgba(255,255,255,.08);border-bottom-color:rgba(255,255,255,.08)}
+.sdd-service-grid a:hover{background:#202e39}
+.sdd-service-grid small{color:#adbac4}
+.sdd-footer-bottom{
+  border-top-color:rgba(255,255,255,.09);
+  background:#101820;
+}
+.sdd-footer-brand-new strong{color:#ff5a00}
+.sdd-footer-trust{color:#d0d8de}
+.sdd-footer-copy{color:#b3bec7}
+.sdd-footer-copy b{color:#ff6a12}
+@media(max-width:1100px){.sdd-footer-col:nth-child(even){border-left-color:rgba(255,255,255,.09)}}
+@media(max-width:720px){
+  .sdd-footer-col,.sdd-footer-col:nth-child(even),.sdd-footer-col:nth-child(odd){border-bottom-color:rgba(255,255,255,.09)}
+  .sdd-service-grid a,.sdd-service-grid a:nth-child(2n),.sdd-service-grid a:nth-last-child(-n+2){border-right-color:rgba(255,255,255,.08)}
+}
