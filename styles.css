@@ -14368,3 +14368,147 @@ ls -lh /mnt/data/sieu_di_dong_v244_warranty_full_page.zip
   .sdd-footer-bottom.sdd-footer-bottom-balanced{display:flex;padding:20px 18px;gap:17px}
   .sdd-footer-bottom-balanced .sdd-footer-trust-inline{display:flex;flex-direction:column;gap:6px}
 }
+
+/* V394 - Footer proportion & typography refinement */
+.sdd-site-footer{
+  font-size:16px;
+  letter-spacing:0;
+}
+.sdd-footer-main.sdd-footer-balanced{
+  max-width:1460px;
+  padding:48px 42px 40px;
+  grid-template-columns:1.18fr 1.1fr 1.12fr .95fr;
+  column-gap:0;
+}
+.sdd-footer-balanced .sdd-footer-col{
+  padding:0 36px;
+  min-width:0;
+}
+.sdd-footer-balanced .sdd-footer-col h3{
+  font-size:19px;
+  margin-bottom:24px;
+  line-height:1.25;
+  letter-spacing:.05px;
+}
+.sdd-footer-balanced .sdd-footer-icon{font-size:23px}
+.sdd-footer-balanced .sdd-store-card strong{
+  font-size:17px;
+  margin-bottom:9px;
+}
+.sdd-footer-balanced .sdd-store-card p{
+  font-size:15px;
+  line-height:1.65;
+  margin:6px 0;
+}
+.sdd-footer-balanced .sdd-store-actions{
+  gap:10px;
+  margin-top:17px;
+}
+.sdd-footer-balanced .sdd-store-actions a{
+  font-size:13.5px;
+  padding:9px 14px;
+}
+.sdd-footer-balanced .sdd-hotline{
+  margin-top:22px;
+  padding:16px 17px;
+  gap:12px;
+}
+.sdd-footer-balanced .sdd-hotline>span:first-child{font-size:27px}
+.sdd-footer-balanced .sdd-hotline small{font-size:12px}
+.sdd-footer-balanced .sdd-hotline b{font-size:20px;line-height:1.2}
+.sdd-footer-balanced .sdd-hotline em{font-size:11.5px;margin-top:4px}
+
+.sdd-footer-balanced .sdd-footer-links{gap:14px}
+.sdd-footer-balanced .sdd-footer-links a{
+  font-size:15px;
+  line-height:1.45;
+}
+.sdd-footer-balanced .sdd-commit-box{
+  margin-top:24px;
+  padding:19px 20px;
+}
+.sdd-footer-balanced .sdd-commit-box h4{
+  font-size:16px;
+  margin-bottom:14px;
+}
+.sdd-footer-balanced .sdd-commit-box p{
+  font-size:14px;
+  line-height:1.45;
+  margin:9px 0;
+}
+.sdd-footer-balanced .sdd-commit-box p span{
+  width:20px;height:20px;font-size:12px;margin-right:8px;
+}
+
+.sdd-footer-balanced .sdd-footer-muted{
+  font-size:14px;
+  line-height:1.65;
+  margin-bottom:20px;
+}
+.sdd-footer-balanced .sdd-social-list{gap:12px}
+.sdd-footer-balanced .sdd-social-list a{font-size:15px}
+.sdd-footer-balanced .sdd-social-badge{width:32px;height:32px}
+.sdd-newsletter-mini{
+  margin-top:24px;
+  padding-top:20px;
+  gap:9px;
+}
+.sdd-newsletter-mini>b{font-size:16px}
+.sdd-newsletter-mini>span{font-size:12.5px;line-height:1.55}
+.sdd-newsletter-row{gap:9px;margin-top:4px}
+.sdd-newsletter-row input{height:42px;font-size:13.5px;padding:0 13px}
+.sdd-newsletter-row button{height:42px;min-width:62px;font-size:13.5px}
+
+.sdd-footer-balanced .sdd-service-grid{
+  border-radius:14px;
+}
+.sdd-footer-balanced .sdd-service-grid a{
+  min-height:122px;
+  padding:15px 8px;
+}
+.sdd-footer-balanced .sdd-service-icon{font-size:28px;margin-bottom:8px}
+.sdd-footer-balanced .sdd-service-grid b{font-size:13.5px}
+.sdd-footer-balanced .sdd-service-grid small{font-size:11.5px;line-height:1.35}
+.sdd-footer-balanced .sdd-payment-box{
+  margin-top:18px;
+  padding:15px;
+}
+.sdd-footer-balanced .sdd-payment-box>span{font-size:12px;margin-bottom:10px}
+.sdd-footer-balanced .sdd-payment-box b{font-size:11.5px;padding:7px 9px}
+
+.sdd-footer-bottom.sdd-footer-bottom-balanced{
+  max-width:100%;
+  padding:25px max(38px,calc((100% - 1460px)/2 + 42px));
+  grid-template-columns:1fr 1.25fr 1.1fr;
+  gap:34px;
+}
+.sdd-footer-bottom-balanced .sdd-footer-brand-new img{width:58px;height:58px}
+.sdd-footer-bottom-balanced .sdd-footer-brand-new strong{font-size:22px}
+.sdd-footer-bottom-balanced .sdd-footer-brand-new span{font-size:11px}
+.sdd-footer-bottom-balanced .sdd-footer-trust-inline{
+  font-size:13px;
+  gap:10px 24px;
+}
+.sdd-footer-bottom-balanced .sdd-footer-copy{
+  font-size:12.5px;
+  line-height:1.45;
+}
+
+@media(max-width:1100px){
+  .sdd-footer-main.sdd-footer-balanced{padding:38px 26px 28px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sdd-footer-balanced .sdd-footer-col{padding:0 24px 30px}
+  .sdd-footer-bottom.sdd-footer-bottom-balanced{padding:23px 26px;grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+  .sdd-site-footer{font-size:14px}
+  .sdd-footer-main.sdd-footer-balanced{padding:30px 18px 12px}
+  .sdd-footer-balanced .sdd-footer-col h3{font-size:17px}
+  .sdd-footer-balanced .sdd-store-card p,
+  .sdd-footer-balanced .sdd-footer-links a,
+  .sdd-footer-balanced .sdd-social-list a{font-size:14px}
+  .sdd-footer-balanced .sdd-hotline b{font-size:19px}
+  .sdd-footer-balanced .sdd-service-grid a{min-height:98px}
+  .sdd-footer-balanced .sdd-service-grid b{font-size:11px}
+  .sdd-footer-balanced .sdd-service-grid small{font-size:9.5px}
+  .sdd-footer-bottom.sdd-footer-bottom-balanced{padding:22px 18px}
+}
