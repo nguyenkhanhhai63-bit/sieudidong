@@ -45,6 +45,26 @@
       "destination": "/api/product-page?slug=$1"
     },
     {
+      "source": "/thong-tin-phap-ly",
+      "destination": "/thong-tin-phap-ly.html"
+    },
+    {
+      "source": "/chinh-sach-bao-mat",
+      "destination": "/chinh-sach-bao-mat.html"
+    },
+    {
+      "source": "/chinh-sach-thanh-toan",
+      "destination": "/chinh-sach-thanh-toan.html"
+    },
+    {
+      "source": "/chinh-sach-doi-tra",
+      "destination": "/chinh-sach-doi-tra.html"
+    },
+    {
+      "source": "/chinh-sach-van-chuyen",
+      "destination": "/chinh-sach-van-chuyen.html"
+    },
+    {
       "source": "/",
       "destination": "/"
     }

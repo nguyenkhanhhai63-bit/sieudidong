@@ -388,6 +388,24 @@
       </section>
     </div>
 
+    <section class="sdd-footer-legal" id="footerLegalBlock" hidden aria-label="Thông tin pháp lý">
+      <div class="sdd-footer-legal-info">
+        <div class="sdd-footer-legal-head"><span data-footer-icon="shield"></span><strong data-footer-text="legalTitle">THÔNG TIN PHÁP LÝ</strong></div>
+        <div class="sdd-footer-legal-lines" id="footerLegalLines"></div>
+        <div class="sdd-footer-legal-links">
+          <a href="/thong-tin-phap-ly/">Thông tin pháp lý</a>
+          <a href="/chinh-sach-bao-mat/">Chính sách bảo mật</a>
+          <a href="/chinh-sach-thanh-toan/">Chính sách thanh toán</a>
+          <a href="/chinh-sach-doi-tra/">Đổi trả & bảo hành</a>
+          <a href="/chinh-sach-van-chuyen/">Chính sách vận chuyển</a>
+        </div>
+      </div>
+      <a class="sdd-moit-badge" id="footerMoitBadge" href="#" target="_blank" rel="noopener noreferrer" hidden>
+        <img id="footerMoitBadgeImage" alt="Đã thông báo Bộ Công Thương" hidden>
+        <span class="sdd-moit-badge-fallback"><i data-footer-icon="shield"></i><b id="footerMoitLabel">Đã thông báo Bộ Công Thương</b><small>Thông tin xác nhận website</small></span>
+      </a>
+    </section>
+
     <div class="sdd-footer-bottom sdd-footer-bottom-balanced">
       <div class="sdd-footer-brand-new">
         <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
@@ -688,7 +706,7 @@
  function render(d={}){
    const cfg={...defaults,...d};
    footer.style.setProperty('--sdd-footer-accent',cfg.accent||'#ff5a00');footer.style.setProperty('--sdd-footer-bg',cfg.background||'#111b25');footer.style.setProperty('--sdd-footer-bottom-bg',cfg.backgroundBottom||'#0c1620');footer.style.setProperty('--sdd-footer-text',cfg.text||'#f8fafc');footer.style.setProperty('--sdd-footer-muted',cfg.muted||'#b8c2cc');
-   ['storeTitle','storeName','address','phone','mapLabel','zaloLabel','hotlineTitle','hotlineNote','policyTitle','commitmentTitle','connectTitle','connectIntro','newsletterTitle','newsletterText','utilityTitle','paymentTitle','brandName','brandTagline','bottomTrust1','bottomTrust2','copyright','developer'].forEach(k=>{if(cfg[k]!=null)setText(k,cfg[k])});
+   ['storeTitle','storeName','address','phone','mapLabel','zaloLabel','hotlineTitle','hotlineNote','policyTitle','commitmentTitle','connectTitle','connectIntro','newsletterTitle','newsletterText','utilityTitle','paymentTitle','brandName','brandTagline','bottomTrust1','bottomTrust2','copyright','developer','legalTitle'].forEach(k=>{if(cfg[k]!=null)setText(k,cfg[k])});
    const iconMap={store:cfg.iconStore,policy:cfg.iconPolicy,connect:cfg.iconConnect,utility:cfg.iconUtility,headset:cfg.iconHotline,'map-pin':'map-pin',shield:'shield'};footer.querySelectorAll('[data-footer-icon]').forEach(el=>el.innerHTML=icon(iconMap[el.dataset.footerIcon]||el.dataset.footerIcon));
    const tel=String(cfg.phone||'0353 105 423').replace(/\D/g,'');footer.querySelectorAll('[data-footer-phone]').forEach(a=>{a.textContent=cfg.phone||'';a.href='tel:'+tel});const hot=footer.querySelector('.sdd-hotline');if(hot)hot.href='tel:'+tel;
    const map=footer.querySelector('[data-footer-map]');if(map&&cfg.mapUrl)map.href=cfg.mapUrl;const zalo=footer.querySelector('[data-footer-zalo]');if(zalo&&cfg.zaloUrl)zalo.href=cfg.zaloUrl;
@@ -696,6 +714,15 @@
    const box=document.getElementById('footerCommitBox');if(box&&Array.isArray(cfg.commitments)){const h=box.querySelector('h4')?.outerHTML||`<h4>${cfg.commitmentTitle||''}</h4>`;box.innerHTML=h+cfg.commitments.map(x=>`<p><span>${icon('check')}</span> ${x}</p>`).join('')}
    const util=document.getElementById('footerUtilities');if(util&&Array.isArray(cfg.utilities))util.innerHTML=cfg.utilities.slice(0,4).map(x=>`<a href="${x.url||'#'}"><span class="sdd-service-icon">${icon(x.icon||'grid')}</span><b>${x.label||''}</b><small>${x.sub||''}</small></a>`).join('');
    const pay=document.getElementById('footerPayments');if(pay&&Array.isArray(cfg.payments))pay.innerHTML=cfg.payments.map(x=>`<b>${x}</b>`).join('');
+   const legalBlock=document.getElementById('footerLegalBlock'),legalLines=document.getElementById('footerLegalLines');
+   const legalRows=[['Chủ thể',cfg.legalEntityName],['Mã số thuế',cfg.taxId],['ĐKKD',cfg.businessRegistration],['Địa chỉ',cfg.legalAddress],['Điện thoại',cfg.legalPhone],['Email',cfg.legalEmail],['Người chịu trách nhiệm',cfg.legalRepresentative]].filter(x=>String(x[1]||'').trim());
+   if(legalLines)legalLines.innerHTML=legalRows.map(([k,v])=>`<span><b>${k}:</b> ${String(v).replace(/[<>]/g,'')}</span>`).join('');
+   const moit=document.getElementById('footerMoitBadge'),moitImg=document.getElementById('footerMoitBadgeImage'),moitLabel=document.getElementById('footerMoitLabel');
+   const showMoit=cfg.moitEnabled===true && /^https?:\/\//i.test(String(cfg.moitUrl||''));
+   if(moit){moit.hidden=!showMoit;if(showMoit)moit.href=cfg.moitUrl;}
+   if(moitLabel)moitLabel.textContent=cfg.moitLabel||'Đã thông báo Bộ Công Thương';
+   if(moitImg){const hasImg=showMoit&&/^https?:\/\//i.test(String(cfg.moitBadgeImage||''));moitImg.hidden=!hasImg;if(hasImg)moitImg.src=cfg.moitBadgeImage;}
+   if(legalBlock)legalBlock.hidden=!(legalRows.length||showMoit);
  }
  // Render icon hợp lý ngay cả trước khi API trả dữ liệu.
  render({});
