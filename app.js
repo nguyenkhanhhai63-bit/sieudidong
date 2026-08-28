@@ -2685,6 +2685,40 @@ document.addEventListener("visibilitychange",()=>{
 
 
 const AI_CHAT_HISTORY=[];
+const AI_CHAT_SESSION_KEY="sdd_ai_chat_session_v416";
+function aiChatGetSessionId(){
+  try{
+    let id=sessionStorage.getItem(AI_CHAT_SESSION_KEY)||"";
+    if(!/^[a-zA-Z0-9_-]{12,90}$/.test(id)){
+      id="sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+      sessionStorage.setItem(AI_CHAT_SESSION_KEY,id);
+    }
+    return id;
+  }catch(_){
+    return "sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
+  }
+}
+const AI_CHAT_SESSION_ID=aiChatGetSessionId();
+function aiChatSaveHistory(userText,assistantText,data={}){
+  const u=String(userText||"").trim(), a=String(assistantText||"").trim();
+  if(!u&&!a)return;
+  fetch("/api/ai-chat-history",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    keepalive:true,
+    body:JSON.stringify({
+      sessionId:AI_CHAT_SESSION_ID,
+      userText:u,
+      assistantText:a,
+      sentAt:Date.now(),
+      page:location.pathname+location.search,
+      needsHuman:data?.needsHuman===true,
+      source:data?.source||"",
+      intent:data?.understoodIntent||data?.intent||""
+    })
+  }).catch(()=>{});
+}
+
 
 function parseAiChatSuggestions(raw=""){
   return String(raw||"")
@@ -2992,6 +3026,7 @@ async function aiChatAsk(question){
     if(aiChatInput) aiChatInput.value="";
     aiChatAppend("assistant","Được bạn nha.");
     setTimeout(()=>aiChatAppend("assistant","Mình chuyển bạn sang nhân viên tư vấn trực tiếp."),350);
+    aiChatSaveHistory(text,"Được bạn nha. Mình chuyển bạn sang nhân viên tư vấn trực tiếp.",{needsHuman:true,source:"human-request"});
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
     sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
@@ -3026,7 +3061,9 @@ async function aiChatAsk(question){
     // Xóa typing đang chờ server trước khi bắt đầu nhắn từng bong bóng.
     aiChatTyping(false);
     const replyMessages=await aiChatAppendAssistantMessages(reply,data);
-    AI_CHAT_HISTORY.push({role:"assistant",text:replyMessages.join(" ")||reply});
+    const savedReply=replyMessages.join(" ")||reply;
+    AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});
+    aiChatSaveHistory(text,savedReply,data);
     if(aiChatNeedsHuman(data)){
       aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
     }else{
@@ -3034,7 +3071,9 @@ async function aiChatAsk(question){
     }
     if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
   }catch(e){
-    aiChatAppend("assistant",e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.");
+    const failText=e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.";
+    aiChatAppend("assistant",failText);
+    aiChatSaveHistory(text,failText,{needsHuman:true,source:"error"});
     aiChatSetHumanHandoff(true,"AI đang chưa xử lý được câu này. Chuyển sang nhân viên tư vấn trực tiếp trên Zalo.");
   }finally{
     aiChatTyping(false);
