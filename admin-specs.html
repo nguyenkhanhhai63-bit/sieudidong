@@ -6347,6 +6347,45 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 
 <style id="ai-knowledge-v405-css">
 .ai-knowledge-box{grid-column:1/-1}.ai-knowledge-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}.ai-knowledge-head h2{margin:0 0 4px}.ai-knowledge-head p{margin:0;color:#667085}.ai-knowledge-count{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border-radius:999px;background:#fff1e8;color:#d94c00;font-weight:900;padding:0 9px}.ai-knowledge-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.ai-knowledge-stat{border:1px solid #e7eaee;border-radius:12px;padding:12px;background:#fcfcfd}.ai-knowledge-stat span{display:block;font-size:12px;color:#667085}.ai-knowledge-stat strong{display:block;margin-top:3px;font-size:22px;color:#101828}.ai-knowledge-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.ai-knowledge-toolbar input,.ai-knowledge-toolbar select{height:40px;border:1px solid #dfe3e8;border-radius:9px;padding:0 11px;background:#fff}.ai-knowledge-toolbar input{flex:1;min-width:220px}.ai-knowledge-list{display:flex;flex-direction:column;gap:10px}.ai-knowledge-item{border:1px solid #e7eaee;border-radius:13px;padding:14px;background:#fff}.ai-knowledge-item.is-answered{background:#f8fffb;border-color:#ccebd8}.ai-knowledge-item.is-ignored{opacity:.62;background:#fafafa}.ai-knowledge-q{font-size:15px;font-weight:850;color:#101828;line-height:1.45}.ai-knowledge-meta{display:flex;gap:8px;flex-wrap:wrap;margin:7px 0 10px;color:#667085;font-size:11.5px}.ai-knowledge-missing{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:9px;padding:9px 10px;font-size:12.5px;line-height:1.45;margin-bottom:10px}.ai-knowledge-answer{width:100%;box-sizing:border-box;min-height:80px;border:1px solid #dfe3e8;border-radius:10px;padding:10px 11px;font-size:13px;resize:vertical;outline:none}.ai-knowledge-answer:focus{border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.1)}.ai-knowledge-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.ai-knowledge-actions button{border-radius:9px;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer}.ai-knowledge-save{background:#ff5a00;color:#fff;border:1px solid #ff5a00}.ai-knowledge-secondary{background:#fff;color:#344054;border:1px solid #dfe3e8}.ai-knowledge-danger{background:#fff5f5;color:#b42318;border:1px solid #fecaca}.ai-knowledge-empty{text-align:center;padding:34px;border:1px dashed #d0d5dd;border-radius:12px;color:#667085;background:#fafafa}.ai-knowledge-badge{margin-left:auto;background:#ff5a00;color:#fff;border-radius:999px;min-width:21px;height:21px;padding:0 6px;display:none;align-items:center;justify-content:center;font-size:11px!important;font-weight:900}.ai-knowledge-add{display:grid;grid-template-columns:1.1fr 1fr auto;gap:8px;margin-top:12px}.ai-knowledge-add input{min-width:0;border:1px solid #dfe3e8;border-radius:9px;padding:9px 10px}.ai-knowledge-add button{border:1px solid #ff5a00;background:#fff7ed;color:#c2410c;border-radius:9px;padding:9px 12px;font-weight:850;cursor:pointer}.ai-knowledge-status{font-size:12px;font-weight:750;margin-top:8px;color:#667085}@media(max-width:760px){.ai-knowledge-stats{grid-template-columns:1fr}.ai-knowledge-add{grid-template-columns:1fr}.ai-knowledge-toolbar input{min-width:100%}}
+
+/* V408 - Đào tạo AI redesign */
+#aiSettingsCard.ai-v408{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+.ai-v408-pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 16px;background:#fff;border:1px solid #e7ebf0;border-radius:16px}
+.ai-v408-eyebrow{font-size:10px;font-weight:900;letter-spacing:.12em;color:#ff5a00;margin-bottom:6px}
+.ai-v408-pagehead h1{margin:0!important;color:#101828!important;font-size:26px!important;letter-spacing:-.5px}
+.ai-v408-pagehead p{margin:7px 0 0!important;color:#667085!important;font-size:12px!important;line-height:1.5}
+.ai-v408-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0}
+.ai-v408-kpi{display:flex;align-items:center;gap:14px;min-height:108px;padding:18px;background:#fff;border:1px solid #e7ebf0;border-radius:16px;box-shadow:0 5px 18px rgba(16,24,40,.035)}
+.ai-v408-kpi-icon{width:48px;height:48px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;font-size:22px;font-weight:900}
+.ai-v408-kpi.is-orange .ai-v408-kpi-icon{background:#fff1e8;color:#ff5a00}.ai-v408-kpi.is-green .ai-v408-kpi-icon{background:#eafaf0;color:#18a957}.ai-v408-kpi.is-purple .ai-v408-kpi-icon{background:#f2eafe;color:#8b5cf6}.ai-v408-kpi.is-blue .ai-v408-kpi-icon{background:#eaf4ff;color:#2b7fff}
+.ai-v408-kpi span{display:block;color:#667085;font-size:11px;font-weight:800}.ai-v408-kpi strong{display:block;margin-top:2px;color:#101828;font-size:28px;line-height:1.05;font-weight:900}.ai-v408-kpi small{display:block;margin-top:5px;color:#98a2b3;font-size:9px;line-height:1.35}
+.ai-v408-tabs{display:flex;gap:26px;align-items:center;overflow:auto;padding:0 18px;background:#fff;border:1px solid #e7ebf0;border-radius:16px 16px 0 0}
+.ai-v408-tab{position:relative;border:0!important;background:transparent!important;color:#667085!important;padding:17px 2px 15px!important;font-size:12px!important;font-weight:800!important;white-space:nowrap;box-shadow:none!important}
+.ai-v408-tab:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:transparent;border-radius:3px 3px 0 0}.ai-v408-tab.is-active{color:#ff5a00!important}.ai-v408-tab.is-active:after{background:#ff5a00}
+.ai-v408-tab b{display:inline-flex;min-width:20px;height:20px;align-items:center;justify-content:center;margin-left:5px;padding:0 6px;border-radius:999px;background:#fff1e8;color:#ff5a00;font-size:10px}
+.ai-v408-body{background:#f8fafc;border:1px solid #e7ebf0;border-top:0;border-radius:0 0 16px 16px;padding:16px}
+.ai-v408-panel{display:none}.ai-v408-panel.is-active{display:block}
+.ai-v408-toolbar{display:grid;grid-template-columns:minmax(280px,1fr) 190px auto;gap:10px;margin-bottom:14px}
+.ai-v408-search{display:flex;align-items:center;gap:8px;padding:0 12px;background:#fff;border:1px solid #dfe4ea;border-radius:10px;color:#98a2b3}.ai-v408-search input{width:100%;border:0!important;box-shadow:none!important;background:transparent!important;padding:10px 0!important}
+.ai-v408-toolbar select{height:40px;border-radius:10px!important;background:#fff}
+.ai-v408-knowledge-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
+.ai-v408-two-col{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.7fr);gap:14px;align-items:start}
+.ai-v408-card{background:#fff;border:1px solid #e7ebf0;border-radius:14px;padding:16px;box-shadow:0 4px 14px rgba(16,24,40,.025)}
+.ai-v408-title{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid #eef1f4;margin-bottom:12px}.ai-v408-title h2{margin:0!important;color:#101828!important;font-size:15px!important}.ai-v408-title p{margin:5px 0 0!important;color:#667085!important;font-size:10px!important;line-height:1.5!important}
+.ai-v408-pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:9px;font-weight:900;white-space:nowrap}.ai-v408-pill.is-orange{background:#fff1e8;color:#ff5a00}
+.ai-v408-guide{position:sticky;top:80px}.ai-v408-guide-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#fff1e8;color:#ff5a00;font-size:18px;font-weight:900}.ai-v408-card h3{margin:12px 0 6px;color:#101828;font-size:14px}.ai-v408-card>p{color:#667085;font-size:10px;line-height:1.55}
+.ai-v408-step{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px;border:1px solid #eef1f4;border-radius:10px}.ai-v408-step b{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#fff1e8;color:#ff5a00;font-size:10px}.ai-v408-step span{font-size:10px;font-weight:700;color:#475467}.ai-v408-tip{margin-top:12px;padding:11px;border-radius:10px;background:#fff8f3;color:#9a4b12;font-size:9px;line-height:1.5}
+.ai-v408-form{margin-top:14px}.ai-v408-form label{display:block;margin-bottom:7px;color:#344054;font-size:11px;font-weight:900}.ai-v408-form textarea{width:100%;min-height:unset!important;border:1px solid #dfe4ea!important;border-radius:10px!important;padding:12px!important;background:#fff!important;font-size:12px!important;line-height:1.55!important;resize:vertical}.ai-v408-form small{display:block;margin-top:6px;color:#98a2b3;font-size:9px}
+.ai-v408-savebar{display:flex;gap:9px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #eef1f4}.ai-v408-savebar .primary{background:#ff5a00!important;border-color:#ff5a00!important}
+.ai-v408-list{padding-left:18px;margin:12px 0 0}.ai-v408-list li{margin:8px 0;color:#475467;font-size:10px;line-height:1.45}
+.ai-v408-info{display:flex;flex-direction:column;gap:5px;margin-top:14px;padding:12px;border:1px solid #e6eaf0;border-radius:10px;background:#f8fafc;color:#475467;font-size:9px;line-height:1.5}.ai-v408-info b{color:#101828;font-size:10px}
+.ai-v408-select-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#aiSettingsCard.ai-v408 .ai-field{margin-top:13px}#aiSettingsCard.ai-v408 .ai-field label{font-size:10px;color:#344054;font-weight:900}#aiSettingsCard.ai-v408 textarea,#aiSettingsCard.ai-v408 select{border-radius:10px!important;border-color:#dfe4ea!important;background:#fff!important}#aiSettingsCard.ai-v408 textarea{font-size:11px!important;line-height:1.5!important}
+#aiSettingsCard.ai-v408 .ai-check{margin-top:10px;padding:10px 11px;border:1px solid #eef1f4;border-radius:10px;background:#fcfcfd}#aiSettingsCard.ai-v408 .ai-check span{font-size:10px;color:#475467}
+#aiSettingsCard.ai-v408 .ai-chat-icon-inline{border:0!important;padding:0!important;background:transparent!important}.ai-chat-icon-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.ai-chat-icon-actions #resetAiChatIcon{grid-column:1/-1}
+#aiSettingsCard.ai-v408 .ai-knowledge-list{display:grid;gap:9px}#aiSettingsCard.ai-v408 .ai-knowledge-item{padding:13px!important;border:1px solid #e7ebf0!important;border-radius:11px!important;background:#fff!important;box-shadow:none!important}#aiSettingsCard.ai-v408 .ai-knowledge-item:hover{border-color:#ffb38a!important;background:#fffaf7!important}#aiSettingsCard.ai-v408 .ai-knowledge-q{font-size:12px!important;font-weight:900!important;color:#101828!important}#aiSettingsCard.ai-v408 .ai-knowledge-meta{font-size:9px!important;color:#98a2b3!important;margin-top:5px!important}#aiSettingsCard.ai-v408 .ai-knowledge-missing{margin-top:9px!important;padding:9px!important;border-radius:8px!important;background:#fff8f3!important;color:#7c3a0b!important;font-size:9px!important}#aiSettingsCard.ai-v408 .ai-knowledge-answer{min-height:70px!important;margin-top:9px!important;border-radius:8px!important;font-size:10px!important}#aiSettingsCard.ai-v408 .ai-knowledge-actions{gap:7px!important;margin-top:8px!important}#aiSettingsCard.ai-v408 .ai-knowledge-actions button{font-size:9px!important;padding:7px 9px!important;border-radius:8px!important}#aiSettingsCard.ai-v408 .ai-knowledge-save{background:#ff5a00!important;border-color:#ff5a00!important}
+@media(max-width:1100px){.ai-v408-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ai-v408-knowledge-layout,.ai-v408-two-col{grid-template-columns:1fr}.ai-v408-guide{position:static}}
+@media(max-width:720px){.ai-v408-pagehead{padding:16px}.ai-v408-kpis{grid-template-columns:1fr 1fr;gap:9px}.ai-v408-kpi{min-height:94px;padding:12px;gap:9px}.ai-v408-kpi-icon{width:38px;height:38px;font-size:17px}.ai-v408-kpi strong{font-size:23px}.ai-v408-kpi small{display:none}.ai-v408-tabs{gap:18px;padding:0 12px}.ai-v408-body{padding:10px}.ai-v408-toolbar{grid-template-columns:1fr}.ai-v408-select-grid{grid-template-columns:1fr}.ai-v408-card{padding:12px}}
 </style>
 </head>
 <body class="auth-pending">
@@ -6614,198 +6653,130 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
   </section>
 
 
-  <section id="aiSettingsCard" class="card panel" data-panel="ai" style="display:none">
-    <div class="head">
+  <section id="aiSettingsCard" class="card panel ai-v408" data-panel="ai" style="display:none">
+    <div class="ai-v408-pagehead">
       <div>
+        <div class="ai-v408-eyebrow">AI & TƯ VẤN</div>
         <h1>Đào tạo AI</h1>
-        <p>Điều chỉnh cách Gemini phân tích so sánh và cách AI chat tư vấn khách trên website.</p>
+        <p>Quản lý kiến thức và huấn luyện AI để hiểu câu hỏi, trả lời đúng trọng tâm và chính xác hơn.</p>
       </div>
-      <button id="reloadAiSettings" class="secondary" type="button">Tải lại</button>
+      <button id="reloadAiSettings" class="secondary" type="button">↻ Tải lại</button>
     </div>
 
-    <div class="ai-settings-shell">
-      <div class="ai-settings-grid">
-        <div class="ai-settings-box">
-          <h2>Chỉ dẫn riêng cho AI</h2>
-          <p>Viết bằng ngôn ngữ bình thường. Ví dụ: ưu tiên hiệu năng, không tâng bốc, phải nói rõ máy nào đáng tiền hơn.</p>
+    <div class="ai-v408-kpis">
+      <div class="ai-v408-kpi is-orange"><div class="ai-v408-kpi-icon">?</div><div><span>Cần bổ sung</span><strong id="aiKnowledgeStatPending">0</strong><small>Thông tin AI đang thiếu</small></div></div>
+      <div class="ai-v408-kpi is-green"><div class="ai-v408-kpi-icon">✓</div><div><span>Đã đào tạo</span><strong id="aiKnowledgeStatAnswered">0</strong><small>Kiến thức Shop đã cung cấp</small></div></div>
+      <div class="ai-v408-kpi is-purple"><div class="ai-v408-kpi-icon">✎</div><div><span>Tổng lượt khách hỏi</span><strong id="aiKnowledgeStatAsked">0</strong><small>Các câu AI đã ghi nhận</small></div></div>
+      <div class="ai-v408-kpi is-blue"><div class="ai-v408-kpi-icon">▣</div><div><span>Tổng kiến thức</span><strong id="aiKnowledgeStatTotal">0</strong><small>Trong kho đào tạo AI</small></div></div>
+    </div>
 
-          <div class="ai-field">
-            <label for="aiCustomInstructions">Nội dung muốn AI tuân theo</label>
-            <textarea id="aiCustomInstructions" maxlength="4000" placeholder="Ví dụ: Khi so sánh máy chơi game, ưu tiên CPU, GPU, pin và tản nhiệt. Nếu máy đắt hơn nhưng chênh lệch cấu hình ít thì phải nói thẳng là không đáng nâng cấp."></textarea>
-          </div>
+    <div class="ai-v408-tabs">
+      <button class="ai-v408-tab is-active" type="button" data-ai-v408-tab="missing">Cần bổ sung thông tin <b id="aiKnowledgePendingCount">0</b></button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="retrain">Đào tạo lại câu trả lời sai</button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="chat">AI tư vấn khách</button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="config">Cấu hình AI</button>
+    </div>
 
-          <div class="ai-settings-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
-            <div class="ai-field">
-              <label for="aiRecommendationStyle">Cách kết luận</label>
-              <select id="aiRecommendationStyle">
-                <option>Rõ ràng, chốt 1 máy</option>
-                <option>Cân bằng, nêu điều kiện chọn</option>
-                <option>Không ép chốt</option>
-              </select>
-            </div>
-            <div class="ai-field">
-              <label for="aiResponseLength">Độ dài phân tích</label>
-              <select id="aiResponseLength">
-                <option>Ngắn gọn</option>
-                <option selected>Vừa phải</option>
-                <option>Chi tiết</option>
-              </select>
-            </div>
-            <div class="ai-field">
-              <label for="aiPricePriority">Ưu tiên giá/cấu hình</label>
-              <select id="aiPricePriority">
-                <option>Ưu tiên giá tốt</option>
-                <option selected>Cân bằng</option>
-                <option>Ưu tiên cấu hình</option>
-              </select>
-            </div>
-            <div class="ai-field">
-              <label for="aiSalesTone">Giọng tư vấn</label>
-              <select id="aiSalesTone">
-                <option selected>Tư vấn trung lập</option>
-                <option>Bình dân, dễ hiểu</option>
-                <option>Chuyên gia kỹ thuật</option>
-              </select>
-            </div>
-          </div>
-
-          <label class="ai-check"><input id="aiMustWeaknesses" type="checkbox" checked><span>Luôn nêu điểm yếu/hạn chế của từng máy, không chỉ nói ưu điểm.</span></label>
-          <label class="ai-check"><input id="aiMustPrice" type="checkbox" checked><span>Luôn xét chênh lệch giá và máy nào đáng tiền hơn.</span></label>
-          <label class="ai-check"><input id="aiAllowTie" type="checkbox" checked><span>Cho phép kết luận mỗi máy phù hợp một nhu cầu nếu không có máy thắng rõ ràng.</span></label>
-
-          <div class="ai-actions">
-            <button id="saveAiSettings" class="primary" type="button">Lưu cấu hình AI</button>
-            <button id="resetAiSettings" class="secondary" type="button">Khôi phục mặc định</button>
-          </div>
-          <div id="aiSettingsStatus" class="ai-settings-status"></div>
+    <div class="ai-v408-body">
+      <div class="ai-v408-panel is-active" data-ai-v408-panel="missing">
+        <div class="ai-v408-toolbar">
+          <div class="ai-v408-search">⌕ <input id="aiKnowledgeSearch" type="search" placeholder="Tìm câu hỏi hoặc thông tin đang thiếu..."></div>
+          <select id="aiKnowledgeFilter">
+            <option value="pending">Cần bổ sung</option><option value="answered">Đã đào tạo</option><option value="ignored">Đã bỏ qua</option><option value="all">Tất cả</option>
+          </select>
+          <button id="reloadAiKnowledge" class="secondary" type="button">Tải lại</button>
         </div>
-
-        <div class="ai-settings-box ai-chat-training-box">
-          <h2>AI chat tư vấn khách</h2>
-          <p>Đào tạo cách AI nói chuyện với khách, thông tin shop được phép trả lời và lúc nào mới chuyển qua nhân viên.</p>
-
-          <div class="ai-chat-icon-inline">
-            <div class="ai-chat-icon-inline-head">
-              <div>
-                <h3>Ảnh icon nút chat</h3>
-                <p>Đổi ảnh icon AI đang nổi ngoài website ngay tại đây.</p>
-              </div>
-              <span class="ai-chat-icon-badge">TÙY CHỈNH</span>
-            </div>
-
-            <div class="ai-chat-icon-preview-wrap">
-              <div class="ai-chat-icon-preview-bg">
-                <img id="aiChatIconPreview" src="/assets/ai-chat-robot.png?v=179" alt="Xem trước icon chat AI">
-              </div>
-              <div class="ai-chat-icon-preview-copy">
-                <strong>Icon đang dùng</strong>
-                <span>Nên chọn ảnh vuông, chữ lớn và ít chi tiết để nhìn rõ trên mobile.</span>
-              </div>
-            </div>
-
-            <input id="aiChatIconFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-
-            <div class="ai-chat-icon-actions">
-              <button id="chooseAiChatIcon" class="secondary" type="button">Chọn ảnh mới</button>
-              <button id="saveAiChatIcon" class="primary" type="button" disabled>Lưu icon chat</button>
-              <button id="resetAiChatIcon" class="secondary" type="button">Khôi phục mặc định</button>
-            </div>
-
-            <div class="ai-chat-icon-note">
-              Sau khi lưu, icon mới áp dụng cho website mà không cần sửa code hay deploy lại.
-            </div>
-            <div id="aiChatIconStatus" class="ai-settings-status"></div>
+        <div class="ai-v408-knowledge-layout">
+          <div class="ai-v408-card">
+            <div class="ai-v408-title"><div><h2>Câu hỏi cần Shop bổ sung</h2><p>AI tự ghi nhận các câu chưa đủ dữ liệu. Shop trả lời một lần để AI dùng về sau.</p></div><span id="aiKnowledgePendingCountMirror" class="ai-v408-pill">0 đang chờ</span></div>
+            <div id="aiKnowledgeList" class="ai-knowledge-list"></div>
+            <div id="aiKnowledgeStatus" class="ai-knowledge-status"></div>
           </div>
-
-
-          <div class="ai-field">
-            <label for="aiChatInstructions">Cách AI tư vấn</label>
-            <textarea id="aiChatInstructions" maxlength="4000" placeholder="Ví dụ: Nói ngắn gọn, bình dân. Khi khách hỏi máy phải hỏi tầm giá và nhu cầu nếu chưa rõ. Không được bịa giá hoặc tồn kho."></textarea>
-          </div>
-
-          <div class="ai-field">
-            <label for="aiChatWelcomeMessage">Câu chào khi mở chat</label>
-            <textarea id="aiChatWelcomeMessage" maxlength="500" style="min-height:84px" placeholder="Ví dụ: Chào bạn, cần tìm máy tầm giá nào để AI tư vấn nhanh?"></textarea>
-          </div>
-
-          <div class="ai-field">
-            <label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label>
-            <textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:130px" placeholder="Điền địa chỉ, giờ mở cửa, bảo hành, số Zalo... Những gì chưa ghi ở đây AI không được tự bịa."></textarea>
-          </div>
-
-          <div class="ai-field">
-            <label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label>
-            <textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px" placeholder="Ví dụ: Chỉ chuyển nhân viên khi cần xác nhận tồn kho, địa chỉ, chính sách hoặc AI không đủ dữ liệu."></textarea>
-          </div>
-
-          <div class="ai-field">
-            <label for="aiChatSuggestions">Gợi ý câu hỏi mẫu</label>
-            <textarea id="aiChatSuggestions" maxlength="4000" style="min-height:145px" placeholder="Mỗi dòng theo dạng: Tên nút | Câu hỏi AI sẽ nhận&#10;Ví dụ: Pin trâu | Máy nào pin trâu đang còn hàng?"></textarea>
-            <small class="ai-field-help">Mỗi dòng tạo 1 nút gợi ý. Phần trước dấu | là chữ hiện trên nút, phần sau là câu hỏi gửi cho AI.</small>
-          </div>
-
-          <div class="ai-actions ai-chat-save-actions">
-            <button id="saveAiChatSettings" class="primary" type="button">Lưu AI tư vấn chat</button>
-          </div>
-          <div id="aiChatSettingsStatus" class="ai-settings-status"></div>
-
-          <div class="ai-example" style="background:#f8fafc;border-color:#e5e7eb;color:#475569">
-            <strong>Nguyên tắc:</strong> AI chat tư vấn trước. Nút Zalo chỉ hiện khi câu hỏi cần nhân viên xác nhận trực tiếp.
-          </div>
+          <aside class="ai-v408-card ai-v408-guide">
+            <div class="ai-v408-guide-icon">✦</div>
+            <h3>AI đang học từ Shop</h3>
+            <p>Khi chưa chắc chắn, AI không tự bịa. Câu hỏi sẽ được đưa về đây để Shop cung cấp thông tin chính xác.</p>
+            <div class="ai-v408-step"><b>1</b><span>Hiểu đúng câu khách hỏi</span></div>
+            <div class="ai-v408-step"><b>2</b><span>Xác định đúng phần đang thiếu</span></div>
+            <div class="ai-v408-step"><b>3</b><span>Ưu tiên câu trả lời Shop đã dạy</span></div>
+            <div class="ai-v408-tip">Câu trả lời càng ngắn, rõ, đúng sự thật thì AI tư vấn càng tự nhiên.</div>
+          </aside>
         </div>
+      </div>
 
-        <div class="ai-settings-box ai-knowledge-box">
-          <div class="ai-knowledge-head">
-            <div>
-              <h2>AI cần Shop bổ sung thông tin</h2>
-              <p>Những câu khách hỏi mà AI chưa đủ dữ liệu sẽ tự xuất hiện ở đây. Shop trả lời một lần, AI sẽ dùng cho những lần sau.</p>
-            </div>
-            <span id="aiKnowledgePendingCount" class="ai-knowledge-count">0</span>
+      <div class="ai-v408-panel" data-ai-v408-panel="retrain">
+        <div class="ai-v408-two-col">
+          <div class="ai-v408-card">
+            <div class="ai-v408-title"><div><h2>Đào tạo lại câu AI trả lời sai</h2><p>Dán nguyên câu khách hỏi và nhập cách Shop muốn AI trả lời.</p></div><span class="ai-v408-pill is-orange">Ưu tiên cao</span></div>
+            <div class="ai-v408-form"><label for="aiKnowledgeManualQuestion">Câu khách hỏi</label><textarea id="aiKnowledgeManualQuestion" rows="4" placeholder="Ví dụ: Lãi trả góp bao nhiêu?"></textarea></div>
+            <div class="ai-v408-form"><label for="aiKnowledgeManualAnswer">Câu trả lời đúng của Shop</label><textarea id="aiKnowledgeManualAnswer" rows="7" placeholder="Nhập cách trả lời ngắn gọn, chính xác mà AI phải dùng..."></textarea><small>AI sẽ ưu tiên kiến thức Shop cung cấp thay vì tự suy đoán.</small></div>
+            <div class="ai-v408-savebar"><button id="aiKnowledgeManualAdd" class="primary" type="button">✦ Lưu & đào tạo lại AI</button></div>
           </div>
-          <div class="ai-knowledge-stats">
-            <div class="ai-knowledge-stat"><span>Cần bổ sung</span><strong id="aiKnowledgeStatPending">0</strong></div>
-            <div class="ai-knowledge-stat"><span>Đã đào tạo</span><strong id="aiKnowledgeStatAnswered">0</strong></div>
-            <div class="ai-knowledge-stat"><span>Tổng lượt khách hỏi</span><strong id="aiKnowledgeStatAsked">0</strong></div>
-          </div>
-          <div class="ai-knowledge-toolbar">
-            <input id="aiKnowledgeSearch" type="search" placeholder="Tìm câu hỏi hoặc thông tin đang thiếu...">
-            <select id="aiKnowledgeFilter">
-              <option value="pending">Cần bổ sung</option>
-              <option value="answered">Đã đào tạo</option>
-              <option value="ignored">Đã bỏ qua</option>
-              <option value="all">Tất cả</option>
-            </select>
-            <button id="reloadAiKnowledge" class="secondary" type="button">Tải lại</button>
-          </div>
-          <div id="aiKnowledgeList" class="ai-knowledge-list"></div>
-          <div class="ai-example" style="margin:16px 0 10px;background:#fff7ed;border-color:#fed7aa;color:#9a3412">
-            <strong>Đào tạo lại câu AI trả lời sai</strong><br><br>
-            Nếu AI trả lời sai hoặc lan man, dán nguyên câu khách hỏi vào ô đầu và nhập câu trả lời đúng của Shop vào ô sau. Từ lần sau AI sẽ ưu tiên câu Shop đã dạy.
-          </div>
-          <div class="ai-knowledge-add">
-            <input id="aiKnowledgeManualQuestion" placeholder="Câu khách hỏi, ví dụ: Lãi trả góp bao nhiêu?">
-            <input id="aiKnowledgeManualAnswer" placeholder="Shop nhập cách trả lời đúng cho AI">
-            <button id="aiKnowledgeManualAdd" type="button">Đào tạo lại AI</button>
-          </div>
-          <div id="aiKnowledgeStatus" class="ai-knowledge-status"></div>
+          <aside class="ai-v408-card">
+            <h3>Khi nào nên đào tạo lại?</h3>
+            <ul class="ai-v408-list">
+              <li>AI trả lời lan man, không đúng trọng tâm.</li>
+              <li>AI nói sai chính sách của Shop.</li>
+              <li>AI thiếu lãi suất, giá dịch vụ hoặc quy định mới.</li>
+              <li>Shop muốn thống nhất một cách trả lời cố định.</li>
+            </ul>
+            <div class="ai-v408-info"><b>Ví dụ</b><span>Khách hỏi “Lãi trả góp bao nhiêu?” thì AI phải trả đúng phần lãi, không trả chính sách trả góp chung.</span></div>
+          </aside>
         </div>
+      </div>
 
-<div class="ai-settings-box">
-          <h2>Cách hoạt động</h2>
-          <p>Đây là “đào tạo theo chỉ dẫn”: AI sẽ đọc cấu hình này mỗi lần phân tích. Không cần tạo lại model Gemini.</p>
-          <div class="ai-example">
-            <strong>Ví dụ chỉ dẫn tốt:</strong><br><br>
-            “Khách của shop chủ yếu quan tâm hiệu năng và pin. Khi ưu tiên chơi game, hãy xét CPU/GPU, pin, sạc và tản nhiệt trước camera. Không được nói máy tốt hơn chỉ vì giá cao hơn. Nếu chênh giá trên 2 triệu phải giải thích phần cấu hình tăng thêm có đáng hay không.”
+      <div class="ai-v408-panel" data-ai-v408-panel="chat">
+        <div class="ai-v408-two-col">
+          <div class="ai-v408-card ai-chat-training-box">
+            <div class="ai-v408-title"><div><h2>AI chat tư vấn khách</h2><p>Điều chỉnh cách AI nói chuyện, dữ liệu Shop được phép dùng và lúc nào mới chuyển nhân viên.</p></div></div>
+            <div class="ai-field"><label for="aiChatInstructions">Cách AI tư vấn</label><textarea id="aiChatInstructions" maxlength="4000"></textarea></div>
+            <div class="ai-field"><label for="aiChatWelcomeMessage">Câu chào khi mở chat</label><textarea id="aiChatWelcomeMessage" maxlength="500" style="min-height:84px"></textarea></div>
+            <div class="ai-field"><label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label><textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:150px"></textarea></div>
+            <div class="ai-field"><label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label><textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px"></textarea></div>
+            <div class="ai-field"><label for="aiChatSuggestions">Gợi ý câu hỏi mẫu</label><textarea id="aiChatSuggestions" maxlength="4000" style="min-height:130px"></textarea><small class="ai-field-help">Mỗi dòng: Tên nút | Câu hỏi AI nhận.</small></div>
+            <div class="ai-v408-savebar"><button id="saveAiChatSettings" class="primary" type="button">Lưu AI tư vấn chat</button></div>
+            <div id="aiChatSettingsStatus" class="ai-settings-status"></div>
           </div>
-          <div class="ai-example" style="margin-top:12px;background:#f8fafc;border-color:#e5e7eb;color:#475569">
-            <strong>Lưu ý:</strong> AI vẫn chỉ được dùng thông số thật mà website đã lấy từ nguồn sản phẩm. Chỉ dẫn quản trị không được phép khiến AI tự bịa cấu hình.
+          <aside class="ai-v408-card">
+            <div class="ai-chat-icon-inline">
+              <div class="ai-chat-icon-inline-head"><div><h3>Icon nút chat</h3><p>Ảnh đang hiển thị ngoài website.</p></div><span class="ai-chat-icon-badge">TÙY CHỈNH</span></div>
+              <div class="ai-chat-icon-preview-wrap"><div class="ai-chat-icon-preview-bg"><img id="aiChatIconPreview" src="/assets/ai-chat-robot.png?v=179" alt="Xem trước icon chat AI"></div><div class="ai-chat-icon-preview-copy"><strong>Icon đang dùng</strong><span>Nên dùng ảnh vuông, ít chi tiết.</span></div></div>
+              <input id="aiChatIconFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+              <div class="ai-chat-icon-actions"><button id="chooseAiChatIcon" class="secondary" type="button">Chọn ảnh mới</button><button id="saveAiChatIcon" class="primary" type="button" disabled>Lưu icon</button><button id="resetAiChatIcon" class="secondary" type="button">Mặc định</button></div>
+              <div id="aiChatIconStatus" class="ai-settings-status"></div>
+            </div>
+            <div class="ai-v408-info"><b>Nguyên tắc chat</b><span>AI phải hiểu câu hỏi trước rồi mới chọn dữ liệu để trả lời.</span><span>Mỗi ý ngắn nên thành một bong bóng riêng.</span></div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="ai-v408-panel" data-ai-v408-panel="config">
+        <div class="ai-v408-two-col">
+          <div class="ai-v408-card ai-settings-box">
+            <div class="ai-v408-title"><div><h2>Chỉ dẫn riêng cho AI</h2><p>Thiết lập cách AI phân tích sản phẩm và đưa ra kết luận.</p></div></div>
+            <div class="ai-field"><label for="aiCustomInstructions">Nội dung muốn AI tuân theo</label><textarea id="aiCustomInstructions" maxlength="4000"></textarea></div>
+            <div class="ai-v408-select-grid">
+              <div class="ai-field"><label for="aiRecommendationStyle">Cách kết luận</label><select id="aiRecommendationStyle"><option>Rõ ràng, chốt 1 máy</option><option>Cân bằng, nêu điều kiện chọn</option><option>Không ép chốt</option></select></div>
+              <div class="ai-field"><label for="aiResponseLength">Độ dài phân tích</label><select id="aiResponseLength"><option>Ngắn gọn</option><option selected>Vừa phải</option><option>Chi tiết</option></select></div>
+              <div class="ai-field"><label for="aiPricePriority">Ưu tiên giá/cấu hình</label><select id="aiPricePriority"><option>Ưu tiên giá tốt</option><option selected>Cân bằng</option><option>Ưu tiên cấu hình</option></select></div>
+              <div class="ai-field"><label for="aiSalesTone">Giọng tư vấn</label><select id="aiSalesTone"><option>Tư vấn trung lập</option><option selected>Bình dân, dễ hiểu</option><option>Chuyên gia kỹ thuật</option></select></div>
+            </div>
+            <label class="ai-check"><input id="aiMustWeaknesses" type="checkbox" checked><span>Luôn nêu điểm yếu/hạn chế của từng máy.</span></label>
+            <label class="ai-check"><input id="aiMustPrice" type="checkbox" checked><span>Luôn xét chênh lệch giá và máy nào đáng tiền hơn.</span></label>
+            <label class="ai-check"><input id="aiAllowTie" type="checkbox" checked><span>Cho phép mỗi máy phù hợp một nhu cầu nếu không có máy thắng rõ ràng.</span></label>
+            <div class="ai-v408-savebar"><button id="saveAiSettings" class="primary" type="button">Lưu cấu hình AI</button><button id="resetAiSettings" class="secondary" type="button">Khôi phục mặc định</button></div>
+            <div id="aiSettingsStatus" class="ai-settings-status"></div>
           </div>
+          <aside class="ai-v408-card">
+            <h3>Cách hoạt động</h3>
+            <div class="ai-v408-info"><b>Dữ liệu thật trước</b><span>Giá, tồn kho và thông tin Shop phải lấy từ hệ thống.</span></div>
+            <div class="ai-v408-info"><b>Không tự suy đoán</b><span>Thiếu dữ liệu thì ghi nhận để Shop bổ sung.</span></div>
+            <div class="ai-v408-info"><b>Hiểu câu hỏi trước</b><span>Không chỉ bắt từ khóa rồi trả lời mẫu.</span></div>
+          </aside>
         </div>
       </div>
     </div>
   </section>
-
-  
 
 <section id="servicePricingCard" class="card panel" data-panel="services" style="display:none">
   <div class="head">
@@ -8338,6 +8309,10 @@ function renderAiKnowledge(){
   if(aiKnowledgeStatPending) aiKnowledgeStatPending.textContent=pending.length;
   if(aiKnowledgeStatAnswered) aiKnowledgeStatAnswered.textContent=answered.length;
   if(aiKnowledgeStatAsked) aiKnowledgeStatAsked.textContent=asked;
+  const aiKnowledgeStatTotal=document.getElementById("aiKnowledgeStatTotal");
+  if(aiKnowledgeStatTotal) aiKnowledgeStatTotal.textContent=aiKnowledgeItems.length;
+  const aiKnowledgePendingCountMirror=document.getElementById("aiKnowledgePendingCountMirror");
+  if(aiKnowledgePendingCountMirror) aiKnowledgePendingCountMirror.textContent=pending.length+" đang chờ";
   if(aiKnowledgeBadge){aiKnowledgeBadge.textContent=pending.length;aiKnowledgeBadge.style.display=pending.length?"inline-flex":"none";}
   const rows=aiKnowledgeItems.filter(x=>{
     const status=x.status||"pending";
@@ -10980,6 +10955,37 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   updateShortcutLinks();
   setTimeout(updateShortcutLinks,500);
+})();
+</script>
+
+
+<script>
+(function(){
+  const card=document.getElementById("aiSettingsCard"); if(!card) return;
+  const tabs=[...card.querySelectorAll("[data-ai-v408-tab]")];
+  const panels=[...card.querySelectorAll("[data-ai-v408-panel]")];
+  function activate(name){
+    tabs.forEach(t=>t.classList.toggle("is-active",t.dataset.aiV408Tab===name));
+    panels.forEach(p=>p.classList.toggle("is-active",p.dataset.aiV408Panel===name));
+    try{localStorage.setItem("sdd-ai-v408-tab",name)}catch(_){}
+  }
+  tabs.forEach(t=>t.addEventListener("click",()=>activate(t.dataset.aiV408Tab)));
+  let saved="missing"; try{saved=localStorage.getItem("sdd-ai-v408-tab")||"missing"}catch(_){}
+  if(!tabs.some(t=>t.dataset.aiV408Tab===saved)) saved="missing";
+  activate(saved);
+  const mirror=document.getElementById("aiKnowledgePendingCountMirror");
+  const total=document.getElementById("aiKnowledgeStatTotal");
+  function sync(){
+    const badge=document.getElementById("aiKnowledgePendingCount");
+    if(mirror&&badge) mirror.textContent=(badge.textContent||"0")+" đang chờ";
+    if(total){
+      const rows=document.querySelectorAll("#aiKnowledgeList .ai-knowledge-item").length;
+      if(rows && !Number(total.textContent||0)) total.textContent=rows;
+    }
+  }
+  const list=document.getElementById("aiKnowledgeList");
+  if(list) new MutationObserver(sync).observe(list,{childList:true,subtree:true});
+  setInterval(sync,1200); sync();
 })();
 </script>
 
