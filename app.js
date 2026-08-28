@@ -2914,6 +2914,29 @@ function aiChatSleep(ms){
   return new Promise(resolve=>setTimeout(resolve,ms));
 }
 
+// V421: tạo nhịp trả lời tự nhiên hơn, tránh cảm giác bot phản hồi tức thì.
+function aiChatNaturalInitialDelay(question="",reply=""){
+  const q=String(question||"").trim();
+  const r=String(reply||"").trim();
+  const total=q.length+r.length;
+  // Câu rất ngắn vẫn có một nhịp suy nghĩ; câu tư vấn dài chờ lâu hơn.
+  let min=850, max=1350;
+  if(total>140 || r.length>100){ min=1250; max=1850; }
+  if(total>260 || r.length>220){ min=1550; max=2350; }
+  if(/so sánh|so sanh|máy nào|may nao|tư vấn|tu van|nên mua|nen mua|chụp đẹp|chup dep|pin|hiệu năng|hieu nang/i.test(q)){
+    min=Math.max(min,1450);
+    max=Math.max(max,2200);
+  }
+  return Math.round(min+Math.random()*(max-min));
+}
+
+function aiChatNaturalBubbleDelay(message=""){
+  const len=String(message||"").length;
+  const min=len>90?650:460;
+  const max=len>90?1050:850;
+  return Math.round(min+Math.random()*(max-min));
+}
+
 async function aiChatAppendAssistantMessages(text,data={}){
   const supplied=Array.isArray(data?.messages)
     ? data.messages.map(x=>String(x||"").trim()).filter(Boolean)
@@ -2924,8 +2947,8 @@ async function aiChatAppendAssistantMessages(text,data={}){
   for(let i=0;i<list.length;i++){
     if(i>0){
       aiChatTyping(true);
-      // Nhịp chat ngắn, hơi thay đổi theo độ dài để nhìn tự nhiên hơn.
-      const wait=Math.min(850,Math.max(320,260+list[i].length*5));
+      // Nhịp giữa các bong bóng thay đổi ngẫu nhiên nhẹ như người đang gõ.
+      const wait=aiChatNaturalBubbleDelay(list[i]);
       await aiChatSleep(wait);
       aiChatTyping(false);
     }
@@ -3034,6 +3057,7 @@ async function aiChatAsk(question){
   }
 
   aiChatBusy=true;
+  const aiReplyStartedAt=Date.now();
   aiChatInput.disabled=true;
   aiChatSend.disabled=true;
 
@@ -3062,6 +3086,14 @@ async function aiChatAsk(question){
     if(!r.ok) throw new Error(data.error||"AI chưa thể trả lời.");
 
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
+
+    // V421: server có trả lời rất nhanh thì vẫn giữ trạng thái đang nhập đủ lâu.
+    // Nếu request đã mất nhiều thời gian thì không cộng thêm độ trễ dư thừa.
+    const naturalTarget=aiChatNaturalInitialDelay(text,reply);
+    const elapsed=Date.now()-aiReplyStartedAt;
+    const remaining=Math.max(0,naturalTarget-elapsed);
+    if(remaining>0) await aiChatSleep(remaining);
+
     // Xóa typing đang chờ server trước khi bắt đầu nhắn từng bong bóng.
     aiChatTyping(false);
     const replyMessages=await aiChatAppendAssistantMessages(reply,data);
