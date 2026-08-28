@@ -6778,10 +6778,14 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
             <button id="reloadAiKnowledge" class="secondary" type="button">Tải lại</button>
           </div>
           <div id="aiKnowledgeList" class="ai-knowledge-list"></div>
+          <div class="ai-example" style="margin:16px 0 10px;background:#fff7ed;border-color:#fed7aa;color:#9a3412">
+            <strong>Đào tạo lại câu AI trả lời sai</strong><br><br>
+            Nếu AI trả lời sai hoặc lan man, dán nguyên câu khách hỏi vào ô đầu và nhập câu trả lời đúng của Shop vào ô sau. Từ lần sau AI sẽ ưu tiên câu Shop đã dạy.
+          </div>
           <div class="ai-knowledge-add">
-            <input id="aiKnowledgeManualQuestion" placeholder="Thêm thủ công câu hỏi/chủ đề AI cần biết">
-            <input id="aiKnowledgeManualAnswer" placeholder="Thông tin shop muốn AI ghi nhớ">
-            <button id="aiKnowledgeManualAdd" type="button">+ Thêm kiến thức</button>
+            <input id="aiKnowledgeManualQuestion" placeholder="Câu khách hỏi, ví dụ: Lãi trả góp bao nhiêu?">
+            <input id="aiKnowledgeManualAnswer" placeholder="Shop nhập cách trả lời đúng cho AI">
+            <button id="aiKnowledgeManualAdd" type="button">Đào tạo lại AI</button>
           </div>
           <div id="aiKnowledgeStatus" class="ai-knowledge-status"></div>
         </div>
@@ -8399,7 +8403,7 @@ if(aiKnowledgeManualAdd) aiKnowledgeManualAdd.addEventListener("click",async()=>
     const r=await adminTrainingFetch("/api/admin/ai-knowledge",{method:"POST",cache:"no-store",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"manual",question,missing:"Kiến thức shop bổ sung thủ công",answer})});
     const data=await r.json().catch(()=>({})); if(!r.ok) throw new Error(data.error||"Không thêm được kiến thức");
     aiKnowledgeManualQuestion.value=""; aiKnowledgeManualAnswer.value=""; await loadAiKnowledgeAdmin();
-    try{showToast("Đã thêm kiến thức cho AI");}catch(_){}
+    try{showToast("Đã đào tạo lại AI với câu trả lời của Shop");}catch(_){}
   }catch(e){if(aiKnowledgeStatus) aiKnowledgeStatus.textContent=e.message||"Không thêm được kiến thức";}finally{aiKnowledgeManualAdd.disabled=false;}
 });
 
