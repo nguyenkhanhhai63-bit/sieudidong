@@ -2623,6 +2623,31 @@ button,.primary,.secondary{font-size:13.5px!important}
   .metric-grid.metric-grid-main,.metric-grid.metric-grid-warranty{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
   .metric{min-height:94px;padding:13px}.metric strong{font-size:26px}
 }
+
+/* v409 - AI training master/detail layout */
+#aiSettingsCard.ai-v408{max-width:1540px;margin:0 auto!important}
+.ai-v409-toolbar{display:grid;grid-template-columns:minmax(300px,1.35fr) 190px 190px 190px 42px;gap:10px;margin-bottom:16px}
+.ai-v409-toolbar select{height:42px;border:1px solid #dfe4ea;border-radius:9px;background:#fff;padding:0 12px;color:#344054;font-size:12px}
+.ai-v409-reload{width:42px!important;min-width:42px!important;padding:0!important;font-size:17px!important}
+.ai-v409-master-detail{display:grid;grid-template-columns:minmax(430px,.9fr) minmax(520px,1.1fr);gap:18px;align-items:stretch}
+.ai-v409-list-card,.ai-v409-detail-card{background:#fff;border:1px solid #e4e7ec;border-radius:12px;box-shadow:0 3px 14px rgba(16,24,40,.035);min-height:560px;overflow:hidden}
+.ai-v409-question-list{padding:0!important}
+.ai-v409-question-list .ai-knowledge-item{position:relative;margin:0!important;padding:20px 22px 18px 34px!important;border:0!important;border-bottom:1px solid #edf0f3!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;cursor:pointer;transition:.16s ease}
+.ai-v409-question-list .ai-knowledge-item:before{content:"";position:absolute;left:17px;top:27px;width:7px;height:7px;border-radius:50%;background:#ff5a00}
+.ai-v409-question-list .ai-knowledge-item:hover{background:#fffaf7!important}.ai-v409-question-list .ai-knowledge-item.is-selected{background:#fffaf7!important;box-shadow:inset 0 0 0 1.5px #ff6a1a!important}
+.ai-v409-question-list .ai-knowledge-q{font-size:14px!important;font-weight:850!important;color:#101828!important;padding-right:70px}
+.ai-v409-question-list .ai-knowledge-meta{margin-top:9px!important;font-size:10.5px!important;color:#667085!important;gap:7px!important}
+.ai-v409-question-list .ai-knowledge-missing,.ai-v409-question-list .ai-knowledge-answer,.ai-v409-question-list .ai-knowledge-actions{display:none!important}
+.ai-v409-status{position:absolute;right:16px;top:17px;border-radius:999px;background:#fff1e8;color:#ff5a00;font-size:9px;font-weight:800;padding:5px 9px}
+.ai-v409-list-foot{display:flex;justify-content:space-between;gap:12px;padding:13px 18px;color:#667085;font-size:10px;background:#fcfcfd}
+.ai-v409-detail-card{padding:0}.ai-v409-detail-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #edf0f3}.ai-v409-detail-head h2{font-size:16px!important;margin:0!important}.ai-v409-detail-id{font-size:10px;color:#667085}
+.ai-v409-customer{margin:16px 18px;padding:15px 16px;background:#f8fafc;border-radius:10px;display:flex;align-items:center;gap:12px}.ai-v409-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#ff5a00;color:#fff;font-weight:800}.ai-v409-customer b{display:block;font-size:11px;color:#475467}.ai-v409-customer strong{display:block;margin-top:3px;font-size:15px;color:#101828}.ai-v409-customer time{margin-left:auto;color:#667085;font-size:10px}
+.ai-v409-missing{margin:0 18px 14px;padding:15px 16px;background:#fff8f2;border-radius:10px}.ai-v409-missing-title{font-size:12px;font-weight:850;color:#344054;margin-bottom:6px}.ai-v409-missing p{font-size:10.5px;color:#667085;margin:0 0 9px}.ai-v409-missing-box{border:1px solid #ffbd8f;background:#fffaf7;border-radius:7px;padding:10px 12px;color:#7a3b13;font-size:11px}
+.ai-v409-detail-meta{display:flex;gap:28px;margin:0 18px;padding:12px 0;border-bottom:1px solid #edf0f3;color:#667085;font-size:10.5px}.ai-v409-topic{background:#fff1e8;color:#ff5a00;border-radius:999px;padding:4px 9px;font-weight:800}
+.ai-v409-answer-wrap{padding:16px 18px}.ai-v409-answer-wrap label{display:block;font-size:11px;font-weight:850;color:#344054;margin-bottom:8px}.ai-v409-answer-wrap textarea{width:100%;min-height:130px;resize:vertical;border:1px solid #dfe4ea;border-radius:9px;padding:12px;font-size:12px}.ai-v409-answer-help{display:flex;justify-content:space-between;margin-top:7px;color:#98a2b3;font-size:9.5px}
+.ai-v409-detail-actions{display:flex;align-items:center;gap:9px;padding:14px 18px;border-top:1px solid #edf0f3}.ai-v409-detail-actions .push{margin-left:auto}.ai-v409-detail-actions button{min-height:38px!important;border-radius:8px!important;font-size:11px!important}.ai-v409-detail-actions .train{background:#ff5a00!important;color:#fff!important;border-color:#ff5a00!important}.ai-v409-detail-actions .danger{color:#e5484d!important;background:#fff!important;border:1px solid #e4e7ec!important}
+.ai-v409-detail-empty{min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#98a2b3;gap:8px}.ai-v409-detail-empty div{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff1e8;color:#ff5a00;font-size:22px;font-weight:900}.ai-v409-detail-empty b{color:#475467}
+@media(max-width:1100px){.ai-v409-toolbar{grid-template-columns:1fr 1fr}.ai-v409-master-detail{grid-template-columns:1fr}.ai-v409-detail-card{min-height:auto}}
 </style>
 
 <style id="login-success-toast-style">
@@ -6673,34 +6698,27 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
     <div class="ai-v408-tabs">
       <button class="ai-v408-tab is-active" type="button" data-ai-v408-tab="missing">Cần bổ sung thông tin <b id="aiKnowledgePendingCount">0</b></button>
       <button class="ai-v408-tab" type="button" data-ai-v408-tab="retrain">Đào tạo lại câu trả lời sai</button>
-      <button class="ai-v408-tab" type="button" data-ai-v408-tab="chat">AI tư vấn khách</button>
-      <button class="ai-v408-tab" type="button" data-ai-v408-tab="config">Cấu hình AI</button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="chat">Kho kiến thức AI</button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="config">Lịch sử đào tạo</button>
     </div>
 
     <div class="ai-v408-body">
       <div class="ai-v408-panel is-active" data-ai-v408-panel="missing">
-        <div class="ai-v408-toolbar">
-          <div class="ai-v408-search">⌕ <input id="aiKnowledgeSearch" type="search" placeholder="Tìm câu hỏi hoặc thông tin đang thiếu..."></div>
-          <select id="aiKnowledgeFilter">
-            <option value="pending">Cần bổ sung</option><option value="answered">Đã đào tạo</option><option value="ignored">Đã bỏ qua</option><option value="all">Tất cả</option>
-          </select>
-          <button id="reloadAiKnowledge" class="secondary" type="button">Tải lại</button>
+        <div class="ai-v409-toolbar">
+          <div class="ai-v408-search">⌕ <input id="aiKnowledgeSearch" type="search" placeholder="Tìm kiếm câu hỏi, chủ đề..."></div>
+          <select id="aiKnowledgeTopic"><option value="all">Tất cả chủ đề</option><option value="Trả góp">Trả góp</option><option value="Bảo hành">Bảo hành</option><option value="Thu cũ đổi mới">Thu cũ đổi mới</option><option value="Sửa chữa">Sửa chữa</option><option value="Vận chuyển">Vận chuyển</option><option value="Sản phẩm">Sản phẩm</option></select>
+          <select id="aiKnowledgeFilter"><option value="pending">Tất cả trạng thái</option><option value="answered">Đã đào tạo</option><option value="ignored">Đã bỏ qua</option><option value="all">Tất cả</option></select>
+          <select id="aiKnowledgeSort"><option value="newest">Sắp xếp mới nhất</option><option value="asked">Hỏi nhiều nhất</option></select>
+          <button id="reloadAiKnowledge" class="secondary ai-v409-reload" type="button">↻</button>
         </div>
-        <div class="ai-v408-knowledge-layout">
-          <div class="ai-v408-card">
-            <div class="ai-v408-title"><div><h2>Câu hỏi cần Shop bổ sung</h2><p>AI tự ghi nhận các câu chưa đủ dữ liệu. Shop trả lời một lần để AI dùng về sau.</p></div><span id="aiKnowledgePendingCountMirror" class="ai-v408-pill">0 đang chờ</span></div>
-            <div id="aiKnowledgeList" class="ai-knowledge-list"></div>
-            <div id="aiKnowledgeStatus" class="ai-knowledge-status"></div>
-          </div>
-          <aside class="ai-v408-card ai-v408-guide">
-            <div class="ai-v408-guide-icon">✦</div>
-            <h3>AI đang học từ Shop</h3>
-            <p>Khi chưa chắc chắn, AI không tự bịa. Câu hỏi sẽ được đưa về đây để Shop cung cấp thông tin chính xác.</p>
-            <div class="ai-v408-step"><b>1</b><span>Hiểu đúng câu khách hỏi</span></div>
-            <div class="ai-v408-step"><b>2</b><span>Xác định đúng phần đang thiếu</span></div>
-            <div class="ai-v408-step"><b>3</b><span>Ưu tiên câu trả lời Shop đã dạy</span></div>
-            <div class="ai-v408-tip">Câu trả lời càng ngắn, rõ, đúng sự thật thì AI tư vấn càng tự nhiên.</div>
-          </aside>
+        <div class="ai-v409-master-detail">
+          <section class="ai-v409-list-card">
+            <div id="aiKnowledgeList" class="ai-knowledge-list ai-v409-question-list"></div>
+            <div class="ai-v409-list-foot"><span id="aiKnowledgeStatus"></span><span id="aiKnowledgePager">Hiển thị tối đa 10 bản ghi</span></div>
+          </section>
+          <section id="aiKnowledgeDetail" class="ai-v409-detail-card">
+            <div class="ai-v409-detail-empty"><div>?</div><b>Chọn một câu hỏi</b><span>Chi tiết và ô đào tạo AI sẽ hiển thị tại đây.</span></div>
+          </section>
         </div>
       </div>
 
@@ -8298,10 +8316,46 @@ function escAiKnowledge(v){
 function fmtAiKnowledgeDate(v){
   try{return new Date(v).toLocaleString("vi-VN");}catch(_){return "";}
 }
-function renderAiKnowledge(){
-  if(!aiKnowledgeList) return;
+let aiKnowledgeSelectedId="";
+function aiKnowledgeTopicOf(x){
+  const t=`${x.question||""} ${x.missing||""}`.toLowerCase();
+  if(/trả góp|tra gop|lãi|lai suat|saison|mirae|trả trước|góp tháng/.test(t)) return "Trả góp";
+  if(/bảo hành|bao hanh/.test(t)) return "Bảo hành";
+  if(/thu cũ|thu cu|đổi mới|doi moi/.test(t)) return "Thu cũ đổi mới";
+  if(/sửa|sua|thay màn|thay man|ép kính|ep kinh/.test(t)) return "Sửa chữa";
+  if(/ship|giao hàng|giao hang|vận chuyển|van chuyen/.test(t)) return "Vận chuyển";
+  return "Sản phẩm";
+}
+function aiKnowledgeVisibleRows(){
   const q=String(aiKnowledgeSearch?.value||"").toLowerCase().trim();
   const f=String(aiKnowledgeFilter?.value||"pending");
+  const topic=String(document.getElementById("aiKnowledgeTopic")?.value||"all");
+  const sort=String(document.getElementById("aiKnowledgeSort")?.value||"newest");
+  let rows=aiKnowledgeItems.filter(x=>{
+    const status=x.status||"pending";
+    const statusOk=f==="all" || (f==="pending" ? status!=="answered"&&status!=="ignored" : status===f);
+    const text=`${x.question||""} ${x.missing||""} ${x.answer||""}`.toLowerCase();
+    return statusOk && (!q||text.includes(q)) && (topic==="all"||aiKnowledgeTopicOf(x)===topic);
+  });
+  rows.sort((a,b)=>sort==="asked"?(Number(b.count||1)-Number(a.count||1)):(new Date(b.lastAskedAt||b.updatedAt||0)-new Date(a.lastAskedAt||a.updatedAt||0)));
+  return rows.slice(0,10);
+}
+function renderAiKnowledgeDetail(){
+  const box=document.getElementById("aiKnowledgeDetail"); if(!box)return;
+  const x=aiKnowledgeItems.find(v=>String(v.id)===String(aiKnowledgeSelectedId));
+  if(!x){box.innerHTML='<div class="ai-v409-detail-empty"><div>?</div><b>Chọn một câu hỏi</b><span>Chi tiết và ô đào tạo AI sẽ hiển thị tại đây.</span></div>';return;}
+  const status=x.status||"pending", topic=aiKnowledgeTopicOf(x);
+  box.innerHTML=`<div class="ai-v409-detail-head"><h2>Chi tiết câu hỏi</h2><div class="ai-v409-detail-id">ID: #${escAiKnowledge(String(x.id||"").slice(-14))} &nbsp; <span class="ai-v409-status">${status==="answered"?"Đã đào tạo":status==="ignored"?"Đã bỏ qua":"Chưa có"}</span></div></div>
+  <div class="ai-v409-customer"><div class="ai-v409-avatar">KH</div><div><b>Khách hàng hỏi</b><strong>${escAiKnowledge(x.question||"Câu hỏi chưa có nội dung")}</strong></div><time>Ngày hỏi: ${escAiKnowledge(fmtAiKnowledgeDate(x.lastAskedAt||x.updatedAt))}</time></div>
+  <div class="ai-v409-missing"><div class="ai-v409-missing-title">◉ &nbsp; AI đang thiếu thông tin</div><p>AI chưa có thông tin chính xác về:</p><div class="ai-v409-missing-box">• ${escAiKnowledge(x.missing||"Thông tin chính xác từ Shop")}</div></div>
+  <div class="ai-v409-detail-meta"><span>Chủ đề: &nbsp;<b class="ai-v409-topic">${escAiKnowledge(topic)}</b></span><span>Đã hỏi: &nbsp;<b>${Math.max(1,Number(x.count||1))} lần</b></span></div>
+  <div class="ai-v409-answer-wrap"><label>Câu trả lời đúng (Shop cung cấp)</label><textarea id="aiKnowledgeDetailAnswer" maxlength="1000" placeholder="Nhập câu trả lời chính xác để AI học...">${escAiKnowledge(x.answer||"")}</textarea><div class="ai-v409-answer-help"><span>Gợi ý: Trả lời ngắn gọn, rõ ràng, đúng sự thật.</span><span id="aiKnowledgeCharCount">${String(x.answer||"").length}/1000</span></div></div>
+  <div class="ai-v409-detail-actions" data-ai-knowledge-id="${escAiKnowledge(x.id)}"><button class="secondary" data-k-detail-action="${status==="ignored"?"reopen":"ignore"}" type="button">⊘ ${status==="ignored"?"Mở lại":"Bỏ qua câu này"}</button><button class="danger push" data-k-detail-action="delete" type="button">✕ Xóa câu hỏi</button><button class="train" data-k-detail-action="answer" type="button">✦ Lưu & đào tạo AI</button></div>`;
+  const ta=document.getElementById("aiKnowledgeDetailAnswer"), cc=document.getElementById("aiKnowledgeCharCount");
+  ta?.addEventListener("input",()=>{if(cc)cc.textContent=ta.value.length+"/1000"});
+}
+function renderAiKnowledge(){
+  if(!aiKnowledgeList) return;
   const pending=aiKnowledgeItems.filter(x=>x.status!=="answered"&&x.status!=="ignored");
   const answered=aiKnowledgeItems.filter(x=>x.status==="answered"&&x.answer);
   const asked=aiKnowledgeItems.reduce((n,x)=>n+Math.max(1,Number(x.count||1)),0);
@@ -8309,32 +8363,13 @@ function renderAiKnowledge(){
   if(aiKnowledgeStatPending) aiKnowledgeStatPending.textContent=pending.length;
   if(aiKnowledgeStatAnswered) aiKnowledgeStatAnswered.textContent=answered.length;
   if(aiKnowledgeStatAsked) aiKnowledgeStatAsked.textContent=asked;
-  const aiKnowledgeStatTotal=document.getElementById("aiKnowledgeStatTotal");
-  if(aiKnowledgeStatTotal) aiKnowledgeStatTotal.textContent=aiKnowledgeItems.length;
-  const aiKnowledgePendingCountMirror=document.getElementById("aiKnowledgePendingCountMirror");
-  if(aiKnowledgePendingCountMirror) aiKnowledgePendingCountMirror.textContent=pending.length+" đang chờ";
+  const total=document.getElementById("aiKnowledgeStatTotal"); if(total) total.textContent=aiKnowledgeItems.length;
   if(aiKnowledgeBadge){aiKnowledgeBadge.textContent=pending.length;aiKnowledgeBadge.style.display=pending.length?"inline-flex":"none";}
-  const rows=aiKnowledgeItems.filter(x=>{
-    const status=x.status||"pending";
-    const statusOk=f==="all" || (f==="pending" ? status!=="answered"&&status!=="ignored" : status===f);
-    const text=`${x.question||""} ${x.missing||""} ${x.answer||""}`.toLowerCase();
-    return statusOk && (!q||text.includes(q));
-  });
-  if(!rows.length){aiKnowledgeList.innerHTML='<div class="ai-knowledge-empty">Không có mục nào trong bộ lọc này.</div>';return;}
-  aiKnowledgeList.innerHTML=rows.map(x=>{
-    const status=x.status||"pending";
-    return `<div class="ai-knowledge-item ${status==="answered"?"is-answered":status==="ignored"?"is-ignored":""}" data-ai-knowledge-id="${escAiKnowledge(x.id)}">
-      <div class="ai-knowledge-q">${escAiKnowledge(x.question||"Câu hỏi chưa có nội dung")}</div>
-      <div class="ai-knowledge-meta"><span>Khách hỏi ${Math.max(1,Number(x.count||1))} lần</span><span>•</span><span>Gần nhất: ${escAiKnowledge(fmtAiKnowledgeDate(x.lastAskedAt||x.updatedAt))}</span><span>•</span><span>${status==="answered"?"Đã đào tạo":status==="ignored"?"Đã bỏ qua":"Cần bổ sung"}</span></div>
-      <div class="ai-knowledge-missing"><b>AI đang thiếu:</b> ${escAiKnowledge(x.missing||"Thông tin chính xác từ shop")}</div>
-      <textarea class="ai-knowledge-answer" placeholder="Shop nhập câu trả lời chính xác để AI dùng lần sau...">${escAiKnowledge(x.answer||"")}</textarea>
-      <div class="ai-knowledge-actions">
-        <button class="ai-knowledge-save" data-k-action="answer" type="button">Lưu & đào tạo AI</button>
-        ${status==="ignored"?'<button class="ai-knowledge-secondary" data-k-action="reopen" type="button">Mở lại</button>':'<button class="ai-knowledge-secondary" data-k-action="ignore" type="button">Bỏ qua</button>'}
-        <button class="ai-knowledge-danger" data-k-action="delete" type="button">Xóa</button>
-      </div>
-    </div>`;
-  }).join("");
+  const rows=aiKnowledgeVisibleRows();
+  if(!rows.length){aiKnowledgeList.innerHTML='<div class="ai-knowledge-empty">Không có mục nào trong bộ lọc này.</div>';aiKnowledgeSelectedId="";renderAiKnowledgeDetail();return;}
+  if(!rows.some(x=>String(x.id)===String(aiKnowledgeSelectedId))) aiKnowledgeSelectedId=String(rows[0].id);
+  aiKnowledgeList.innerHTML=rows.map(x=>{const status=x.status||"pending",topic=aiKnowledgeTopicOf(x);return `<div class="ai-knowledge-item ${String(x.id)===String(aiKnowledgeSelectedId)?"is-selected":""}" data-ai-knowledge-id="${escAiKnowledge(x.id)}"><span class="ai-v409-status">${status==="answered"?"Đã đào tạo":status==="ignored"?"Đã bỏ qua":"Chưa có"}</span><div class="ai-knowledge-q">${escAiKnowledge(x.question||"Câu hỏi chưa có nội dung")}</div><div class="ai-knowledge-meta"><span>Chủ đề: ${escAiKnowledge(topic)}</span><span>•</span><span>Hỏi ${Math.max(1,Number(x.count||1))} lần</span><span>•</span><span>Cập nhật: ${escAiKnowledge(fmtAiKnowledgeDate(x.lastAskedAt||x.updatedAt))}</span></div></div>`}).join("");
+  renderAiKnowledgeDetail();
 }
 async function loadAiKnowledgeAdmin(){
   if(!aiKnowledgeList) return;
@@ -8356,18 +8391,25 @@ async function mutateAiKnowledge(id,action,answer=""){
   if(!r.ok) throw new Error(data.error||"Không cập nhật được kiến thức AI");
   await loadAiKnowledgeAdmin();
 }
-if(aiKnowledgeList) aiKnowledgeList.addEventListener("click",async e=>{
-  const btn=e.target.closest("[data-k-action]"); if(!btn) return;
-  const item=btn.closest("[data-ai-knowledge-id]"); if(!item) return;
-  const id=item.dataset.aiKnowledgeId, action=btn.dataset.kAction;
-  const answer=item.querySelector(".ai-knowledge-answer")?.value||"";
+if(aiKnowledgeList) aiKnowledgeList.addEventListener("click",e=>{
+  const item=e.target.closest("[data-ai-knowledge-id]"); if(!item)return;
+  aiKnowledgeSelectedId=String(item.dataset.aiKnowledgeId||""); renderAiKnowledge();
+});
+const aiKnowledgeDetailBox=document.getElementById("aiKnowledgeDetail");
+if(aiKnowledgeDetailBox) aiKnowledgeDetailBox.addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-k-detail-action]"); if(!btn)return;
+  const wrap=btn.closest("[data-ai-knowledge-id]"); if(!wrap)return;
+  const id=wrap.dataset.aiKnowledgeId, action=btn.dataset.kDetailAction;
+  const answer=document.getElementById("aiKnowledgeDetailAnswer")?.value||"";
   btn.disabled=true;
-  try{await mutateAiKnowledge(id,action,answer);try{showToast(action==="answer"?"Đã đào tạo AI":"Đã cập nhật");}catch(_){}}
-  catch(err){if(aiKnowledgeStatus) aiKnowledgeStatus.textContent=err.message||"Không cập nhật được";}
+  try{await mutateAiKnowledge(id,action,answer);try{showToast(action==="answer"?"Đã lưu & đào tạo AI":"Đã cập nhật");}catch(_){}}
+  catch(err){if(aiKnowledgeStatus)aiKnowledgeStatus.textContent=err.message||"Không cập nhật được";}
   finally{btn.disabled=false;}
 });
 if(aiKnowledgeSearch) aiKnowledgeSearch.addEventListener("input",renderAiKnowledge);
 if(aiKnowledgeFilter) aiKnowledgeFilter.addEventListener("change",renderAiKnowledge);
+document.getElementById("aiKnowledgeTopic")?.addEventListener("change",renderAiKnowledge);
+document.getElementById("aiKnowledgeSort")?.addEventListener("change",renderAiKnowledge);
 if(reloadAiKnowledge) reloadAiKnowledge.addEventListener("click",loadAiKnowledgeAdmin);
 if(aiKnowledgeManualAdd) aiKnowledgeManualAdd.addEventListener("click",async()=>{
   const question=aiKnowledgeManualQuestion?.value?.trim()||"";
