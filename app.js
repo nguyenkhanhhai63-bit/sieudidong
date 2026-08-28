@@ -2708,6 +2708,7 @@ function aiChatSaveHistory(userText,assistantText,data={}){
     keepalive:true,
     body:JSON.stringify({
       sessionId:AI_CHAT_SESSION_ID,
+      visitorId:analyticsVisitorId(),
       userText:u,
       assistantText:a,
       sentAt:Date.now(),
@@ -3027,12 +3028,6 @@ async function aiChatAsk(question){
     aiChatAppend("assistant","Được bạn nha.");
     setTimeout(()=>aiChatAppend("assistant","Mình chuyển bạn sang nhân viên tư vấn trực tiếp."),350);
     aiChatSaveHistory(text,"Được bạn nha. Mình chuyển bạn sang nhân viên tư vấn trực tiếp.",{needsHuman:true,source:"human-request"});
-    sendAnalytics("ai_chat_answer",{
-      action:"ai_chat_human_answer",
-      question:text,
-      answer:"Được bạn nha. Mình chuyển bạn sang nhân viên tư vấn trực tiếp.",
-      sessionId:AI_CHAT_SESSION_ID
-    });
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
     sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
@@ -3070,13 +3065,6 @@ async function aiChatAsk(question){
     const savedReply=replyMessages.join(" ")||reply;
     AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});
     aiChatSaveHistory(text,savedReply,data);
-    // V417: lưu cả câu hỏi + câu AI trả lời vào lịch sử thống kê Admin.
-    sendAnalytics("ai_chat_answer",{
-      action:"ai_chat_answer",
-      question:text,
-      answer:savedReply,
-      sessionId:AI_CHAT_SESSION_ID
-    });
     if(aiChatNeedsHuman(data)){
       aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
     }else{
@@ -3087,12 +3075,6 @@ async function aiChatAsk(question){
     const failText=e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.";
     aiChatAppend("assistant",failText);
     aiChatSaveHistory(text,failText,{needsHuman:true,source:"error"});
-    sendAnalytics("ai_chat_answer",{
-      action:"ai_chat_answer_error",
-      question:text,
-      answer:failText,
-      sessionId:AI_CHAT_SESSION_ID
-    });
     aiChatSetHumanHandoff(true,"AI đang chưa xử lý được câu này. Chuyển sang nhân viên tư vấn trực tiếp trên Zalo.");
   }finally{
     aiChatTyping(false);
