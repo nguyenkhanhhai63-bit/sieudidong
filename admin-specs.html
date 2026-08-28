@@ -11627,3 +11627,75 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 }
 </style>
+
+<style id="v414-sidebar-layout-fix">
+/* v414 - Đồng bộ chiều rộng sidebar với vùng nội dung, không để menu che trang */
+@media (min-width:901px){
+  :root{--sidebar-w:276px!important;}
+
+  .admin-sidebar{
+    width:var(--sidebar-w)!important;
+    box-sizing:border-box!important;
+  }
+
+  .admin-topbar{
+    left:var(--sidebar-w)!important;
+    width:auto!important;
+    box-sizing:border-box!important;
+  }
+
+  /* .wrap là vùng nội dung chính thực tế của trang admin */
+  body.authenticated .wrap,
+  body.auth-pending .wrap,
+  .wrap{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:calc(var(--sidebar-w) + 24px)!important;
+    padding-right:24px!important;
+    box-sizing:border-box!important;
+    transition:padding-left .2s ease!important;
+  }
+
+  /* Khi thu gọn menu phải trả lại chiều ngang tương ứng */
+  body.sidebar-collapsed{--sidebar-w:84px!important;}
+  body.sidebar-collapsed .admin-sidebar{width:84px!important;}
+  body.sidebar-collapsed .admin-topbar{left:84px!important;}
+  body.sidebar-collapsed .wrap{
+    padding-left:108px!important;
+  }
+
+  /* Nội dung Đào tạo AI dùng 100% phần còn lại, không tự trừ sidebar lần hai */
+  .wrap:has(#aiSettingsCard.ai-v408){
+    width:100%!important;
+    max-width:none!important;
+    padding-left:calc(var(--sidebar-w) + 24px)!important;
+    padding-right:24px!important;
+    box-sizing:border-box!important;
+  }
+  #aiSettingsCard.ai-v408{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media (max-width:900px){
+  :root{--sidebar-w:0px!important;}
+  .admin-topbar{left:0!important;}
+  .wrap,
+  body.authenticated .wrap,
+  body.auth-pending .wrap{
+    width:100%!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+    box-sizing:border-box!important;
+  }
+  .wrap:has(#aiSettingsCard.ai-v408){
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+}
+</style>
