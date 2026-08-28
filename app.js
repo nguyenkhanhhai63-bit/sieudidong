@@ -2780,10 +2780,14 @@ function aiChatHide(){
 function aiChatSetHumanHandoff(show,reason=""){
   if(!aiHumanHandoff) return;
 
-  // V401: chỉ hiện khu chuyển nhân viên khi thật sự cần.
-  // Không để nút Zalo cố định làm AI có cảm giác luôn đẩy khách sang người thật.
+  // V402: ẩn thật sự bằng cả hidden + inline display để không bị CSS !important cũ ghi đè.
   aiHumanHandoff.hidden=!show;
   aiHumanHandoff.classList.toggle("is-priority",Boolean(show));
+  if(show){
+    aiHumanHandoff.style.removeProperty("display");
+  }else{
+    aiHumanHandoff.style.setProperty("display","none","important");
+  }
 
   const note=aiHumanHandoff.querySelector("span");
   if(note && show){
@@ -2854,7 +2858,7 @@ function aiChatProductSnapshot(question){
   const groups=groupItems(flattenProducts(PRODUCTS).filter(productMatchesMainCategory));
 
   return groups.map((group,index)=>{
-    const variants=(group.variants||[]).filter(Boolean);
+    const variants=((group.items||group.variants||[])).filter(Boolean);
     const prices=variants.map(v=>Number(v.price||0)).filter(x=>x>0);
     const minPrice=prices.length?Math.min(...prices):0;
     const maxPrice=prices.length?Math.max(...prices):0;
@@ -2907,7 +2911,7 @@ function aiChatProductSnapshot(question){
     };
   })
   .sort((a,b)=>b.score-a.score)
-  .slice(0,14)
+  .slice(0,20)
   .map(({score,...x})=>x);
 }
 async function aiChatAsk(question){
