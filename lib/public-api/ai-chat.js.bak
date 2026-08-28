@@ -97,10 +97,10 @@ function redisHashObject(raw){
 
 async function loadChatSettings(){
   const defaults={
-    chatInstructions:"Tư vấn ngắn gọn, bình dân, dễ hiểu. Chủ động trả lời ngay khi hệ thống có dữ liệu. Hỏi thêm nhu cầu chỉ khi câu hỏi chưa đủ rõ. Không đẩy khách sang nhân viên nếu AI có thể trả lời từ dữ liệu website hoặc thông tin shop.",
+    chatInstructions:"Tư vấn ngắn gọn, bình dân, dễ hiểu. Hỏi nhu cầu nếu khách nói chưa rõ. Chỉ tư vấn dựa trên dữ liệu sản phẩm website gửi lên.",
     chatWelcomeMessage:"Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?",
     chatStoreFacts:"Website: sieudidong.vn. Khu vực: Quy Nhơn. Zalo tư vấn: 0353105423.",
-    chatHandoffRules:"Chỉ chuyển sang nhân viên khi khách chủ động yêu cầu gặp người thật, cần giữ/chốt máy, cần ảnh thực tế, thương lượng riêng, hoặc dữ liệu cần thiết thực sự không có trong hệ thống. Giá, tồn kho, bảo hành, trả góp, địa chỉ, giờ mở cửa và chính sách nếu đã có dữ liệu thì AI phải tự trả lời.",
+    chatHandoffRules:"Chỉ chuyển sang nhân viên khi cần xác nhận giá/tồn kho, địa chỉ, giờ mở cửa, chính sách hoặc khi dữ liệu AI không đủ.",
     chatSuggestions:"Máy dưới 10 triệu | Tư vấn giúp tôi máy dưới 10 triệu đang còn hàng\nPin trâu | Máy nào pin trâu đang còn hàng?\nChụp ảnh đẹp | Tôi cần máy chụp ảnh đẹp, tư vấn giúp tôi\nThông tin shop | Siêu Di Động ở đâu và liên hệ mua hàng thế nào?"
   };
 
@@ -522,19 +522,16 @@ export default async function handler(req,res){
     `CHỈ DẪN ĐÀO TẠO TỪ QUẢN TRỊ: ${chatSettings.chatInstructions}`,
     `THÔNG TIN SIÊU DI ĐỘNG DO QUẢN TRỊ CUNG CẤP: ${chatSettings.chatStoreFacts}`,
     `QUY TẮC CHUYỂN NHÂN VIÊN: ${chatSettings.chatHandoffRules}`,
-    "QUY TẮC BẮT BUỘC VỀ HANDOFF: AI phải chủ động trả lời trước nếu có dữ liệu. Không được kết thúc câu trả lời bằng lời mời nhắn Zalo/nhân viên chỉ để cho chắc. Không được nói 'liên hệ nhân viên để xác nhận' khi giá, tồn kho, bảo hành, trả góp, địa chỉ, giờ mở cửa, chính sách hoặc thông tin sản phẩm đã có trong dữ liệu được cung cấp.",
-    "Chỉ đề nghị nhân viên trong 4 trường hợp: (1) khách chủ động yêu cầu người thật; (2) khách muốn chốt/giữ máy hoặc thương lượng riêng; (3) khách cần ảnh thực tế hoặc xác minh vật lý mà AI không thể thực hiện; (4) thông tin cần thiết thực sự không có trong dữ liệu hệ thống.",
-    "Nếu không thuộc 4 trường hợp trên thì tuyệt đối không tự đề nghị Zalo hay nhân viên.",
     "Nói tiếng Việt tự nhiên, ngắn gọn, bình dân, dễ hiểu.",
     "Mục tiêu: trả lời câu hỏi về điện thoại/sản phẩm đang bán và thông tin cơ bản của Siêu Di Động.",
     "CHỈ được dùng dữ liệu sản phẩm trong DANH SÁCH SẢN PHẨM được gửi trong yêu cầu. Không tự bịa giá, tồn kho, cấu hình hay chương trình khuyến mãi.",
     "QUAN TRỌNG NHẤT: giá và tình trạng CÒN HÀNG/HẾT HÀNG trong DANH SÁCH SẢN PHẨM LIÊN QUAN TỪ WEBSITE là nguồn sự thật duy nhất và ưu tiên cao nhất. Không được dùng kiến thức riêng, hội thoại cũ hay chỉ dẫn đào tạo để phủ định dữ liệu này.",
     "Nếu danh sách ghi CÒN HÀNG thì tuyệt đối không được nói hết hàng, tạm hết, cần kiểm tra lại hay chưa rõ tồn kho. Nếu danh sách ghi HẾT HÀNG thì tuyệt đối không nói còn hàng.",
     "Khi khách hỏi sản phẩm đang có trên website, phải dựa đúng giá và tình trạng website gửi trong lượt hỏi hiện tại.",
-    "Nếu hỏi giá/tồn kho mà sản phẩm không nằm trong dữ liệu, nói rõ hiện chưa thấy dữ liệu trong hệ thống. Chỉ đề nghị nhân viên nếu khách cần xử lý ngay hoặc muốn chốt mua.",
+    "Nếu hỏi giá/tồn kho mà sản phẩm không nằm trong dữ liệu, nói chưa thấy dữ liệu và hướng khách liên hệ nhân viên.",
     "Nếu tư vấn máy, ưu tiên gợi ý tối đa 3 máy và nêu ngắn lý do.",
     "Nếu sản phẩm hết hàng, phải nói rõ hết hàng; không được chốt như đang còn hàng.",
-    "Nếu khách hỏi địa chỉ, giờ mở cửa hoặc chính sách và THÔNG TIN SIÊU DI ĐỘNG đã có câu trả lời thì trả lời thẳng. Chỉ khi dữ liệu đó hoàn toàn không được cung cấp mới nói chưa có dữ liệu; không bịa.",
+    "Nếu khách hỏi địa chỉ chính xác, giờ mở cửa, chính sách hoặc thông tin chưa được cung cấp, không bịa; hướng khách bấm Zalo để nhân viên xác nhận.",
     "Ưu tiên tự tư vấn bằng AI trước. Với giá/tồn kho đã có trong DANH SÁCH SẢN PHẨM thì trả lời thẳng theo website, KHÔNG bắt khách sang Zalo để xác nhận lại. Chỉ gợi ý nhân viên khi dữ liệu sản phẩm hiện tại không có thông tin cần hỏi, hoặc khách chủ động muốn gặp nhân viên.",
     "Nếu khách hỏi bảo hành, ưu tiên hệ thống tra cứu bảo hành. Tuyệt đối không tự suy đoán ngày mua hoặc thời hạn bảo hành.",
     "Khi khách hỏi hoặc đang tra cứu bảo hành, KHÔNG yêu cầu khách nhắn Zalo. Hệ thống phải tự tra cứu và trả kết quả trực tiếp trong chat.",
@@ -567,7 +564,7 @@ Trả lời trực tiếp câu hỏi của khách.`;
       const {r,data}=await callGemini(model,apiKey,systemInstruction,input);
       if(r.ok){
         const text=responseText(data);
-        if(text) return res.status(200).json({ok:true,text,model,needsHuman:false});
+        if(text) return res.status(200).json({ok:true,text,model});
       }
       lastError=clean(data?.error?.message,500)||`Gemini ${r.status}`;
       if(![400,404,429,500,503].includes(r.status)) break;
@@ -578,8 +575,6 @@ Trả lời trực tiếp câu hỏi của khách.`;
 
   console.error("AI chat:",lastError);
   return res.status(503).json({
-    error:"AI tư vấn đang bận. Bạn thử lại sau ít phút.",
-    needsHuman:true,
-    handoffReason:"AI đang tạm thời chưa phản hồi được. Nếu cần gấp, bạn có thể nhắn nhân viên qua Zalo."
+    error:"AI tư vấn đang bận. Bạn thử lại sau hoặc liên hệ Zalo với nhân viên."
   });
 }

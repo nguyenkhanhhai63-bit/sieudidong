@@ -2780,14 +2780,15 @@ function aiChatHide(){
 function aiChatSetHumanHandoff(show,reason=""){
   if(!aiHumanHandoff) return;
 
-  // V401: chỉ hiện khu chuyển nhân viên khi thật sự cần.
-  // Không để nút Zalo cố định làm AI có cảm giác luôn đẩy khách sang người thật.
-  aiHumanHandoff.hidden=!show;
+  // Luôn cho khách lựa chọn nhắn nhân viên ngay khi vào chat.
+  aiHumanHandoff.hidden=false;
   aiHumanHandoff.classList.toggle("is-priority",Boolean(show));
 
   const note=aiHumanHandoff.querySelector("span");
-  if(note && show){
-    note.textContent=reason || "Nội dung này cần nhân viên hỗ trợ trực tiếp.";
+  if(note){
+    note.textContent=(show && reason)
+      ? reason
+      : "Nếu muốn nói chuyện với nhân viên ngay, bạn có thể nhắn Zalo trực tiếp.";
   }
 }
 
@@ -2810,11 +2811,23 @@ function aiChatCustomerRequestsHuman(text=""){
   return patterns.some(k=>s.includes(k));
 }
 
-function aiChatNeedsHuman(data={}){
-  // V401: backend quyết định rõ khi nào cần chuyển nhân viên.
-  // Không suy đoán từ các từ như “địa chỉ”, “liên hệ”, “xác nhận” vì AI có thể
-  // đang tự trả lời đúng các thông tin đó mà không cần handoff.
-  return data?.needsHuman===true;
+function aiChatNeedsHuman(reply=""){
+  const s=String(reply||"").toLowerCase();
+  return [
+    "zalo",
+    "nhân viên",
+    "nhan vien",
+    "xác nhận",
+    "xac nhan",
+    "liên hệ",
+    "lien he",
+    "chưa có dữ liệu",
+    "chua co du lieu",
+    "địa chỉ",
+    "dia chi",
+    "giờ mở cửa",
+    "gio mo cua"
+  ].some(k=>s.includes(k));
 }
 function aiChatAppend(role,text){
   const row=document.createElement("div");
@@ -2953,10 +2966,8 @@ async function aiChatAsk(question){
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
     aiChatAppend("assistant",reply);
     AI_CHAT_HISTORY.push({role:"assistant",text:reply});
-    if(aiChatNeedsHuman(data)){
-      aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
-    }else{
-      aiChatSetHumanHandoff(false);
+    if(aiChatNeedsHuman(reply)){
+      aiChatSetHumanHandoff(true,"Phần này nên để nhân viên xác nhận trực tiếp cho chắc. Bạn có thể chuyển sang Zalo.");
     }
     if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
   }catch(e){
@@ -2979,7 +2990,7 @@ async function aiChatAsk(question){
 zaloConsultBtn?.addEventListener("click",()=>{
   if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
   aiChatOpen();
-  aiChatAppend("assistant","Bạn cứ hỏi mình trực tiếp nhé. Giá, tồn kho, bảo hành, trả góp, thông tin máy và thông tin shop nếu hệ thống có dữ liệu thì mình trả lời luôn.");
+  aiChatAppend("assistant","Bạn cứ hỏi AI trước nha. Nếu cần xác nhận thêm, tôi sẽ đưa nút chuyển sang nhân viên tư vấn trực tiếp.");
 });
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
