@@ -14575,3 +14575,76 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
   #zaloConsultBtn.ai-chat-pill .ai-pill-copy,#zaloConsultBtn.ai-chat-pill .ai-pill-arrow{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){#zaloConsultBtn.ai-chat-pill{animation:none!important;transition:none!important}}
+
+
+/* =========================================================
+   V424 - Fix nút Tư vấn AI trên mobile: gọn, sát mép, không che card
+   ========================================================= */
+@media(max-width:720px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    position:fixed!important;
+    width:52px!important;
+    height:52px!important;
+    min-width:52px!important;
+    min-height:52px!important;
+    max-width:52px!important;
+    max-height:52px!important;
+    padding:4px!important;
+    margin:0!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    background:#fff!important;
+    box-shadow:0 6px 18px rgba(15,23,42,.20),0 0 0 1px rgba(255,90,0,.20)!important;
+    overflow:visible!important;
+    z-index:9996!important;
+    animation:none!important;
+    transform:none!important;
+    touch-action:none!important;
+  }
+  #zaloConsultBtn.ai-chat-pill::before,
+  #zaloConsultBtn.ai-chat-pill::after,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::before,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::after{
+    content:none!important;
+    display:none!important;
+    animation:none!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo{
+    flex:0 0 42px!important;
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    min-height:42px!important;
+    max-width:42px!important;
+    max-height:42px!important;
+    border:0!important;
+    border-radius:50%!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo img{
+    width:42px!important;
+    height:42px!important;
+    border-radius:50%!important;
+    object-fit:cover!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-online-dot{
+    right:-1px!important;
+    bottom:0!important;
+    width:10px!important;
+    height:10px!important;
+    border:2px solid #fff!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy,
+  #zaloConsultBtn.ai-chat-pill .ai-pill-arrow,
+  #zaloConsultBtn.ai-chat-pill .ai-chat-notify-dot,
+  #aiChatFloatLabel,
+  .ai-chat-float-label{
+    display:none!important;
+  }
+  #zaloConsultBtn.ai-chat-pill:hover,
+  #zaloConsultBtn.ai-chat-pill:active{
+    transform:none!important;
+  }
+}

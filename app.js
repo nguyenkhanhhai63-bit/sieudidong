@@ -3217,7 +3217,7 @@ function syncAiChatFloatLabel(){
   const btn=zaloConsultBtn;
   if(!btn) return;
 
-  const KEY="sdd-ai-round-pos-v2";
+  const KEY="sdd-ai-round-pos-v424";
   let dragging=false;
   let moved=false;
   let startX=0,startY=0,startLeft=0,startTop=0;
@@ -3344,7 +3344,7 @@ function snapAiSupportToEdge(){
   setAiSupportPositionImportant(btn,targetLeft,targetTop);
 
   try{
-    localStorage.setItem("sdd-ai-support-pos-v1",JSON.stringify({
+    localStorage.setItem("sdd-ai-round-pos-v424",JSON.stringify({
       x:Math.round(targetLeft),
       y:Math.round(targetTop)
     }));
