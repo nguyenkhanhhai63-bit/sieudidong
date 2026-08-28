@@ -7954,9 +7954,57 @@ function setAdminLoadingStage(stage,hint){
   });
 }
 
+let __adminProductMetaPromise=null;
+async function loadAdminProductMeta(){
+  if(__adminProductMetaPromise) return __adminProductMetaPromise;
+  __adminProductMetaPromise=(async()=>{
+    try{
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),12000);
+      try{
+        const pr=await fetch("/api/products?ts="+Date.now(),{
+          cache:"no-store",
+          credentials:"same-origin",
+          signal:controller.signal
+        });
+        const pd=await pr.json();
+        if(!pr.ok) throw new Error(pd.error||"Không tải được sản phẩm");
+
+        const grouped=new Map();
+        (pd.products||[]).forEach(p=>{
+          const raw=normalizeModel(p.name);
+          const base=baseModelName(raw);
+          if(!base) return;
+          const item=grouped.get(base) || {name:base, variants:new Set()};
+          item.variants.add(raw);
+          grouped.set(base,item);
+        });
+
+        window.PRODUCT_MODEL_META=grouped;
+        products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
+
+        // Chỉ render lại khu Link thông số nếu người dùng đang ở đúng trang này.
+        // Các trang Máy cũ / Trả góp / Đào tạo AI... không phải chờ danh sách sản phẩm.
+        const activeTab=document.querySelector('#adminTabs .admin-tab.active')?.dataset.tab;
+        if(activeTab==='specs') render();
+        return true;
+      }finally{
+        clearTimeout(timer);
+      }
+    }catch(e){
+      console.warn('[admin] Không tải được metadata sản phẩm:',e);
+      return false;
+    }
+  })();
+  return __adminProductMetaPromise;
+}
+
 async function loadAdmin(){
   setAdminLoadingStage(0,"Đang xác thực phiên đăng nhập...");
 
+  // Loader đăng nhập chỉ dùng để xác thực phiên. Không bắt các trang quản trị khác
+  // phải chờ /api/products tải xong, tránh popup che màn hình khi mở Máy cũ,
+  // Trả góp, Dịch vụ, Đào tạo AI, SEO...
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
 
@@ -7975,37 +8023,15 @@ async function loadAdmin(){
 
     const data=await r.json();
     if(!r.ok) throw new Error(data.error||"Không tải được dữ liệu quản trị");
-
     links=data.links||{};
 
-    setAdminLoadingStage(1,"Đang tải dữ liệu và danh sách sản phẩm...");
-
-    const pr=await fetch("/api/products?ts="+Date.now(),{
-      cache:"no-store",
-      signal:controller.signal
-    });
-    const pd=await pr.json();
-    if(!pr.ok) throw new Error(pd.error||"Không tải được sản phẩm");
-
-    const grouped=new Map();
-
-    (pd.products||[]).forEach(p=>{
-      const raw=normalizeModel(p.name);
-      const base=baseModelName(raw);
-      if(!base) return;
-      const item=grouped.get(base) || {name:base, variants:new Set()};
-      item.variants.add(raw);
-      grouped.set(base,item);
-    });
-
-    window.PRODUCT_MODEL_META=grouped;
-    products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
-
     setAdminLoadingStage(2,"Hoàn tất, đang mở trang quản trị...");
-    await new Promise(resolve=>setTimeout(resolve,180));
     setLoggedIn(true);
     setLoginStatus("");
     render();
+
+    // Nạp danh sách sản phẩm sau khi giao diện đã mở. Không await để không chặn UI.
+    setTimeout(()=>{ loadAdminProductMeta(); },0);
     return true;
   }catch(e){
     if(e?.name==="AbortError"){
