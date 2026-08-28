@@ -2831,6 +2831,73 @@ function aiChatAppend(role,text){
   aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
   return row;
 }
+
+// V404: chia câu trả lời thành nhiều bong bóng ngắn như người thật đang chat.
+// Ưu tiên giữ nguyên từng câu/ý; không cắt giữa tên máy, giá hay cụm từ đang liền nghĩa.
+function aiChatSplitReply(text=""){
+  const raw=String(text||"")
+    .replace(/\r/g,"")
+    .replace(/[ \t]+\n/g,"\n")
+    .trim();
+  if(!raw) return [];
+
+  const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const out=[];
+  const push=(value)=>{
+    let x=String(value||"").trim();
+    if(!x) return;
+    // Với câu quá dài, ưu tiên tách ở dấu ; hoặc dấu : nếu đó là hai ý độc lập.
+    if(x.length>180){
+      const parts=x.split(/(?<=[;:])\s+/).map(v=>v.trim()).filter(Boolean);
+      if(parts.length>1){ parts.forEach(push); return; }
+    }
+    out.push(x);
+  };
+
+  for(const line of lines){
+    // Dòng đánh số/bullet là một tin nhắn riêng để dễ đọc.
+    if(/^(?:[-•–—]|\d+[.)])\s+/.test(line)){
+      push(line);
+      continue;
+    }
+    const sentences=line
+      .split(/(?<=[.!?…])\s+(?=[A-ZÀ-Ỹ0-9Đ])/u)
+      .map(x=>x.trim())
+      .filter(Boolean);
+    if(sentences.length>1) sentences.forEach(push);
+    else push(line);
+  }
+
+  // Tránh spam quá nhiều bong bóng cho một câu trả lời dài bất thường.
+  if(out.length<=6) return out;
+  const compact=out.slice(0,5);
+  compact.push(out.slice(5).join(" "));
+  return compact;
+}
+
+function aiChatSleep(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function aiChatAppendAssistantMessages(text,data={}){
+  const supplied=Array.isArray(data?.messages)
+    ? data.messages.map(x=>String(x||"").trim()).filter(Boolean)
+    : [];
+  const messages=supplied.length ? supplied : aiChatSplitReply(text);
+  const list=messages.length ? messages : [String(text||"").trim()].filter(Boolean);
+
+  for(let i=0;i<list.length;i++){
+    if(i>0){
+      aiChatTyping(true);
+      // Nhịp chat ngắn, hơi thay đổi theo độ dài để nhìn tự nhiên hơn.
+      const wait=Math.min(850,Math.max(320,260+list[i].length*5));
+      await aiChatSleep(wait);
+      aiChatTyping(false);
+    }
+    aiChatAppend("assistant",list[i]);
+  }
+  return list;
+}
 function aiChatTyping(show){
   let el=document.getElementById("aiChatTyping");
   if(show){
@@ -2923,7 +2990,8 @@ async function aiChatAsk(question){
     // Xóa ngay nội dung đã gửi khỏi ô nhập, giống luồng chat AI bình thường.
     // Trước đây nhánh chuyển sang nhân viên return sớm nên input vẫn giữ tin nhắn cũ.
     if(aiChatInput) aiChatInput.value="";
-    aiChatAppend("assistant","Được, tôi chuyển bạn sang nhân viên tư vấn trực tiếp. Bấm nút Nhắn Zalo ngay bên dưới.");
+    aiChatAppend("assistant","Được bạn nha.");
+    setTimeout(()=>aiChatAppend("assistant","Mình chuyển bạn sang nhân viên tư vấn trực tiếp."),350);
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
     sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
@@ -2955,8 +3023,10 @@ async function aiChatAsk(question){
     if(!r.ok) throw new Error(data.error||"AI chưa thể trả lời.");
 
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
-    aiChatAppend("assistant",reply);
-    AI_CHAT_HISTORY.push({role:"assistant",text:reply});
+    // Xóa typing đang chờ server trước khi bắt đầu nhắn từng bong bóng.
+    aiChatTyping(false);
+    const replyMessages=await aiChatAppendAssistantMessages(reply,data);
+    AI_CHAT_HISTORY.push({role:"assistant",text:replyMessages.join(" ")||reply});
     if(aiChatNeedsHuman(data)){
       aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
     }else{

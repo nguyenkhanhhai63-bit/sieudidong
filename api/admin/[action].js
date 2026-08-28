@@ -1,6 +1,7 @@
 const handlers = {
   "ai-settings": () => import("../../lib/admin-api/ai-settings.js"),
   "ai-chat-training": () => import("../../lib/admin-api/ai-chat-training.js"),
+  "ai-knowledge": () => import("../../lib/admin-api/ai-knowledge.js"),
   "ai-chat-icon": () => import("../../lib/admin-api/ai-chat-icon.js"),
   "analytics": () => import("../../lib/admin-api/analytics.js"),
   "installment-settings": () => import("../../lib/admin-api/installment-settings.js"),
