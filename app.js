@@ -3052,7 +3052,10 @@ async function aiChatAsk(question){
       body:JSON.stringify({
         message:text,
         products:aiChatProductSnapshot(text),
-        history:AI_CHAT_HISTORY.slice(-6)
+        history:AI_CHAT_HISTORY.slice(-6),
+        sessionId:AI_CHAT_SESSION_ID,
+        visitorId:analyticsVisitorId(),
+        page:location.pathname+location.search
       })
     });
     const data=await r.json().catch(()=>({}));
@@ -3064,7 +3067,9 @@ async function aiChatAsk(question){
     const replyMessages=await aiChatAppendAssistantMessages(reply,data);
     const savedReply=replyMessages.join(" ")||reply;
     AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});
-    aiChatSaveHistory(text,savedReply,data);
+    // V419: /api/ai-chat đã tự lưu question + answer trên server trong cùng request.
+    // Chỉ dùng endpoint lịch sử riêng làm fallback nếu server báo chưa lưu được.
+    if(data?.historySaved!==true) aiChatSaveHistory(text,savedReply,data);
     if(aiChatNeedsHuman(data)){
       aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
     }else{
