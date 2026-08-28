@@ -11359,3 +11359,110 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 
 </body>
 </html>
+
+<style id="ai-training-v412-full-width">
+/* v412 - Mở rộng Đào tạo AI theo toàn bộ vùng làm việc desktop */
+@media (min-width:1201px){
+  /* Không bó trang Đào tạo AI trong khung 1320/1360px nữa */
+  #aiSettingsCard.ai-v408{
+    width:100%!important;
+    max-width:none!important;
+    margin:10px 0 36px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Cho vùng chứa chính của admin tận dụng toàn bộ chiều ngang khi hiển thị AI */
+  .wrap:has(#aiSettingsCard.ai-v408){
+    max-width:none!important;
+    width:100%!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+    padding-right:24px!important;
+  }
+
+  #aiSettingsCard .ai-v408-pagehead{
+    padding-left:4px!important;
+    padding-right:4px!important;
+  }
+
+  #aiSettingsCard .ai-v408-kpis{
+    width:100%!important;
+    grid-template-columns:repeat(4,minmax(210px,1fr))!important;
+    gap:18px!important;
+  }
+
+  #aiSettingsCard .ai-v408-kpi{
+    min-height:108px!important;
+    padding:18px 20px!important;
+  }
+
+  #aiSettingsCard .ai-v408-tabs{
+    width:100%!important;
+  }
+
+  #aiSettingsCard .ai-v408-body{
+    width:100%!important;
+  }
+
+  /* Tab Cần bổ sung: danh sách 40%, chi tiết 60%, lấp hết màn hình */
+  #aiSettingsCard .ai-v409-master-detail{
+    width:100%!important;
+    grid-template-columns:minmax(420px,40%) minmax(620px,60%)!important;
+    gap:16px!important;
+  }
+
+  #aiSettingsCard .ai-v409-list-card,
+  #aiSettingsCard .ai-v409-detail-card{
+    width:100%!important;
+    min-height:590px!important;
+    height:590px!important;
+  }
+
+  /* Các tab cấu hình/AI tư vấn cũng mở rộng, không còn tụ vào giữa */
+  #aiSettingsCard .ai-v408-two-col{
+    width:100%!important;
+    grid-template-columns:minmax(0,2.15fr) minmax(360px,.85fr)!important;
+    gap:18px!important;
+    align-items:start!important;
+  }
+
+  #aiSettingsCard .ai-v408-card{
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+
+  #aiSettingsCard .ai-v408-card textarea{
+    width:100%!important;
+    box-sizing:border-box!important;
+  }
+}
+
+/* Màn hình rất rộng: tăng độ thoáng thay vì để nội dung co lại ở giữa */
+@media (min-width:1600px){
+  #aiSettingsCard.ai-v408{
+    width:100%!important;
+    max-width:none!important;
+  }
+  #aiSettingsCard .ai-v409-toolbar{
+    grid-template-columns:minmax(480px,1.7fr) 190px 190px minmax(210px,.8fr) 44px!important;
+    gap:12px!important;
+  }
+  #aiSettingsCard .ai-v409-master-detail{
+    grid-template-columns:minmax(500px,39%) minmax(720px,61%)!important;
+    gap:18px!important;
+  }
+  #aiSettingsCard .ai-v408-two-col{
+    grid-template-columns:minmax(0,2.3fr) minmax(380px,.7fr)!important;
+    gap:20px!important;
+  }
+}
+
+/* Tablet vẫn thu gọn hợp lý */
+@media (min-width:761px) and (max-width:1200px){
+  #aiSettingsCard.ai-v408{
+    width:calc(100% - 20px)!important;
+    max-width:none!important;
+    margin:10px!important;
+  }
+}
+</style>
