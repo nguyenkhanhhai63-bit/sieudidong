@@ -10753,5 +10753,93 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   setTimeout(()=>{const title=$('adminPageTitle');if(title?.textContent.trim()==='Quản lý Phụ kiện')load()},250);
 })();
 </script>
+
+<script id="v400-admin-tab-deep-links">
+(()=>{
+  const TAB_TO_SLUG={
+    analytics:'tong-quan',
+    specs:'link-thong-so',
+    installment:'tra-gop',
+    services:'dich-vu',
+    used:'may-cu',
+    orderVisibility:'san-pham-theo-yeu-cau',
+    ai:'dao-tao-ai',
+    accessories:'phu-kien',
+    seo:'seo-google',
+    footer:'footer'
+  };
+  const SLUG_TO_TAB=Object.fromEntries(Object.entries(TAB_TO_SLUG).map(([k,v])=>[v,k]));
+  let applyingUrl=false;
+
+  function getTabFromUrl(){
+    try{
+      const u=new URL(location.href);
+      const raw=(u.searchParams.get('page')||'').trim().toLowerCase();
+      return SLUG_TO_TAB[raw]||null;
+    }catch(_){return null}
+  }
+
+  function setUrlForTab(tab,replace=false){
+    const slug=TAB_TO_SLUG[tab];
+    if(!slug) return;
+    const u=new URL(location.href);
+    u.searchParams.set('page',slug);
+    u.hash='';
+    const next=u.pathname+u.search;
+    const cur=location.pathname+location.search;
+    if(next===cur) return;
+    history[replace?'replaceState':'pushState']({adminTab:tab},'',next);
+  }
+
+  function openTabFromUrl(retry=0){
+    const tab=getTabFromUrl();
+    if(!tab) return;
+    const tabs=document.getElementById('adminTabs');
+    const btn=tabs?.querySelector(`[data-tab="${tab}"]`);
+    if(btn){
+      const current=tabs.querySelector('.admin-tab.active')?.dataset.tab;
+      if(current!==tab){
+        applyingUrl=true;
+        btn.click();
+        applyingUrl=false;
+      }
+      return;
+    }
+    if(retry<30) setTimeout(()=>openTabFromUrl(retry+1),120);
+  }
+
+  function updateShortcutLinks(){
+    document.querySelectorAll('[data-go-tab]').forEach(el=>{
+      const tab=el.dataset.goTab, slug=TAB_TO_SLUG[tab];
+      if(!slug) return;
+      el.setAttribute('data-admin-url',`/admin?page=${slug}`);
+      el.title=`Mở /admin?page=${slug}`;
+    });
+  }
+
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('#adminTabs [data-tab]');
+    if(!btn || applyingUrl) return;
+    const tab=btn.dataset.tab;
+    if(TAB_TO_SLUG[tab]) setUrlForTab(tab,false);
+  },true);
+
+  window.addEventListener('popstate',()=>openTabFromUrl());
+
+  // Nếu vào /admin không chỉ định trang, giữ Tổng quan nhưng tạo URL riêng ngay.
+  const initialTab=getTabFromUrl();
+  if(initialTab){
+    openTabFromUrl();
+  }else{
+    setTimeout(()=>{
+      const active=document.querySelector('#adminTabs .admin-tab.active')?.dataset.tab||'analytics';
+      if(TAB_TO_SLUG[active]) setUrlForTab(active,true);
+    },250);
+  }
+  updateShortcutLinks();
+  setTimeout(updateShortcutLinks,500);
+})();
+</script>
+
 </body>
 </html>
