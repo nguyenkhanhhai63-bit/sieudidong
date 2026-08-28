@@ -6646,6 +6646,86 @@ body.admin-menu-open-v306 .admin-menu-overlay-v306{opacity:1;visibility:visible}
 }
 </style>
 
+
+<style id="ai-training-v411-optimized">
+/* v411 - tối ưu giao diện Đào tạo AI: cân đối, dễ đọc, bám sát ảnh mẫu */
+#aiSettingsCard.ai-v408{
+  width:min(1320px,calc(100vw - var(--sidebar-w,220px) - 56px))!important;
+  max-width:1320px!important;
+  margin:18px auto 36px!important;
+}
+#aiSettingsCard .ai-v408-pagehead{
+  min-height:auto!important; padding:4px 2px 14px!important; margin:0!important;
+  border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important;
+}
+#aiSettingsCard .ai-v408-eyebrow{display:none!important}
+#aiSettingsCard .ai-v408-pagehead h1{font-size:25px!important;line-height:1.15!important;letter-spacing:-.45px!important}
+#aiSettingsCard .ai-v408-pagehead p{margin-top:6px!important;font-size:11.5px!important;color:#667085!important}
+#aiSettingsCard .ai-v410-help{height:38px!important;padding:0 14px!important;border-radius:8px!important;font-size:10.5px!important}
+#aiSettingsCard .ai-v408-kpis{gap:16px!important;margin:8px 0 20px!important}
+#aiSettingsCard .ai-v408-kpi{min-height:100px!important;padding:16px 18px!important;border-radius:10px!important}
+#aiSettingsCard .ai-v408-kpi-icon{width:44px!important;height:44px!important;flex-basis:44px!important;font-size:20px!important}
+#aiSettingsCard .ai-v408-kpi span{font-size:10.5px!important}
+#aiSettingsCard .ai-v408-kpi strong{font-size:25px!important}
+#aiSettingsCard .ai-v408-kpi small{font-size:9px!important;margin-top:6px!important}
+#aiSettingsCard .ai-v408-tabs{height:49px!important;gap:34px!important;border-bottom:1px solid #e6e9ee!important}
+#aiSettingsCard .ai-v408-tab{height:49px!important;font-size:11px!important}
+#aiSettingsCard .ai-v408-body{padding-top:14px!important}
+#aiSettingsCard .ai-v409-toolbar{
+  grid-template-columns:minmax(360px,1.55fr) 170px 170px minmax(180px,.85fr) 42px!important;
+  gap:10px!important;margin-bottom:12px!important;
+}
+#aiSettingsCard .ai-v408-search,#aiSettingsCard .ai-v409-toolbar select,#aiSettingsCard .ai-v409-reload{height:40px!important;border-radius:8px!important}
+#aiSettingsCard .ai-v408-search input,#aiSettingsCard .ai-v409-toolbar select{font-size:10.5px!important}
+#aiSettingsCard .ai-v409-master-detail{
+  grid-template-columns:minmax(420px,.82fr) minmax(590px,1.18fr)!important;
+  gap:14px!important;
+}
+#aiSettingsCard .ai-v409-list-card,#aiSettingsCard .ai-v409-detail-card{
+  height:548px!important;min-height:548px!important;border-radius:10px!important;
+}
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-item{min-height:92px!important;padding:17px 18px 15px 34px!important}
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-item:before{top:25px!important}
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-q{font-size:12.5px!important;line-height:1.35!important}
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-meta{font-size:9.5px!important;margin-top:7px!important}
+#aiSettingsCard .ai-v409-status{font-size:8px!important;padding:5px 8px!important}
+#aiSettingsCard .ai-v409-list-foot{min-height:48px!important;padding:9px 14px!important}
+#aiSettingsCard .ai-v409-detail-head{min-height:52px!important;padding:14px 16px!important}
+#aiSettingsCard .ai-v409-detail-head h2{font-size:14.5px!important}
+#aiSettingsCard .ai-v409-customer{margin:12px 14px 0!important;padding:12px 13px!important;min-height:64px!important}
+#aiSettingsCard .ai-v409-missing{margin:10px 14px 0!important;padding:12px 13px!important}
+#aiSettingsCard .ai-v409-detail-meta{margin:0 14px!important;padding:10px 0!important}
+#aiSettingsCard .ai-v409-answer-wrap{padding:12px 14px 9px!important}
+#aiSettingsCard .ai-v409-answer-wrap textarea{height:112px!important;min-height:112px!important;max-height:112px!important;font-size:10.5px!important}
+#aiSettingsCard .ai-v409-detail-actions{min-height:58px!important;padding:10px 14px!important}
+#aiSettingsCard .ai-v409-detail-actions button{height:36px!important;min-height:36px!important}
+#aiSettingsCard .ai-v409-detail-actions .train{min-width:146px!important}
+/* Làm danh sách dễ đọc hơn khi đã đào tạo */
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-item.is-answered{background:#fff!important}
+#aiSettingsCard .ai-v409-question-list .ai-knowledge-item.is-answered.is-selected{background:#fffaf7!important}
+/* Empty state gọn, không chiếm cảm giác quá trống */
+#aiSettingsCard .ai-knowledge-empty{min-height:220px!important}
+/* Tối ưu desktop rộng */
+@media (min-width:1600px){
+  #aiSettingsCard.ai-v408{width:min(1360px,calc(100vw - var(--sidebar-w,220px) - 72px))!important;max-width:1360px!important}
+  #aiSettingsCard .ai-v409-master-detail{grid-template-columns:minmax(450px,.85fr) minmax(630px,1.15fr)!important}
+}
+@media (max-width:1250px){
+  #aiSettingsCard.ai-v408{width:calc(100% - 24px)!important;margin:12px!important}
+  #aiSettingsCard .ai-v409-toolbar{grid-template-columns:1fr 1fr 1fr!important}
+  #aiSettingsCard .ai-v408-search{grid-column:1/-1!important}
+  #aiSettingsCard .ai-v409-master-detail{grid-template-columns:1fr!important}
+  #aiSettingsCard .ai-v409-list-card,#aiSettingsCard .ai-v409-detail-card{height:auto!important;min-height:410px!important}
+}
+@media (max-width:760px){
+  #aiSettingsCard.ai-v408{width:calc(100% - 16px)!important;margin:8px!important}
+  #aiSettingsCard .ai-v408-kpis{grid-template-columns:1fr 1fr!important}
+  #aiSettingsCard .ai-v408-tabs{gap:20px!important;overflow-x:auto!important}
+  #aiSettingsCard .ai-v409-toolbar{grid-template-columns:1fr!important}
+  #aiSettingsCard .ai-v408-search{grid-column:auto!important}
+  #aiSettingsCard .ai-v409-toolbar select,#aiSettingsCard .ai-v409-reload{width:100%!important}
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
