@@ -2825,6 +2825,7 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-cloudinary-status.ok{background:#eaf8ef;color:#087a36}
 .used-cloudinary-status.bad{background:#fff0ed;color:#b42318}
 .used-sheet-status{margin-top:8px;display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11.5px;font-weight:800}.used-sheet-status.ok{background:#eaf8ef;color:#087a36}.used-sheet-status.warn{background:#fff6ed;color:#b54708}.used-sheet-badge{display:inline-flex;margin:7px 0 0 7px;padding:4px 8px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:10px;font-weight:850}
+.used-sheet-locked{background:#f8fafc!important;color:#667085!important;cursor:not-allowed}.editing-sheet-item .used-image-upload-box{border-color:#ffb38a;background:#fffaf7}.editing-sheet-item #usedFormTitle:after{content:'Google Sheet';display:inline-flex;margin-left:8px;padding:3px 7px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:10px;font-weight:850;vertical-align:middle}
 
 .used-preview-uploading{display:grid;place-items:center;background:#fff7f2;color:#d94800;font-size:10px;font-weight:850;text-align:center;padding:8px}
 
@@ -10252,7 +10253,7 @@ document.addEventListener("DOMContentLoaded",function(){
     statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
     cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus')
   };
-  let rows=[], editingId='', assets=[], toastTimer=null;
+  let rows=[], editingId='', editingSource='', editingSheetRow=0, assets=[], toastTimer=null;
 
   const BRAND_RULES=[['redmi','Redmi'],['poco','POCO'],['xiaomi','Xiaomi'],['samsung','Samsung'],['galaxy','Samsung'],['oppo','OPPO'],['vivo','vivo'],['iqoo','iQOO'],['oneplus','OnePlus'],['honor','HONOR'],['realme','Realme'],['tecno','Tecno'],['iphone','Apple'],['ipad','Apple']];
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -10362,7 +10363,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
   function formData(){
     return {
-      id:editingId||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',
+      id:editingId||undefined,source:editingSource||undefined,sheetRow:editingSheetRow||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',
       price:Number(String(els.price?.value||'').replace(/[^\d]/g,''))||0,memory:els.memory?.value.trim()||'',
       color:els.color?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',
       warranty:els.warranty?.value.trim()||'',imei:els.imei?.value.trim()||'',status:els.status?.value||'available',
@@ -10371,17 +10372,35 @@ document.addEventListener("DOMContentLoaded",function(){
     };
   }
   function reset(){
-    clearErrors();editingId='';assets=[];
+    clearErrors();editingId='';editingSource='';editingSheetRow=0;assets=[];
     ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});
     if(els.status)els.status.value='available';if(els.formTitle)els.formTitle.textContent='Thêm máy cũ';if(els.save)els.save.textContent='Lưu máy cũ';
+    setSheetEditMode(false);
     renderImages();setStatus('');
+  }
+  const SHEET_LOCKED_FIELDS=['name','brand','price','memory','condition','warranty','imei','status','accessories'];
+  function setSheetEditMode(on){
+    SHEET_LOCKED_FIELDS.forEach(k=>{
+      const el=els[k]; if(!el)return;
+      el.disabled=!!on;
+      el.classList.toggle('used-sheet-locked',!!on);
+      if(on) el.title='Thông tin này lấy từ Google Sheet'; else el.removeAttribute('title');
+    });
+    const box=els.formTitle?.closest('.used-admin-formbox');
+    box?.classList.toggle('editing-sheet-item',!!on);
   }
   function edit(x){
     editingId=x.id||'';
+    editingSource=x.source||'';
+    editingSheetRow=Number(x.sheetRow||0)||0;
     for(const k of ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
     if(els.status)els.status.value=x.status==='sold'?'sold':'available';
     assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
-    if(els.formTitle)els.formTitle.textContent='Sửa máy cũ';if(els.save)els.save.textContent='Lưu thay đổi';
+    const fromSheet=x.source==='sheet';
+    setSheetEditMode(fromSheet);
+    if(els.formTitle)els.formTitle.textContent=fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ';
+    if(els.save)els.save.textContent=fromSheet?'Lưu ảnh / ghi chú':'Lưu thay đổi';
+    setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, màu, pin hoặc ghi chú; giá/trạng thái vẫn lấy từ Sheet.':'','#667085');
     renderImages();document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
@@ -10421,7 +10440,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
-      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">Ảnh / ghi chú</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
     }).join('');
   }
 
@@ -10443,13 +10462,19 @@ document.addEventListener("DOMContentLoaded",function(){
 
   els.save?.addEventListener('click',async()=>{
     clearErrors();const x=formData();
+    const wasSheet=editingSource==='sheet';
     if(!x.name)return fail(els.name,'Vui lòng nhập tên máy.');
-    if(!x.price)return fail(els.price,'Vui lòng nhập giá bán.');
+    if(!wasSheet && !x.price)return fail(els.price,'Vui lòng nhập giá bán.');
     if(!x.images.length)return fail(els.imagesInput,'Bạn chưa có ảnh thực tế. Hãy upload ít nhất 1 ảnh lên Cloudinary.');
-    els.save.disabled=true;els.save.textContent='Đang lưu...';setStatus('Đang lưu thông tin vào Redis...','#667085');
-    try{await apiSave(x);reset();setStatus('✓ Đã lưu máy cũ. Redis chỉ lưu link ảnh.','#15803d');toast('Đã lưu máy cũ thành công.','success')}
+    els.save.disabled=true;els.save.textContent='Đang lưu...';setStatus(wasSheet?'Đang gắn ảnh với máy trên Google Sheet theo IMEI...':'Đang lưu thông tin vào Redis...','#667085');
+    try{
+      await apiSave(x);
+      reset();
+      setStatus(wasSheet?'✓ Đã cập nhật ảnh cho máy Google Sheet. Ảnh được ghép theo IMEI.':'✓ Đã lưu máy cũ. Redis chỉ lưu link ảnh.','#15803d');
+      toast(wasSheet?'Đã cập nhật ảnh máy đồng bộ Google Sheet.':'Đã lưu máy cũ thành công.','success')
+    }
     catch(e){const msg=e?.message||'Không lưu được máy cũ.';setStatus(msg,'#b42318');toast(msg,'error')}
-    finally{els.save.disabled=false;els.save.textContent=editingId?'Lưu thay đổi':'Lưu máy cũ'}
+    finally{els.save.disabled=false;if(!editingId)els.save.textContent='Lưu máy cũ'}
   });
   els.reset?.addEventListener('click',reset);
   els.reload?.addEventListener('click',()=>loadUsedProducts(true));
