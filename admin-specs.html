@@ -6969,6 +6969,18 @@ body.sidebar-collapsed .sidebar-logout{justify-content:center!important;padding:
 @media(max-width:1100px){#aiSettingsCard .ai-history-layout{grid-template-columns:1fr;min-height:0}#aiSettingsCard .ai-history-list{max-height:360px}#aiSettingsCard .ai-history-toolbar{grid-template-columns:1fr 180px 110px}}
 @media(max-width:700px){#aiSettingsCard .ai-history-toolbar{grid-template-columns:1fr}#aiSettingsCard .ai-history-msg{max-width:90%}#aiSettingsCard .ai-history-messages{min-height:360px;max-height:520px}}
 </style>
+
+<style id="v426-admin-auth-loading-fix">
+/* V426: kiểm tra phiên đăng nhập không còn dùng popup che toàn màn hình. */
+#authLoading{display:none!important;}
+body.auth-pending::before{
+  content:"";position:fixed;left:0;top:0;height:3px;width:42%;z-index:30000;
+  background:#ff5a00;border-radius:0 999px 999px 0;
+  animation:v426AuthBar 1.05s ease-in-out infinite alternate;
+}
+@keyframes v426AuthBar{from{transform:translateX(-70%)}to{transform:translateX(235%)}}
+body.auth-pending .wrap{display:block!important;min-height:100vh!important;padding:0!important;}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -8002,45 +8014,56 @@ async function loadAdminProductMeta(){
 async function loadAdmin(){
   setAdminLoadingStage(0,"Đang xác thực phiên đăng nhập...");
 
-  // Loader đăng nhập chỉ dùng để xác thực phiên. Không bắt các trang quản trị khác
-  // phải chờ /api/products tải xong, tránh popup che màn hình khi mở Máy cũ,
-  // Trả góp, Dịch vụ, Đào tạo AI, SEO...
+  // V426: chỉ kiểm tra cookie/session ở endpoint nhẹ.
+  // Không dùng spec-links làm endpoint xác thực vì endpoint đó còn phải đọc Redis
+  // và trước đây có thời hạn cookie khác, khiến các trang Trả góp/Máy cũ/AI bị kẹt loader.
   const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),8000);
+  const timer=setTimeout(()=>controller.abort(),6000);
 
   try{
-    const r=await fetch("/api/admin/spec-links",{
+    const r=await fetch("/api/admin/session?ts="+Date.now(),{
       cache:"no-store",
       credentials:"same-origin",
       signal:controller.signal
     });
+    let data={};
+    try{ data=await r.json(); }catch(_){}
 
-    if(r.status===401){
+    if(r.status===401 || !data?.authenticated){
       setLoggedIn(false);
       setLoginStatus("Phiên đăng nhập chưa có hoặc đã hết hạn. Vui lòng nhập mật khẩu quản trị.","");
       return false;
     }
-
-    const data=await r.json();
-    if(!r.ok) throw new Error(data.error||"Không tải được dữ liệu quản trị");
-    links=data.links||{};
+    if(!r.ok) throw new Error(data.error||"Không kiểm tra được phiên quản trị");
 
     setAdminLoadingStage(2,"Hoàn tất, đang mở trang quản trị...");
     setLoggedIn(true);
     setLoginStatus("");
-    render();
 
-    // Nạp danh sách sản phẩm sau khi giao diện đã mở. Không await để không chặn UI.
-    setTimeout(()=>{ loadAdminProductMeta(); },0);
+    // Dữ liệu nặng được nạp theo từng tab, không chặn lúc mở trang.
     return true;
   }catch(e){
-    if(e?.name==="AbortError"){
-      throw new Error("Kiểm tra đăng nhập quá lâu. Vui lòng tải lại trang hoặc đăng nhập lại.");
-    }
+    if(e?.name==="AbortError") throw new Error("Kiểm tra đăng nhập quá lâu. Vui lòng tải lại trang.");
     throw e;
   }finally{
     clearTimeout(timer);
   }
+}
+
+let __specLinksPromise=null;
+async function loadSpecLinksForAdmin(force=false){
+  if(__specLinksPromise && !force) return __specLinksPromise;
+  __specLinksPromise=(async()=>{
+    const r=await fetch("/api/admin/spec-links?ts="+Date.now(),{cache:"no-store",credentials:"same-origin"});
+    let data={};
+    try{data=await r.json();}catch(_){}
+    if(r.status===401) throw new Error("Phiên quản trị đã hết hạn");
+    if(!r.ok) throw new Error(data.error||"Không tải được link thông số");
+    links=data.links||{};
+    render();
+    return true;
+  })().finally(()=>{ setTimeout(()=>{__specLinksPromise=null},250); });
+  return __specLinksPromise;
 }
 
 
@@ -9419,6 +9442,13 @@ adminTabs.addEventListener("click",e=>{
   servicePricingCard.style.display = showServices ? "" : "none";
   usedProductsCard.style.display = showUsed ? "" : "none";
 
+  if(showSpecs){
+    loadSpecLinksForAdmin().catch(e=>{
+      console.warn('[admin] Không tải được link thông số:',e);
+      try{showToast(e.message||"Không tải được link thông số","error")}catch(_){}
+    });
+    loadAdminProductMeta();
+  }
   if(showAnalytics){ loadAnalytics(); }
   if(showInstallment){ loadInstallmentSettings(); }
   if(showServices){ loadServicePricing(); }
