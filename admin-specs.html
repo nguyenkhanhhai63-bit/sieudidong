@@ -10319,7 +10319,10 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   async function uploadCloudinary(blob,fileName,signatureData){
     const fd=new FormData();
-    fd.append('file',blob,(String(fileName||'may-cu').replace(/\.[^.]+$/,'')||'may-cu')+'.jpg');
+    const safeFileBase=(String(fileName||'may-cu')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d')
+      .replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'may-cu');
+    fd.append('file',blob,safeFileBase+'.jpg');
     fd.append('api_key',signatureData.apiKey);
     fd.append('timestamp',String(signatureData.timestamp));
     fd.append('folder',signatureData.folder);
