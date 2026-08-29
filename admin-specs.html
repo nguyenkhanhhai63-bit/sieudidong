@@ -2824,6 +2824,8 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-cloudinary-status{margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11.5px;font-weight:800}
 .used-cloudinary-status.ok{background:#eaf8ef;color:#087a36}
 .used-cloudinary-status.bad{background:#fff0ed;color:#b42318}
+.used-sheet-status{margin-top:8px;display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11.5px;font-weight:800}.used-sheet-status.ok{background:#eaf8ef;color:#087a36}.used-sheet-status.warn{background:#fff6ed;color:#b54708}.used-sheet-badge{display:inline-flex;margin:7px 0 0 7px;padding:4px 8px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:10px;font-weight:850}
+
 .used-preview-uploading{display:grid;place-items:center;background:#fff7f2;color:#d94800;font-size:10px;font-weight:850;text-align:center;padding:8px}
 
 
@@ -7436,7 +7438,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 </section>
 
 <section id="usedProductsCard" class="card panel" data-panel="used" style="display:none">
-<div class="head"><div><h1>Danh sách máy cũ</h1><p>Quản lý riêng từng chiếc, không lấy từ KiotViet. Ảnh ngoài website là ảnh thực tế tải tại đây.</p></div><button id="reloadUsedProducts" class="secondary" type="button">Tải lại</button></div>
+<div class="head"><div><h1>Danh sách máy cũ</h1><p>Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet. Ảnh thực tế vẫn lưu trên Cloudinary và ghép theo IMEI.</p><div id="usedSheetStatus" class="used-sheet-status">Google Sheet: đang kiểm tra kết nối...</div></div><button id="reloadUsedProducts" class="secondary" type="button">Đồng bộ Sheet</button></div>
 <div class="used-admin-shell">
 <div class="used-admin-form"><h2 id="usedFormTitle">Thêm máy cũ</h2><p class="used-admin-help">IMEI chỉ lưu nội bộ, không hiển thị cho khách.</p><div class="used-form-grid">
 <div class="used-field wide used-name-field"><label>Tên máy *</label><input id="usedName" class="used-input" autocomplete="off" placeholder="Gõ tên máy, ví dụ: Xiaomi 15 Pro"><div id="usedNameSuggest" class="used-name-suggest"></div><div class="used-smart-hint">Gõ tên máy → hệ thống tự gợi ý hãng và nhớ các máy đã nhập trước đó.</div></div>
@@ -10248,7 +10250,7 @@ document.addEventListener("DOMContentLoaded",function(){
     name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
     imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),search:$('usedListSearch'),
     statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
-    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest')
+    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus')
   };
   let rows=[], editingId='', assets=[], toastTimer=null;
 
@@ -10416,7 +10418,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
-      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span></div><div class="used-item-actions"><button type="button" data-act="edit">Sửa</button><button type="button" data-act="toggle">${x.status==='sold'?'Bán lại':'Đã bán'}</button><button type="button" class="danger" data-act="delete">Xóa</button></div></div>`;
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">Ảnh / ghi chú</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
     }).join('');
   }
 
@@ -10429,9 +10431,9 @@ document.addEventListener("DOMContentLoaded",function(){
     if(rows.length&&!force){render();checkCloudinary();return}
     setStatus('Đang tải...','#667085');
     try{
-      const r=await fetch('/api/admin/used-products?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+      const r=await fetch('/api/admin/used-products?ts='+Date.now()+(force?'&force=1':''),{cache:'no-store',credentials:'same-origin'});
       const d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
-      rows=d.items||[];render();setStatus('');checkCloudinary();
+      rows=d.items||[];render();setStatus('');checkCloudinary();if(els.sheetStatus){const sh=d.sheet||{};els.sheetStatus.textContent=sh.warning?('Google Sheet: '+sh.warning):('✓ Google Sheet đã kết nối • '+rows.length+' dòng • cập nhật '+(sh.fetchedAt?new Date(sh.fetchedAt).toLocaleString('vi-VN'):'vừa xong'));els.sheetStatus.className='used-sheet-status '+(sh.warning?'warn':'ok')}
     }catch(e){setStatus(e.message||'Không tải được danh sách.','#b42318');toast(e.message||'Không tải được danh sách.','error')}
   }
   window.loadUsedProducts=loadUsedProducts;
@@ -10455,7 +10457,7 @@ document.addEventListener("DOMContentLoaded",function(){
     const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
     const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
     if(act==='edit')return edit(x);
-    if(act==='toggle'){try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
+    if(act==='toggle'){if(x.source==='sheet'){toast('Trạng thái lấy từ Google Sheet. Hãy đổi cột TRẠNG THÁI trên Sheet rồi bấm Đồng bộ Sheet.','error');return}try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
     if(act==='delete'){
       if(!confirm(`Xóa "${x.name}" khỏi danh sách máy cũ?\nẢnh Cloudinary của máy này cũng sẽ được xóa.`))return;
       try{
