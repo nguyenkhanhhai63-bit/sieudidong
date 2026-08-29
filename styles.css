@@ -14734,3 +14734,71 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
     opacity:1!important;
   }
 }
+
+/* =========================================================
+   V429 - Fix AI chat mobile bi header website che khung chat
+   ========================================================= */
+@media (max-width:720px){
+  /*
+    Trên mobile không dùng bottom + height cố định nữa vì khi header sticky
+    thay đổi chiều cao, mép trên chat có thể chui xuống dưới header.
+    Ghim trực tiếp top/bottom giúp toàn bộ header chat luôn nằm trong viewport.
+  */
+  #aiChatPanel.ai-chat-panel{
+    position:fixed!important;
+    top:74px!important;
+    right:6px!important;
+    bottom:max(8px, env(safe-area-inset-bottom))!important;
+    left:6px!important;
+    width:auto!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    z-index:10040!important;
+    border-radius:16px!important;
+    overflow:hidden!important;
+    box-shadow:0 14px 42px rgba(15,23,42,.24)!important;
+  }
+
+  /* Header của chat luôn nằm trên cùng, không bị phần tin nhắn đẩy/che. */
+  #aiChatPanel .ai-chat-head{
+    position:relative!important;
+    z-index:4!important;
+    flex:0 0 auto!important;
+    min-height:58px!important;
+    padding:8px 10px!important;
+    background:#fff!important;
+    border-bottom:1px solid #e9edf2!important;
+  }
+
+  #aiChatPanel .ai-chat-messages{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:12px 10px!important;
+  }
+
+  #aiChatPanel .ai-chat-suggestions,
+  #aiChatPanel .ai-chat-form,
+  #aiChatPanel .ai-chat-foot{
+    flex:0 0 auto!important;
+  }
+
+  /* Input luôn nhìn thấy và không bị thanh gesture của máy che. */
+  #aiChatPanel .ai-chat-foot{
+    padding-bottom:max(8px, env(safe-area-inset-bottom))!important;
+  }
+}
+
+/* Máy rất thấp / xoay ngang: giảm top một chút để vẫn đủ vùng chat. */
+@media (max-width:720px) and (max-height:620px){
+  #aiChatPanel.ai-chat-panel{
+    top:66px!important;
+    bottom:5px!important;
+  }
+  #aiChatPanel .ai-chat-head{
+    min-height:50px!important;
+  }
+}
