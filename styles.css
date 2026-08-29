@@ -14715,3 +14715,22 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
     box-shadow:0 1px 4px rgba(15,23,42,.18)!important;
   }
 }
+
+/* =========================================================
+   V428 - Fix nen den/nền vuông của icon AI trên mobile
+   Asset ai-chat-robot.png đã được chuyển sang PNG RGBA trong suốt thật.
+   ========================================================= */
+@media (max-width:720px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill,
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo,
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo img{
+    background:transparent!important;
+    background-color:transparent!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo img{
+    object-fit:contain!important;
+    mix-blend-mode:normal!important;
+    opacity:1!important;
+  }
+}
