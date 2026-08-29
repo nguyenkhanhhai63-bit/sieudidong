@@ -14648,3 +14648,70 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
     transform:none!important;
   }
 }
+
+/* =========================================================
+   V427 - Mobile AI launcher: bo nen/vien trang, chi giu icon trong suot
+   ========================================================= */
+@media (max-width:720px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    width:56px!important;
+    height:56px!important;
+    min-width:56px!important;
+    min-height:56px!important;
+    max-width:56px!important;
+    max-height:56px!important;
+    padding:0!important;
+    border:0!important;
+    outline:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    filter:none!important;
+    overflow:visible!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-round-logo{
+    width:56px!important;
+    height:56px!important;
+    min-width:56px!important;
+    min-height:56px!important;
+    max-width:56px!important;
+    max-height:56px!important;
+    flex:0 0 56px!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    filter:drop-shadow(0 4px 7px rgba(15,23,42,.18))!important;
+    overflow:visible!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo img,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-round-logo img{
+    display:block!important;
+    width:56px!important;
+    height:56px!important;
+    max-width:none!important;
+    max-height:none!important;
+    padding:0!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    object-fit:contain!important;
+    clip-path:none!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-online-dot{
+    right:-1px!important;
+    bottom:1px!important;
+    width:10px!important;
+    height:10px!important;
+    border:2px solid #fff!important;
+    box-shadow:0 1px 4px rgba(15,23,42,.18)!important;
+  }
+}
