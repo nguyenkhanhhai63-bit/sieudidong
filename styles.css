@@ -15821,3 +15821,49 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     filter:none!important;
   }
 }
+
+/* =========================================================
+   V445 - Khôi phục icon chat mobile sau V444
+   - Wrapper vẫn trong suốt để không còn khung vuông mờ.
+   - Icon tròn cam + SVG trắng hiển thị bình thường.
+   - Ripple nằm phía sau icon.
+   ========================================================= */
+@media (max-width:720px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    background:transparent!important;
+    background-color:transparent!important;
+    box-shadow:none!important;
+    filter:none!important;
+    -webkit-filter:none!important;
+    overflow:visible!important;
+    isolation:isolate!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo.ai-simple-chat-icon,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-round-logo.ai-simple-chat-icon{
+    position:relative!important;
+    z-index:3!important;
+    background:#ff5a00!important;
+    background-color:#ff5a00!important;
+    border-radius:50%!important;
+    opacity:1!important;
+    visibility:visible!important;
+    box-shadow:0 5px 14px rgba(255,90,0,.22)!important;
+  }
+
+  #zaloConsultBtn .ai-simple-chat-icon svg{
+    position:relative!important;
+    z-index:4!important;
+    opacity:1!important;
+    visibility:visible!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill::before,
+  #zaloConsultBtn.ai-chat-pill::after,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::before,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::after{
+    z-index:1!important;
+    pointer-events:none!important;
+  }
+}
