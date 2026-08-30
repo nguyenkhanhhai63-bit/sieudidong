@@ -449,7 +449,7 @@
     <div class="ai-chat-brand">
       <img src="/assets/logo-square.jpg" alt="Siêu Di Động">
       <div>
-        <strong>Tư vấn Siêu Di Động</strong>
+        <strong id="chatStaffName">Hải</strong>
         <span><i class="chat-online-dot" aria-hidden="true"></i> Đang online</span>
       </div>
     </div>
@@ -504,7 +504,27 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=446"></script>
+  <script src="/app.js?v=448"></script>
+
+<script>
+/* V448: chọn ngẫu nhiên nhân viên một lần cho mỗi phiên trình duyệt */
+(function(){
+  var names=["Hải","Minh Đang","Tiến"];
+  var key="sdd_chat_staff_name_v1";
+  var name="";
+  try { name=sessionStorage.getItem(key)||""; } catch(e){}
+  if(names.indexOf(name)===-1){
+    name=names[Math.floor(Math.random()*names.length)];
+    try { sessionStorage.setItem(key,name); } catch(e){}
+  }
+  function applyStaffName(){
+    var el=document.getElementById("chatStaffName");
+    if(el) el.textContent=name;
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyStaffName);
+  else applyStaffName();
+})();
+</script>
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */

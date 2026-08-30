@@ -15914,3 +15914,60 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     font-size:11.5px!important;
   }
 }
+
+/* =========================================================
+   V447 - Can lai header khung chat
+   - Logo gon hon, khong sat vien.
+   - Ten tu van + trang thai can giua theo logo.
+   ========================================================= */
+@media (max-width:720px){
+  #aiChatPanel .ai-chat-head{
+    flex:0 0 58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:7px 12px!important;
+    align-items:center!important;
+  }
+  #aiChatPanel .ai-chat-brand{
+    display:flex!important;
+    align-items:center!important;
+    gap:9px!important;
+    min-width:0!important;
+  }
+  #aiChatPanel .ai-chat-brand img{
+    width:38px!important;
+    height:38px!important;
+    flex:0 0 38px!important;
+    border-radius:11px!important;
+    object-fit:cover!important;
+    margin:0!important;
+  }
+  #aiChatPanel .ai-chat-brand > div{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    min-width:0!important;
+    height:38px!important;
+    gap:2px!important;
+  }
+  #aiChatPanel .ai-chat-brand strong{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:13.5px!important;
+    line-height:16px!important;
+    white-space:nowrap!important;
+  }
+  #aiChatPanel .ai-chat-brand span{
+    display:flex!important;
+    align-items:center!important;
+    gap:4px!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:9.5px!important;
+    line-height:12px!important;
+  }
+  #aiChatPanel .chat-online-dot{
+    flex:0 0 auto!important;
+  }
+}
