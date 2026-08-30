@@ -3166,7 +3166,27 @@ zaloConsultBtn?.addEventListener("click",()=>{
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
   e.preventDefault();
-  aiChatAsk(aiChatInput.value);
+  const text=aiChatInput?.value||"";
+  if(text.trim()) aiChatAsk(text);
+});
+
+// V456: Android/iOS - nút Gửi phải bấm được ngay cả khi bàn phím đang mở.
+// pointerdown chạy trước lúc browser blur textarea / thay đổi visualViewport.
+let aiChatSendPointerHandled=false;
+aiChatSend?.addEventListener("pointerdown",e=>{
+  if(e.pointerType!=="touch" && e.pointerType!=="pen") return;
+  const text=aiChatInput?.value||"";
+  if(!text.trim() || aiChatBusy) return;
+  e.preventDefault();
+  aiChatSendPointerHandled=true;
+  aiChatAsk(text);
+  setTimeout(()=>{ aiChatSendPointerHandled=false; },450);
+});
+aiChatSend?.addEventListener("click",e=>{
+  if(aiChatSendPointerHandled){
+    e.preventDefault();
+    return;
+  }
 });
 aiChatInput?.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){
