@@ -15473,3 +15473,66 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
     height:62%!important;
   }
 }
+
+/* =========================================================
+   V439 - Hiệu ứng vòng tròn nháy bên ngoài icon chat
+   Không thay đổi kích thước, màu sắc hay SVG icon V438.
+   ========================================================= */
+#zaloConsultBtn.ai-chat-pill{
+  isolation:isolate!important;
+  overflow:visible!important;
+}
+
+#zaloConsultBtn.ai-chat-pill::before,
+#zaloConsultBtn.ai-chat-pill::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(1);
+  border:2px solid rgba(255,90,0,.42);
+  background:rgba(255,90,0,.06);
+  box-sizing:border-box;
+  pointer-events:none;
+  z-index:-1;
+  opacity:0;
+  will-change:transform,opacity;
+  animation:sdd-chat-ripple 2.2s ease-out infinite;
+}
+
+#zaloConsultBtn.ai-chat-pill::after{
+  animation-delay:1.1s;
+}
+
+#zaloConsultBtn.ai-chat-pill .ai-round-logo.ai-simple-chat-icon{
+  position:relative!important;
+  z-index:2!important;
+}
+
+@keyframes sdd-chat-ripple{
+  0%{
+    transform:translate(-50%,-50%) scale(.92);
+    opacity:0;
+  }
+  12%{
+    opacity:.72;
+  }
+  68%{
+    opacity:.18;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1.72);
+    opacity:0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  #zaloConsultBtn.ai-chat-pill::before,
+  #zaloConsultBtn.ai-chat-pill::after{
+    animation:none!important;
+    opacity:0!important;
+  }
+}
