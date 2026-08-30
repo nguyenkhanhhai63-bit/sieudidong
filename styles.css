@@ -14802,3 +14802,174 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
     min-height:50px!important;
   }
 }
+
+
+/* =========================================================
+   V434 - Chatbox compact, giao diện tư vấn trung tính
+   - Không chiếm gần toàn màn hình trên mobile
+   - Không gắn nhãn AI ở giao diện
+   - Vẫn giữ thông báo minh bạch về hỗ trợ tự động ở footer
+   ========================================================= */
+#aiChatPanel.ai-chat-panel{
+  position:fixed!important;
+  right:22px!important;
+  bottom:22px!important;
+  left:auto!important;
+  top:auto!important;
+  width:min(390px,calc(100vw - 32px))!important;
+  height:min(560px,calc(100vh - 100px))!important;
+  min-height:430px!important;
+  max-height:560px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border:1px solid rgba(15,23,42,.08)!important;
+  border-radius:20px!important;
+  background:#f7f8fa!important;
+  box-shadow:0 18px 55px rgba(15,23,42,.22)!important;
+  z-index:10040!important;
+}
+#aiChatPanel.ai-chat-panel[hidden]{display:none!important}
+
+#aiChatPanel .ai-chat-head{
+  min-height:72px!important;
+  padding:11px 14px!important;
+  background:linear-gradient(135deg,#ff6a00 0%,#ff5200 72%,#f04400 100%)!important;
+  border:0!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex:0 0 auto!important;
+}
+#aiChatPanel .ai-chat-brand{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
+#aiChatPanel .ai-chat-brand img{
+  width:44px!important;height:44px!important;flex:0 0 44px!important;
+  border-radius:13px!important;object-fit:cover!important;
+  background:#fff!important;border:2px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.12)!important;
+}
+#aiChatPanel .ai-chat-brand div{min-width:0!important}
+#aiChatPanel .ai-chat-brand strong{
+  display:block!important;color:#fff!important;font-size:15px!important;line-height:1.15!important;
+  font-weight:850!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+#aiChatPanel .ai-chat-brand span{
+  display:flex!important;align-items:center!important;gap:6px!important;
+  margin-top:5px!important;color:rgba(255,255,255,.94)!important;font-size:11.5px!important;font-weight:650!important;
+}
+#aiChatPanel .chat-online-dot{
+  width:8px!important;height:8px!important;border-radius:50%!important;display:inline-block!important;
+  background:#34d399!important;box-shadow:0 0 0 2px rgba(255,255,255,.28)!important;
+}
+#aiChatPanel .ai-chat-head-actions{display:flex!important;align-items:center!important;gap:6px!important}
+#aiChatPanel .ai-chat-close{
+  width:34px!important;height:34px!important;flex:0 0 34px!important;border:0!important;border-radius:50%!important;
+  background:rgba(255,255,255,.16)!important;color:#fff!important;font-size:25px!important;line-height:1!important;
+  display:grid!important;place-items:center!important;cursor:pointer!important;
+}
+#aiChatPanel .ai-chat-close:hover{background:rgba(255,255,255,.25)!important}
+
+#aiChatPanel .ai-chat-messages{
+  flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;
+  padding:16px 14px 12px!important;background:#f7f8fa!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+}
+#aiChatPanel .ai-chat-message{margin:0 0 10px!important}
+#aiChatPanel .ai-chat-bubble{
+  max-width:88%!important;padding:11px 13px!important;border-radius:15px!important;
+  font-size:13.5px!important;line-height:1.48!important;box-shadow:0 2px 8px rgba(15,23,42,.07)!important;
+}
+#aiChatPanel .ai-chat-message.assistant .ai-chat-bubble{background:#fff!important;border:1px solid #e8ebef!important;color:#1f2937!important}
+#aiChatPanel .ai-chat-message.user .ai-chat-bubble{background:#ff5a00!important;color:#fff!important;border-color:#ff5a00!important}
+
+#aiChatPanel .ai-chat-suggestions{
+  flex:0 0 auto!important;display:flex!important;flex-wrap:wrap!important;gap:7px!important;
+  padding:10px 12px 8px!important;background:#fff!important;border-top:1px solid #edf0f3!important;
+  overflow:visible!important;
+}
+#aiChatPanel .ai-chat-suggestions button{
+  min-height:34px!important;padding:0 12px!important;border:1px solid #e0e5ea!important;border-radius:999px!important;
+  background:#fff!important;color:#334155!important;font-size:11.5px!important;font-weight:650!important;white-space:nowrap!important;
+}
+#aiChatPanel .ai-chat-suggestions button:hover{border-color:#ff6a21!important;color:#ff5a00!important;background:#fff7f2!important}
+
+#aiChatPanel .ai-chat-form{
+  flex:0 0 auto!important;display:flex!important;align-items:flex-end!important;gap:8px!important;
+  padding:9px 12px 8px!important;background:#fff!important;border-top:0!important;
+}
+#aiChatPanel .ai-chat-form textarea{
+  min-height:44px!important;max-height:100px!important;padding:11px 13px!important;border:1px solid #dce2e8!important;
+  border-radius:13px!important;background:#fff!important;font-size:13px!important;line-height:1.4!important;resize:none!important;
+}
+#aiChatPanel .ai-chat-form textarea:focus{border-color:#ff6a21!important;box-shadow:0 0 0 3px rgba(255,90,0,.10)!important;outline:0!important}
+#aiChatPanel .ai-chat-form button{
+  width:48px!important;height:44px!important;min-width:48px!important;padding:0!important;border:0!important;border-radius:13px!important;
+  background:#ff5a00!important;color:#fff!important;font-size:12px!important;font-weight:800!important;box-shadow:none!important;
+}
+#aiChatPanel .ai-chat-foot{
+  flex:0 0 auto!important;padding:0 14px 11px!important;background:#fff!important;color:#94a3b8!important;
+  font-size:9.5px!important;line-height:1.35!important;text-align:center!important;
+}
+
+#zaloConsultBtn.ai-chat-pill{
+  width:190px!important;height:58px!important;min-width:190px!important;min-height:58px!important;
+  max-width:190px!important;max-height:58px!important;padding:5px 8px 5px 6px!important;
+}
+#zaloConsultBtn.ai-chat-pill .ai-round-logo{
+  width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;max-width:46px!important;max-height:46px!important;flex-basis:46px!important;
+}
+#zaloConsultBtn.ai-chat-pill .ai-round-logo img{width:100%!important;height:100%!important;border-radius:50%!important;object-fit:cover!important}
+#zaloConsultBtn.ai-chat-pill .ai-pill-copy strong{font-size:14px!important}
+#zaloConsultBtn.ai-chat-pill .ai-pill-copy small{font-size:11px!important;margin-top:4px!important}
+#zaloConsultBtn.ai-chat-pill .ai-pill-arrow{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:25px!important}
+
+@media(max-width:720px){
+  #aiChatPanel.ai-chat-panel{
+    top:auto!important;
+    right:10px!important;
+    bottom:max(10px,env(safe-area-inset-bottom))!important;
+    left:auto!important;
+    width:min(360px,calc(100vw - 20px))!important;
+    height:min(515px,72svh)!important;
+    min-height:380px!important;
+    max-height:515px!important;
+    border-radius:18px!important;
+    box-shadow:0 16px 44px rgba(15,23,42,.24)!important;
+  }
+  #aiChatPanel .ai-chat-head{min-height:62px!important;padding:8px 10px!important}
+  #aiChatPanel .ai-chat-brand img{width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:11px!important}
+  #aiChatPanel .ai-chat-brand strong{font-size:13px!important}
+  #aiChatPanel .ai-chat-brand span{font-size:10px!important;margin-top:3px!important}
+  #aiChatPanel .ai-chat-close{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:21px!important}
+  #aiChatPanel .ai-chat-messages{padding:12px 10px 8px!important}
+  #aiChatPanel .ai-chat-bubble{max-width:91%!important;padding:10px 11px!important;font-size:12.5px!important;border-radius:13px!important}
+  #aiChatPanel .ai-chat-suggestions{gap:6px!important;padding:8px 9px 7px!important}
+  #aiChatPanel .ai-chat-suggestions button{min-height:31px!important;padding:0 9px!important;font-size:10.5px!important}
+  #aiChatPanel .ai-chat-form{gap:7px!important;padding:8px 9px 7px!important}
+  #aiChatPanel .ai-chat-form textarea{min-height:42px!important;padding:10px 11px!important;font-size:12px!important}
+  #aiChatPanel .ai-chat-form button{width:46px!important;height:42px!important;min-width:46px!important;border-radius:12px!important}
+  #aiChatPanel .ai-chat-foot{padding:0 10px max(8px,env(safe-area-inset-bottom))!important;font-size:8.5px!important}
+
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-round-logo{
+    width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;max-width:52px!important;max-height:52px!important;flex-basis:52px!important;
+    border-radius:50%!important;overflow:hidden!important;filter:drop-shadow(0 4px 7px rgba(15,23,42,.16))!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo img,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-round-logo img{
+    width:52px!important;height:52px!important;border-radius:50%!important;object-fit:cover!important;
+  }
+}
+
+@media(max-width:380px){
+  #aiChatPanel.ai-chat-panel{right:7px!important;width:calc(100vw - 14px)!important;height:min(500px,72svh)!important}
+}
+
+@media(max-height:650px) and (max-width:720px){
+  #aiChatPanel.ai-chat-panel{height:calc(100svh - 24px)!important;max-height:none!important;min-height:0!important}
+}
