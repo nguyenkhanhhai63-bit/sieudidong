@@ -15640,3 +15640,71 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   animation:none!important;
   opacity:0!important;
 }
+
+/* =========================================================
+   V442 - Fix launcher desktop: giữ nguyên pill đầy đủ, ripple quanh icon trái
+   ========================================================= */
+@media (min-width:721px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    width:224px!important;
+    min-width:224px!important;
+    max-width:224px!important;
+    height:68px!important;
+    min-height:68px!important;
+    max-height:68px!important;
+    padding:6px 8px 6px 7px!important;
+    gap:9px!important;
+    overflow:visible!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-round-logo.ai-simple-chat-icon{
+    flex:0 0 54px!important;
+    width:54px!important;
+    height:54px!important;
+    min-width:54px!important;
+    min-height:54px!important;
+    max-width:54px!important;
+    max-height:54px!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy{
+    display:flex!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy strong{
+    font-size:16px!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy small{
+    font-size:12.5px!important;
+    white-space:nowrap!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-pill-arrow{
+    display:grid!important;
+    flex:0 0 36px!important;
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    min-height:36px!important;
+    margin-left:auto!important;
+    position:relative!important;
+    z-index:5!important;
+  }
+
+  /* Ripple bám đúng tâm icon bên trái, không chạy giữa toàn bộ pill */
+  #zaloConsultBtn.ai-chat-pill::before,
+  #zaloConsultBtn.ai-chat-pill::after,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::before,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill::after{
+    left:34px!important;
+    top:50%!important;
+    width:54px!important;
+    height:54px!important;
+  }
+}
