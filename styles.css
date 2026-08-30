@@ -15867,3 +15867,50 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     pointer-events:none!important;
   }
 }
+
+/* =========================================================
+   V446 - Căn lại text launcher chat trên desktop
+   - Giữ nguyên icon, ripple và kích thước pill.
+   - Text được căn giữa theo chiều dọc, thẳng hàng, không lệch.
+   ========================================================= */
+@media (min-width:721px){
+  #zaloConsultBtn.ai-chat-pill,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill{
+    display:flex!important;
+    align-items:center!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-pill-copy{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    align-self:stretch!important;
+    height:52px!important;
+    margin:0!important;
+    padding:0!important;
+    gap:2px!important;
+    line-height:1!important;
+    text-align:left!important;
+    transform:translateY(0)!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy strong,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-pill-copy strong{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    line-height:18px!important;
+    font-size:15px!important;
+  }
+
+  #zaloConsultBtn.ai-chat-pill .ai-pill-copy small,
+  #zaloConsultBtn.ai-round-float.ai-chat-pill .ai-pill-copy small{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    line-height:14px!important;
+    font-size:11.5px!important;
+  }
+}
