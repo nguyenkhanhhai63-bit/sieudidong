@@ -2792,6 +2792,8 @@ function aiChatOpen(){
   aiChatSetHumanHandoff(false);
   aiChatPanel.hidden=false;
   document.body.classList.add("ai-chat-open");
+  requestAnimationFrame(aiChatAdjustForKeyboard);
+  setTimeout(aiChatAdjustForKeyboard,120);
   if(zaloConsultBtn) zaloConsultBtn.style.setProperty("display","none","important");
   if(aiChatFloatLabel) aiChatFloatLabel.style.display="none";
   sendAnalytics("ai_chat_open",{action:"ai_chat_open"});
@@ -3157,17 +3159,31 @@ aiHumanZaloBtn?.addEventListener("click",()=>{
 
 function aiChatAdjustForKeyboard(){
   if(!aiChatPanel || aiChatPanel.hidden) return;
-  const vv=window.visualViewport;
-  if(!vv) return;
   const isMobile=window.matchMedia("(max-width:720px)").matches;
   if(!isMobile) return;
 
-  const keyboard=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+  // V437: luôn căn popup theo vùng màn hình THỰC SỰ đang nhìn thấy.
+  // Khi bàn phím mở, visualViewport nhỏ lại nên chat tự nằm giữa phần còn trống,
+  // không dính lên thanh địa chỉ và cũng không bị bàn phím che.
+  const vv=window.visualViewport;
+  const viewHeight=vv ? vv.height : window.innerHeight;
+  const viewTop=vv ? vv.offsetTop : 0;
+  const keyboard=Math.max(0,window.innerHeight-viewHeight-viewTop);
+  const keyboardOpen=keyboard>120 || (aiChatInput && document.activeElement===aiChatInput && viewHeight < window.innerHeight*0.82);
+
   document.documentElement.style.setProperty("--ai-keyboard-offset",keyboard+"px");
-  document.documentElement.style.setProperty("--ai-vv-height",vv.height+"px");
+  document.documentElement.style.setProperty("--ai-vv-height",viewHeight+"px");
+  document.documentElement.style.setProperty("--ai-vv-top",viewTop+"px");
+  document.documentElement.style.setProperty("--ai-vv-center",(viewTop + viewHeight/2)+"px");
+  document.body.classList.toggle("ai-keyboard-open",Boolean(keyboardOpen));
 }
 window.visualViewport?.addEventListener("resize",aiChatAdjustForKeyboard);
 window.visualViewport?.addEventListener("scroll",aiChatAdjustForKeyboard);
+aiChatInput?.addEventListener("focus",()=>setTimeout(aiChatAdjustForKeyboard,60));
+aiChatInput?.addEventListener("blur",()=>{
+  document.body.classList.remove("ai-keyboard-open");
+  setTimeout(aiChatAdjustForKeyboard,120);
+});
 
 
 if(aiMobileZaloDirect) aiMobileZaloDirect.dataset.analyticsZaloBound="1";
