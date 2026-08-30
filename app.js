@@ -2867,13 +2867,22 @@ function aiChatNeedsHuman(data={}){
 }
 function aiChatAppend(role,text){
   const row=document.createElement("div");
-  row.className="ai-chat-message "+(role==="user"?"user":"assistant");
+  row.className="ai-chat-message "+(role==="user"?"user":"assistant")+" ai-chat-message-enter";
   const bubble=document.createElement("div");
   bubble.className="ai-chat-bubble";
   bubble.textContent=String(text||"");
   row.appendChild(bubble);
   aiChatMessages.appendChild(row);
-  aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
+
+  // V458: tin mới trượt nhẹ từ dưới lên + khung chat cuộn mượt như Messenger.
+  requestAnimationFrame(()=>{
+    try{
+      aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"});
+    }catch(_){
+      aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
+    }
+  });
+  setTimeout(()=>row.classList.remove("ai-chat-message-enter"),420);
   return row;
 }
 

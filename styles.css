@@ -16093,3 +16093,4 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   .ai-chat-typing-label{font-size:10px!important;line-height:13px!important;}
   .ai-chat-typing-row{min-height:37px!important;}
 }
+\n\n/* V458 - hiệu ứng tin nhắn mới kiểu Messenger: nổi/trượt từ dưới lên */\n@keyframes sdd-chat-message-up-v458{\n  0%{opacity:0;transform:translate3d(0,16px,0) scale(.985);}\n  70%{opacity:1;transform:translate3d(0,-1px,0) scale(1);}\n  100%{opacity:1;transform:translate3d(0,0,0) scale(1);}\n}\n#aiChatPanel .ai-chat-message.ai-chat-message-enter{\n  animation:sdd-chat-message-up-v458 .34s cubic-bezier(.2,.72,.25,1) both;\n  will-change:transform,opacity;\n}\n#aiChatPanel .ai-chat-messages{scroll-behavior:smooth;}\n@media (prefers-reduced-motion:reduce){\n  #aiChatPanel .ai-chat-message.ai-chat-message-enter{animation:none!important;}\n  #aiChatPanel .ai-chat-messages{scroll-behavior:auto!important;}\n}\n
