@@ -15971,3 +15971,35 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     flex:0 0 auto!important;
   }
 }
+
+/* V449 - Fix ten nhan vien bi cat/che trong header chat */
+#aiChatPanel .ai-chat-brand > div{
+  overflow:visible!important;
+}
+#aiChatPanel .ai-chat-brand strong{
+  overflow:visible!important;
+  line-height:19px!important;
+  padding-top:1px!important;
+}
+@media (max-width:720px){
+  #aiChatPanel .ai-chat-head{
+    flex-basis:62px!important;
+    height:62px!important;
+    min-height:62px!important;
+    padding:8px 12px!important;
+  }
+  #aiChatPanel .ai-chat-brand > div{
+    height:42px!important;
+    gap:1px!important;
+    overflow:visible!important;
+  }
+  #aiChatPanel .ai-chat-brand strong{
+    font-size:13.5px!important;
+    line-height:19px!important;
+    padding:1px 0 0!important;
+    overflow:visible!important;
+  }
+  #aiChatPanel .ai-chat-brand span{
+    line-height:14px!important;
+  }
+}
