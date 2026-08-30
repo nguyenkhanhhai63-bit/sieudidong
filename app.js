@@ -2921,30 +2921,30 @@ function aiChatNaturalInitialDelay(question="",reply=""){
   const q=String(question||"").trim();
   const r=String(reply||"").trim();
   const total=q.length+r.length;
-  // Câu rất ngắn vẫn có một nhịp suy nghĩ; câu tư vấn dài chờ lâu hơn.
-  let min=850, max=1350;
-  if(total>140 || r.length>100){ min=1250; max=1850; }
-  if(total>260 || r.length>220){ min=1550; max=2350; }
-  if(/so sánh|so sanh|máy nào|may nao|tư vấn|tu van|nên mua|nen mua|chụp đẹp|chup dep|pin|hiệu năng|hieu nang/i.test(q)){
-    min=Math.max(min,1450);
-    max=Math.max(max,2200);
+  // V453: không để phản hồi bật ra ngay. Đây là thời gian tối thiểu trạng thái "đang soạn" phải hiện rõ.
+  let min=2200, max=3300;
+  if(total>120 || r.length>90){ min=2700; max=3900; }
+  if(total>240 || r.length>180){ min=3200; max=4600; }
+  if(/so sánh|so sanh|máy nào|may nao|tư vấn|tu van|nên mua|nen mua|trả góp|tra gop|bảo hành|bao hanh/i.test(q)){
+    min=Math.max(min,3000);
+    max=Math.max(max,4400);
   }
   return Math.round(min+Math.random()*(max-min));
 }
 
-function aiChatNaturalBubbleDelay(message=""){
+function aiChatNaturalBubbleDelay(message="",first=false){
   const len=String(message||"").trim().length;
-  // V452: nhịp gõ giữa từng tin đủ rõ để khách nhìn thấy trạng thái đang soạn.
-  let min=850, max=1350;
-  if(len>55){ min=1050; max=1650; }
-  if(len>100){ min=1250; max=1950; }
-  if(len>170){ min=1500; max=2300; }
+  // Mỗi bong bóng đều có một nhịp gõ riêng. Tin đầu chậm hơn nhẹ để khách thấy rõ đang soạn.
+  let min=first?1800:1200, max=first?2800:2100;
+  if(len>45){ min+=350; max+=650; }
+  if(len>90){ min+=450; max+=750; }
+  if(len>150){ min+=450; max+=750; }
   return Math.round(min+Math.random()*(max-min));
 }
 
 function aiChatInterMessagePause(){
-  // Một nhịp rất ngắn sau khi vừa gửi xong rồi mới bắt đầu gõ tin tiếp theo.
-  return Math.round(180+Math.random()*320);
+  // Người thật thường có một nhịp nghỉ sau khi bấm gửi rồi mới gõ câu tiếp.
+  return Math.round(650+Math.random()*750);
 }
 
 function aiChatCurrentStaffName(){
@@ -2963,14 +2963,11 @@ async function aiChatAppendAssistantMessages(text,data={}){
   const list=messages.length ? messages : [String(text||"").trim()].filter(Boolean);
 
   for(let i=0;i<list.length;i++){
-    if(i>0){
-      await aiChatSleep(aiChatInterMessagePause());
-      aiChatTyping(true);
-      // Tin nào cũng có trạng thái đang soạn trước khi bong bóng kế tiếp xuất hiện.
-      const wait=aiChatNaturalBubbleDelay(list[i]);
-      await aiChatSleep(wait);
-      aiChatTyping(false);
-    }
+    if(i>0) await aiChatSleep(aiChatInterMessagePause());
+    // V453: luôn hiện "đang soạn" trước MỌI tin, kể cả tin đầu tiên.
+    aiChatTyping(true);
+    await aiChatSleep(aiChatNaturalBubbleDelay(list[i],i===0));
+    aiChatTyping(false);
     aiChatAppend("assistant",list[i]);
   }
   return list;
@@ -3070,9 +3067,19 @@ async function aiChatAsk(question){
     // Xóa ngay nội dung đã gửi khỏi ô nhập, giống luồng chat AI bình thường.
     // Trước đây nhánh chuyển sang nhân viên return sớm nên input vẫn giữ tin nhắn cũ.
     if(aiChatInput) aiChatInput.value="";
-    aiChatAppend("assistant","Được bạn nha.");
-    setTimeout(()=>aiChatAppend("assistant","Mình chuyển bạn sang nhân viên tư vấn trực tiếp."),350);
-    aiChatSaveHistory(text,"Được bạn nha. Mình chuyển bạn sang nhân viên tư vấn trực tiếp.",{needsHuman:true,source:"human-request"});
+    aiChatTyping(true);
+    setTimeout(()=>{
+      aiChatTyping(false);
+      aiChatAppend("assistant","Oke bạn nha.");
+      setTimeout(()=>{
+        aiChatTyping(true);
+        setTimeout(()=>{
+          aiChatTyping(false);
+          aiChatAppend("assistant","Mình chuyển qua nhân viên hỗ trợ trực tiếp cho bạn nè.");
+        },1500+Math.random()*900);
+      },700+Math.random()*500);
+    },1700+Math.random()*900);
+    aiChatSaveHistory(text,"Oke bạn nha. Mình chuyển qua nhân viên hỗ trợ trực tiếp cho bạn nè.",{needsHuman:true,source:"human-request"});
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
     sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
@@ -3116,8 +3123,9 @@ async function aiChatAsk(question){
     const remaining=Math.max(0,naturalTarget-elapsed);
     if(remaining>0) await aiChatSleep(remaining);
 
-    // Xóa typing đang chờ server trước khi bắt đầu nhắn từng bong bóng.
+    // V453: tắt trạng thái chờ server, rồi bật lại một nhịp gõ thật sự trước từng bong bóng.
     aiChatTyping(false);
+    await aiChatSleep(Math.round(250+Math.random()*450));
     const replyMessages=await aiChatAppendAssistantMessages(reply,data);
     const savedReply=replyMessages.join(" ")||reply;
     AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});

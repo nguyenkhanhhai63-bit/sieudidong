@@ -16083,3 +16083,13 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 @media(max-width:720px){
   .ai-chat-typing-label{font-size:9px;line-height:11px;}
 }
+
+/* V453 - trạng thái đang soạn phải nhìn thấy rõ trước mỗi tin */
+.ai-chat-typing-row{min-height:38px!important;margin-top:4px!important;}
+.ai-chat-typing-wrap{display:flex!important;align-items:center!important;gap:8px!important;}
+.ai-chat-typing-label{display:block!important;color:#7b8491!important;font-size:10.5px!important;line-height:14px!important;white-space:nowrap!important;opacity:1!important;}
+.ai-chat-typing{min-width:48px!important;padding:10px 13px!important;box-shadow:0 4px 12px rgba(0,0,0,.07)!important;}
+@media(max-width:720px){
+  .ai-chat-typing-label{font-size:10px!important;line-height:13px!important;}
+  .ai-chat-typing-row{min-height:37px!important;}
+}
