@@ -16063,3 +16063,23 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     opacity:1!important;
   }
 }
+
+/* V452 - trạng thái đang soạn tin rõ ràng giữa từng bong bóng */
+.ai-chat-typing-row{align-items:flex-start!important;}
+.ai-chat-typing-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:3px;
+}
+.ai-chat-typing-label{
+  padding-left:4px;
+  font-size:9.5px;
+  line-height:12px;
+  color:#8b9199;
+  white-space:nowrap;
+  font-weight:500;
+}
+@media(max-width:720px){
+  .ai-chat-typing-label{font-size:9px;line-height:11px;}
+}

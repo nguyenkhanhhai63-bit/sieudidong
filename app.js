@@ -2933,10 +2933,26 @@ function aiChatNaturalInitialDelay(question="",reply=""){
 }
 
 function aiChatNaturalBubbleDelay(message=""){
-  const len=String(message||"").length;
-  const min=len>90?650:460;
-  const max=len>90?1050:850;
+  const len=String(message||"").trim().length;
+  // V452: nhịp gõ giữa từng tin đủ rõ để khách nhìn thấy trạng thái đang soạn.
+  let min=850, max=1350;
+  if(len>55){ min=1050; max=1650; }
+  if(len>100){ min=1250; max=1950; }
+  if(len>170){ min=1500; max=2300; }
   return Math.round(min+Math.random()*(max-min));
+}
+
+function aiChatInterMessagePause(){
+  // Một nhịp rất ngắn sau khi vừa gửi xong rồi mới bắt đầu gõ tin tiếp theo.
+  return Math.round(180+Math.random()*320);
+}
+
+function aiChatCurrentStaffName(){
+  try{
+    return sessionStorage.getItem("sdd_chat_staff_name_v1")||document.getElementById("chatStaffName")?.textContent?.trim()||"Nhân viên";
+  }catch(_){
+    return document.getElementById("chatStaffName")?.textContent?.trim()||"Nhân viên";
+  }
 }
 
 async function aiChatAppendAssistantMessages(text,data={}){
@@ -2948,8 +2964,9 @@ async function aiChatAppendAssistantMessages(text,data={}){
 
   for(let i=0;i<list.length;i++){
     if(i>0){
+      await aiChatSleep(aiChatInterMessagePause());
       aiChatTyping(true);
-      // Nhịp giữa các bong bóng thay đổi ngẫu nhiên nhẹ như người đang gõ.
+      // Tin nào cũng có trạng thái đang soạn trước khi bong bóng kế tiếp xuất hiện.
       const wait=aiChatNaturalBubbleDelay(list[i]);
       await aiChatSleep(wait);
       aiChatTyping(false);
@@ -2964,8 +2981,11 @@ function aiChatTyping(show){
     if(el) return;
     el=document.createElement("div");
     el.id="aiChatTyping";
-    el.className="ai-chat-message assistant";
-    el.innerHTML='<div class="ai-chat-bubble ai-chat-typing"><span></span><span></span><span></span></div>';
+    el.className="ai-chat-message assistant ai-chat-typing-row";
+    const staff=aiChatCurrentStaffName();
+    el.innerHTML='<div class="ai-chat-typing-wrap"><div class="ai-chat-bubble ai-chat-typing"><span></span><span></span><span></span></div><div class="ai-chat-typing-label"></div></div>';
+    const label=el.querySelector(".ai-chat-typing-label");
+    if(label) label.textContent=staff+" đang soạn tin...";
     aiChatMessages.appendChild(el);
     aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
   }else{
