@@ -2648,6 +2648,72 @@ button,.primary,.secondary{font-size:13.5px!important}
 .ai-v409-detail-actions{display:flex;align-items:center;gap:9px;padding:14px 18px;border-top:1px solid #edf0f3}.ai-v409-detail-actions .push{margin-left:auto}.ai-v409-detail-actions button{min-height:38px!important;border-radius:8px!important;font-size:11px!important}.ai-v409-detail-actions .train{background:#ff5a00!important;color:#fff!important;border-color:#ff5a00!important}.ai-v409-detail-actions .danger{color:#e5484d!important;background:#fff!important;border:1px solid #e4e7ec!important}
 .ai-v409-detail-empty{min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#98a2b3;gap:8px}.ai-v409-detail-empty div{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff1e8;color:#ff5a00;font-size:22px;font-weight:900}.ai-v409-detail-empty b{color:#475467}
 @media(max-width:1100px){.ai-v409-toolbar{grid-template-columns:1fr 1fr}.ai-v409-master-detail{grid-template-columns:1fr}.ai-v409-detail-card{min-height:auto}}
+
+
+/* =========================================================
+   V459 - Redesign Link thông số
+   ========================================================= */
+#adminCard.specs-panel{background:#f8fafc;border:1px solid #e7ebf0;box-shadow:none!important;overflow:hidden}
+#adminCard .specs-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:22px 24px 18px;background:#fff;border-bottom:1px solid #edf0f3}
+#adminCard .specs-hero-copy{min-width:0}
+#adminCard .specs-eyebrow{display:block;margin-bottom:6px;color:#ff5a00;font-size:10px;font-weight:900;letter-spacing:.08em}
+#adminCard .specs-hero h1{margin:0;font-size:22px;line-height:1.2;letter-spacing:-.35px}
+#adminCard .specs-hero p{margin:6px 0 0;color:#7b8491;font-size:12px}
+#adminCard .specs-search-wrap{position:relative;width:min(420px,42vw);flex:0 0 auto}
+#adminCard .specs-search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#929aa6;font-size:17px;pointer-events:none}
+#adminCard .specs-search{width:100%;height:42px;padding:0 14px 0 38px!important;border:1px solid #dfe4ea!important;border-radius:11px!important;background:#fbfcfd;font-size:12px}
+#adminCard .specs-search:focus{background:#fff;box-shadow:0 0 0 3px rgba(255,90,0,.08)!important}
+#adminCard .specs-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:16px 20px 12px}
+#adminCard .specs-summary-card{position:relative;padding:15px 16px;border:1px solid #e5e9ee;border-radius:13px;background:#fff;box-shadow:0 3px 10px rgba(15,23,42,.025)}
+#adminCard .specs-summary-card:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:#aab2bd}
+#adminCard .specs-summary-card.is-linked:before{background:#19a15f}
+#adminCard .specs-summary-card.is-missing:before{background:#ff8b4a}
+#adminCard .specs-summary-card span{display:block;color:#737d89;font-size:11px;font-weight:700}
+#adminCard .specs-summary-card strong{display:block;margin-top:3px;font-size:23px;line-height:1.1;letter-spacing:-.5px}
+#adminCard .specs-summary-card small{display:block;margin-top:5px;color:#9aa2ad;font-size:9.5px}
+#adminCard .specs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 20px 12px}
+#adminCard .specs-filter-group{display:flex;align-items:center;gap:6px;padding:4px;border:1px solid #e3e7ec;border-radius:10px;background:#fff}
+#adminCard .spec-filter{height:30px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:#65707d;font-size:11px;font-weight:800;cursor:pointer}
+#adminCard .spec-filter.active{background:#fff1e8;color:#e84f00;box-shadow:inset 0 0 0 1px #ffd7bf}
+#adminCard .specs-stats{padding:0!important;border:0!important;background:transparent!important;color:#8a94a0;font-size:10.5px;text-align:right}
+#adminCard .specs-table-head{display:grid;grid-template-columns:minmax(220px,1fr) minmax(360px,2.15fr) 170px;gap:14px;align-items:center;margin:0 20px;padding:0 14px 8px;color:#89929e;font-size:9.5px;font-weight:900;text-transform:uppercase;letter-spacing:.045em}
+#adminCard .specs-rows{padding:0 20px 20px!important;display:flex;flex-direction:column;gap:7px}
+#adminCard .specs-rows .row{display:grid;grid-template-columns:minmax(220px,1fr) minmax(360px,2.15fr) 170px;gap:14px;align-items:center;padding:11px 14px!important;border:1px solid #e7ebef;border-radius:11px!important;background:#fff!important;box-shadow:0 2px 7px rgba(15,23,42,.018);transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+#adminCard .specs-rows .row:hover{border-color:#ffd5bd;background:#fff!important;box-shadow:0 5px 14px rgba(15,23,42,.045);transform:translateY(-1px)}
+#adminCard .specs-rows .model strong{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:850;color:#1e293b}
+#adminCard .specs-rows .model small{display:flex;align-items:center;gap:5px;margin-top:5px;color:#929aa5;font-size:9.5px}
+#adminCard .specs-rows .model .ok{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;background:#e9f8ef;color:#14824d;font-size:9px;font-weight:800}
+#adminCard .specs-rows .url{height:38px!important;border:1px solid #e0e5ea!important;border-radius:9px!important;background:#fbfcfd;padding:0 11px!important;color:#3a4552;font-size:11px;transition:.15s ease}
+#adminCard .specs-rows .url:focus{background:#fff;border-color:#ff9b62!important;box-shadow:0 0 0 3px rgba(255,90,0,.07)!important}
+#adminCard .specs-rows .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;white-space:nowrap}
+#adminCard .specs-rows .actions .secondary{height:32px!important;padding:0 8px;border:1px solid #e0e5ea;border-radius:8px;background:#fff;color:#43505e;font-size:10px;font-weight:800}
+#adminCard .specs-rows .actions .secondary:hover{border-color:#ffc9a9;background:#fff8f3;color:#e65309}
+#adminCard .specs-rows .actions .danger{color:#c93636}
+#adminCard .specs-rows .actions .danger:hover{border-color:#fecaca;background:#fff4f4;color:#b42323}
+#adminCard .specs-rows .empty{padding:44px;border:1px dashed #dfe4ea;border-radius:12px;background:#fff;color:#8a94a0}
+@media(max-width:980px){
+ #adminCard .specs-table-head{display:none}
+ #adminCard .specs-rows .row{grid-template-columns:1fr;gap:8px}
+ #adminCard .specs-rows .actions{display:flex;justify-content:flex-end}
+ #adminCard .specs-rows .actions .secondary{min-width:72px}
+}
+@media(max-width:760px){
+ #adminCard .specs-hero{display:block;padding:16px}
+ #adminCard .specs-search-wrap{width:100%;margin-top:12px}
+ #adminCard .specs-summary{grid-template-columns:1fr 1fr 1fr;gap:7px;padding:12px}
+ #adminCard .specs-summary-card{padding:11px 10px}
+ #adminCard .specs-summary-card strong{font-size:19px}
+ #adminCard .specs-summary-card small{display:none}
+ #adminCard .specs-toolbar{display:block;padding:0 12px 10px}
+ #adminCard .specs-filter-group{overflow:auto;width:100%}
+ #adminCard .spec-filter{flex:1;min-width:max-content}
+ #adminCard .specs-stats{text-align:left;margin-top:8px}
+ #adminCard .specs-rows{padding:0 12px 14px!important}
+ #adminCard .specs-rows .row{padding:12px!important;border-bottom:1px solid #e7ebef!important}
+ #adminCard .specs-rows .actions{justify-content:stretch}
+ #adminCard .specs-rows .actions .secondary{flex:1;min-width:0}
+}
+
 </style>
 
 <style id="login-success-toast-style">
@@ -7164,16 +7230,38 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   </section>
 
   
-  <section id="adminCard" class="card panel" data-panel="specs" style="display:none">
-    <div class="head">
-      <div>
+  <section id="adminCard" class="card panel specs-panel" data-panel="specs" style="display:none">
+    <div class="specs-hero">
+      <div class="specs-hero-copy">
+        <span class="specs-eyebrow">NGUỒN DỮ LIỆU SẢN PHẨM</span>
         <h1>Link thông số sản phẩm</h1>
-        <p>Dán đúng link trang nguồn cho từng model. Khách hàng không nhìn thấy trang này.</p>
+        <p>Quản lý link nguồn thông số kỹ thuật cho từng model. Khách hàng không nhìn thấy trang này.</p>
       </div>
-      <input id="search" class="search" type="search" placeholder="Tìm tên máy...">
+      <div class="specs-search-wrap">
+        <span class="specs-search-icon">⌕</span>
+        <input id="search" class="search specs-search" type="search" placeholder="Tìm model hoặc tên máy...">
+      </div>
     </div>
-    <div id="stats" class="stats"></div>
-    <div id="rows" class="rows"></div>
+
+    <div class="specs-summary">
+      <div class="specs-summary-card"><span>Tổng model</span><strong id="specTotalCount">0</strong><small>Đang quản lý</small></div>
+      <div class="specs-summary-card is-linked"><span>Đã có link</span><strong id="specLinkedCount">0</strong><small>Sẵn sàng đọc thông số</small></div>
+      <div class="specs-summary-card is-missing"><span>Chưa có link</span><strong id="specMissingCount">0</strong><small>Cần bổ sung nguồn</small></div>
+    </div>
+
+    <div class="specs-toolbar">
+      <div class="specs-filter-group" id="specFilterGroup">
+        <button type="button" class="spec-filter active" data-filter="all">Tất cả</button>
+        <button type="button" class="spec-filter" data-filter="linked">Đã có link</button>
+        <button type="button" class="spec-filter" data-filter="missing">Chưa có link</button>
+      </div>
+      <div id="stats" class="stats specs-stats"></div>
+    </div>
+
+    <div class="specs-table-head" aria-hidden="true">
+      <span>Sản phẩm</span><span>Link nguồn thông số</span><span>Thao tác</span>
+    </div>
+    <div id="rows" class="rows specs-rows"></div>
   </section>
 
   <section id="analyticsCard" class="card panel active" data-panel="analytics" style="display:none">
@@ -7880,10 +7968,18 @@ function mapItem(model){
   return key ? links[key] : null;
 }
 
+let specFilter="all";
+
 function render(){
   const q=search.value.trim().toLowerCase();
 
-  const list=products.filter(p=>p.toLowerCase().includes(q));
+  const allFiltered=products.filter(p=>p.toLowerCase().includes(q));
+  const list=allFiltered.filter(p=>{
+    const has=!!mapItem(p)?.url;
+    if(specFilter==="linked") return has;
+    if(specFilter==="missing") return !has;
+    return true;
+  });
   rows.innerHTML="";
 
   if(!list.length){
@@ -7984,7 +8080,14 @@ function render(){
   });
 
   const linked=products.filter(p=>mapItem(p)?.url).length;
-  stats.textContent=`${products.length} model gốc • ${linked} đã có link • ${products.length-linked} chưa có link`;
+  const missing=products.length-linked;
+  stats.textContent=`Đang hiển thị ${list.length}/${products.length} model`;
+  const totalEl=document.getElementById("specTotalCount");
+  const linkedEl=document.getElementById("specLinkedCount");
+  const missingEl=document.getElementById("specMissingCount");
+  if(totalEl) totalEl.textContent=products.length;
+  if(linkedEl) linkedEl.textContent=linked;
+  if(missingEl) missingEl.textContent=missing;
 }
 
 
@@ -9628,6 +9731,14 @@ logoutBtn.addEventListener("click",async()=>{
 });
 
 search.addEventListener("input",render);
+
+document.getElementById("specFilterGroup")?.addEventListener("click",e=>{
+  const btn=e.target.closest(".spec-filter");
+  if(!btn) return;
+  specFilter=btn.dataset.filter||"all";
+  document.querySelectorAll("#specFilterGroup .spec-filter").forEach(x=>x.classList.toggle("active",x===btn));
+  render();
+});
 
 loadAdmin().catch(e=>{
   setLoggedIn(false);
