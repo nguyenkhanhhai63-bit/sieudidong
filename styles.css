@@ -16003,3 +16003,63 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     line-height:14px!important;
   }
 }
+
+/* V450 - Fix icon online bi che/cat */
+@media (max-width:720px){
+  #aiChatPanel .ai-chat-brand span{
+    position:relative!important;
+    overflow:visible!important;
+    min-height:14px!important;
+    margin-top:2px!important;
+    padding-left:1px!important;
+    gap:5px!important;
+    line-height:14px!important;
+  }
+  #aiChatPanel .chat-online-dot{
+    position:relative!important;
+    z-index:2!important;
+    display:block!important;
+    width:7px!important;
+    height:7px!important;
+    min-width:7px!important;
+    min-height:7px!important;
+    flex:0 0 7px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:50%!important;
+    background:#34d399!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+}
+
+/* V451 - Online dot tron day du, khong bi che */
+@media (max-width:720px){
+  #aiChatPanel .ai-chat-brand span{
+    display:flex!important;
+    align-items:center!important;
+    column-gap:5px!important;
+    overflow:visible!important;
+    padding-left:0!important;
+  }
+  #aiChatPanel .chat-online-dot{
+    position:static!important;
+    display:inline-block!important;
+    width:9px!important;
+    height:9px!important;
+    min-width:9px!important;
+    min-height:9px!important;
+    flex:0 0 9px!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:0!important;
+    border:1.5px solid rgba(255,255,255,.45)!important;
+    border-radius:999px!important;
+    background:#34d399!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+    transform:none!important;
+    opacity:1!important;
+  }
+}
