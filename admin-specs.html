@@ -6984,6 +6984,16 @@ body.auth-pending::before{
 @keyframes v426AuthBar{from{transform:translateX(-70%)}to{transform:translateX(235%)}}
 body.auth-pending .wrap{display:block!important;min-height:100vh!important;padding:0!important;}
 </style>
+<style>
+/* v454 - Điều khiển cách nhắn & tốc độ AI */
+#aiSettingsCard .ai-chat-speed-box{margin-top:13px;padding:14px;border:1px solid #e4e7ec;border-radius:12px;background:#fffaf7}
+#aiSettingsCard .ai-chat-speed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+#aiSettingsCard .ai-chat-speed-head>div{display:flex;flex-direction:column;gap:3px}#aiSettingsCard .ai-chat-speed-head b{font-size:11px;color:#101828}#aiSettingsCard .ai-chat-speed-head span{font-size:9px;color:#667085}
+#aiSettingsCard .ai-chat-toggle{display:flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;color:#344054;white-space:nowrap}#aiSettingsCard .ai-chat-toggle input{accent-color:#ff5a00}
+#aiSettingsCard .ai-chat-speed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}#aiSettingsCard .ai-chat-speed-grid>label{font-size:9.5px;font-weight:850;color:#475467}#aiSettingsCard .ai-chat-speed-grid>label>div{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-top:6px}#aiSettingsCard .ai-chat-speed-grid input{width:100%;height:36px;border:1px solid #dfe4ea;border-radius:8px;padding:0 9px;background:#fff;font-size:10px}#aiSettingsCard .ai-chat-speed-grid span{font-size:9px;color:#98a2b3}
+#aiSettingsCard .ai-chat-speed-presets{display:flex;gap:7px;margin-top:11px}#aiSettingsCard .ai-chat-speed-presets button{height:30px;padding:0 12px;border:1px solid #e4e7ec;border-radius:999px;background:#fff;color:#475467;font-size:9px;font-weight:850;cursor:pointer}#aiSettingsCard .ai-chat-speed-presets button.is-active{border-color:#ff5a00;background:#fff1e8;color:#ff5a00}
+@media(max-width:760px){#aiSettingsCard .ai-chat-speed-head{align-items:flex-start;flex-direction:column}#aiSettingsCard .ai-chat-speed-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7326,6 +7336,16 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
           <div class="ai-v408-card ai-chat-training-box">
             <div class="ai-v408-title"><div><h2>AI chat tư vấn khách</h2><p>Điều chỉnh cách AI nói chuyện, dữ liệu Shop được phép dùng và lúc nào mới chuyển nhân viên.</p></div></div>
             <div class="ai-field"><label for="aiChatInstructions">Cách AI tư vấn</label><textarea id="aiChatInstructions" maxlength="4000"></textarea></div>
+            <div class="ai-field"><label for="aiChatMessageStyle">Cách nhắn tin với khách</label><textarea id="aiChatMessageStyle" maxlength="3000" style="min-height:120px" placeholder="VD: câu ngắn, viết tắt nhẹ, dùng nha/nè/á vừa phải, không văn phong tổng đài..."></textarea><small class="ai-field-help">Ô này điều khiển giọng chat, cách viết tắt, Gen Z/địa phương và cách tách ý thành từng tin.</small></div>
+            <div class="ai-chat-speed-box">
+              <div class="ai-chat-speed-head"><div><b>Tốc độ trả lời khách</b><span>Tùy chỉnh khoảng chờ để chat trông tự nhiên hơn.</span></div><label class="ai-chat-toggle"><input id="aiChatTypingEnabled" type="checkbox" checked><span>Hiện “đang soạn tin”</span></label></div>
+              <div class="ai-chat-speed-grid">
+                <label>Phản hồi đầu tiên (giây)<div><input id="aiChatInitialDelayMin" type="number" min="0.3" max="15" step="0.1"><span>đến</span><input id="aiChatInitialDelayMax" type="number" min="0.3" max="20" step="0.1"></div></label>
+                <label>Thời gian gõ mỗi tin (giây)<div><input id="aiChatBubbleDelayMin" type="number" min="0.25" max="10" step="0.1"><span>đến</span><input id="aiChatBubbleDelayMax" type="number" min="0.25" max="12" step="0.1"></div></label>
+                <label>Nghỉ giữa 2 tin (giây)<div><input id="aiChatInterMessageMin" type="number" min="0.1" max="8" step="0.1"><span>đến</span><input id="aiChatInterMessageMax" type="number" min="0.1" max="10" step="0.1"></div></label>
+              </div>
+              <div class="ai-chat-speed-presets"><button type="button" data-chat-speed="fast">Nhanh</button><button type="button" data-chat-speed="natural" class="is-active">Tự nhiên</button><button type="button" data-chat-speed="slow">Chậm</button></div>
+            </div>
             <div class="ai-field"><label for="aiChatWelcomeMessage">Câu chào khi mở chat</label><textarea id="aiChatWelcomeMessage" maxlength="500" style="min-height:84px"></textarea></div>
             <div class="ai-field"><label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label><textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:150px"></textarea></div>
             <div class="ai-field"><label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label><textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px"></textarea></div>
@@ -7696,6 +7716,14 @@ const resetAiSettings=document.getElementById("resetAiSettings");
 const reloadAiSettings=document.getElementById("reloadAiSettings");
 const aiSettingsStatus=document.getElementById("aiSettingsStatus");
 const aiChatInstructions=document.getElementById("aiChatInstructions");
+const aiChatMessageStyle=document.getElementById("aiChatMessageStyle");
+const aiChatTypingEnabled=document.getElementById("aiChatTypingEnabled");
+const aiChatInitialDelayMin=document.getElementById("aiChatInitialDelayMin");
+const aiChatInitialDelayMax=document.getElementById("aiChatInitialDelayMax");
+const aiChatBubbleDelayMin=document.getElementById("aiChatBubbleDelayMin");
+const aiChatBubbleDelayMax=document.getElementById("aiChatBubbleDelayMax");
+const aiChatInterMessageMin=document.getElementById("aiChatInterMessageMin");
+const aiChatInterMessageMax=document.getElementById("aiChatInterMessageMax");
 const aiChatWelcomeMessage=document.getElementById("aiChatWelcomeMessage");
 const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
 const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
@@ -8906,6 +8934,14 @@ function currentAiSettingsPayload(){
     mustComparePrice:aiMustPrice.checked,
     allowTieRecommendation:aiAllowTie.checked,
     chatInstructions:aiChatInstructions.value,
+    chatMessageStyle:aiChatMessageStyle?.value||"",
+    chatTypingEnabled:aiChatTypingEnabled?.checked!==false,
+    chatInitialDelayMin:Math.round((Number(aiChatInitialDelayMin?.value)||2.8)*1000),
+    chatInitialDelayMax:Math.round((Number(aiChatInitialDelayMax?.value)||4.5)*1000),
+    chatBubbleDelayMin:Math.round((Number(aiChatBubbleDelayMin?.value)||1.5)*1000),
+    chatBubbleDelayMax:Math.round((Number(aiChatBubbleDelayMax?.value)||2.8)*1000),
+    chatInterMessageMin:Math.round((Number(aiChatInterMessageMin?.value)||0.9)*1000),
+    chatInterMessageMax:Math.round((Number(aiChatInterMessageMax?.value)||1.8)*1000),
     chatWelcomeMessage:aiChatWelcomeMessage.value,
     chatStoreFacts:aiChatStoreFacts.value,
     chatHandoffRules:aiChatHandoffRules.value,
@@ -9084,6 +9120,14 @@ function readAiChatLocalBackup(){
 function currentAiChatTrainingPayload(){
   return {
     chatInstructions:aiChatInstructions.value,
+    chatMessageStyle:aiChatMessageStyle?.value||"",
+    chatTypingEnabled:aiChatTypingEnabled?.checked!==false,
+    chatInitialDelayMin:Math.round((Number(aiChatInitialDelayMin?.value)||2.8)*1000),
+    chatInitialDelayMax:Math.round((Number(aiChatInitialDelayMax?.value)||4.5)*1000),
+    chatBubbleDelayMin:Math.round((Number(aiChatBubbleDelayMin?.value)||1.5)*1000),
+    chatBubbleDelayMax:Math.round((Number(aiChatBubbleDelayMax?.value)||2.8)*1000),
+    chatInterMessageMin:Math.round((Number(aiChatInterMessageMin?.value)||0.9)*1000),
+    chatInterMessageMax:Math.round((Number(aiChatInterMessageMax?.value)||1.8)*1000),
     chatWelcomeMessage:aiChatWelcomeMessage.value,
     chatStoreFacts:aiChatStoreFacts.value,
     chatHandoffRules:aiChatHandoffRules.value,
@@ -9093,6 +9137,14 @@ function currentAiChatTrainingPayload(){
 
 function fillAiChatTraining(s={}){
   if("chatInstructions" in s) aiChatInstructions.value=s.chatInstructions||"";
+  if(aiChatMessageStyle && "chatMessageStyle" in s) aiChatMessageStyle.value=s.chatMessageStyle||"";
+  if(aiChatTypingEnabled) aiChatTypingEnabled.checked=s.chatTypingEnabled!==false;
+  if(aiChatInitialDelayMin) aiChatInitialDelayMin.value=((Number(s.chatInitialDelayMin)||2800)/1000).toFixed(1);
+  if(aiChatInitialDelayMax) aiChatInitialDelayMax.value=((Number(s.chatInitialDelayMax)||4500)/1000).toFixed(1);
+  if(aiChatBubbleDelayMin) aiChatBubbleDelayMin.value=((Number(s.chatBubbleDelayMin)||1500)/1000).toFixed(1);
+  if(aiChatBubbleDelayMax) aiChatBubbleDelayMax.value=((Number(s.chatBubbleDelayMax)||2800)/1000).toFixed(1);
+  if(aiChatInterMessageMin) aiChatInterMessageMin.value=((Number(s.chatInterMessageMin)||900)/1000).toFixed(1);
+  if(aiChatInterMessageMax) aiChatInterMessageMax.value=((Number(s.chatInterMessageMax)||1800)/1000).toFixed(1);
   if("chatWelcomeMessage" in s) aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
   if("chatStoreFacts" in s) aiChatStoreFacts.value=s.chatStoreFacts||"";
   if("chatHandoffRules" in s) aiChatHandoffRules.value=s.chatHandoffRules||"";
@@ -9152,12 +9204,20 @@ async function loadAiChatTraining(){
 
 
 ["input","change"].forEach(evt=>{
-  [aiChatInstructions,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
+  [aiChatInstructions,aiChatMessageStyle,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
     .filter(Boolean)
     .forEach(el=>el.addEventListener(evt,()=>{
       try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
     }));
 });
+
+document.querySelectorAll("[data-chat-speed]").forEach(btn=>btn.addEventListener("click",()=>{
+  const v=btn.dataset.chatSpeed;
+  const preset=v==="fast"?[1.2,2.2,.7,1.4,.35,.8]:v==="slow"?[4.5,7,2.4,4.2,1.5,3]:[2.8,4.5,1.5,2.8,.9,1.8];
+  [aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax].forEach((el,i)=>{if(el)el.value=preset[i]});
+  document.querySelectorAll("[data-chat-speed]").forEach(x=>x.classList.toggle("is-active",x===btn));
+  try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
+}));
 
 async function persistAiChatSettings(){
   if(!saveAiChatSettings) return;

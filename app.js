@@ -2755,21 +2755,28 @@ function renderAiChatSuggestions(raw=""){
   });
 }
 
+let AI_CHAT_BEHAVIOR={typingEnabled:true,initialDelayMin:2800,initialDelayMax:4500,bubbleDelayMin:1500,bubbleDelayMax:2800,interMessageMin:900,interMessageMax:1800};
+
 let aiChatWelcomeLoaded=false;
-async function aiChatLoadWelcome(){
-  if(aiChatWelcomeLoaded) return;
+let aiChatWelcomePromise=null;
+function aiChatLoadWelcome(){
+  if(aiChatWelcomePromise) return aiChatWelcomePromise;
   aiChatWelcomeLoaded=true;
-  try{
-    const r=await fetch("/api/ai-chat",{cache:"no-store"});
-    const data=await r.json();
+  aiChatWelcomePromise=(async()=>{
+    try{
+      const r=await fetch("/api/ai-chat",{cache:"no-store"});
+      const data=await r.json();
       if(data && (data.needsPhone===true || data.warrantyPending===true)) sddWarrantyPending=true;
       if(data && (data.warrantyCompleted===true || data.warrantyPending===false)) sddWarrantyPending=false;
-    const text=String(data?.welcomeMessage||"").trim();
-    if(!r.ok) return;
-    const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
-    if(text && first) first.textContent=text;
-    renderAiChatSuggestions(data?.suggestions||"");
-  }catch(_){}
+      const text=String(data?.welcomeMessage||"").trim();
+      if(!r.ok) return;
+      const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
+      if(text && first) first.textContent=text;
+      renderAiChatSuggestions(data?.suggestions||"");
+      if(data?.chatBehavior&&typeof data.chatBehavior==="object") AI_CHAT_BEHAVIOR={...AI_CHAT_BEHAVIOR,...data.chatBehavior};
+    }catch(_){}
+  })();
+  return aiChatWelcomePromise;
 }
 
 let aiChatBusy=false;
@@ -2917,34 +2924,26 @@ function aiChatSleep(ms){
 }
 
 // V421: tạo nhịp trả lời tự nhiên hơn, tránh cảm giác bot phản hồi tức thì.
+function aiChatRandRange(min,max){
+  let a=Math.max(0,Number(min)||0), b=Math.max(0,Number(max)||a);
+  if(b<a) [a,b]=[b,a];
+  return Math.round(a+Math.random()*(b-a));
+}
+
 function aiChatNaturalInitialDelay(question="",reply=""){
-  const q=String(question||"").trim();
-  const r=String(reply||"").trim();
-  const total=q.length+r.length;
-  // V453: không để phản hồi bật ra ngay. Đây là thời gian tối thiểu trạng thái "đang soạn" phải hiện rõ.
-  let min=2200, max=3300;
-  if(total>120 || r.length>90){ min=2700; max=3900; }
-  if(total>240 || r.length>180){ min=3200; max=4600; }
-  if(/so sánh|so sanh|máy nào|may nao|tư vấn|tu van|nên mua|nen mua|trả góp|tra gop|bảo hành|bao hanh/i.test(q)){
-    min=Math.max(min,3000);
-    max=Math.max(max,4400);
-  }
-  return Math.round(min+Math.random()*(max-min));
+  const base=aiChatRandRange(AI_CHAT_BEHAVIOR.initialDelayMin,AI_CHAT_BEHAVIOR.initialDelayMax);
+  const len=String(reply||"").trim().length;
+  return Math.round(base+(len>180?500:len>90?250:0));
 }
 
 function aiChatNaturalBubbleDelay(message="",first=false){
+  const base=aiChatRandRange(AI_CHAT_BEHAVIOR.bubbleDelayMin,AI_CHAT_BEHAVIOR.bubbleDelayMax);
   const len=String(message||"").trim().length;
-  // Mỗi bong bóng đều có một nhịp gõ riêng. Tin đầu chậm hơn nhẹ để khách thấy rõ đang soạn.
-  let min=first?1800:1200, max=first?2800:2100;
-  if(len>45){ min+=350; max+=650; }
-  if(len>90){ min+=450; max+=750; }
-  if(len>150){ min+=450; max+=750; }
-  return Math.round(min+Math.random()*(max-min));
+  return Math.round(base+(len>150?700:len>90?400:len>45?180:0)+(first?150:0));
 }
 
 function aiChatInterMessagePause(){
-  // Người thật thường có một nhịp nghỉ sau khi bấm gửi rồi mới gõ câu tiếp.
-  return Math.round(650+Math.random()*750);
+  return aiChatRandRange(AI_CHAT_BEHAVIOR.interMessageMin,AI_CHAT_BEHAVIOR.interMessageMax);
 }
 
 function aiChatCurrentStaffName(){
@@ -2974,6 +2973,7 @@ async function aiChatAppendAssistantMessages(text,data={}){
 }
 function aiChatTyping(show){
   let el=document.getElementById("aiChatTyping");
+  if(show && AI_CHAT_BEHAVIOR.typingEnabled===false){ el?.remove(); return; }
   if(show){
     if(el) return;
     el=document.createElement("div");
@@ -3061,6 +3061,7 @@ function aiChatProductSnapshot(question){
 async function aiChatAsk(question){
   const text=String(question||"").trim();
   if(!text||aiChatBusy) return;
+  try{ await aiChatLoadWelcome(); }catch(_){}
 
   if(aiChatCustomerRequestsHuman(text)){
     aiChatAppend("user",text);
