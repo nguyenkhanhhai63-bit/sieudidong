@@ -2780,6 +2780,7 @@ function aiChatLoadWelcome(){
 }
 
 let aiChatBusy=false;
+const AI_CHAT_PENDING_QUESTIONS=[];
 
 function aiChatOpen(){
   if(!aiChatPanel) return;
@@ -3058,13 +3059,29 @@ function aiChatProductSnapshot(question){
   .slice(0,20)
   .map(({score,...x})=>x);
 }
-async function aiChatAsk(question){
+async function aiChatAsk(question,options={}){
   const text=String(question||"").trim();
-  if(!text||aiChatBusy) return;
+  const alreadyAppended=Boolean(options?.alreadyAppended);
+  if(!text) return;
+
+  // V457: khách vẫn có thể gõ và gửi thêm khi nhân viên đang soạn.
+  // Tin gửi thêm được hiện ngay trong khung chat và xếp hàng xử lý, không khóa ô nhập.
+  if(aiChatBusy){
+    if(!alreadyAppended){
+      aiChatAppend("user",text);
+      AI_CHAT_HISTORY.push({role:"user",text});
+      if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+    }
+    if(aiChatInput) aiChatInput.value="";
+    AI_CHAT_PENDING_QUESTIONS.push(text);
+    sendAnalytics("ai_chat_question",{action:"ai_chat_question_queued",question:text});
+    return;
+  }
+
   try{ await aiChatLoadWelcome(); }catch(_){}
 
   if(aiChatCustomerRequestsHuman(text)){
-    aiChatAppend("user",text);
+    if(!alreadyAppended) aiChatAppend("user",text);
     // Xóa ngay nội dung đã gửi khỏi ô nhập, giống luồng chat AI bình thường.
     // Trước đây nhánh chuyển sang nhân viên return sớm nên input vẫn giữ tin nhắn cũ.
     if(aiChatInput) aiChatInput.value="";
@@ -3088,14 +3105,14 @@ async function aiChatAsk(question){
 
   aiChatBusy=true;
   const aiReplyStartedAt=Date.now();
-  aiChatInput.disabled=true;
-  aiChatSend.disabled=true;
 
-  aiChatAppend("user",text);
-  AI_CHAT_HISTORY.push({role:"user",text});
-  if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+  if(!alreadyAppended){
+    aiChatAppend("user",text);
+    AI_CHAT_HISTORY.push({role:"user",text});
+    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+  }
 
-  aiChatInput.value="";
+  if(aiChatInput) aiChatInput.value="";
   aiChatTyping(true);
   sendAnalytics("ai_chat_question",{action:"ai_chat_question",question:text});
 
@@ -3147,13 +3164,12 @@ async function aiChatAsk(question){
   }finally{
     aiChatTyping(false);
     aiChatBusy=false;
-    aiChatInput.disabled=false;
-    aiChatSend.disabled=false;
-    // Mobile: không tự bật lại bàn phím sau khi AI trả lời.
-    if(!window.matchMedia("(max-width:720px)").matches){
-      aiChatInput.focus();
-    }else{
-      aiChatInput.blur();
+
+    // Không blur/focus ô nhập ở đây: khách có thể đang gõ tin tiếp theo.
+    // Nếu đã gửi thêm trong lúc nhân viên đang soạn, xử lý lần lượt sau đó.
+    const nextQuestion=AI_CHAT_PENDING_QUESTIONS.shift();
+    if(nextQuestion){
+      setTimeout(()=>aiChatAsk(nextQuestion,{alreadyAppended:true}),Math.round(250+Math.random()*450));
     }
   }
 }
@@ -3176,7 +3192,7 @@ let aiChatSendPointerHandled=false;
 aiChatSend?.addEventListener("pointerdown",e=>{
   if(e.pointerType!=="touch" && e.pointerType!=="pen") return;
   const text=aiChatInput?.value||"";
-  if(!text.trim() || aiChatBusy) return;
+  if(!text.trim()) return;
   e.preventDefault();
   aiChatSendPointerHandled=true;
   aiChatAsk(text);
