@@ -2854,6 +2854,20 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-input,.used-select,.used-textarea{width:100%;box-sizing:border-box;border:1px solid #d9dde3;border-radius:9px;background:#fff;padding:10px 11px;font:inherit;font-size:13px}.used-textarea{min-height:78px;resize:vertical}
 .used-image-upload{grid-column:1/-1;border:1px dashed #ffb98f;border-radius:12px;background:#fff8f4;padding:14px}.used-image-upload input{display:none}
 .used-upload-btn{display:inline-flex;align-items:center;height:38px;padding:0 13px;border:1px solid #ff9b64;border-radius:9px;background:#fff;color:#d94800;font-weight:850;cursor:pointer}.used-upload-note{margin-top:7px;font-size:11px;color:#7c6a60}
+.used-image-upload.used-upload-attention{
+  position:relative;
+  animation:usedUploadAttention 1.15s ease 0s 2;
+  box-shadow:0 0 0 4px rgba(255,92,0,.14),0 10px 26px rgba(255,92,0,.12);
+}
+.used-image-upload.used-upload-attention .used-upload-btn{
+  transform:translateY(-1px);
+  box-shadow:0 0 0 3px rgba(255,92,0,.12);
+}
+@keyframes usedUploadAttention{
+  0%,100%{transform:scale(1);border-color:#ff9b64}
+  45%{transform:scale(1.012);border-color:#ff5c00;background:#fff8f3}
+}
+
 .used-image-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.used-preview-item{position:relative;aspect-ratio:1;border:1px solid #e4e7ec;border-radius:10px;overflow:hidden;background:#f8fafc;cursor:pointer}.used-preview-item.primary{border-color:#ff5a00;box-shadow:0 0 0 2px rgba(255,90,0,.12)}
 .used-preview-item img{width:100%;height:100%;object-fit:cover}.used-preview-item small{position:absolute;left:5px;bottom:5px;background:rgba(17,24,39,.78);color:#fff;border-radius:6px;padding:3px 5px;font-size:9px}.used-preview-remove{position:absolute;right:5px;top:5px;width:25px;height:25px;border:0;border-radius:50%;background:rgba(17,24,39,.78);color:#fff;font-weight:900}
 .used-form-actions{display:flex;gap:9px;align-items:center;margin-top:16px;flex-wrap:wrap}#usedAdminStatus{font-size:12px;font-weight:750}
@@ -10695,6 +10709,24 @@ document.addEventListener("DOMContentLoaded",function(){
     const box=els.formTitle?.closest('.used-admin-formbox');
     box?.classList.toggle('editing-sheet-item',!!on);
   }
+  function highlightImageUpload(x){
+    const box=els.uploadBox;
+    if(!box)return;
+    box.classList.remove('used-upload-attention');
+    void box.offsetWidth;
+    box.classList.add('used-upload-attention');
+    setTimeout(()=>box.classList.remove('used-upload-attention'),2600);
+
+    const hasImages=((Array.isArray(x?.imageAssets)&&x.imageAssets.length)||(Array.isArray(x?.images)&&x.images.length));
+    const actionText=hasImages?'Cập nhật ảnh':'Thêm ảnh';
+    toast(`${actionText}: ${x?.name||'máy đã chọn'} — chọn ảnh ở khung bên trái.`,'success');
+    setStatus(`→ ${actionText} cho ${x?.name||'máy đã chọn'}: bấm “Chọn ảnh từ điện thoại / máy tính” bên dưới.`,'#d94800');
+
+    setTimeout(()=>{
+      box.scrollIntoView({behavior:'smooth',block:'center'});
+    },180);
+  }
+
   function edit(x){
     editingId=x.id||'';
     editingSource=x.source||'';
@@ -10707,7 +10739,9 @@ document.addEventListener("DOMContentLoaded",function(){
     if(els.formTitle)els.formTitle.textContent=fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ';
     if(els.save)els.save.textContent=fromSheet?'Lưu ảnh / ghi chú':'Lưu thay đổi';
     setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, màu, pin hoặc ghi chú; giá/trạng thái vẫn lấy từ Sheet.':'','#667085');
-    renderImages();document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    renderImages();
+    document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    if(fromSheet) setTimeout(()=>highlightImageUpload(x),260);
   }
 
   function renderNameSuggestions(){
