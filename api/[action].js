@@ -19,7 +19,8 @@ const handlers = {
   "order-products": () => import("../lib/public-api/order-products.js"),
   "order-visibility": () => import("../lib/public-api/order-visibility.js"),
   "footer-settings": () => import("../lib/public-api/footer-settings.js"),
-  "tiktok-webhook": () => import("../lib/public-api/tiktok-webhook.js")
+  "tiktok-webhook": () => import("../lib/public-api/tiktok-webhook.js"),
+  "facebook-webhook": () => import("../lib/public-api/facebook-webhook.js")
 };
 
 export default async function handler(req,res){

@@ -7373,6 +7373,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
       <button class="ai-v408-tab is-active" type="button" data-ai-v408-tab="missing">Cần bổ sung thông tin <b id="aiKnowledgePendingCount">0</b></button>
       <button class="ai-v408-tab" type="button" data-ai-v408-tab="retrain">Đào tạo lại câu trả lời sai</button>
       <button class="ai-v408-tab" type="button" data-ai-v408-tab="chat">Cách nhắn & tốc độ</button>
+      <button class="ai-v408-tab" type="button" data-ai-v408-tab="facebook">Facebook Comment AI</button>
       <button class="ai-v408-tab" type="button" data-ai-v408-tab="history">Lịch sử hội thoại <b id="aiChatHistoryCount">0</b></button>
       <button class="ai-v408-tab" type="button" data-ai-v408-tab="config">Cấu hình AI</button>
     </div>
@@ -7450,6 +7451,35 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
               <div id="aiChatIconStatus" class="ai-settings-status"></div>
             </div>
             <div class="ai-v408-info"><b>Nguyên tắc chat</b><span>AI phải hiểu câu hỏi trước rồi mới chọn dữ liệu để trả lời.</span><span>Mỗi ý ngắn nên thành một bong bóng riêng.</span></div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="ai-v408-panel" data-ai-v408-panel="facebook">
+        <div class="ai-v408-two-col">
+          <div class="ai-v408-card">
+            <div class="ai-v408-title"><div><h2>Tự động trả lời comment Fanpage</h2><p>Dùng chung AI tư vấn và dữ liệu sản phẩm của website để trả lời comment Facebook.</p></div><span id="fbCommentStatusBadge" class="ai-v408-pill">Chưa kiểm tra</span></div>
+            <div class="ai-field"><label style="display:flex;align-items:center;gap:10px"><input id="fbCommentEnabled" type="checkbox" style="width:18px;height:18px"> Bật tự động trả lời comment</label><small class="ai-field-help">Chỉ hoạt động khi Webhook, Page ID và Page Access Token đã cấu hình trên Vercel.</small></div>
+            <div class="ai-field"><label for="fbCommentPrompt">Prompt trả lời comment</label><textarea id="fbCommentPrompt" maxlength="4000" rows="8" style="min-height:160px" placeholder="VD: Trả lời ngắn, tự nhiên như nhân viên trẻ đang trực page..."></textarea><small class="ai-field-help">AI website sẽ xử lý câu hỏi trước, sau đó câu trả lời được viết lại theo prompt này để phù hợp với comment Facebook.</small></div>
+            <div class="ai-chat-speed-box">
+              <div class="ai-chat-speed-head"><div><b>Độ trễ trước khi trả lời</b><span>Không trả lời ngay lập tức để tránh cảm giác tự động.</span></div></div>
+              <div class="ai-chat-speed-grid">
+                <label>Thời gian chờ (giây)<div><input id="fbReplyDelayMin" type="number" min="0" max="30" step="0.1"><span>đến</span><input id="fbReplyDelayMax" type="number" min="0" max="45" step="0.1"></div></label>
+                <label>Độ dài tối đa<div><input id="fbMaxReplyLength" type="number" min="80" max="1000" step="10"><span>ký tự</span></div></label>
+              </div>
+            </div>
+            <div class="ai-field"><label for="fbIgnoreExact">Comment bỏ qua hoàn toàn</label><textarea id="fbIgnoreExact" maxlength="3000" rows="6" placeholder=".&#10;..&#10;up&#10;❤️"></textarea><small class="ai-field-help">Mỗi dòng 1 nội dung. Khớp đúng thì AI không trả lời.</small></div>
+            <div class="ai-field"><label for="fbIgnoreContains">Từ/cụm từ cần bỏ qua nếu có trong comment</label><textarea id="fbIgnoreContains" maxlength="3000" rows="4" placeholder="tag bạn bè&#10;share bài"></textarea><small class="ai-field-help">Mỗi dòng 1 cụm từ.</small></div>
+            <div class="ai-field"><label for="fbHandoffTerms">Từ khóa chốt đơn / chuyển inbox</label><textarea id="fbHandoffTerms" maxlength="3000" rows="6" placeholder="chốt đơn&#10;đặt máy&#10;giữ máy&#10;mua luôn"></textarea><small class="ai-field-help">Nếu comment có các từ này, hệ thống sẽ hướng khách vào inbox để nhân viên xử lý đơn.</small></div>
+            <div class="ai-v408-savebar"><button id="saveFbCommentSettings" class="primary" type="button">Lưu Facebook Comment AI</button></div>
+            <div id="fbCommentSettingsStatus" class="ai-settings-status"></div>
+          </div>
+          <aside class="ai-v408-card">
+            <h3>Kết nối Meta</h3>
+            <div id="fbEnvStatus" class="ai-v408-info"><span>Đang kiểm tra cấu hình...</span></div>
+            <div class="ai-v408-info"><b>Webhook callback</b><span id="fbWebhookUrl">https://sieudidong.vn/api/facebook-webhook</span></div>
+            <div class="ai-v408-info"><b>Biến môi trường cần có</b><span>FACEBOOK_PAGE_ID</span><span>FACEBOOK_PAGE_ACCESS_TOKEN</span><span>FACEBOOK_WEBHOOK_VERIFY_TOKEN</span><span>FACEBOOK_APP_SECRET (khuyên dùng)</span><span>FACEBOOK_GRAPH_VERSION (tùy chọn)</span></div>
+            <div class="ai-v408-info"><b>Luồng xử lý</b><span>Comment mới → Webhook → AI website → prompt Facebook → trả lời dưới comment.</span><span>Hệ thống có chống trả lời trùng cùng một comment.</span></div>
           </aside>
         </div>
       </div>
@@ -12011,7 +12041,41 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   card.querySelector('[data-ai-v408-tab="history"]')?.addEventListener('click',load);
   setTimeout(load,900);
 })();
-</script>\n</body>
+</script>\n
+<script id="v474-facebook-comment-ai-admin">
+(()=>{
+  const $=id=>document.getElementById(id);
+  const els={
+    enabled:$("fbCommentEnabled"),prompt:$("fbCommentPrompt"),dmin:$("fbReplyDelayMin"),dmax:$("fbReplyDelayMax"),max:$("fbMaxReplyLength"),
+    exact:$("fbIgnoreExact"),contains:$("fbIgnoreContains"),handoff:$("fbHandoffTerms"),save:$("saveFbCommentSettings"),status:$("fbCommentSettingsStatus"),env:$("fbEnvStatus"),badge:$("fbCommentStatusBadge"),url:$("fbWebhookUrl")
+  };
+  if(!els.save)return;
+  const esc=v=>String(v??"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+  function fill(s={}){
+    els.enabled.checked=s.enabled===true; els.prompt.value=s.prompt||""; els.dmin.value=((Number(s.replyDelayMin)||0)/1000).toFixed(1); els.dmax.value=((Number(s.replyDelayMax)||0)/1000).toFixed(1); els.max.value=Number(s.maxReplyLength)||500; els.exact.value=s.ignoreExact||""; els.contains.value=s.ignoreContains||""; els.handoff.value=s.handoffTerms||"";
+  }
+  function showEnv(env={}){
+    const rows=[['Page ID',env.pageIdConfigured],['Page Access Token',env.pageTokenConfigured],['Verify Token',env.verifyTokenConfigured],['App Secret',env.appSecretConfigured]];
+    els.env.innerHTML=rows.map(([n,ok])=>`<span>${ok?'✓':'○'} ${esc(n)}: <b>${ok?'Đã cấu hình':'Chưa có'}</b></span>`).join('')+`<span>Graph API: <b>${esc(env.graphVersion||'')}</b></span>`;
+    if(els.url&&env.webhookUrl)els.url.textContent=env.webhookUrl;
+    const ready=env.pageIdConfigured&&env.pageTokenConfigured&&env.verifyTokenConfigured;
+    els.badge.textContent=ready?'Sẵn sàng kết nối':'Thiếu cấu hình'; els.badge.classList.toggle('is-green',ready); els.badge.classList.toggle('is-orange',!ready);
+  }
+  async function load(){
+    try{const r=await fetch('/api/admin/facebook-comment-settings?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Không tải được cấu hình Facebook');fill(d.settings||{});showEnv(d.env||{});els.status.textContent='';}
+    catch(e){els.status.textContent=e.message||'Không tải được cấu hình Facebook';}
+  }
+  els.save.addEventListener('click',async()=>{
+    els.save.disabled=true;els.status.textContent='Đang lưu...';
+    const payload={enabled:els.enabled.checked,prompt:els.prompt.value,replyDelayMin:Math.round((Number(els.dmin.value)||0)*1000),replyDelayMax:Math.round((Number(els.dmax.value)||0)*1000),maxReplyLength:Number(els.max.value)||500,ignoreExact:els.exact.value,ignoreContains:els.contains.value,handoffTerms:els.handoff.value};
+    try{const r=await fetch('/api/admin/facebook-comment-settings',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Không lưu được');fill(d.settings||payload);showEnv(d.env||{});els.status.textContent='Đã lưu cấu hình Facebook Comment AI.';try{window.showToast?.('Đã lưu Facebook Comment AI')}catch(_){}}
+    catch(e){els.status.textContent=e.message||'Không lưu được cấu hình';}
+    finally{els.save.disabled=false;}
+  });
+  const tab=document.querySelector('[data-ai-v408-tab="facebook"]'); if(tab)tab.addEventListener('click',load);
+})();
+</script>
+</body>
 </html>
 
 <style id="ai-training-v412-full-width">

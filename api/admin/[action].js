@@ -16,7 +16,8 @@ const handlers = {
   "used-products": () => import("../../lib/admin-api/used-products.js"),
   "cloudinary-signature": () => import("../../lib/admin-api/cloudinary-signature.js"),
   "order-visibility": () => import("../../lib/admin-api/order-visibility.js"),
-  "footer-settings": () => import("../../lib/admin-api/footer-settings.js")
+  "footer-settings": () => import("../../lib/admin-api/footer-settings.js"),
+  "facebook-comment-settings": () => import("../../lib/admin-api/facebook-comment-settings.js")
 };
 
 export default async function handler(req, res) {
