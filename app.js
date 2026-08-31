@@ -2836,11 +2836,25 @@ async function aiChatShowWelcomeOnce(){
 
   // V465: khi khách mở chat lần đầu, hiển thị trạng thái đang sắp xếp hỗ trợ
   // trước khi nhân viên trực bắt đầu soạn câu chào.
+  // V467: trong lúc kết nối chưa tiết lộ tên nhân viên. Sau khoảng 5 giây
+  // mới hiện nhân viên được phân công rồi bắt đầu trạng thái đang soạn.
+  const staffNameEl=document.getElementById("chatStaffName");
+  const staffStatusEl=staffNameEl?.parentElement?.querySelector("span");
+  const assignedName=staffNameEl?.textContent?.trim()||aiChatGetStaffName?.()||"Nhân viên";
+  if(staffNameEl){
+    staffNameEl.dataset.assignedName=assignedName;
+    staffNameEl.textContent="Đang kết nối...";
+  }
+  if(staffStatusEl) staffStatusEl.style.visibility="hidden";
+
   aiChatShowAssigningStatus(true);
-  await aiChatSleep(aiChatRandRange(900,1600));
+  await aiChatSleep(aiChatRandRange(4800,5200));
   aiChatShowAssigningStatus(false);
 
-  // Sau đó mới hiện trạng thái nhân viên đang soạn tin và gửi lời chào.
+  if(staffNameEl) staffNameEl.textContent=staffNameEl.dataset.assignedName||assignedName;
+  if(staffStatusEl) staffStatusEl.style.visibility="";
+
+  // Sau khi kết nối xong mới hiện tên nhân viên, rồi trạng thái đang soạn và gửi lời chào.
   if(AI_CHAT_BEHAVIOR.typingEnabled!==false){
     aiChatTyping(true);
     await aiChatSleep(aiChatRandRange(
