@@ -1593,11 +1593,19 @@ async function runAiCompare(groups,specs,need,button,result){
 
     const data=await r.json().catch(()=>({}));
     if(!r.ok){
-      const message=data.error||"AI đang bận.";
+      const sanitizePublicChatError=(value)=>{
+        const raw=String(value||"").trim();
+        if(!raw) return "Shop chưa phản hồi kịp. B thử lại xíu nha.";
+        if(/\bAI\b|trí tuệ nhân tạo|gemini|model|token|rate limit|429/i.test(raw)){
+          return "Shop chưa phản hồi kịp tin nhắn này. B thử lại sau xíu nha.";
+        }
+        return raw;
+      };
+      const message=sanitizePublicChatError(data.error);
       if((r.status===429 || r.status===502) && !button.dataset.retried){
         button.dataset.retried="1";
         const el=waitNode();
-        if(el) el.textContent="AI đang bận, hệ thống tự thử lại một lần...";
+        if(el) el.textContent="Shop đang xử lý tin nhắn, chờ xíu nha...";
         await new Promise(resolve=>setTimeout(resolve,1200));
 
         const retryController=new AbortController();
@@ -1634,7 +1642,7 @@ async function runAiCompare(groups,specs,need,button,result){
     result.innerHTML="";
     const error=document.createElement("div");
     error.className="compare-ai-error";
-    error.textContent=err?.name==="AbortError" ? "AI phản hồi hơi lâu. Vui lòng thử lại." : (err?.message||"AI đang bận. Vui lòng thử lại sau ít phút.");
+    error.textContent=err?.name==="AbortError" ? "Shop phản hồi hơi lâu, b thử lại xíu nha." : (err?.message||"Shop chưa phản hồi kịp, b thử lại sau xíu nha.");
     result.appendChild(error);
   }finally{
     clearTimeout(statusTimer1);
@@ -3448,7 +3456,7 @@ async function aiChatAsk(question,options={}){
     }
     if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
   }catch(e){
-    const failText=e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.";
+    const failText=e.message||"Shop chưa phản hồi kịp. B nhắn lại xíu nha.";
     aiChatAppend("assistant",failText);
     aiChatSaveHistory(text,failText,{needsHuman:true,source:"error"});
     aiChatSetHumanHandoff(true,"AI đang chưa xử lý được câu này. Chuyển sang nhân viên tư vấn trực tiếp trên Zalo.");
