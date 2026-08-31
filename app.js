@@ -2685,14 +2685,38 @@ document.addEventListener("visibilitychange",()=>{
 
 
 const AI_CHAT_HISTORY=[];
-const AI_CHAT_SESSION_KEY="sdd_ai_chat_session_v416";
+const AI_CHAT_SESSION_KEY="sdd_ai_chat_session_v473";
+const AI_CHAT_CONVERSATION_KEY="sdd_ai_chat_conversation_v473";
+const AI_CHAT_CONVERSATION_TTL=24*60*60*1000;
+function aiChatReadConversation(){
+  try{
+    const data=JSON.parse(localStorage.getItem(AI_CHAT_CONVERSATION_KEY)||"null");
+    if(!data||typeof data!=="object") return null;
+    if(!Number(data.updatedAt)||Date.now()-Number(data.updatedAt)>AI_CHAT_CONVERSATION_TTL){
+      localStorage.removeItem(AI_CHAT_CONVERSATION_KEY);
+      localStorage.removeItem(AI_CHAT_SESSION_KEY);
+      return null;
+    }
+    return data;
+  }catch(_){ return null; }
+}
+function aiChatWriteConversation(patch={}){
+  try{
+    const prev=aiChatReadConversation()||{};
+    const next={...prev,...patch,updatedAt:Date.now()};
+    localStorage.setItem(AI_CHAT_CONVERSATION_KEY,JSON.stringify(next));
+    return next;
+  }catch(_){ return null; }
+}
 function aiChatGetSessionId(){
   try{
-    let id=sessionStorage.getItem(AI_CHAT_SESSION_KEY)||"";
+    const saved=aiChatReadConversation();
+    let id=String(saved?.sessionId||localStorage.getItem(AI_CHAT_SESSION_KEY)||"");
     if(!/^[a-zA-Z0-9_-]{12,90}$/.test(id)){
       id="sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
-      sessionStorage.setItem(AI_CHAT_SESSION_KEY,id);
     }
+    localStorage.setItem(AI_CHAT_SESSION_KEY,id);
+    aiChatWriteConversation({sessionId:id});
     return id;
   }catch(_){
     return "sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
@@ -2764,6 +2788,12 @@ function aiChatApplyStaffFromConfig(rawNames){
   const names=(Array.isArray(rawNames)?rawNames:[]).map(x=>String(x||"").trim()).filter(Boolean).slice(0,20);
   if(names.length) AI_CHAT_STAFF_NAMES=names;
   let selected=AI_CHAT_ASSIGNED_STAFF;
+  const savedConversation=aiChatReadConversation();
+  const savedStaff=String(savedConversation?.staffName||"").trim();
+  if(AI_CHAT_STAFF_NAMES.includes(savedStaff)){
+    selected=savedStaff;
+    AI_CHAT_ASSIGNED_STAFF=savedStaff;
+  }
   if(!AI_CHAT_STAFF_NAMES.includes(selected)){
     let last="";
     try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
@@ -2772,12 +2802,13 @@ function aiChatApplyStaffFromConfig(rawNames){
     selected=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
     AI_CHAT_ASSIGNED_STAFF=selected;
     try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,selected);}catch(_){}
+    aiChatWriteConversation({staffName:selected,sessionId:AI_CHAT_SESSION_ID});
   }
 
   // Chỉ hiện tên + trạng thái online sau khi quy trình kết nối lần đầu hoàn tất.
   // Tránh vừa mở chat đã lộ tên nhân viên trước màn hình "Đang kết nối...".
   let hasWelcomed=false;
-  try{hasWelcomed=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1";}catch(_){}
+  try{hasWelcomed=aiChatReadConversation()?.welcomed===true;}catch(_){}
   if(hasWelcomed){
     const el=document.getElementById("chatStaffName");
     const status=document.getElementById("chatStaffStatus") || el?.parentElement?.querySelector("span");
@@ -2873,7 +2904,7 @@ async function aiChatShowWelcomeOnce(){
   // làm mở chat ra trắng. Nếu chưa có tin assistant nào thì phải chào lại.
   const hasAssistantMessage=!!aiChatMessages.querySelector(".ai-chat-message.assistant");
   if(hasAssistantMessage){
-    try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
+    aiChatWriteConversation({welcomed:true,sessionId:AI_CHAT_SESSION_ID});
     return;
   }
 
@@ -2891,6 +2922,11 @@ async function aiChatShowWelcomeOnce(){
   const staffNameEl=document.getElementById("chatStaffName");
   const staffStatusEl=document.getElementById("chatStaffStatus") || staffNameEl?.parentElement?.querySelector("span");
   let assignedName=AI_CHAT_ASSIGNED_STAFF;
+  const savedStaff=String(aiChatReadConversation()?.staffName||"").trim();
+  if(AI_CHAT_STAFF_NAMES.includes(savedStaff)){
+    assignedName=savedStaff;
+    AI_CHAT_ASSIGNED_STAFF=savedStaff;
+  }
   if(!AI_CHAT_STAFF_NAMES.includes(assignedName)){
     let last="";
     try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
@@ -2899,6 +2935,7 @@ async function aiChatShowWelcomeOnce(){
     assignedName=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
     AI_CHAT_ASSIGNED_STAFF=assignedName;
     try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,assignedName);}catch(_){}
+    aiChatWriteConversation({staffName:assignedName,sessionId:AI_CHAT_SESSION_ID});
   }
   if(staffNameEl){
     staffNameEl.dataset.assignedName=assignedName;
@@ -2929,7 +2966,7 @@ async function aiChatShowWelcomeOnce(){
   const liveWelcome=await liveWelcomePromise;
   aiChatAppend("assistant",liveWelcome||aiChatPickWelcome());
   // Chỉ đánh dấu sau khi câu chào đã render thành công.
-  try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
+  aiChatWriteConversation({welcomed:true,sessionId:AI_CHAT_SESSION_ID});
 }
 
 let aiChatBusy=false;
@@ -2941,7 +2978,7 @@ function aiChatOpen(){
 
   // V468: phiên chat mới phải ở trạng thái kết nối, chưa được hiện tên/online.
   let hasWelcomed=false;
-  try{hasWelcomed=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1";}catch(_){}
+  try{hasWelcomed=aiChatReadConversation()?.welcomed===true;}catch(_){}
   if(!hasWelcomed){
     const nameEl=document.getElementById("chatStaffName");
     const statusEl=document.getElementById("chatStaffStatus") || nameEl?.parentElement?.querySelector("span");
@@ -3028,6 +3065,39 @@ function aiChatNeedsHuman(data={}){
   // đang tự trả lời đúng các thông tin đó mà không cần handoff.
   return data?.needsHuman===true;
 }
+let AI_CHAT_RESTORING=false;
+function aiChatPersistMessages(){
+  if(AI_CHAT_RESTORING||!aiChatMessages) return;
+  const messages=[...aiChatMessages.querySelectorAll(".ai-chat-message")].filter(row=>row.id!=="aiChatTyping").map(row=>({
+    role:row.classList.contains("user")?"user":"assistant",
+    text:String(row.querySelector(".ai-chat-bubble")?.textContent||"").trim()
+  })).filter(x=>x.text).slice(-60);
+  aiChatWriteConversation({messages,staffName:AI_CHAT_ASSIGNED_STAFF||aiChatReadConversation()?.staffName||"",sessionId:AI_CHAT_SESSION_ID});
+}
+function aiChatRestoreConversation(){
+  if(!aiChatMessages) return;
+  const saved=aiChatReadConversation();
+  if(!saved) return;
+  const staff=String(saved.staffName||"").trim();
+  if(staff){
+    AI_CHAT_ASSIGNED_STAFF=staff;
+    const el=document.getElementById("chatStaffName");
+    const status=document.getElementById("chatStaffStatus") || el?.parentElement?.querySelector("span");
+    if(el){ el.dataset.assignedName=staff; el.textContent=staff; }
+    if(status) status.style.visibility="";
+  }
+  const messages=Array.isArray(saved.messages)?saved.messages:[];
+  if(messages.length && !aiChatMessages.querySelector(".ai-chat-message")){
+    AI_CHAT_RESTORING=true;
+    for(const item of messages){
+      aiChatAppend(item.role==="user"?"user":"assistant",item.text);
+      AI_CHAT_HISTORY.push({role:item.role==="user"?"user":"assistant",text:String(item.text||"")});
+    }
+    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+    AI_CHAT_RESTORING=false;
+    requestAnimationFrame(()=>{ aiChatMessages.scrollTop=aiChatMessages.scrollHeight; });
+  }
+}
 function aiChatAppend(role,text){
   const row=document.createElement("div");
   row.className="ai-chat-message "+(role==="user"?"user":"assistant")+" ai-chat-message-enter";
@@ -3046,6 +3116,7 @@ function aiChatAppend(role,text){
     }
   });
   setTimeout(()=>row.classList.remove("ai-chat-message-enter"),420);
+  aiChatPersistMessages();
   return row;
 }
 
@@ -3348,6 +3419,8 @@ async function aiChatAsk(question,options={}){
     }
   }
 }
+
+aiChatRestoreConversation();
 
 zaloConsultBtn?.addEventListener("click",()=>{
   if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
