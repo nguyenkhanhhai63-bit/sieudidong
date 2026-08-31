@@ -7620,7 +7620,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
         <div class="ai-history-layout">
           <section class="ai-history-list-card">
             <div class="ai-history-list-head"><div><h2>Lịch sử khách & AI</h2><p>Tự động lưu từng câu khách hỏi và câu AI đã trả lời.</p></div><span id="aiChatHistoryTotal" class="ai-v408-pill">0 cuộc</span></div>
-            <div id="aiChatHistoryList" class="ai-history-list"><div class="ai-history-empty">Đang tải lịch sử...</div></div>
+            <div id="aiChatHistoryList" class="ai-history-list"><div class="ai-history-empty">Bấm Tải lại để cập nhật lịch sử hội thoại.</div></div>
           </section>
           <section class="ai-history-detail-card">
             <div id="aiChatHistoryDetail" class="ai-history-detail-empty"><div class="ai-history-empty-icon">💬</div><b>Chọn một cuộc hội thoại</b><span>Nội dung chat của khách và AI sẽ hiển thị tại đây.</span></div>
@@ -12287,9 +12287,9 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   list.addEventListener('click',e=>{const el=e.target.closest('[data-history-id]');if(!el)return;selected=el.dataset.historyId;renderList()});
   detail.addEventListener('click',async e=>{const b=e.target.closest('[data-history-delete]');if(!b)return;if(!confirm('Xóa cuộc hội thoại này?'))return;try{const r=await fetch('/api/admin/ai-chat-history?id='+encodeURIComponent(b.dataset.historyDelete),{method:'DELETE',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không xóa được');selected='';await load()}catch(err){alert(err.message||'Không xóa được')}});
-  let timer; search?.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(load,350)}); limit?.addEventListener('change',load); reload?.addEventListener('click',load);
-  card.querySelector('[data-ai-v408-tab="history"]')?.addEventListener('click',load);
-  setTimeout(load,900);
+  // v490: Lịch sử chỉ gọi API khi người dùng chủ động bấm nút Tải lại.
+  // Chuyển tab, tìm kiếm hoặc đổi giới hạn sẽ không tự fetch lại dữ liệu.
+  reload?.addEventListener('click',load);
 })();
 </script>\n
 <script id="v474-facebook-comment-ai-admin">
