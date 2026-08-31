@@ -2891,6 +2891,8 @@ body:not(.authenticated):not(.auth-pending) .wrap{
 .used-cloudinary-status.ok{background:#eaf8ef;color:#087a36}
 .used-cloudinary-status.bad{background:#fff0ed;color:#b42318}
 .used-sheet-status{margin-top:8px;display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:#f2f4f7;color:#667085;font-size:11.5px;font-weight:800}.used-sheet-status.ok{background:#eaf8ef;color:#087a36}.used-sheet-status.warn{background:#fff6ed;color:#b54708}.used-sheet-badge{display:inline-flex;margin:7px 0 0 7px;padding:4px 8px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:10px;font-weight:850}
+.used-sheet-config{margin:14px 0 18px;padding:14px;border:1px solid #e4e7ec;border-radius:14px;background:#fff}.used-sheet-config-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}.used-sheet-config-head strong{font-size:14px}.used-sheet-config-head span{font-size:12px;color:#667085}.used-sheet-config-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}.used-sheet-url{width:100%;min-width:0;height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 11px;font-size:13px;outline:none}.used-sheet-url:focus{border-color:#ff6b1a;box-shadow:0 0 0 3px rgba(255,107,26,.09)}.used-sheet-config-msg{margin-top:8px;font-size:12px;font-weight:700;color:#667085}.used-sheet-config button{white-space:nowrap}@media(max-width:760px){.used-sheet-config-row{grid-template-columns:1fr}.used-sheet-config-row button{width:100%}}
+
 .used-sheet-locked{background:#f8fafc!important;color:#667085!important;cursor:not-allowed}.editing-sheet-item .used-image-upload-box{border-color:#ffb38a;background:#fffaf7}.editing-sheet-item #usedFormTitle:after{content:'Google Sheet';display:inline-flex;margin-left:8px;padding:3px 7px;border-radius:999px;background:#eef4ff;color:#3538cd;font-size:10px;font-weight:850;vertical-align:middle}
 
 .used-preview-uploading{display:grid;place-items:center;background:#fff7f2;color:#d94800;font-size:10px;font-weight:850;text-align:center;padding:8px}
@@ -7578,6 +7580,15 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 
 <section id="usedProductsCard" class="card panel" data-panel="used" style="display:none">
 <div class="head"><div><h1>Danh sách máy cũ</h1><p>Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet. Ảnh thực tế vẫn lưu trên Cloudinary và ghép theo IMEI.</p><div id="usedSheetStatus" class="used-sheet-status">Google Sheet: đang kiểm tra kết nối...</div></div><button id="reloadUsedProducts" class="secondary" type="button">Đồng bộ Sheet</button></div>
+<div class="used-sheet-config">
+  <div class="used-sheet-config-head"><div><strong>Link Google Sheet máy cũ</strong><br><span>Có thể đổi sang Sheet khác bất cứ lúc nào. Hệ thống tự nhận Sheet ID và GID từ link.</span></div></div>
+  <div class="used-sheet-config-row">
+    <input id="usedSheetUrl" class="used-sheet-url" type="url" autocomplete="off" placeholder="https://docs.google.com/spreadsheets/d/.../edit?gid=...">
+    <button id="saveUsedSheetUrl" class="primary" type="button">Lưu & đồng bộ</button>
+    <button id="resetUsedSheetUrl" class="secondary" type="button">Về link mặc định</button>
+  </div>
+  <div id="usedSheetConfigMsg" class="used-sheet-config-msg">Đang tải cấu hình...</div>
+</div>
 <div class="used-admin-shell">
 <div class="used-admin-form"><h2 id="usedFormTitle">Thêm máy cũ</h2><p class="used-admin-help">IMEI chỉ lưu nội bộ, không hiển thị cho khách.</p><div class="used-form-grid">
 <div class="used-field wide used-name-field"><label>Tên máy *</label><input id="usedName" class="used-input" autocomplete="off" placeholder="Gõ tên máy, ví dụ: Xiaomi 15 Pro"><div id="usedNameSuggest" class="used-name-suggest"></div><div class="used-smart-hint">Gõ tên máy → hệ thống tự gợi ý hãng và nhớ các máy đã nhập trước đó.</div></div>
@@ -10504,7 +10515,8 @@ document.addEventListener("DOMContentLoaded",function(){
     name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
     imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),search:$('usedListSearch'),
     statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
-    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus')
+    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus'),
+    sheetUrl:$('usedSheetUrl'),sheetSave:$('saveUsedSheetUrl'),sheetReset:$('resetUsedSheetUrl'),sheetConfigMsg:$('usedSheetConfigMsg')
   };
   let rows=[], editingId='', editingSource='', editingSheetRow=0, assets=[], toastTimer=null;
 
@@ -10527,6 +10539,47 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   function currentImages(){return assets.map(imageUrl).filter(Boolean)}
   function guessBrand(name){const n=norm(name);return (BRAND_RULES.find(([k])=>n.includes(k))||[])[1]||''}
+
+  function setSheetConfigMsg(msg,color=''){if(!els.sheetConfigMsg)return;els.sheetConfigMsg.textContent=msg||'';els.sheetConfigMsg.style.color=color||''}
+  async function loadSheetSettings(){
+    if(!els.sheetUrl)return;
+    setSheetConfigMsg('Đang tải link Google Sheet...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||'';
+      setSheetConfigMsg((d.custom?'Đang dùng link tùy chỉnh':'Đang dùng link mặc định')+' • GID '+String(d.gid||'0'),'#667085');
+    }catch(e){setSheetConfigMsg(e.message||'Không tải được cấu hình Sheet.','#b42318')}
+  }
+  async function saveSheetSettings(){
+    const url=String(els.sheetUrl?.value||'').trim();
+    if(!url){setSheetConfigMsg('Vui lòng dán link Google Sheet.','#b42318');els.sheetUrl?.focus();return}
+    els.sheetSave.disabled=true;els.sheetSave.textContent='Đang lưu...';setSheetConfigMsg('Đang kiểm tra và lưu link mới...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({url})});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||url;
+      setSheetConfigMsg('✓ Đã lưu link mới. Đang đồng bộ dữ liệu...','#15803d');
+      rows=[];await loadUsedProducts(true);
+      setSheetConfigMsg('✓ Link Sheet mới đã được lưu và đồng bộ thành công.','#15803d');
+      toast('Đã cập nhật link Google Sheet máy cũ.','success');
+    }catch(e){setSheetConfigMsg(e.message||'Không lưu được link Sheet.','#b42318');toast(e.message||'Không lưu được link Sheet.','error')}
+    finally{els.sheetSave.disabled=false;els.sheetSave.textContent='Lưu & đồng bộ'}
+  }
+  async function resetSheetSettings(){
+    if(!confirm('Đưa Google Sheet máy cũ về link mặc định?'))return;
+    els.sheetReset.disabled=true;setSheetConfigMsg('Đang khôi phục link mặc định...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings',{method:'DELETE',credentials:'same-origin'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||'';rows=[];await loadUsedProducts(true);
+      setSheetConfigMsg('✓ Đã khôi phục link Google Sheet mặc định.','#15803d');toast('Đã về link Sheet mặc định.','success');
+    }catch(e){setSheetConfigMsg(e.message||'Không khôi phục được link Sheet.','#b42318');toast(e.message||'Không khôi phục được link Sheet.','error')}
+    finally{els.sheetReset.disabled=false}
+  }
 
   async function getCloudinarySignature(){
     const r=await fetch('/api/admin/cloudinary-signature?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
@@ -10708,7 +10761,7 @@ document.addEventListener("DOMContentLoaded",function(){
     try{
       const r=await fetch('/api/admin/used-products?ts='+Date.now()+(force?'&force=1':''),{cache:'no-store',credentials:'same-origin'});
       const d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
-      rows=d.items||[];render();setStatus('');checkCloudinary();if(els.sheetStatus){const sh=d.sheet||{};els.sheetStatus.textContent=sh.warning?('Google Sheet: '+sh.warning):('✓ Google Sheet đã kết nối • '+rows.length+' dòng • cập nhật '+(sh.fetchedAt?new Date(sh.fetchedAt).toLocaleString('vi-VN'):'vừa xong'));els.sheetStatus.className='used-sheet-status '+(sh.warning?'warn':'ok')}
+      rows=d.items||[];render();setStatus('');checkCloudinary();if(els.sheetStatus){const sh=d.sheet||{};els.sheetStatus.textContent=sh.warning?('Google Sheet: '+sh.warning):('✓ Google Sheet đã kết nối • '+rows.length+' dòng • cập nhật '+(sh.fetchedAt?new Date(sh.fetchedAt).toLocaleString('vi-VN'):'vừa xong'));els.sheetStatus.className='used-sheet-status '+(sh.warning?'warn':'ok');if(els.sheetUrl&&sh.url)els.sheetUrl.value=sh.url}
     }catch(e){setStatus(e.message||'Không tải được danh sách.','#b42318');toast(e.message||'Không tải được danh sách.','error')}
   }
   window.loadUsedProducts=loadUsedProducts;
@@ -10731,6 +10784,8 @@ document.addEventListener("DOMContentLoaded",function(){
   });
   els.reset?.addEventListener('click',reset);
   els.reload?.addEventListener('click',()=>loadUsedProducts(true));
+  els.sheetSave?.addEventListener('click',saveSheetSettings);
+  els.sheetReset?.addEventListener('click',resetSheetSettings);
   els.filter?.addEventListener('change',render);
   els.search?.addEventListener('input',render);
 
@@ -10748,6 +10803,7 @@ document.addEventListener("DOMContentLoaded",function(){
     }
   });
   checkCloudinary();
+  loadSheetSettings();
 })();
 </script>
 

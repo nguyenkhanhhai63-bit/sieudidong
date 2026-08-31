@@ -14,6 +14,7 @@ const handlers = {
   "seo-settings": () => import("../../lib/admin-api/seo-settings.js"),
   "spec-links": () => import("../../lib/admin-api/spec-links.js"),
   "used-products": () => import("../../lib/admin-api/used-products.js"),
+  "used-sheet-settings": () => import("../../lib/admin-api/used-sheet-settings.js"),
   "cloudinary-signature": () => import("../../lib/admin-api/cloudinary-signature.js"),
   "order-visibility": () => import("../../lib/admin-api/order-visibility.js"),
   "footer-settings": () => import("../../lib/admin-api/footer-settings.js"),
