@@ -2767,8 +2767,17 @@ function aiChatApplyStaffFromConfig(rawNames){
     selected=AI_CHAT_STAFF_NAMES[Math.floor(Math.random()*AI_CHAT_STAFF_NAMES.length)]||"Nhân viên";
     try{sessionStorage.setItem(AI_CHAT_STAFF_KEY,selected);}catch(_){}
   }
-  const el=document.getElementById("chatStaffName");
-  if(el) el.textContent=selected;
+
+  // Chỉ hiện tên + trạng thái online sau khi quy trình kết nối lần đầu hoàn tất.
+  // Tránh vừa mở chat đã lộ tên nhân viên trước màn hình "Đang kết nối...".
+  let hasWelcomed=false;
+  try{hasWelcomed=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1";}catch(_){}
+  if(hasWelcomed){
+    const el=document.getElementById("chatStaffName");
+    const status=document.getElementById("chatStaffStatus") || el?.parentElement?.querySelector("span");
+    if(el) el.textContent=selected;
+    if(status) status.style.visibility="";
+  }
   return selected;
 }
 
@@ -2839,8 +2848,11 @@ async function aiChatShowWelcomeOnce(){
   // V467: trong lúc kết nối chưa tiết lộ tên nhân viên. Sau khoảng 5 giây
   // mới hiện nhân viên được phân công rồi bắt đầu trạng thái đang soạn.
   const staffNameEl=document.getElementById("chatStaffName");
-  const staffStatusEl=staffNameEl?.parentElement?.querySelector("span");
-  const assignedName=staffNameEl?.textContent?.trim()||aiChatGetStaffName?.()||"Nhân viên";
+  const staffStatusEl=document.getElementById("chatStaffStatus") || staffNameEl?.parentElement?.querySelector("span");
+  let assignedName="";
+  try{ assignedName=sessionStorage.getItem(AI_CHAT_STAFF_KEY)||""; }catch(_){}
+  if(!assignedName) assignedName=AI_CHAT_STAFF_NAMES[Math.floor(Math.random()*AI_CHAT_STAFF_NAMES.length)]||"Nhân viên";
+  try{ sessionStorage.setItem(AI_CHAT_STAFF_KEY,assignedName); }catch(_){}
   if(staffNameEl){
     staffNameEl.dataset.assignedName=assignedName;
     staffNameEl.textContent="Đang kết nối...";
@@ -2877,6 +2889,16 @@ const AI_CHAT_PENDING_QUESTIONS=[];
 function aiChatOpen(){
   if(!aiChatPanel) return;
   const isMobile=window.matchMedia("(max-width:720px)").matches;
+
+  // V468: phiên chat mới phải ở trạng thái kết nối, chưa được hiện tên/online.
+  let hasWelcomed=false;
+  try{hasWelcomed=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1";}catch(_){}
+  if(!hasWelcomed){
+    const nameEl=document.getElementById("chatStaffName");
+    const statusEl=document.getElementById("chatStaffStatus") || nameEl?.parentElement?.querySelector("span");
+    if(nameEl) nameEl.textContent="Đang kết nối...";
+    if(statusEl) statusEl.style.visibility="hidden";
+  }
 
   // Mobile: mở chatbox nhưng không tự gọi bàn phím.
   if(isMobile){
