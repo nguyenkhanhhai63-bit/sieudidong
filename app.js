@@ -708,6 +708,38 @@ function extractColor(name){
 }
 
 
+function canonicalBrand(value){
+  const raw=String(value||"").trim();
+  if(!raw) return "";
+  const text=raw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/[^a-z0-9]+/g," ").trim();
+  const aliases=[
+    ["Xiaomi", ["xiaomi","redmi","mi"]],
+    ["Samsung", ["samsung","galaxy"]],
+    ["OPPO", ["oppo"]],
+    ["vivo", ["vivo"]],
+    ["Realme", ["realme"]],
+    ["OnePlus", ["oneplus","one plus","1plus"]],
+    ["iQOO", ["iqoo","i qoo"]],
+    ["HONOR", ["honor"]],
+    ["POCO", ["poco"]],
+    ["TECNO", ["tecno"]],
+    ["Apple", ["apple","iphone","ipad"]],
+    ["Huawei", ["huawei"]],
+    ["Nubia", ["nubia","redmagic","red magic"]],
+    ["Motorola", ["motorola","moto"]],
+    ["Google", ["google","pixel","google pixel"]],
+    ["ASUS", ["asus","rog","rog phone"]],
+    ["Sony", ["sony","xperia"]],
+    ["Nothing", ["nothing","nothing phone","cmf","cmf phone"]]
+  ];
+  for(const [brand,names] of aliases){
+    if(names.includes(text)) return brand;
+  }
+  // Nếu Sheet nhập kèm chữ thừa như "XIAOMI / REDMI", thử nhận diện theo từ khóa.
+  const detected=detectBrand(raw);
+  return detected!=="Khác" ? detected : raw;
+}
+
 function detectBrand(name){
   const text = String(name || "").toLowerCase();
 
@@ -915,7 +947,7 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:p.brand || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
+        brand:canonicalBrand(p.brand) || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
         sourceType:p.sourceType || "",
         usedItemId:p.usedItemId || "",
         images:Array.isArray(v.images)&&v.images.length?v.images:(Array.isArray(p.images)?p.images:[]),
@@ -1018,7 +1050,8 @@ function renderCategoryFilters(){
   });
 
   flat.forEach(p=>{
-    if(p.brand && p.brand !== "Khác") brandSet.add(p.brand);
+    const canonical=canonicalBrand(p.brand);
+    if(canonical && canonical !== "Khác") brandSet.add(canonical);
   });
 
   const preferredOrder = [
@@ -1647,7 +1680,7 @@ function render(){
       : new Set();
     items = items.filter(x=>bestNames.has(x.baseName));
   }else if(ACTIVE_CATEGORY!=="Tất cả"){
-    items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
+    items=items.filter(x=>canonicalBrand(x.brand)===canonicalBrand(ACTIVE_CATEGORY));
   }
 
   if(q){
@@ -2379,7 +2412,7 @@ function usedPublicToProducts(items){
     const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
     const usedData={condition:x.condition||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
     const image=Array.isArray(x.images)&&x.images[0]?x.images[0]:"";
-    return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:x.brand||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
+    return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:canonicalBrand(x.brand)||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
       sourceType:"used",usedItemId:x.id,basePrice:Number(x.price||0),image,images:x.images||[],attributes:attrs,usedData,
       variants:[{id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",price:Number(x.price||0),onHand:x.status==="sold"?0:1,image,images:x.images||[],attributes:attrs,usedData}]};
   });
