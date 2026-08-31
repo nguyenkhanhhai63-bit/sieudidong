@@ -3120,11 +3120,14 @@ function aiChatInterMessagePause(){
 }
 
 function aiChatCurrentStaffName(){
-  try{
-    return sessionStorage.getItem("sdd_chat_staff_name_v1")||document.getElementById("chatStaffName")?.textContent?.trim()||"Nhân viên";
-  }catch(_){
-    return document.getElementById("chatStaffName")?.textContent?.trim()||"Nhân viên";
-  }
+  // V472: trạng thái đang soạn phải luôn dùng đúng nhân viên đang được phân công
+  // trong header, không đọc lại key sessionStorage cũ từ các phiên trước.
+  const el=document.getElementById("chatStaffName");
+  const visible=String(el?.textContent||"").trim();
+  const assigned=String(el?.dataset?.assignedName||AI_CHAT_ASSIGNED_STAFF||"").trim();
+  if(visible && visible!=="Đang kết nối...") return visible;
+  if(assigned) return assigned;
+  return "Nhân viên";
 }
 
 async function aiChatAppendAssistantMessages(text,data={}){
