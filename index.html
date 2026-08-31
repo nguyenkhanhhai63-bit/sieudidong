@@ -466,11 +466,7 @@
     <a id="aiHumanZaloBtn" href="https://zalo.me/0353105423" target="_blank" rel="noopener noreferrer">Nhắn Zalo</a>
   </div>
 
-  <div id="aiChatMessages" class="ai-chat-messages">
-    <div class="ai-chat-message assistant">
-      <div class="ai-chat-bubble">Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?</div>
-    </div>
-  </div>
+  <div id="aiChatMessages" class="ai-chat-messages"></div>
 
   <div class="ai-chat-suggestions" id="aiChatSuggestions">
     <button type="button" data-ai-question="Tư vấn giúp tôi máy dưới 10 triệu đang còn hàng">Máy dưới 10 triệu</button>
@@ -504,27 +500,9 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=461"></script>
+  <script src="/app.js?v=463"></script>
 
-<script>
-/* V448: chọn ngẫu nhiên nhân viên một lần cho mỗi phiên trình duyệt */
-(function(){
-  var names=["Hải","Minh Đang","Tiến"];
-  var key="sdd_chat_staff_name_v1";
-  var name="";
-  try { name=sessionStorage.getItem(key)||""; } catch(e){}
-  if(names.indexOf(name)===-1){
-    name=names[Math.floor(Math.random()*names.length)];
-    try { sessionStorage.setItem(key,name); } catch(e){}
-  }
-  function applyStaffName(){
-    var el=document.getElementById("chatStaffName");
-    if(el) el.textContent=name;
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyStaffName);
-  else applyStaffName();
-})();
-</script>
+
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */

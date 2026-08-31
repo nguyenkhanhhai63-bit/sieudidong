@@ -7424,6 +7424,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
             <div class="ai-v408-title"><div><h2>Cách nhắn & tốc độ trả lời</h2><p>Chỉnh cách nói chuyện, viết tắt và thời gian chờ giữa các tin nhắn.</p></div></div>
             <div class="ai-field"><label for="aiChatInstructions">Cách AI tư vấn</label><textarea id="aiChatInstructions" maxlength="4000"></textarea></div>
             <div class="ai-field"><label for="aiChatMessageStyle">Cách nhắn tin với khách</label><textarea id="aiChatMessageStyle" maxlength="3000" style="min-height:120px" placeholder="VD: câu ngắn, viết tắt nhẹ, dùng nha/nè/á vừa phải, không văn phong tổng đài..."></textarea><small class="ai-field-help">Ô này điều khiển giọng chat, cách viết tắt, Gen Z/địa phương và cách tách ý thành từng tin.</small></div>
+            <div class="ai-field"><label for="aiChatStaffNames">Tên nhân viên trực chat</label><textarea id="aiChatStaffNames" maxlength="1000" rows="4" placeholder="Hải&#10;Minh Đang&#10;Tiến"></textarea><small class="ai-field-help">Mỗi tên 1 dòng. Khi khách mở chat, hệ thống sẽ chọn ngẫu nhiên 1 tên và giữ nguyên trong phiên chat.</small></div>
             <div class="ai-chat-speed-box">
               <div class="ai-chat-speed-head"><div><b>Tốc độ trả lời khách</b><span>Tùy chỉnh khoảng chờ để chat trông tự nhiên hơn.</span></div><label class="ai-chat-toggle"><input id="aiChatTypingEnabled" type="checkbox" checked><span>Hiện “đang soạn tin”</span></label></div>
               <div class="ai-chat-speed-grid">
@@ -7804,6 +7805,7 @@ const reloadAiSettings=document.getElementById("reloadAiSettings");
 const aiSettingsStatus=document.getElementById("aiSettingsStatus");
 const aiChatInstructions=document.getElementById("aiChatInstructions");
 const aiChatMessageStyle=document.getElementById("aiChatMessageStyle");
+const aiChatStaffNames=document.getElementById("aiChatStaffNames");
 const aiChatTypingEnabled=document.getElementById("aiChatTypingEnabled");
 const aiChatInitialDelayMin=document.getElementById("aiChatInitialDelayMin");
 const aiChatInitialDelayMax=document.getElementById("aiChatInitialDelayMax");
@@ -9037,6 +9039,7 @@ function currentAiSettingsPayload(){
     allowTieRecommendation:aiAllowTie.checked,
     chatInstructions:aiChatInstructions.value,
     chatMessageStyle:aiChatMessageStyle?.value||"",
+    chatStaffNames:aiChatStaffNames?.value||"",
     chatTypingEnabled:aiChatTypingEnabled?.checked!==false,
     chatInitialDelayMin:Math.round((Number(aiChatInitialDelayMin?.value)||2.8)*1000),
     chatInitialDelayMax:Math.round((Number(aiChatInitialDelayMax?.value)||4.5)*1000),
@@ -9223,6 +9226,7 @@ function currentAiChatTrainingPayload(){
   return {
     chatInstructions:aiChatInstructions.value,
     chatMessageStyle:aiChatMessageStyle?.value||"",
+    chatStaffNames:aiChatStaffNames?.value||"",
     chatTypingEnabled:aiChatTypingEnabled?.checked!==false,
     chatInitialDelayMin:Math.round((Number(aiChatInitialDelayMin?.value)||2.8)*1000),
     chatInitialDelayMax:Math.round((Number(aiChatInitialDelayMax?.value)||4.5)*1000),
@@ -9240,6 +9244,7 @@ function currentAiChatTrainingPayload(){
 function fillAiChatTraining(s={}){
   if("chatInstructions" in s) aiChatInstructions.value=s.chatInstructions||"";
   if(aiChatMessageStyle && "chatMessageStyle" in s) aiChatMessageStyle.value=s.chatMessageStyle||"";
+  if(aiChatStaffNames && "chatStaffNames" in s) aiChatStaffNames.value=s.chatStaffNames||"";
   if(aiChatTypingEnabled) aiChatTypingEnabled.checked=s.chatTypingEnabled!==false;
   if(aiChatInitialDelayMin) aiChatInitialDelayMin.value=((Number(s.chatInitialDelayMin)||2800)/1000).toFixed(1);
   if(aiChatInitialDelayMax) aiChatInitialDelayMax.value=((Number(s.chatInitialDelayMax)||4500)/1000).toFixed(1);
@@ -9306,7 +9311,7 @@ async function loadAiChatTraining(){
 
 
 ["input","change"].forEach(evt=>{
-  [aiChatInstructions,aiChatMessageStyle,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
+  [aiChatInstructions,aiChatMessageStyle,aiChatStaffNames,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
     .filter(Boolean)
     .forEach(el=>el.addEventListener(evt,()=>{
       try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}

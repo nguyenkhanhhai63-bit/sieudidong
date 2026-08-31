@@ -2756,9 +2756,26 @@ function renderAiChatSuggestions(raw=""){
 }
 
 let AI_CHAT_BEHAVIOR={typingEnabled:true,initialDelayMin:2800,initialDelayMax:4500,bubbleDelayMin:1500,bubbleDelayMax:2800,interMessageMin:900,interMessageMax:1800};
+let AI_CHAT_STAFF_NAMES=["Hải","Minh Đang","Tiến"];
+const AI_CHAT_STAFF_KEY="sdd_chat_staff_name_v1";
+function aiChatApplyStaffFromConfig(rawNames){
+  const names=(Array.isArray(rawNames)?rawNames:[]).map(x=>String(x||"").trim()).filter(Boolean).slice(0,20);
+  if(names.length) AI_CHAT_STAFF_NAMES=names;
+  let selected="";
+  try{selected=sessionStorage.getItem(AI_CHAT_STAFF_KEY)||"";}catch(_){}
+  if(!AI_CHAT_STAFF_NAMES.includes(selected)){
+    selected=AI_CHAT_STAFF_NAMES[Math.floor(Math.random()*AI_CHAT_STAFF_NAMES.length)]||"Nhân viên";
+    try{sessionStorage.setItem(AI_CHAT_STAFF_KEY,selected);}catch(_){}
+  }
+  const el=document.getElementById("chatStaffName");
+  if(el) el.textContent=selected;
+  return selected;
+}
 
 let aiChatWelcomeLoaded=false;
 let aiChatWelcomePromise=null;
+let AI_CHAT_WELCOME_TEXT="Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?";
+const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v462";
 function aiChatLoadWelcome(){
   if(aiChatWelcomePromise) return aiChatWelcomePromise;
   aiChatWelcomeLoaded=true;
@@ -2770,13 +2787,31 @@ function aiChatLoadWelcome(){
       if(data && (data.warrantyCompleted===true || data.warrantyPending===false)) sddWarrantyPending=false;
       const text=String(data?.welcomeMessage||"").trim();
       if(!r.ok) return;
-      const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
-      if(text && first) first.textContent=text;
+      if(text) AI_CHAT_WELCOME_TEXT=text;
       renderAiChatSuggestions(data?.suggestions||"");
+      aiChatApplyStaffFromConfig(data?.staffNames||[]);
       if(data?.chatBehavior&&typeof data.chatBehavior==="object") AI_CHAT_BEHAVIOR={...AI_CHAT_BEHAVIOR,...data.chatBehavior};
     }catch(_){}
   })();
   return aiChatWelcomePromise;
+}
+
+
+async function aiChatShowWelcomeOnce(){
+  if(!aiChatMessages) return;
+  let shown=false;
+  try{ shown=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1"; }catch(_){}
+  if(shown) return;
+  if(aiChatMessages.querySelector(".ai-chat-message")) return;
+
+  try{ await aiChatLoadWelcome(); }catch(_){}
+  try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
+
+  // Chỉ bắt đầu chào sau khi khách thật sự bấm mở chat.
+  aiChatTyping(true);
+  await aiChatSleep(aiChatRandRange(650,1100));
+  aiChatTyping(false);
+  aiChatAppend("assistant",AI_CHAT_WELCOME_TEXT);
 }
 
 let aiChatBusy=false;
@@ -3187,6 +3222,7 @@ zaloConsultBtn?.addEventListener("click",()=>{
   if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
   // V461: chỉ mở lại khung chat, không tự chèn thêm tin nhắn mỗi lần bật icon.
   aiChatOpen();
+  aiChatShowWelcomeOnce();
 });
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
