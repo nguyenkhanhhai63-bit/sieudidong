@@ -3185,8 +3185,8 @@ async function aiChatAsk(question,options={}){
 
 zaloConsultBtn?.addEventListener("click",()=>{
   if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
+  // V461: chỉ mở lại khung chat, không tự chèn thêm tin nhắn mỗi lần bật icon.
   aiChatOpen();
-  aiChatAppend("assistant","Bạn cứ hỏi mình trực tiếp nhé. Giá, tồn kho, bảo hành, trả góp, thông tin máy và thông tin shop nếu hệ thống có dữ liệu thì mình trả lời luôn.");
 });
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
