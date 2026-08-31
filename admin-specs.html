@@ -7434,7 +7434,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
               </div>
               <div class="ai-chat-speed-presets"><button type="button" data-chat-speed="fast">Nhanh</button><button type="button" data-chat-speed="natural" class="is-active">Tự nhiên</button><button type="button" data-chat-speed="slow">Chậm</button></div>
             </div>
-            <div class="ai-field"><label for="aiChatWelcomeMessage">Câu chào khi mở chat</label><textarea id="aiChatWelcomeMessage" maxlength="500" style="min-height:84px"></textarea></div>
+            <div class="ai-field"><label for="aiChatWelcomePrompt">Prompt câu chào mở chat</label><textarea id="aiChatWelcomePrompt" maxlength="3000" rows="6" style="min-height:132px" placeholder="VD: Tự nghĩ 1 câu chào ngắn như nhân viên trẻ đang trực shop..."></textarea><small class="ai-field-help">Mỗi phiên chat mới AI sẽ tự nghĩ 1 câu chào mới theo prompt này, không lấy ngẫu nhiên từ danh sách câu viết sẵn.</small><input id="aiChatWelcomeMessage" type="hidden"><textarea id="aiChatWelcomeMessages" hidden></textarea></div>
             <div class="ai-field"><label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label><textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:150px"></textarea></div>
             <div class="ai-field"><label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label><textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px"></textarea></div>
             <div class="ai-field"><label for="aiChatSuggestions">Gợi ý câu hỏi mẫu</label><textarea id="aiChatSuggestions" maxlength="4000" style="min-height:130px"></textarea><small class="ai-field-help">Mỗi dòng: Tên nút | Câu hỏi AI nhận.</small></div>
@@ -7814,6 +7814,10 @@ const aiChatBubbleDelayMax=document.getElementById("aiChatBubbleDelayMax");
 const aiChatInterMessageMin=document.getElementById("aiChatInterMessageMin");
 const aiChatInterMessageMax=document.getElementById("aiChatInterMessageMax");
 const aiChatWelcomeMessage=document.getElementById("aiChatWelcomeMessage");
+const aiChatWelcomeMessages=document.getElementById("aiChatWelcomeMessages");
+const aiChatWelcomePrompt=document.getElementById("aiChatWelcomePrompt");
+const aiGenerateWelcomeMessages=document.getElementById("aiGenerateWelcomeMessages");
+const aiWelcomeGenerateStatus=document.getElementById("aiWelcomeGenerateStatus");
 const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
 const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
 const aiChatSuggestionsInput=document.getElementById("aiChatSuggestions");
@@ -8999,6 +9003,8 @@ function fillAiSettings(s={}){
   aiAllowTie.checked=s.allowTieRecommendation!==false;
   aiChatInstructions.value=s.chatInstructions||"";
   aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
+  if(aiChatWelcomeMessages) aiChatWelcomeMessages.value=s.chatWelcomeMessages||s.chatWelcomeMessage||"";
+  if(aiChatWelcomePrompt) aiChatWelcomePrompt.value=s.chatWelcomePrompt||"";
   aiChatStoreFacts.value=s.chatStoreFacts||"";
   aiChatHandoffRules.value=s.chatHandoffRules||"";
   aiChatSuggestionsInput.value=s.chatSuggestions||"";
@@ -9047,7 +9053,9 @@ function currentAiSettingsPayload(){
     chatBubbleDelayMax:Math.round((Number(aiChatBubbleDelayMax?.value)||2.8)*1000),
     chatInterMessageMin:Math.round((Number(aiChatInterMessageMin?.value)||0.9)*1000),
     chatInterMessageMax:Math.round((Number(aiChatInterMessageMax?.value)||1.8)*1000),
-    chatWelcomeMessage:aiChatWelcomeMessage.value,
+    chatWelcomeMessage:(aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"").split(/\n+/).map(x=>x.trim()).filter(Boolean)[0]||"",
+    chatWelcomeMessages:aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"",
+    chatWelcomePrompt:aiChatWelcomePrompt?.value||"",
     chatStoreFacts:aiChatStoreFacts.value,
     chatHandoffRules:aiChatHandoffRules.value,
     chatSuggestions:aiChatSuggestionsInput.value
@@ -9234,7 +9242,9 @@ function currentAiChatTrainingPayload(){
     chatBubbleDelayMax:Math.round((Number(aiChatBubbleDelayMax?.value)||2.8)*1000),
     chatInterMessageMin:Math.round((Number(aiChatInterMessageMin?.value)||0.9)*1000),
     chatInterMessageMax:Math.round((Number(aiChatInterMessageMax?.value)||1.8)*1000),
-    chatWelcomeMessage:aiChatWelcomeMessage.value,
+    chatWelcomeMessage:(aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"").split(/\n+/).map(x=>x.trim()).filter(Boolean)[0]||"",
+    chatWelcomeMessages:aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"",
+    chatWelcomePrompt:aiChatWelcomePrompt?.value||"",
     chatStoreFacts:aiChatStoreFacts.value,
     chatHandoffRules:aiChatHandoffRules.value,
     chatSuggestions:aiChatSuggestionsInput.value
@@ -9253,6 +9263,8 @@ function fillAiChatTraining(s={}){
   if(aiChatInterMessageMin) aiChatInterMessageMin.value=((Number(s.chatInterMessageMin)||900)/1000).toFixed(1);
   if(aiChatInterMessageMax) aiChatInterMessageMax.value=((Number(s.chatInterMessageMax)||1800)/1000).toFixed(1);
   if("chatWelcomeMessage" in s) aiChatWelcomeMessage.value=s.chatWelcomeMessage||"";
+  if(aiChatWelcomeMessages && ("chatWelcomeMessages" in s || "chatWelcomeMessage" in s)) aiChatWelcomeMessages.value=s.chatWelcomeMessages||s.chatWelcomeMessage||"";
+  if(aiChatWelcomePrompt && "chatWelcomePrompt" in s) aiChatWelcomePrompt.value=s.chatWelcomePrompt||"";
   if("chatStoreFacts" in s) aiChatStoreFacts.value=s.chatStoreFacts||"";
   if("chatHandoffRules" in s) aiChatHandoffRules.value=s.chatHandoffRules||"";
   if("chatSuggestions" in s) aiChatSuggestionsInput.value=s.chatSuggestions||"";
@@ -9311,7 +9323,7 @@ async function loadAiChatTraining(){
 
 
 ["input","change"].forEach(evt=>{
-  [aiChatInstructions,aiChatMessageStyle,aiChatStaffNames,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessage,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
+  [aiChatInstructions,aiChatMessageStyle,aiChatStaffNames,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessages,aiChatWelcomePrompt,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
     .filter(Boolean)
     .forEach(el=>el.addEventListener(evt,()=>{
       try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
@@ -9325,6 +9337,44 @@ document.querySelectorAll("[data-chat-speed]").forEach(btn=>btn.addEventListener
   document.querySelectorAll("[data-chat-speed]").forEach(x=>x.classList.toggle("is-active",x===btn));
   try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
 }));
+
+async function generateAiWelcomeMessages(){
+  if(!aiGenerateWelcomeMessages || !aiChatWelcomeMessages) return;
+  aiGenerateWelcomeMessages.disabled=true;
+  const oldText=aiGenerateWelcomeMessages.textContent;
+  aiGenerateWelcomeMessages.textContent="AI đang viết...";
+  if(aiWelcomeGenerateStatus){ aiWelcomeGenerateStatus.textContent="Đang tạo câu chào..."; aiWelcomeGenerateStatus.style.color="#6b7280"; }
+  try{
+    const r=await adminTrainingFetch("/api/admin/ai-welcome-generate",{
+      method:"POST",
+      cache:"no-store",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        count:6,
+        messageStyle:aiChatMessageStyle?.value||"",
+        instructions:aiChatInstructions?.value||"",
+        current:aiChatWelcomeMessages.value||""
+      })
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||"AI chưa tạo được câu chào");
+    const lines=Array.isArray(data.lines)?data.lines.filter(Boolean):[];
+    if(!lines.length) throw new Error("AI chưa trả về câu chào hợp lệ");
+    aiChatWelcomeMessages.value=lines.join("\n");
+    if(aiChatWelcomeMessage) aiChatWelcomeMessage.value=lines[0]||"";
+    try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
+    if(aiWelcomeGenerateStatus){ aiWelcomeGenerateStatus.textContent=`✓ Đã viết ${lines.length} câu`; aiWelcomeGenerateStatus.style.color="#15803d"; }
+    try{showToast(`AI đã viết ${lines.length} câu chào`);}catch(_){}
+  }catch(e){
+    if(aiWelcomeGenerateStatus){ aiWelcomeGenerateStatus.textContent=e.message||"Không tạo được"; aiWelcomeGenerateStatus.style.color="#b91c1c"; }
+    try{showToast(e.message||"Không tạo được câu chào","error");}catch(_){}
+  }finally{
+    aiGenerateWelcomeMessages.disabled=false;
+    aiGenerateWelcomeMessages.textContent=oldText;
+  }
+}
+if(aiGenerateWelcomeMessages) aiGenerateWelcomeMessages.addEventListener("click",generateAiWelcomeMessages);
 
 async function persistAiChatSettings(){
   if(!saveAiChatSettings) return;

@@ -2757,15 +2757,21 @@ function renderAiChatSuggestions(raw=""){
 
 let AI_CHAT_BEHAVIOR={typingEnabled:true,initialDelayMin:2800,initialDelayMax:4500,bubbleDelayMin:1500,bubbleDelayMax:2800,interMessageMin:900,interMessageMax:1800};
 let AI_CHAT_STAFF_NAMES=["Hải","Minh Đang","Tiến"];
-const AI_CHAT_STAFF_KEY="sdd_chat_staff_name_v1";
+const AI_CHAT_STAFF_KEY="sdd_chat_staff_name_v2";
+const AI_CHAT_LAST_STAFF_KEY="sdd_chat_last_staff_name_v1";
+let AI_CHAT_ASSIGNED_STAFF="";
 function aiChatApplyStaffFromConfig(rawNames){
   const names=(Array.isArray(rawNames)?rawNames:[]).map(x=>String(x||"").trim()).filter(Boolean).slice(0,20);
   if(names.length) AI_CHAT_STAFF_NAMES=names;
-  let selected="";
-  try{selected=sessionStorage.getItem(AI_CHAT_STAFF_KEY)||"";}catch(_){}
+  let selected=AI_CHAT_ASSIGNED_STAFF;
   if(!AI_CHAT_STAFF_NAMES.includes(selected)){
-    selected=AI_CHAT_STAFF_NAMES[Math.floor(Math.random()*AI_CHAT_STAFF_NAMES.length)]||"Nhân viên";
-    try{sessionStorage.setItem(AI_CHAT_STAFF_KEY,selected);}catch(_){}
+    let last="";
+    try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
+    let pool=AI_CHAT_STAFF_NAMES.filter(n=>n!==last);
+    if(!pool.length) pool=AI_CHAT_STAFF_NAMES.slice();
+    selected=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
+    AI_CHAT_ASSIGNED_STAFF=selected;
+    try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,selected);}catch(_){}
   }
 
   // Chỉ hiện tên + trạng thái online sau khi quy trình kết nối lần đầu hoàn tất.
@@ -2784,7 +2790,39 @@ function aiChatApplyStaffFromConfig(rawNames){
 let aiChatWelcomeLoaded=false;
 let aiChatWelcomePromise=null;
 let AI_CHAT_WELCOME_TEXT="Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?";
-const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v465";
+let AI_CHAT_WELCOME_TEXTS=[AI_CHAT_WELCOME_TEXT];
+const AI_CHAT_LAST_WELCOME_KEY="sdd_ai_chat_last_welcome_v1";
+const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v471";
+function aiChatPickWelcome(){
+  const list=(Array.isArray(AI_CHAT_WELCOME_TEXTS)?AI_CHAT_WELCOME_TEXTS:[]).map(x=>String(x||"").trim()).filter(Boolean);
+  if(!list.length) return AI_CHAT_WELCOME_TEXT;
+  let last="";
+  try{last=localStorage.getItem(AI_CHAT_LAST_WELCOME_KEY)||"";}catch(_){}
+  let pool=list.filter(x=>x!==last);
+  if(!pool.length) pool=list.slice();
+  const chosen=pool[Math.floor(Math.random()*pool.length)]||list[0]||AI_CHAT_WELCOME_TEXT;
+  try{localStorage.setItem(AI_CHAT_LAST_WELCOME_KEY,chosen);}catch(_){}
+  return chosen;
+}
+
+async function aiChatGenerateLiveWelcome(staffName){
+  let previous="";
+  try{ previous=localStorage.getItem(AI_CHAT_LAST_WELCOME_KEY)||""; }catch(_){}
+  try{
+    const r=await fetch("/api/ai-welcome-live",{
+      method:"POST",cache:"no-store",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({staffName:String(staffName||""),previousGreeting:previous})
+    });
+    const data=await r.json().catch(()=>({}));
+    const text=String(data?.greeting||"").trim();
+    if(r.ok && text){
+      try{ localStorage.setItem(AI_CHAT_LAST_WELCOME_KEY,text); }catch(_){}
+      return text;
+    }
+  }catch(_){}
+  return aiChatPickWelcome();
+}
+
 function aiChatLoadWelcome(){
   if(aiChatWelcomePromise) return aiChatWelcomePromise;
   aiChatWelcomeLoaded=true;
@@ -2796,7 +2834,10 @@ function aiChatLoadWelcome(){
       if(data && (data.warrantyCompleted===true || data.warrantyPending===false)) sddWarrantyPending=false;
       const text=String(data?.welcomeMessage||"").trim();
       if(!r.ok) return;
+      const welcomeList=(Array.isArray(data?.welcomeMessages)?data.welcomeMessages:[]).map(x=>String(x||"").trim()).filter(Boolean);
+      if(welcomeList.length) AI_CHAT_WELCOME_TEXTS=welcomeList;
       if(text) AI_CHAT_WELCOME_TEXT=text;
+      if(!welcomeList.length && text) AI_CHAT_WELCOME_TEXTS=[text];
       renderAiChatSuggestions(data?.suggestions||"");
       aiChatApplyStaffFromConfig(data?.staffNames||[]);
       if(data?.chatBehavior&&typeof data.chatBehavior==="object") AI_CHAT_BEHAVIOR={...AI_CHAT_BEHAVIOR,...data.chatBehavior};
@@ -2849,16 +2890,23 @@ async function aiChatShowWelcomeOnce(){
   // mới hiện nhân viên được phân công rồi bắt đầu trạng thái đang soạn.
   const staffNameEl=document.getElementById("chatStaffName");
   const staffStatusEl=document.getElementById("chatStaffStatus") || staffNameEl?.parentElement?.querySelector("span");
-  let assignedName="";
-  try{ assignedName=sessionStorage.getItem(AI_CHAT_STAFF_KEY)||""; }catch(_){}
-  if(!assignedName) assignedName=AI_CHAT_STAFF_NAMES[Math.floor(Math.random()*AI_CHAT_STAFF_NAMES.length)]||"Nhân viên";
-  try{ sessionStorage.setItem(AI_CHAT_STAFF_KEY,assignedName); }catch(_){}
+  let assignedName=AI_CHAT_ASSIGNED_STAFF;
+  if(!AI_CHAT_STAFF_NAMES.includes(assignedName)){
+    let last="";
+    try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
+    let pool=AI_CHAT_STAFF_NAMES.filter(n=>n!==last);
+    if(!pool.length) pool=AI_CHAT_STAFF_NAMES.slice();
+    assignedName=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
+    AI_CHAT_ASSIGNED_STAFF=assignedName;
+    try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,assignedName);}catch(_){}
+  }
   if(staffNameEl){
     staffNameEl.dataset.assignedName=assignedName;
     staffNameEl.textContent="Đang kết nối...";
   }
   if(staffStatusEl) staffStatusEl.style.visibility="hidden";
 
+  const liveWelcomePromise=aiChatGenerateLiveWelcome(assignedName);
   aiChatShowAssigningStatus(true);
   await aiChatSleep(aiChatRandRange(4800,5200));
   aiChatShowAssigningStatus(false);
@@ -2878,7 +2926,8 @@ async function aiChatShowWelcomeOnce(){
     await aiChatSleep(350);
   }
 
-  aiChatAppend("assistant",AI_CHAT_WELCOME_TEXT);
+  const liveWelcome=await liveWelcomePromise;
+  aiChatAppend("assistant",liveWelcome||aiChatPickWelcome());
   // Chỉ đánh dấu sau khi câu chào đã render thành công.
   try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
 }

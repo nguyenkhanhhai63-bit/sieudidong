@@ -2,6 +2,7 @@ const handlers = {
   "ai-chat": () => import("../lib/public-api/ai-chat.js"),
   "ai-chat-history": () => import("../lib/public-api/ai-chat-history.js"),
   "ai-chat-icon": () => import("../lib/public-api/ai-chat-icon.js"),
+  "ai-welcome-live": () => import("../lib/public-api/ai-welcome-live.js"),
   "analytics": () => import("../lib/public-api/analytics.js"),
   "bestsellers": () => import("../lib/public-api/bestsellers.js"),
   "installment-settings": () => import("../lib/public-api/installment-settings.js"),
