@@ -3275,10 +3275,20 @@ function aiChatPriceFromText(text){
   if(!m) return null;
   return Math.round(Number(m[1].replace(",","."))*1000000);
 }
-function aiChatProductSnapshot(question){
-  const q=normalizeSearchText(question);
+function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
+  // V481: câu ngắn kiểu "bao nhiêu shop?", "còn không?" phải giữ đúng
+  // model khách vừa hỏi ở các tin ngay trước đó.
+  const recentUserContext=(Array.isArray(history)?history:[])
+    .filter(x=>x?.role==="user" && String(x?.text||"").trim())
+    .slice(-4)
+    .map(x=>String(x.text||"").trim())
+    .join(" ");
+
+  const contextText=`${recentUserContext} ${String(question||"")}`.trim();
+  const q=normalizeSearchText(contextText);
+  const currentQ=normalizeSearchText(question);
   const tokens=q.split(" ").filter(x=>x.length>=2);
-  const target=aiChatPriceFromText(question);
+  const target=aiChatPriceFromText(question) || aiChatPriceFromText(recentUserContext);
   const groups=groupItems(flattenProducts(PRODUCTS).filter(productMatchesMainCategory));
 
   return groups.map((group,index)=>{
@@ -3302,8 +3312,10 @@ function aiChatProductSnapshot(question){
 
     // Ưu tiên rất mạnh tên máy mà khách vừa gõ, kể cả thiếu chữ/sai nhẹ.
     const compactName=normalized.replace(/\s+/g,"");
-    const compactQ=q.replace(/\s+/g,"");
-    if(compactQ && (compactName.includes(compactQ) || compactQ.includes(compactName))) score+=40;
+    const compactCurrent=currentQ.replace(/\s+/g,"");
+    const compactContext=q.replace(/\s+/g,"");
+    if(compactCurrent && compactCurrent.length>=5 && (compactName.includes(compactCurrent) || compactCurrent.includes(compactName))) score+=45;
+    if(compactContext && (compactContext.includes(compactName) || compactName.includes(compactContext))) score+=25;
     const matchedTokens=tokens.filter(t=>normalized.includes(t));
     if(tokens.length>=2 && matchedTokens.length>=Math.ceil(tokens.length*.65)) score+=20;
 
@@ -3401,7 +3413,7 @@ async function aiChatAsk(question,options={}){
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         message:text,
-        products:aiChatProductSnapshot(text),
+        products:aiChatProductSnapshot(text,AI_CHAT_HISTORY),
         history:AI_CHAT_HISTORY.slice(-6),
         sessionId:AI_CHAT_SESSION_ID,
         visitorId:analyticsVisitorId(),
