@@ -20,7 +20,8 @@ const handlers = {
   "order-visibility": () => import("../lib/public-api/order-visibility.js"),
   "footer-settings": () => import("../lib/public-api/footer-settings.js"),
   "tiktok-webhook": () => import("../lib/public-api/tiktok-webhook.js"),
-  "facebook-webhook": () => import("../lib/public-api/facebook-webhook.js")
+  "facebook-webhook": () => import("../lib/public-api/facebook-webhook.js"),
+  "community-chat": () => import("../lib/public-api/community-chat.js")
 };
 
 export default async function handler(req,res){

@@ -57,7 +57,7 @@
   </script>
 
 
-  <link rel="stylesheet" href="/styles.css?v=453">
+  <link rel="stylesheet" href="/styles.css?v=482">
 
 
 
@@ -500,7 +500,7 @@
       <span class="ai-chat-notify-dot" aria-hidden="true"></span>
     </button>
 
-  <script src="/app.js?v=474"></script>
+  <script src="/app.js?v=481"></script>
 
 
 
@@ -750,5 +750,6 @@
  function render(){let arr=rows.filter(x=>x.visible!==false),names=['Tất cả',...new Set(arr.map(x=>x.category||'Khác'))];if(!names.includes(activeCat))activeCat='Tất cả';cats.innerHTML=names.map(c=>`<button class="acc-cat-tab ${activeCat===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');const q=search.value.trim().toLowerCase();arr=arr.filter(x=>(activeCat==='Tất cả'||x.category===activeCat)&&(!q||[x.name,x.category,x.note].join(' ').toLowerCase().includes(q)));if(sort.value==='priceAsc')arr.sort((a,b)=>a.price-b.price);else if(sort.value==='priceDesc')arr.sort((a,b)=>b.price-a.price);else if(sort.value==='name')arr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','vi'));else arr.sort((a,b)=>Number(b.featured)-Number(a.featured)||(a.sort||0)-(b.sort||0));grid.innerHTML=arr.length?arr.map(x=>`<article class="acc-public-card"><div class="acc-public-img">${x.image?`<img src="${esc(x.image)}" alt="${esc(x.name)}">`:''}</div><span class="acc-public-cat">${esc(x.category||'Khác')}</span><h3>${esc(x.name)}</h3>${x.note?`<p class="acc-public-note">${esc(x.note)}</p>`:'<p class="acc-public-note"></p>'}<div class="acc-public-price">${money(x.price)}${x.oldPrice?`<span class="acc-public-old">${money(x.oldPrice)}</span>`:''}</div><span class="acc-public-stock ${Number(x.stock)>0?'':'out'}">${Number(x.stock)>0?'✓ Còn hàng':'Hết hàng'}</span><button class="acc-public-btn" data-name="${esc(x.name)}">Liên hệ tư vấn</button></article>`).join(''):'<div class="acc-public-empty">Hiện chưa có phụ kiện trong nhóm này.</div>'}
  cats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});search.addEventListener('input',render);sort.addEventListener('change',render);grid.addEventListener('click',e=>{if(e.target.closest('[data-name]'))location.href='https://zalo.me/0353105423'});load();
 })();
-</script></body>
+</script><script src="/community-chat.js?v=482" defer></script>
+</body>
 </html>

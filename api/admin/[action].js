@@ -18,7 +18,8 @@ const handlers = {
   "cloudinary-signature": () => import("../../lib/admin-api/cloudinary-signature.js"),
   "order-visibility": () => import("../../lib/admin-api/order-visibility.js"),
   "footer-settings": () => import("../../lib/admin-api/footer-settings.js"),
-  "facebook-comment-settings": () => import("../../lib/admin-api/facebook-comment-settings.js")
+  "facebook-comment-settings": () => import("../../lib/admin-api/facebook-comment-settings.js"),
+  "community-chat": () => import("../../lib/admin-api/community-chat.js")
 };
 
 export default async function handler(req, res) {

@@ -7186,6 +7186,11 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 }
 </style>
 
+
+<style id="v482-community-admin-css">
+.community-admin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}.community-admin-eyebrow{font-size:10px;font-weight:900;color:#ff5a00;letter-spacing:.08em}.community-admin-head h1{margin:5px 0 4px;font-size:24px}.community-admin-head p{margin:0;color:#667085;font-size:12px}.community-admin-online{min-width:105px;padding:12px;border:1px solid #e8ebef;border-radius:14px;background:#fff;text-align:center}.community-admin-online strong{display:block;font-size:24px;color:#16a34a}.community-admin-online span{font-size:10px;color:#667085}.community-admin-grid{display:grid;grid-template-columns:minmax(280px,380px) minmax(0,1fr);gap:14px}.community-admin-settings,.community-admin-feed-wrap{border:1px solid #e8ebef;border-radius:14px;background:#fff;padding:14px}.community-admin-settings h2,.community-admin-feed-head h2{font-size:14px;margin:0 0 10px}.community-admin-settings label{display:block;margin:10px 0;font-size:10px;font-weight:750;color:#475467}.community-admin-settings .field{width:100%;margin-top:5px}.community-admin-toggle{display:flex!important;align-items:center;gap:8px;padding:9px;border-radius:10px;background:#f8fafc}.community-admin-actions{display:flex;gap:7px;margin-top:10px}.community-admin-settings hr{border:0;border-top:1px solid #edf0f3;margin:16px 0}.community-admin-feed-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f3;padding-bottom:10px}.community-admin-feed-head h2{margin:0}.community-admin-feed-head small{font-size:9px;color:#98a2b3}.community-admin-feed{max-height:650px;overflow:auto;padding-top:6px}.community-admin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 3px;border-bottom:1px solid #f0f2f5}.community-admin-row-main{min-width:0}.community-admin-row-meta{display:flex;align-items:center;gap:7px;font-size:9px;color:#98a2b3}.community-admin-row-meta b{font-size:10px;color:#344054}.community-admin-row-meta em{font-style:normal;color:#ff5a00;font-weight:850}.community-admin-row-text{margin-top:5px;font-size:11px;line-height:1.4;color:#1f2937;overflow-wrap:anywhere}.community-admin-row-actions{display:flex;align-items:center;gap:5px}.community-admin-row-actions button{border:1px solid #e5e7eb;background:#fff;border-radius:8px;padding:5px 7px;font-size:9px;cursor:pointer}.community-admin-row-actions .ban{color:#b42318}.community-admin-empty{padding:35px;text-align:center;color:#98a2b3;font-size:11px}@media(max-width:820px){.community-admin-grid{grid-template-columns:1fr}.community-admin-head{align-items:center}.community-admin-head h1{font-size:19px}.community-admin-feed{max-height:520px}}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7213,6 +7218,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
     <button class="admin-tab routing-tab" data-tab="used" type="button" aria-hidden="true" tabindex="-1"><span>Máy cũ</span></button>
     <button class="admin-tab routing-tab" data-tab="orderVisibility" type="button" aria-hidden="true" tabindex="-1"><span>Sản phẩm theo yêu cầu</span></button>
     <button class="admin-tab routing-tab" data-tab="footer" type="button" aria-hidden="true" tabindex="-1"><span>Footer</span></button>
+    <button class="admin-tab routing-tab" data-tab="community" type="button" aria-hidden="true" tabindex="-1"><span>Cộng đồng</span></button>
   </div></div>
 
   <div class="sidebar-section-title">SẢN PHẨM</div>
@@ -7236,6 +7242,9 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   <div class="sidebar-shortcuts">
     <button type="button" class="sidebar-shortcut" data-go-tab="ai">
       <span class="shortcut-icon">✦</span><span>Đào tạo AI</span><b id="aiKnowledgeBadge" class="ai-knowledge-badge">0</b>
+    </button>
+    <button type="button" class="sidebar-shortcut" data-go-tab="community">
+      <span class="shortcut-icon">💬</span><span>Quản lý cộng đồng</span><b>Mới</b>
     </button>
     <button type="button" class="sidebar-shortcut" data-go-tab="seo">
       <span class="shortcut-icon">⌕</span><span>SEO & Google</span>
@@ -7810,6 +7819,30 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   <div id="orderVisibilityRows" class="order-admin-rows"><div class="aload">Đang tải...</div></div>
 </section>
 
+
+<section id="communityAdminCard" class="card panel" data-panel="community" style="display:none">
+  <div class="community-admin-head"><div><span class="community-admin-eyebrow">CHAT CỘNG ĐỒNG</span><h1>Quản lý cộng đồng</h1><p>Một phòng chat chung cho khách truy cập website. Nhân viên có thể nhắn, xóa tin và khóa người spam.</p></div><div class="community-admin-online"><strong id="communityAdminOnline">0</strong><span>đang online</span></div></div>
+  <div class="community-admin-grid">
+    <div class="community-admin-settings">
+      <h2>Cấu hình kênh chat</h2>
+      <label class="community-admin-toggle"><input id="communityEnabled" type="checkbox" checked><span>Bật kênh cộng đồng trên website</span></label>
+      <label>Tên kênh<input id="communityTitleInput" class="field" maxlength="60" value="Cộng đồng Siêu Di Động"></label>
+      <label>Thông báo ghim<input id="communityAnnouncementInput" class="field" maxlength="180" placeholder="VD: Hỏi máy, chia sẻ trải nghiệm cùng mọi người"></label>
+      <label>Chống spam — mỗi tin cách nhau (giây)<input id="communitySlowInput" class="field" type="number" min="1" max="30" value="2"></label>
+      <div class="community-admin-actions"><button id="communitySaveSettings" class="btn primary" type="button">Lưu cấu hình</button><button id="communityReload" class="btn" type="button">Tải lại</button></div><div id="communityAdminStatus" class="muted"></div>
+      <hr>
+      <h2>Nhắn với tư cách shop</h2>
+      <label>Tên hiển thị<input id="communityStaffName" class="field" maxlength="24" value="Siêu Di Động"></label>
+      <label>Nội dung<textarea id="communityStaffText" class="field" rows="4" maxlength="500" placeholder="Nhập thông báo hoặc trả lời khách..."></textarea></label>
+      <button id="communityStaffSend" class="btn primary" type="button">Gửi vào cộng đồng</button>
+    </div>
+    <div class="community-admin-feed-wrap">
+      <div class="community-admin-feed-head"><div><h2>Tin nhắn gần đây</h2><small>Tự cập nhật khi đang mở trang này</small></div><button id="communityClearAll" class="btn danger" type="button">Xóa toàn bộ</button></div>
+      <div id="communityAdminFeed" class="community-admin-feed"></div>
+    </div>
+  </div>
+</section>
+
 <section id="seoCard" class="card panel seo-v387" data-panel="seo" style="display:none">
   <div class="seo-page-head">
     <div>
@@ -7955,6 +7988,7 @@ const analyticsCard=document.getElementById("analyticsCard");
 const aiSettingsCard=document.getElementById("aiSettingsCard");
 const seoCard=document.getElementById("seoCard");
 const usedProductsCard=document.getElementById("usedProductsCard");
+const communityAdminCard=document.getElementById("communityAdminCard");
 
 const aiCustomInstructions=document.getElementById("aiCustomInstructions");
 const aiRecommendationStyle=document.getElementById("aiRecommendationStyle");
@@ -9810,6 +9844,7 @@ adminTabs.addEventListener("click",e=>{
   const showInstallment = tab==="installment";
   const showServices = tab==="services";
   const showUsed = tab==="used";
+  const showCommunity = tab==="community";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
@@ -9818,6 +9853,7 @@ adminTabs.addEventListener("click",e=>{
   installmentCard.classList.toggle("active", showInstallment);
   servicePricingCard.classList.toggle("active", showServices);
   usedProductsCard.classList.toggle("active", showUsed);
+  communityAdminCard?.classList.toggle("active", showCommunity);
 
   adminCard.style.display = showSpecs ? "" : "none";
   analyticsCard.style.display = showAnalytics ? "" : "none";
@@ -9826,6 +9862,7 @@ adminTabs.addEventListener("click",e=>{
   installmentCard.style.display = showInstallment ? "" : "none";
   servicePricingCard.style.display = showServices ? "" : "none";
   usedProductsCard.style.display = showUsed ? "" : "none";
+  if(communityAdminCard) communityAdminCard.style.display = showCommunity ? "" : "none";
 
   if(showSpecs){
     loadSpecLinksForAdmin().catch(e=>{
@@ -9838,6 +9875,7 @@ adminTabs.addEventListener("click",e=>{
   if(showInstallment){ loadInstallmentSettings(); }
   if(showServices){ loadServicePricing(); }
   if(showUsed){ loadUsedProducts(); }
+  if(showCommunity){ loadCommunityAdmin(); }
   if(showAi){
     (async()=>{
       try{
@@ -10477,6 +10515,26 @@ saveInstallment?.addEventListener("click",async()=>{
 reloadInstallment?.addEventListener("click",()=>loadInstallmentSettings(true));
 
 
+
+/* V482 - Community admin */
+const communityEnabled=document.getElementById("communityEnabled"), communityTitleInput=document.getElementById("communityTitleInput"), communityAnnouncementInput=document.getElementById("communityAnnouncementInput"), communitySlowInput=document.getElementById("communitySlowInput"), communityAdminFeed=document.getElementById("communityAdminFeed"), communityAdminOnline=document.getElementById("communityAdminOnline"), communityAdminStatus=document.getElementById("communityAdminStatus");
+let communityAdminTimer=null;
+function communityAdminEsc(s){return String(s??"").replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function communityAdminTime(ts){try{return new Intl.DateTimeFormat("vi-VN",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(ts))}catch{return""}}
+function renderCommunityAdmin(d){
+  const s=d.settings||{}; communityEnabled.checked=s.enabled!==false; communityTitleInput.value=s.title||"Cộng đồng Siêu Di Động"; communityAnnouncementInput.value=s.announcement||""; communitySlowInput.value=s.slowModeSeconds||2; communityAdminOnline.textContent=String(d.online||0);
+  const rows=Array.isArray(d.messages)?d.messages.slice().reverse():[];
+  communityAdminFeed.innerHTML=rows.map(m=>`<div class="community-admin-row"><div class="community-admin-row-main"><div class="community-admin-row-meta"><b>${communityAdminEsc(m.nickname||"Khách")}</b>${m.role==="staff"?'<em>SHOP ✓</em>':''}<span>${communityAdminTime(m.at)}</span></div><div class="community-admin-row-text">${communityAdminEsc(m.text||"")}</div></div><div class="community-admin-row-actions"><button data-community-delete="${communityAdminEsc(m.id)}">Xóa</button>${m.role!=="staff"?`<button class="ban" data-community-ban="${communityAdminEsc(m.sessionId)}">Khóa</button>`:""}</div></div>`).join("")||'<div class="community-admin-empty">Chưa có tin nhắn cộng đồng.</div>';
+}
+async function loadCommunityAdmin(silent=false){
+  try{const r=await fetch("/api/admin/community-chat?_="+Date.now(),{cache:"no-store",credentials:"same-origin"});const d=await r.json();if(!r.ok)throw new Error(d.error||"Không tải được");renderCommunityAdmin(d);if(!silent){communityAdminStatus.textContent="✓ Đã tải dữ liệu cộng đồng";communityAdminStatus.style.color="#15803d"} if(!communityAdminTimer)communityAdminTimer=setInterval(()=>{const active=document.querySelector('.admin-tab.active')?.dataset.tab;if(active==="community")loadCommunityAdmin(true)},3500)}catch(e){communityAdminStatus.textContent=e.message||"Không tải được";communityAdminStatus.style.color="#b42318"}}
+async function communityAdminPost(body){const r=await fetch("/api/admin/community-chat",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Không thực hiện được");return d}
+document.getElementById("communitySaveSettings")?.addEventListener("click",async()=>{try{communityAdminStatus.textContent="Đang lưu...";await communityAdminPost({action:"settings",enabled:communityEnabled.checked,title:communityTitleInput.value,announcement:communityAnnouncementInput.value,slowModeSeconds:Number(communitySlowInput.value)||2});communityAdminStatus.textContent="✓ Đã lưu cấu hình cộng đồng";communityAdminStatus.style.color="#15803d";loadCommunityAdmin(true)}catch(e){communityAdminStatus.textContent=e.message;communityAdminStatus.style.color="#b42318"}});
+document.getElementById("communityReload")?.addEventListener("click",()=>loadCommunityAdmin());
+document.getElementById("communityStaffSend")?.addEventListener("click",async()=>{const text=document.getElementById("communityStaffText").value.trim();if(!text)return;try{await communityAdminPost({action:"send",nickname:document.getElementById("communityStaffName").value||"Siêu Di Động",text});document.getElementById("communityStaffText").value="";communityAdminStatus.textContent="✓ Đã gửi vào cộng đồng";loadCommunityAdmin(true)}catch(e){communityAdminStatus.textContent=e.message}});
+document.getElementById("communityClearAll")?.addEventListener("click",async()=>{if(!confirm("Xóa toàn bộ lịch sử chat cộng đồng?"))return;await communityAdminPost({action:"clear"});loadCommunityAdmin(true)});
+communityAdminFeed?.addEventListener("click",async e=>{const del=e.target.closest("[data-community-delete]");const ban=e.target.closest("[data-community-ban]");try{if(del){await communityAdminPost({action:"delete",id:del.dataset.communityDelete});loadCommunityAdmin(true)}else if(ban&&confirm("Khóa người này khỏi kênh cộng đồng?")){await communityAdminPost({action:"ban",sessionId:ban.dataset.communityBan});communityAdminStatus.textContent="✓ Đã khóa người dùng";loadCommunityAdmin(true)}}catch(err){communityAdminStatus.textContent=err.message}});
+
 const sidebarToggle=document.getElementById("sidebarToggle");
 const adminPageTitle=document.getElementById("adminPageTitle");
 const adminPageSubtitle=document.getElementById("adminPageSubtitle");
@@ -10490,7 +10548,8 @@ const ADMIN_PAGE_META={
   installment:["Trả góp","Quản lý HD SAISON, Mirae Asset và nhân viên Zalo tư vấn"],
   services:["Dịch vụ","Quản lý bảng giá Unlock SIM, Unlock bootloader và Up ROM"],
   footer:["Quản lý Footer","Tùy chỉnh nội dung, icon và màu sắc footer website"],
-  accessories:["Quản lý Phụ kiện","Danh sách phụ kiện riêng, giá bán và tồn kho"]
+  accessories:["Quản lý Phụ kiện","Danh sách phụ kiện riêng, giá bán và tồn kho"],
+  community:["Quản lý cộng đồng","Theo dõi và quản lý kênh chat cộng đồng trên website"]
 };
 
 function syncAdminShell(tab){
