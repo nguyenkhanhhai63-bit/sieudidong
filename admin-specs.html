@@ -7076,6 +7076,116 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 #aiSettingsCard .ai-chat-speed-presets{display:flex;gap:7px;margin-top:11px}#aiSettingsCard .ai-chat-speed-presets button{height:30px;padding:0 12px;border:1px solid #e4e7ec;border-radius:999px;background:#fff;color:#475467;font-size:9px;font-weight:850;cursor:pointer}#aiSettingsCard .ai-chat-speed-presets button.is-active{border-color:#ff5a00;background:#fff1e8;color:#ff5a00}
 @media(max-width:760px){#aiSettingsCard .ai-chat-speed-head{align-items:flex-start;flex-direction:column}#aiSettingsCard .ai-chat-speed-grid{grid-template-columns:1fr}}
 </style>
+
+<style id="v479-ai-history-mobile-compact">
+@media (max-width:700px){
+  /* Lịch sử khách hỏi AI: bố trí gọn theo dạng thẻ trên mobile */
+  .ai-history-box{
+    min-height:0!important;
+    border-radius:14px!important;
+  }
+
+  .ai-history-head{
+    padding:14px 14px 11px!important;
+    gap:10px!important;
+    align-items:center!important;
+  }
+  .ai-history-head h2{
+    font-size:15px!important;
+    line-height:1.25!important;
+  }
+  .ai-history-head p{
+    margin-top:5px!important;
+    font-size:11px!important;
+    line-height:1.35!important;
+  }
+  .ai-history-more-btn{
+    height:34px!important;
+    padding:0 11px!important;
+    flex:0 0 auto!important;
+  }
+
+  .ai-question-history{
+    padding:0 14px 8px!important;
+  }
+
+  .ai-history-row{
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr)!important;
+    column-gap:9px!important;
+    row-gap:7px!important;
+    padding:13px 0!important;
+    align-items:center!important;
+  }
+
+  .ai-history-time{
+    grid-column:1!important;
+    grid-row:1!important;
+    font-size:11px!important;
+    line-height:1.2!important;
+    white-space:nowrap!important;
+    color:#667085!important;
+  }
+
+  .ai-history-visitor{
+    grid-column:2!important;
+    grid-row:1!important;
+    justify-self:start!important;
+    padding:3px 7px!important;
+    font-size:9px!important;
+    line-height:1.2!important;
+    max-width:145px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  .ai-history-qa{
+    grid-column:1 / -1!important;
+    grid-row:2!important;
+    min-width:0!important;
+    width:100%!important;
+  }
+
+  .ai-history-question{
+    font-size:13px!important;
+    line-height:1.42!important;
+    font-weight:750!important;
+    color:#101828!important;
+    padding:0!important;
+    margin:0!important;
+    word-break:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ai-history-answer{
+    width:100%!important;
+    box-sizing:border-box!important;
+    margin-top:8px!important;
+    padding:9px 10px!important;
+    border-radius:10px!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+    font-weight:500!important;
+    word-break:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .ai-history-answer b{
+    display:inline!important;
+    font-size:9.5px!important;
+    line-height:inherit!important;
+    margin-right:5px!important;
+    white-space:nowrap!important;
+  }
+
+  .ai-history-pager{
+    padding:10px 14px 12px!important;
+    gap:8px!important;
+  }
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
