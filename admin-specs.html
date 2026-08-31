@@ -8076,6 +8076,43 @@ function setLoginBusy(busy){
   if(togglePassword) togglePassword.disabled=Boolean(busy);
 }
 
+
+const ADMIN_DEEP_LINK_TABS={
+  "tong-quan":"analytics",
+  "link-thong-so":"specs",
+  "tra-gop":"installment",
+  "dich-vu":"services",
+  "may-cu":"used",
+  "san-pham-theo-yeu-cau":"orderVisibility",
+  "dao-tao-ai":"ai",
+  "phu-kien":"accessories",
+  "seo-google":"seo",
+  "footer":"footer"
+};
+
+function adminTabFromCurrentUrl(){
+  try{
+    const page=(new URL(location.href).searchParams.get("page")||"").trim().toLowerCase();
+    return ADMIN_DEEP_LINK_TABS[page]||"";
+  }catch(_){
+    return "";
+  }
+}
+
+function openRequestedAdminTab(){
+  const tab=adminTabFromCurrentUrl();
+  if(!tab) return false;
+
+  const btn=document.querySelector(`#adminTabs .admin-tab[data-tab="${tab}"]`);
+  if(!btn) return false;
+
+  btn.click();
+
+  // Đồng bộ tiêu đề ngay cả khi tab là routing-tab ẩn.
+  try{ syncAdminShell(tab); }catch(_){}
+  return true;
+}
+
 function setLoggedIn(value){
   if(adminBootLoading) adminBootLoading.style.display="none";
   document.body.classList.remove("auth-pending");
@@ -8109,7 +8146,10 @@ function setLoggedIn(value){
       btn.classList.toggle("active", btn.dataset.tab==="analytics");
     });
 
-    loadAnalytics();
+    // V487: nếu URL là /admin?page=may-cu, /tra-gop, /dao-tao-ai...
+    // thì sau khi xác thực phải mở đúng trang đó, không bị reset về Thống kê.
+    const openedDeepLink=openRequestedAdminTab();
+    if(!openedDeepLink) loadAnalytics();
   }else{
     adminTabs.style.display="none";
     logoutBtn.style.display="none";
@@ -8345,6 +8385,7 @@ async function loadAdmin(){
     setAdminLoadingStage(2,"Hoàn tất, đang mở trang quản trị...");
     setLoggedIn(true);
     setLoginStatus("");
+    try{ document.dispatchEvent(new CustomEvent("admin-authenticated")); }catch(_){}
 
     // Dữ liệu nặng được nạp theo từng tab, không chặn lúc mở trang.
     return true;
@@ -10495,6 +10536,8 @@ const ADMIN_PAGE_META={
   services:["Dịch vụ","Quản lý bảng giá Unlock SIM, Unlock bootloader và Up ROM"],
   footer:["Quản lý Footer","Tùy chỉnh nội dung, icon và màu sắc footer website"],
   accessories:["Quản lý Phụ kiện","Danh sách phụ kiện riêng, giá bán và tồn kho"],
+  used:["Danh sách máy cũ","Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet"],
+  orderVisibility:["Sản phẩm theo yêu cầu","Quản lý sản phẩm khách có thể đặt theo yêu cầu"],
 
 };
 
@@ -12111,6 +12154,8 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   },true);
 
   window.addEventListener('popstate',()=>openTabFromUrl());
+  window.addEventListener('pageshow',()=>setTimeout(openTabFromUrl,0));
+  document.addEventListener('admin-authenticated',()=>setTimeout(openTabFromUrl,0));
 
   // Nếu vào /admin không chỉ định trang, giữ Tổng quan nhưng tạo URL riêng ngay.
   const initialTab=getTabFromUrl();
