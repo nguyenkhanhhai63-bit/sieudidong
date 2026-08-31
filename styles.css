@@ -16094,3 +16094,36 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   .ai-chat-typing-row{min-height:37px!important;}
 }
 \n\n/* V458 - hiệu ứng tin nhắn mới kiểu Messenger: nổi/trượt từ dưới lên */\n@keyframes sdd-chat-message-up-v458{\n  0%{opacity:0;transform:translate3d(0,16px,0) scale(.985);}\n  70%{opacity:1;transform:translate3d(0,-1px,0) scale(1);}\n  100%{opacity:1;transform:translate3d(0,0,0) scale(1);}\n}\n#aiChatPanel .ai-chat-message.ai-chat-message-enter{\n  animation:sdd-chat-message-up-v458 .34s cubic-bezier(.2,.72,.25,1) both;\n  will-change:transform,opacity;\n}\n#aiChatPanel .ai-chat-messages{scroll-behavior:smooth;}\n@media (prefers-reduced-motion:reduce){\n  #aiChatPanel .ai-chat-message.ai-chat-message-enter{animation:none!important;}\n  #aiChatPanel .ai-chat-messages{scroll-behavior:auto!important;}\n}\n
+
+/* V465 - trạng thái sắp xếp hỗ trợ khi mở chat lần đầu */
+.ai-chat-assigning-status{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  width:max-content;
+  max-width:86%;
+  margin:12px 0 8px 8px;
+  padding:9px 12px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:rgba(255,255,255,.96);
+  color:#6b7280;
+  font-size:12.5px;
+  line-height:1.3;
+  box-shadow:0 4px 14px rgba(15,23,42,.06);
+  animation:sddAssigningIn .22s ease both;
+}
+.ai-chat-assigning-spinner{
+  width:14px;
+  height:14px;
+  flex:0 0 14px;
+  border:2px solid #d1d5db;
+  border-top-color:#ff5a00;
+  border-radius:50%;
+  animation:sddAssigningSpin .8s linear infinite;
+}
+@keyframes sddAssigningSpin{to{transform:rotate(360deg)}}
+@keyframes sddAssigningIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:720px){
+  .ai-chat-assigning-status{margin-left:10px;font-size:12px;padding:8px 11px}
+}

@@ -2775,7 +2775,7 @@ function aiChatApplyStaffFromConfig(rawNames){
 let aiChatWelcomeLoaded=false;
 let aiChatWelcomePromise=null;
 let AI_CHAT_WELCOME_TEXT="Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?";
-const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v462";
+const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v465";
 function aiChatLoadWelcome(){
   if(aiChatWelcomePromise) return aiChatWelcomePromise;
   aiChatWelcomeLoaded=true;
@@ -2797,21 +2797,64 @@ function aiChatLoadWelcome(){
 }
 
 
+
+function aiChatShowAssigningStatus(show){
+  let el=document.getElementById("aiChatAssigningStatus");
+  if(show){
+    if(el) return el;
+    el=document.createElement("div");
+    el.id="aiChatAssigningStatus";
+    el.className="ai-chat-assigning-status";
+    el.innerHTML='<span class="ai-chat-assigning-spinner" aria-hidden="true"></span><span>Đang kết nối với tư vấn viên...</span>';
+    aiChatMessages.appendChild(el);
+    requestAnimationFrame(()=>{
+      try{ aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"}); }catch(_){ aiChatMessages.scrollTop=aiChatMessages.scrollHeight; }
+    });
+    return el;
+  }
+  el?.remove();
+}
+
 async function aiChatShowWelcomeOnce(){
   if(!aiChatMessages) return;
+
+  // V464: lịch sử chat thực tế mới là nguồn xác định đã chào hay chưa.
+  // Bản cũ có thể đã set sessionStorage trước khi bubble chào kịp render,
+  // làm mở chat ra trắng. Nếu chưa có tin assistant nào thì phải chào lại.
+  const hasAssistantMessage=!!aiChatMessages.querySelector(".ai-chat-message.assistant");
+  if(hasAssistantMessage){
+    try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
+    return;
+  }
+
   let shown=false;
   try{ shown=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1"; }catch(_){}
-  if(shown) return;
-  if(aiChatMessages.querySelector(".ai-chat-message")) return;
+  // Chỉ tôn trọng cờ khi trong khung đã thực sự có nội dung.
+  if(shown && aiChatMessages.querySelector(".ai-chat-message")) return;
 
   try{ await aiChatLoadWelcome(); }catch(_){}
-  try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
 
-  // Chỉ bắt đầu chào sau khi khách thật sự bấm mở chat.
-  aiChatTyping(true);
-  await aiChatSleep(aiChatRandRange(650,1100));
-  aiChatTyping(false);
+  // V465: khi khách mở chat lần đầu, hiển thị trạng thái đang sắp xếp hỗ trợ
+  // trước khi nhân viên trực bắt đầu soạn câu chào.
+  aiChatShowAssigningStatus(true);
+  await aiChatSleep(aiChatRandRange(900,1600));
+  aiChatShowAssigningStatus(false);
+
+  // Sau đó mới hiện trạng thái nhân viên đang soạn tin và gửi lời chào.
+  if(AI_CHAT_BEHAVIOR.typingEnabled!==false){
+    aiChatTyping(true);
+    await aiChatSleep(aiChatRandRange(
+      Math.max(700, Number(AI_CHAT_BEHAVIOR.initialDelayMin)||1200),
+      Math.max(1100, Number(AI_CHAT_BEHAVIOR.initialDelayMax)||2200)
+    ));
+    aiChatTyping(false);
+  }else{
+    await aiChatSleep(350);
+  }
+
   aiChatAppend("assistant",AI_CHAT_WELCOME_TEXT);
+  // Chỉ đánh dấu sau khi câu chào đã render thành công.
+  try{ sessionStorage.setItem(AI_CHAT_WELCOME_SHOWN_KEY,"1"); }catch(_){}
 }
 
 let aiChatBusy=false;
