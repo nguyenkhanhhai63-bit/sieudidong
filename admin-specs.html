@@ -7187,8 +7187,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 </style>
 
 
-</style>
-
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7216,7 +7214,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
     <button class="admin-tab routing-tab" data-tab="used" type="button" aria-hidden="true" tabindex="-1"><span>Máy cũ</span></button>
     <button class="admin-tab routing-tab" data-tab="orderVisibility" type="button" aria-hidden="true" tabindex="-1"><span>Sản phẩm theo yêu cầu</span></button>
     <button class="admin-tab routing-tab" data-tab="footer" type="button" aria-hidden="true" tabindex="-1"><span>Footer</span></button>
-    
   </div></div>
 
   <div class="sidebar-section-title">SẢN PHẨM</div>
@@ -7241,7 +7238,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
     <button type="button" class="sidebar-shortcut" data-go-tab="ai">
       <span class="shortcut-icon">✦</span><span>Đào tạo AI</span><b id="aiKnowledgeBadge" class="ai-knowledge-badge">0</b>
     </button>
-    
     <button type="button" class="sidebar-shortcut" data-go-tab="seo">
       <span class="shortcut-icon">⌕</span><span>SEO & Google</span>
     </button>
@@ -7814,8 +7810,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   <div id="orderVisibilityStatus" class="order-admin-status"></div>
   <div id="orderVisibilityRows" class="order-admin-rows"><div class="aload">Đang tải...</div></div>
 </section>
-
-
 
 
 <section id="seoCard" class="card panel seo-v387" data-panel="seo" style="display:none">
@@ -9818,7 +9812,6 @@ adminTabs.addEventListener("click",e=>{
   const showInstallment = tab==="installment";
   const showServices = tab==="services";
   const showUsed = tab==="used";
-  const showCommunity = tab==="community";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
@@ -9847,6 +9840,7 @@ adminTabs.addEventListener("click",e=>{
   if(showInstallment){ loadInstallmentSettings(); }
   if(showServices){ loadServicePricing(); }
   if(showUsed){ loadUsedProducts(); }
+
   if(showAi){
     (async()=>{
       try{
@@ -10487,7 +10481,422 @@ reloadInstallment?.addEventListener("click",()=>loadInstallmentSettings(true));
 
 
 
-/* V482 - Community admin */
+const sidebarToggle=document.getElementById("sidebarToggle");
+const adminPageTitle=document.getElementById("adminPageTitle");
+const adminPageSubtitle=document.getElementById("adminPageSubtitle");
+const adminGlobalSearch=document.getElementById("adminGlobalSearch");
+
+const ADMIN_PAGE_META={
+  analytics:["Tổng quan","Theo dõi hoạt động website Siêu Di Động"],
+  specs:["Link thông số","Quản lý nguồn thông số kỹ thuật của sản phẩm"],
+  ai:["Đào tạo AI","Điều chỉnh cách AI so sánh và tư vấn khách"],
+  seo:["SEO & Google","Quản lý nội dung hiển thị trên Google và công cụ SEO"],
+  installment:["Trả góp","Quản lý HD SAISON, Mirae Asset và nhân viên Zalo tư vấn"],
+  services:["Dịch vụ","Quản lý bảng giá Unlock SIM, Unlock bootloader và Up ROM"],
+  footer:["Quản lý Footer","Tùy chỉnh nội dung, icon và màu sắc footer website"],
+  accessories:["Quản lý Phụ kiện","Danh sách phụ kiện riêng, giá bán và tồn kho"],
+
+};
+
+function syncAdminShell(tab){
+  const meta=ADMIN_PAGE_META[tab]||ADMIN_PAGE_META.analytics;
+  if(adminPageTitle) adminPageTitle.textContent=meta[0];
+  if(adminPageSubtitle) adminPageSubtitle.textContent=meta[1];
+
+  document.querySelectorAll("[data-go-tab]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.goTab===tab);
+  });
+}
+
+document.querySelectorAll("[data-go-tab]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const target=adminTabs?.querySelector(`[data-tab="${btn.dataset.goTab}"]`);
+    target?.click();
+    document.body.classList.remove("mobile-sidebar-open");
+  });
+});
+
+adminTabs?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-tab]");
+  if(!btn) return;
+  syncAdminShell(btn.dataset.tab);
+  document.body.classList.remove("mobile-sidebar-open");
+});
+
+adminGlobalSearch?.addEventListener("input",()=>{
+  const active=adminTabs?.querySelector(".admin-tab.active")?.dataset.tab;
+  if(active==="specs" && search){
+    search.value=adminGlobalSearch.value;
+    search.dispatchEvent(new Event("input",{bubbles:true}));
+  }
+});
+
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="k"){
+    e.preventDefault();
+    adminGlobalSearch?.focus();
+  }
+});
+
+
+syncAdminShell("analytics");
+
+
+/* V163 - mobile sidebar behavior */
+window.addEventListener("resize",()=>{
+  if(!window.matchMedia("(max-width:760px)").matches){
+    document.body.classList.remove("mobile-sidebar-open");
+  }
+});
+
+
+/* V169 - mobile bottom navigation: khởi tạo sau khi DOM có nav */
+function initMobileAdminNavigation(){
+  const mobileAdminNav=document.getElementById("mobileAdminNav");
+  if(!mobileAdminNav || mobileAdminNav.dataset.bound==="1") return;
+  mobileAdminNav.dataset.bound="1";
+
+  function syncMobileAdminNav(tab){
+    mobileAdminNav.querySelectorAll("[data-mobile-tab]").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.mobileTab===tab);
+    });
+  }
+
+  mobileAdminNav.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-mobile-tab]");
+    if(!btn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const tab=btn.dataset.mobileTab;
+    const target=document.querySelector(`#adminTabs [data-tab="${tab}"]`);
+
+    if(target){
+      target.click();
+    }else{
+      // Fallback trực tiếp nếu tab desktop không tồn tại hoặc đang ẩn.
+      document.querySelectorAll(".panel").forEach(panel=>{
+        const isTarget=panel.dataset.panel===tab;
+        panel.classList.toggle("active",isTarget);
+        panel.style.display=isTarget?"block":"none";
+      });
+    }
+
+    syncMobileAdminNav(tab);
+    document.body.classList.remove("mobile-sidebar-open","sidebar-collapsed");
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  const adminTabsEl=document.getElementById("adminTabs");
+  adminTabsEl?.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-tab]");
+    if(btn) syncMobileAdminNav(btn.dataset.tab);
+  });
+
+  const current=adminTabsEl?.querySelector(".admin-tab.active")?.dataset.tab || "analytics";
+  syncMobileAdminNav(current);
+}
+
+function resetLegacyMobileSidebar(){
+  if(window.matchMedia("(max-width:760px)").matches){
+    document.body.classList.remove("mobile-sidebar-open","sidebar-collapsed");
+  }
+}
+
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",()=>{
+    initMobileAdminNavigation();
+    resetLegacyMobileSidebar();
+  },{once:true});
+}else{
+  initMobileAdminNavigation();
+  resetLegacyMobileSidebar();
+}
+
+window.addEventListener("resize",()=>{
+  resetLegacyMobileSidebar();
+  initMobileAdminNavigation();
+});
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+  const seo=document.getElementById("seoCard");
+  const editor=seo && seo.querySelector(".seo-editor");
+  const pad=seo && seo.querySelector('div[style*="padding:24px"]');
+  if(editor && pad) pad.insertBefore(editor,pad.firstChild);
+});
+</script>
+
+
+
+
+
+<div id="usedAdminToast" class="used-admin-toast" role="status" aria-live="polite"></div>
+
+<script>
+/* V260 - Máy cũ: ảnh lưu Cloudinary, Redis chỉ giữ URL + public_id */
+(function(){
+  const $=id=>document.getElementById(id);
+  const els={
+    name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
+    imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),search:$('usedListSearch'),
+    statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
+    cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus'),
+    sheetUrl:$('usedSheetUrl'),sheetSave:$('saveUsedSheetUrl'),sheetReset:$('resetUsedSheetUrl'),sheetConfigMsg:$('usedSheetConfigMsg')
+  };
+  let rows=[], editingId='', editingSource='', editingSheetRow=0, assets=[], toastTimer=null;
+
+  const BRAND_RULES=[['redmi','Redmi'],['poco','POCO'],['xiaomi','Xiaomi'],['samsung','Samsung'],['galaxy','Samsung'],['oppo','OPPO'],['vivo','vivo'],['iqoo','iQOO'],['oneplus','OnePlus'],['honor','HONOR'],['realme','Realme'],['tecno','Tecno'],['iphone','Apple'],['ipad','Apple']];
+  const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=v=>new Intl.NumberFormat('vi-VN').format(Number(v||0))+' đ';
+  function setStatus(msg,color=''){if(!els.statusText)return;els.statusText.textContent=msg||'';els.statusText.style.color=color||''}
+  function toast(msg,type='error'){
+    if(!els.toast){ alert(msg); return; }
+    els.toast.textContent=msg;els.toast.className='used-admin-toast show '+type;
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>{els.toast.className='used-admin-toast'},3600);
+  }
+  function clearErrors(){els.uploadBox?.classList.remove('has-error');els.name?.closest('.used-field')?.classList.remove('has-error');els.price?.closest('.used-field')?.classList.remove('has-error')}
+  function fail(el,msg){clearErrors();const box=el===els.imagesInput?els.uploadBox:el?.closest?.('.used-field');box?.classList.add('has-error');setStatus(msg,'#b42318');toast(msg,'error');setTimeout(()=>box?.scrollIntoView({behavior:'smooth',block:'center'}),40);if(el!==els.imagesInput)setTimeout(()=>el?.focus?.(),350)}
+  function imageUrl(a){return String(a?.url||a?.secure_url||a||'').trim()}
+  function normalizedAsset(a){
+    if(typeof a==='string') return {url:a,publicId:''};
+    return {url:imageUrl(a),publicId:String(a?.publicId||a?.public_id||'').trim()};
+  }
+  function currentImages(){return assets.map(imageUrl).filter(Boolean)}
+  function guessBrand(name){const n=norm(name);return (BRAND_RULES.find(([k])=>n.includes(k))||[])[1]||''}
+
+  function setSheetConfigMsg(msg,color=''){if(!els.sheetConfigMsg)return;els.sheetConfigMsg.textContent=msg||'';els.sheetConfigMsg.style.color=color||''}
+  async function loadSheetSettings(){
+    if(!els.sheetUrl)return;
+    setSheetConfigMsg('Đang tải link Google Sheet...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||'';
+      setSheetConfigMsg((d.custom?'Đang dùng link tùy chỉnh':'Đang dùng link mặc định')+' • GID '+String(d.gid||'0'),'#667085');
+    }catch(e){setSheetConfigMsg(e.message||'Không tải được cấu hình Sheet.','#b42318')}
+  }
+  async function saveSheetSettings(){
+    const url=String(els.sheetUrl?.value||'').trim();
+    if(!url){setSheetConfigMsg('Vui lòng dán link Google Sheet.','#b42318');els.sheetUrl?.focus();return}
+    els.sheetSave.disabled=true;els.sheetSave.textContent='Đang lưu...';setSheetConfigMsg('Đang kiểm tra và lưu link mới...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({url})});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||url;
+      setSheetConfigMsg('✓ Đã lưu link mới. Đang đồng bộ dữ liệu...','#15803d');
+      rows=[];await loadUsedProducts(true);
+      setSheetConfigMsg('✓ Link Sheet mới đã được lưu và đồng bộ thành công.','#15803d');
+      toast('Đã cập nhật link Google Sheet máy cũ.','success');
+    }catch(e){setSheetConfigMsg(e.message||'Không lưu được link Sheet.','#b42318');toast(e.message||'Không lưu được link Sheet.','error')}
+    finally{els.sheetSave.disabled=false;els.sheetSave.textContent='Lưu & đồng bộ'}
+  }
+  async function resetSheetSettings(){
+    if(!confirm('Đưa Google Sheet máy cũ về link mặc định?'))return;
+    els.sheetReset.disabled=true;setSheetConfigMsg('Đang khôi phục link mặc định...','#667085');
+    try{
+      const r=await fetch('/api/admin/used-sheet-settings',{method:'DELETE',credentials:'same-origin'});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+      els.sheetUrl.value=d.url||'';rows=[];await loadUsedProducts(true);
+      setSheetConfigMsg('✓ Đã khôi phục link Google Sheet mặc định.','#15803d');toast('Đã về link Sheet mặc định.','success');
+    }catch(e){setSheetConfigMsg(e.message||'Không khôi phục được link Sheet.','#b42318');toast(e.message||'Không khôi phục được link Sheet.','error')}
+    finally{els.sheetReset.disabled=false}
+  }
+
+  async function getCloudinarySignature(){
+    const r=await fetch('/api/admin/cloudinary-signature?ts='+Date.now(),{cache:'no-store',credentials:'same-origin'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||`Lỗi ${r.status}`);
+    if(!d.configured) throw new Error(d.error||'Cloudinary chưa cấu hình.');
+    return d;
+  }
+  async function checkCloudinary(){
+    if(!els.cloudStatus)return;
+    try{
+      const d=await getCloudinarySignature();
+      els.cloudStatus.textContent=`Kho ảnh Cloudinary: đã kết nối • ${d.cloudName}`;
+      els.cloudStatus.className='used-cloudinary-status ok';
+    }catch(e){
+      els.cloudStatus.textContent='Kho ảnh Cloudinary: chưa cấu hình';
+      els.cloudStatus.className='used-cloudinary-status bad';
+    }
+  }
+
+  function renderImages(){
+    if(!els.imagePreview)return;els.imagePreview.innerHTML='';
+    assets.forEach((asset,i)=>{
+      const src=imageUrl(asset);if(!src)return;
+      const d=document.createElement('div');d.className='used-preview-item'+(i===0?' primary':'');
+      d.innerHTML=`<img src="${src}" alt=""><small>${i===0?'Ảnh đại diện':'Ảnh '+(i+1)}</small><button class="used-preview-remove" type="button" data-rm="${i}">×</button>`;
+      d.addEventListener('click',e=>{if(e.target.closest('[data-rm]'))return;if(i>0){const [pick]=assets.splice(i,1);assets.unshift(pick);renderImages()}});
+      els.imagePreview.appendChild(d);
+    });
+  }
+  els.imagePreview?.addEventListener('click',e=>{
+    const b=e.target.closest('[data-rm]');if(!b)return;e.stopPropagation();
+    assets.splice(Number(b.dataset.rm),1);renderImages();
+  });
+
+  async function compressToBlob(file){
+    if(!file?.type?.startsWith('image/')) throw new Error('File đã chọn không phải ảnh.');
+    const bmp=await createImageBitmap(file);
+    const max=1600,scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale));
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close?.();
+    const blob=await new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error('Không nén được ảnh.')),'image/jpeg',.84));
+    return blob;
+  }
+  async function uploadCloudinary(blob,fileName,signatureData){
+    const fd=new FormData();
+    const safeFileBase=(String(fileName||'may-cu')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d')
+      .replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'may-cu');
+    fd.append('file',blob,safeFileBase+'.jpg');
+    fd.append('api_key',signatureData.apiKey);
+    fd.append('timestamp',String(signatureData.timestamp));
+    fd.append('folder',signatureData.folder);
+    fd.append('signature',signatureData.signature);
+
+    const url=`https://api.cloudinary.com/v1_1/${encodeURIComponent(signatureData.cloudName)}/image/upload`;
+    const r=await fetch(url,{method:'POST',body:fd});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok || !d.secure_url) throw new Error(d?.error?.message||'Upload Cloudinary thất bại.');
+    return {url:d.secure_url,publicId:d.public_id||'',width:d.width||0,height:d.height||0,bytes:d.bytes||0};
+  }
+
+  els.imagesInput?.addEventListener('change',async()=>{
+    const files=[...(els.imagesInput.files||[])].slice(0,Math.max(0,8-assets.length));
+    if(!files.length)return;
+    setStatus(`Đang upload 0/${files.length} ảnh lên Cloudinary...`,'#667085');
+    try{
+      const sig=await getCloudinarySignature();
+      let done=0;
+      for(const f of files){
+        const blob=await compressToBlob(f);
+        const asset=await uploadCloudinary(blob,f.name,sig);
+        assets.push(asset);done++;
+        renderImages();
+        setStatus(`Đang upload ${done}/${files.length} ảnh lên Cloudinary...`,'#667085');
+      }
+      els.uploadBox?.classList.remove('has-error');
+      setStatus(`✓ Đã upload ${done} ảnh lên Cloudinary.`,'#15803d');
+      toast(`Đã upload ${done} ảnh thực tế lên Cloudinary.`,'success');
+      checkCloudinary();
+    }catch(e){
+      fail(els.imagesInput,e?.message||'Không upload được ảnh.');
+    }finally{
+      els.imagesInput.value='';
+    }
+  });
+
+  function formData(){
+    return {
+      id:editingId||undefined,source:editingSource||undefined,sheetRow:editingSheetRow||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',
+      price:Number(String(els.price?.value||'').replace(/[^\d]/g,''))||0,memory:els.memory?.value.trim()||'',
+      color:els.color?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',
+      warranty:els.warranty?.value.trim()||'',imei:els.imei?.value.trim()||'',status:els.status?.value||'available',
+      accessories:els.accessories?.value.trim()||'',note:els.note?.value.trim()||'',
+      imageAssets:assets.map(normalizedAsset),images:currentImages()
+    };
+  }
+  function reset(){
+    clearErrors();editingId='';editingSource='';editingSheetRow=0;assets=[];
+    ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});
+    if(els.status)els.status.value='available';if(els.formTitle)els.formTitle.textContent='Thêm máy cũ';if(els.save)els.save.textContent='Lưu máy cũ';
+    setSheetEditMode(false);
+    renderImages();setStatus('');
+  }
+  const SHEET_LOCKED_FIELDS=['name','brand','price','memory','condition','warranty','imei','status','accessories'];
+  function setSheetEditMode(on){
+    SHEET_LOCKED_FIELDS.forEach(k=>{
+      const el=els[k]; if(!el)return;
+      el.disabled=!!on;
+      el.classList.toggle('used-sheet-locked',!!on);
+      if(on) el.title='Thông tin này lấy từ Google Sheet'; else el.removeAttribute('title');
+    });
+    const box=els.formTitle?.closest('.used-admin-formbox');
+    box?.classList.toggle('editing-sheet-item',!!on);
+  }
+  function highlightImageUpload(x){
+    const box=els.uploadBox;
+    if(!box)return;
+    box.classList.remove('used-upload-attention');
+    void box.offsetWidth;
+    box.classList.add('used-upload-attention');
+    setTimeout(()=>box.classList.remove('used-upload-attention'),2600);
+
+    const hasImages=((Array.isArray(x?.imageAssets)&&x.imageAssets.length)||(Array.isArray(x?.images)&&x.images.length));
+    const actionText=hasImages?'Cập nhật ảnh':'Thêm ảnh';
+    toast(`${actionText}: ${x?.name||'máy đã chọn'} — chọn ảnh ở khung bên trái.`,'success');
+    setStatus(`→ ${actionText} cho ${x?.name||'máy đã chọn'}: bấm “Chọn ảnh từ điện thoại / máy tính” bên dưới.`,'#d94800');
+
+    setTimeout(()=>{
+      box.scrollIntoView({behavior:'smooth',block:'center'});
+    },180);
+  }
+
+  function edit(x){
+    editingId=x.id||'';
+    editingSource=x.source||'';
+    editingSheetRow=Number(x.sheetRow||0)||0;
+    for(const k of ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
+    if(els.status)els.status.value=x.status==='sold'?'sold':'available';
+    assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
+    const fromSheet=x.source==='sheet';
+    setSheetEditMode(fromSheet);
+    if(els.formTitle)els.formTitle.textContent=fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ';
+    if(els.save)els.save.textContent=fromSheet?'Lưu ảnh / ghi chú':'Lưu thay đổi';
+    setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, màu, pin hoặc ghi chú; giá/trạng thái vẫn lấy từ Sheet.':'','#667085');
+    renderImages();
+    document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
+    if(fromSheet) setTimeout(()=>highlightImageUpload(x),260);
+  }
+
+  function renderNameSuggestions(){
+    if(!els.nameSuggest||!els.name)return;
+    const q=norm(els.name.value.trim());
+    if(q.length<2){els.nameSuggest.classList.remove('show');return}
+    const seen=new Set(),data=[];
+    rows.forEach(x=>{
+      const n=String(x.name||'').trim(),key=norm(n);
+      if(n && key.includes(q) && !seen.has(key)){seen.add(key);data.push(x)}
+    });
+    if(!data.length){els.nameSuggest.classList.remove('show');return}
+    els.nameSuggest.innerHTML=data.slice(0,8).map(x=>`<div class="used-name-option" data-used-suggest="${esc(x.id)}"><strong>${esc(x.name)}</strong><span>${esc(x.memory||'')} ${esc(x.color||'')}</span></div>`).join('');
+    els.nameSuggest.classList.add('show');
+  }
+  els.name?.addEventListener('input',()=>{
+    const b=guessBrand(els.name.value);
+    if(b && (!els.brand.value.trim() || BRAND_RULES.some(([,v])=>norm(v)===norm(els.brand.value)))) els.brand.value=b;
+    renderNameSuggestions();
+  });
+  els.nameSuggest?.addEventListener('click',e=>{
+    const row=e.target.closest('[data-used-suggest]');if(!row)return;
+    const x=rows.find(i=>String(i.id)===String(row.dataset.usedSuggest));if(!x)return;
+    els.name.value=x.name||'';els.brand.value=x.brand||guessBrand(x.name);
+    if(!els.memory.value)els.memory.value=x.memory||'';
+    if(!els.warranty.value)els.warranty.value=x.warranty||'';
+    if(!els.accessories.value)els.accessories.value=x.accessories||'';
+    els.nameSuggest.classList.remove('show');
+  });
+  document.addEventListener('click',e=>{if(els.nameSuggest&&!e.target.closest('.used-name-field'))els.nameSuggest.classList.remove('show')});
+
+  function render(){
+    if(!els.list)return;
+    const f=els.filter?.value||'all',q=norm(els.search?.value||'');
+    const data=rows.filter(x=>(f==='all'||x.status===f)&&(!q||norm([x.name,x.brand,x.memory,x.color,x.imei].join(' ')).includes(q)));
+    if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
+    els.list.innerHTML=data.map(x=>{
+      const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
+    }).join('');
   }
 
   async function apiSave(item){
