@@ -7273,7 +7273,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
       </div>
       <div class="welcome-actions">
         <span class="live-chip"><i></i> Dữ liệu trực tiếp</span>
-        <button id="refreshAnalyticsTop" class="secondary" type="button">Làm mới dữ liệu</button>
       </div>
     </div>
     <div class="head">
@@ -10262,7 +10261,6 @@ const sidebarToggle=document.getElementById("sidebarToggle");
 const adminPageTitle=document.getElementById("adminPageTitle");
 const adminPageSubtitle=document.getElementById("adminPageSubtitle");
 const adminGlobalSearch=document.getElementById("adminGlobalSearch");
-const refreshAnalyticsTop=document.getElementById("refreshAnalyticsTop");
 
 const ADMIN_PAGE_META={
   analytics:["Tổng quan","Theo dõi hoạt động website Siêu Di Động"],
@@ -10315,7 +10313,6 @@ document.addEventListener("keydown",e=>{
   }
 });
 
-refreshAnalyticsTop?.addEventListener("click",()=>refreshAnalytics?.click());
 
 syncAdminShell("analytics");
 
