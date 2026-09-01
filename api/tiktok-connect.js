@@ -28,7 +28,7 @@ export default async function handler(req,res){
   const cfg=tiktokShopConfig();
   if(req.query?.status==="1"){
     const conn=await loadTikTokShopConnection().catch(()=>null);
-    return res.json({ok:true,configured:!!(cfg.appKey&&cfg.appSecret&&cfg.serviceId),connected:!!conn,shop:conn?{id:conn.shopId,name:conn.shopName,region:conn.region,scopes:conn.grantedScopes}:null});
+    return res.json({ok:true,configured:!!(cfg.appKey&&cfg.appSecret&&cfg.serviceId),missing:cfg.missing||[],connected:!!conn,customerServiceGranted:!!(conn?.grantedScopes||[]).includes("seller.customer_service"),authorizationInfoGranted:!!(conn?.grantedScopes||[]).includes("seller.authorization.info"),shop:conn?{id:conn.shopId,name:conn.shopName,region:conn.region,scopes:conn.grantedScopes}:null,webhook:`${baseUrl(req)}/api/tiktok-webhook`});
   }
   const code=String(req.query?.code||"").trim();
   const state=String(req.query?.state||"").trim();
@@ -36,7 +36,7 @@ export default async function handler(req,res){
   if(error) return html(res,"TikTok Shop chưa kết nối",`<p class="err">TikTok trả về lỗi: <b>${error}</b></p>`,400);
   if(!code){
     try{return res.redirect(302,tiktokSellerAuthorizeUrl(makeTikTokAuthState()));}
-    catch(e){return html(res,"Thiếu cấu hình TikTok Shop",`<p class="err">${e.message}</p><p>Hãy thêm App Key, App Secret và Service ID vào Environment Variables trên Vercel.</p>`,500);}
+    catch(e){return html(res,"Thiếu cấu hình TikTok Shop",`<p class="err">${e.message}</p><p>App Key và Service ID của app Siêu Di Động đã được cấu hình sẵn ở bản này. Bạn chỉ cần thêm App Secret vào Vercel (có thể ghi đè App Key/Service ID bằng Environment Variables nếu muốn).</p>`,500);}
   }
   if(!verifyTikTokAuthState(state)) return html(res,"Kết nối TikTok Shop thất bại",`<p class="err">State không hợp lệ hoặc đã hết hạn. Mở lại <code>/api/tiktok-connect</code> để kết nối lại.</p>`,400);
   try{
