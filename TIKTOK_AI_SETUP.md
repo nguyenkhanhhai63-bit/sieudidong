@@ -1,54 +1,78 @@
-# TikTok AI Chat – Siêu Di Động
+# TikTok Shop AI – Siêu Di Động (bản đúng cho Partner Center)
 
-Bản này thêm endpoint webhook:
+App trong TikTok Shop Partner Center đã được duyệt thì dùng **TikTok Shop Open API**, không dùng endpoint Business Messaging cũ.
 
-`https://sieudidong.vn/api/tiktok-webhook`
-
-## Biến môi trường trên Vercel
+## 1. Environment Variables trên Vercel
 
 Bắt buộc:
 
-- `TIKTOK_BUSINESS_ACCESS_TOKEN` – access token của TikTok Business Messaging API.
-- `TIKTOK_BUSINESS_ID` – `open_id`/Business Account ID trả về sau khi authorize TikTok Business Account.
-- `GEMINI_API_KEY` – đang dùng cho AI chat web.
-- `REDIS_URL` – đang dùng cho lịch sử/đào tạo AI.
+- `TIKTOK_SHOP_APP_KEY` – App Key trong App & Service của TikTok Shop Partner Center.
+- `TIKTOK_SHOP_APP_SECRET` – Secret của app. Không đưa secret vào code/frontend.
+- `TIKTOK_SHOP_SERVICE_ID` – Service ID của app dùng cho seller authorization.
+- `TIKTOK_SHOP_AUTH_REGION=ROW` – Việt Nam dùng ROW.
+- `TIKTOK_AI_ENABLED=1`
 - `SITE_URL=https://sieudidong.vn`
+- `GEMINI_API_KEY` – AI chat web đang dùng.
+- `REDIS_URL` – lưu token, lịch sử chat và chống webhook trùng.
 
-Tùy chọn:
+## 2. Scope cần bật/được duyệt
 
-- `TIKTOK_AI_ENABLED=1` – đặt `0` để tắt AI TikTok nhưng vẫn giữ webhook online.
-- `TIKTOK_WEBHOOK_SECRET` – chỉ bật khi cấu hình TikTok của bạn cung cấp signing secret tương ứng.
+Tối thiểu:
 
-## TikTok Developer / API for Business
+- `seller.customer_service` – nhận/đọc/gửi chat TikTok Shop.
+- `seller.authorization.info` – lấy shop và cấu hình webhook.
 
-1. Xin quyền Business Messaging API cho app TikTok Business.
-2. Authorize đúng Business Account và lấy access token + business/open ID.
-3. Tạo Business Messaging webhook loại Direct Message trỏ về:
-   `https://sieudidong.vn/api/tiktok-webhook`
-4. Bật quyền Business Messaging Read + Send theo yêu cầu của TikTok.
-5. Nhắn thử từ một tài khoản TikTok khác vào Business Account.
+Nếu app chỉ được “Approved” nhưng chưa được cấp `seller.customer_service`, phần AI chat vẫn chưa hoạt động cho tới khi scope này được TikTok cấp.
 
-## Cách hoạt động
+## 3. Redirect URL
 
-TikTok DM -> webhook -> lấy sản phẩm hiện tại từ `/api/products` -> gửi câu hỏi vào `/api/ai-chat` -> AI dùng chung prompt/đào tạo web -> trả lời lại TikTok.
+Trong Partner Center đặt Redirect URL:
 
-Có sẵn:
+`https://sieudidong.vn/api/tiktok-connect`
 
-- Chống webhook gửi trùng bằng Redis.
-- Lưu 10 tin nhắn gần nhất theo từng conversation.
-- Hiển thị trạng thái `Typing` trước khi AI trả lời.
-- Chia câu trả lời nhiều dòng thành nhiều tin TikTok ngắn.
-- Khi khách nói “gặp nhân viên”, “người thật”, “chốt máy”, “giữ máy” thì AI dừng 30 phút để nhân viên tiếp quản.
-- Khách có thể nhắn “AI trả lời” để bật AI lại ngay.
+Sau khi deploy, mở URL này trên trình duyệt và đăng nhập đúng TikTok Shop của Siêu Di Động. Web sẽ tự đổi `auth_code` lấy access token, lấy `shop_cipher`, lưu token vào Redis và tự đăng ký webhook `NEW_MESSAGE`.
 
-## Kiểm tra nhanh sau deploy
+## 4. Webhook
 
-Mở:
+Callback đã có sẵn:
 
 `https://sieudidong.vn/api/tiktok-webhook`
 
-Nếu cấu hình đúng sẽ thấy JSON với `ok: true`, `enabled: true`, `businessConfigured: true`, `tokenConfigured: true`.
+Webhook xác thực đúng chuẩn TikTok Shop bằng header `Authorization = HMAC-SHA256(app_key + raw_body, app_secret)`.
 
-## Lưu ý
+## 5. Cách hoạt động
 
-TikTok chỉ cho gửi DM theo các cửa sổ/quy tắc nhắn tin của Business Messaging API. API không cho bot tự ý nhắn người chưa mở hội thoại trước, trừ các trường hợp/direct-reply được TikTok cho phép.
+Khách nhắn TikTok Shop → `NEW_MESSAGE` webhook → chỉ nhận tin `TEXT` từ role `BUYER` → lấy sản phẩm hiện tại từ `/api/products` → gọi chung `/api/ai-chat` → gửi câu trả lời qua Customer Service API.
+
+Có sẵn:
+
+- Ký API HMAC-SHA256 đúng chuẩn TikTok Shop.
+- Gửi message qua `/customer_service/202309/conversations/{conversation_id}/messages`.
+- Chống webhook trùng bằng `tts_notification_id`.
+- Lưu 10 tin gần nhất theo từng conversation.
+- Khi khách yêu cầu “nhân viên/người thật/chốt máy/giữ máy”, AI dừng 30 phút.
+- Khách nhắn “AI trả lời” để bật AI lại.
+- Tự refresh access token khi token gần hết hạn (nếu TikTok trả expiry).
+
+## 6. Kiểm tra sau deploy
+
+Mở:
+
+`https://sieudidong.vn/api/tiktok-connect?status=1`
+
+Khi thành công sẽ có:
+
+- `configured: true`
+- `connected: true`
+
+Mở tiếp:
+
+`https://sieudidong.vn/api/tiktok-webhook`
+
+Sẽ thấy:
+
+- `ok: true`
+- `appConfigured: true`
+- `connected: true`
+
+Sau đó dùng một tài khoản khách nhắn vào TikTok Shop để thử AI trả lời.
