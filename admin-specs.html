@@ -7536,7 +7536,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
           </div>
           <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
         </div>
-        <div class="abox traffic-box traffic-box-prominent">
+        <div class="abox traffic-line-card traffic-box-prominent">
           <div class="traffic-chart-head">
             <h2 id="trafficChartTitle">Lượt truy cập</h2>
             <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
@@ -12565,6 +12565,35 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 #analyticsCard .metric-grid-main .metric-icon::before{content:none!important;display:none!important;-webkit-mask:none!important;mask:none!important}
 #analyticsCard .metric-grid-main .metric-icon svg{width:17px!important;height:17px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round!important;stroke-linejoin:round!important}
 #analyticsCard .metric-grid-main .metric:nth-child(6) .metric-icon svg path:last-child{stroke-width:2.2!important}
+</style>
+
+<style id="v513-traffic-chart-final-fix">
+/* V513: biểu đồ lượt truy cập phải luôn hiển thị. Tránh rule cũ .traffic-box{display:none!important}. */
+#analyticsCard .traffic-line-card{
+  display:block!important;
+  width:100%!important;
+  margin:0 0 14px!important;
+  min-height:330px!important;
+  border:1px solid #e7ebf0!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  overflow:hidden!important;
+}
+#analyticsCard .traffic-line-card .traffic-chart-head{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;padding:14px 16px 6px!important;
+}
+#analyticsCard .traffic-line-card .traffic-chart-head h2{margin:0!important;padding:0!important;font-size:16px!important}
+#analyticsCard .traffic-line-card .traffic-line-chart{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  width:100%!important;height:275px!important;min-height:275px!important;
+  padding:6px 12px 12px!important;overflow:hidden!important;background:#fff!important;
+}
+#analyticsCard .traffic-line-card .traffic-line-svg{display:block!important;width:100%!important;height:100%!important}
+@media(max-width:760px){
+  #analyticsCard .traffic-line-card{min-height:280px!important}
+  #analyticsCard .traffic-line-card .traffic-line-chart{height:225px!important;min-height:225px!important}
+}
 </style>
 </body>
 </html>
