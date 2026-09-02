@@ -13486,3 +13486,32 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
 })();
 </script>
+
+<!-- V520 COMPARE PAIRS FULL WIDTH -->
+<style id="v520-compare-pairs-full-width">
+/* Kéo khung "Cặp máy được so sánh nhiều" chiếm trọn một hàng của dashboard. */
+#analyticsCard .analytics-grid > .compare-pairs-box{
+  grid-column:1 / -1!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  justify-self:stretch!important;
+  align-self:stretch!important;
+  box-sizing:border-box!important;
+}
+#analyticsCard .compare-pairs-box #comparePairRanks{
+  width:100%!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+}
+#analyticsCard .compare-pairs-box .compare-pair-row-compact{
+  width:100%!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:900px){
+  #analyticsCard .analytics-grid > .compare-pairs-box{
+    grid-column:1 / -1!important;
+  }
+}
+</style>
