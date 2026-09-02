@@ -7948,6 +7948,24 @@ body.sidebar-collapsed .sidebar-logout{width:48px!important;height:44px!importan
 })();
 </script>
 
+
+<style id="v527-sidebar-routing-fix">
+/* V527 - Fix: V526 vô tình hiện các routing tab ẩn do display:grid !important. */
+.admin-sidebar .admin-tab.routing-tab,
+.admin-sidebar #adminTabs .admin-tab.routing-tab,
+body.sidebar-collapsed .admin-sidebar .admin-tab.routing-tab,
+body.mobile-sidebar-open .admin-sidebar .admin-tab.routing-tab,
+.admin-sidebar.mobile-open .admin-tab.routing-tab{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
