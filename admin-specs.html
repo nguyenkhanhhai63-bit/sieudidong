@@ -7191,7 +7191,13 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 .ai-history-footer{display:flex;justify-content:center;align-items:center;padding:10px 12px 12px;border-top:1px solid #edf1f5;background:#fff}
 #aiHistoryFooterMoreBtn{border:0;background:transparent;color:#f45d14;font-weight:700;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px}
 #aiHistoryFooterMoreBtn:hover{background:#fff5ef}
-</style></head>
+</style>
+<style id="v505-warranty-product-names">
+#warrantyRecentList .warranty-products{min-width:220px;max-width:420px;white-space:normal!important}
+#warrantyRecentList .warranty-product-name{font-weight:700;color:#344054;line-height:1.35}
+#warrantyRecentList .warranty-product-name + .warranty-product-name{margin-top:3px;padding-top:3px;border-top:1px dashed #eef1f4}
+</style>
+</head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
 
@@ -8576,11 +8582,18 @@ function renderWarrantyRecent(items=[]){
       })()}</td>
       <td class="warranty-customer-name">${customerSafe}</td>
       <td><span class="warranty-status ${statusClass[x.status]||"error"}">${statusText[x.status]||"Lỗi tra cứu"}</span></td>
-      <td>${x.status==="found"?fmt(count)+" sản phẩm":"—"}</td>
+      <td class="warranty-products">${(()=>{
+        if(x.status!=="found") return "—";
+        const names=Array.isArray(x.productNames)?x.productNames.map(v=>String(v||"").trim()).filter(Boolean):[];
+        if(names.length){
+          return names.map(n=>`<div class="warranty-product-name">${n.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}</div>`).join("");
+        }
+        return fmt(count)+" sản phẩm";
+      })()}</td>
     </tr>`;
   }).join("");
   host.innerHTML=`<div class="warranty-table-scroll"><table class="warranty-recent-table">
-    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm</th></tr></thead>
+    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm đã mua</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
