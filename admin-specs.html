@@ -15461,3 +15461,53 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup,{once:true}); else setup();
 })();
 </script>
+
+<!-- v547: keep heatmap Low/High legend visible on desktop -->
+<style id="v547-heatmap-desktop-legend-fix">
+@media (min-width:761px){
+  #analyticsCard .traffic-insights-row-four > .traffic-hour-box{
+    height:300px!important;
+    min-height:300px!important;
+    overflow:hidden!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
+    box-sizing:border-box!important;
+    height:246px!important;
+    min-height:0!important;
+    padding:10px 12px 12px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-axis{
+    flex:0 0 auto!important;
+    margin-bottom:6px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-grid{
+    flex:1 1 auto!important;
+    min-height:0!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-cell{
+    min-height:7px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-legend{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    flex:0 0 22px!important;
+    min-height:22px!important;
+    margin-top:8px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:9px!important;
+    color:#667085!important;
+    font-size:10px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-gradient{
+    display:block!important;
+    width:min(150px,55%)!important;
+    height:9px!important;
+    flex:0 1 150px!important;
+  }
+}
+</style>
