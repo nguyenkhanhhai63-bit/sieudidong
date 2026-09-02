@@ -12696,6 +12696,78 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
 })();
 </script>
+
+
+<!-- V521 COMPARE PAIRS STANDALONE FULL WIDTH ROW -->
+<style id="v521-compare-pairs-standalone-full-width">
+/* Tách hẳn khung "Cặp máy được so sánh nhiều" khỏi analytics-grid để không còn bị chia cột. */
+#analyticsCard .v521-compare-full-row{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:12px 0 0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  clear:both!important;
+}
+#analyticsCard .v521-compare-full-row > .compare-pairs-box{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#analyticsCard .v521-compare-full-row #comparePairRanks,
+#analyticsCard .v521-compare-full-row .compare-pair-list,
+#analyticsCard .v521-compare-full-row .compare-pair-row-compact{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:900px){
+  #analyticsCard .v521-compare-full-row{margin-top:10px!important}
+}
+</style>
+<script id="v521-compare-pairs-standalone-full-width-js">
+(function(){
+  function setupV521(){
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var shell=card.querySelector('.analytics-shell');
+    var grid=card.querySelector('.analytics-grid');
+    var box=card.querySelector('.compare-pairs-box');
+    if(!shell || !grid || !box) return;
+
+    var row=shell.querySelector(':scope > .v521-compare-full-row');
+    if(!row){
+      row=document.createElement('div');
+      row.className='v521-compare-full-row';
+      /* Đặt ngay sau analytics-grid để khung nằm cuối nhóm thống kê và chiếm trọn hàng. */
+      grid.insertAdjacentElement('afterend',row);
+    }
+    if(box.parentElement!==row) row.appendChild(box);
+
+    /* Xóa mọi inline grid cũ có thể còn sót lại từ các bản trước. */
+    box.style.setProperty('width','100%','important');
+    box.style.setProperty('max-width','none','important');
+    box.style.setProperty('min-width','0','important');
+    box.style.removeProperty('grid-column');
+    box.style.removeProperty('grid-row');
+    box.style.removeProperty('order');
+  }
+
+  setupV521();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setupV521,{once:true});
+  [50,150,400,900,1800].forEach(function(ms){setTimeout(setupV521,ms)});
+  var card=document.getElementById('analyticsCard');
+  if(card && window.MutationObserver){
+    new MutationObserver(function(){setupV521();}).observe(card,{childList:true,subtree:true});
+  }
+})();
+</script>
 </body>
 </html>
 
