@@ -174,7 +174,22 @@ else installGlobalZaloTracking();
 // Trước đây page_view phải chờ userAgentData.getHighEntropyValues(); trên một số
 // trình duyệt promise này có thể chậm/treo nên dashboard vẫn thấy heartbeat online
 // nhưng Hôm nay = 0. Dùng UA fallback ngay để không mất lượt truy cập.
-sendAnalytics("page_view",deviceInfoFromUa());
+function analyticsTrafficSource(){
+  try{
+    const params=new URLSearchParams(location.search||"");
+    const utm=String(params.get("utm_source")||"").toLowerCase();
+    const ref=String(document.referrer||"");
+    const host=ref ? new URL(ref).hostname.toLowerCase().replace(/^www\./,"") : "";
+    const raw=(utm+" "+host).trim();
+    if(!raw) return "Trực tiếp";
+    if(/google|googleads|gclid/.test(raw)) return "Google";
+    if(/facebook|fb\.com|l\.facebook|m\.facebook|instagram|meta/.test(raw)) return "Facebook";
+    if(/zalo/.test(raw)) return "Zalo";
+    return "Khác";
+  }catch(_){ return "Trực tiếp"; }
+}
+
+sendAnalytics("page_view",{...deviceInfoFromUa(),trafficSource:analyticsTrafficSource()});
 
 // Nếu trình duyệt trả được thông tin thiết bị chi tiết hơn thì chỉ bổ sung metadata,
 // tuyệt đối không cộng thêm lượt xem.

@@ -7197,6 +7197,18 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 #warrantyRecentList .warranty-product-name{font-weight:700;color:#344054;line-height:1.35}
 #warrantyRecentList .warranty-product-name + .warranty-product-name{margin-top:3px;padding-top:3px;border-top:1px dashed #eef1f4}
 </style>
+
+<style id="v506-traffic-source-stats">
+.traffic-source-box{min-height:230px!important}
+.traffic-source-list{padding:10px 14px 14px;display:flex;flex-direction:column;gap:13px}
+.traffic-source-row{display:grid;grid-template-columns:76px minmax(100px,1fr) 94px;gap:10px;align-items:center;font-size:11px;color:#475467}
+.traffic-source-name{font-weight:700;color:#344054;white-space:nowrap}
+.traffic-source-track{height:9px;background:#f0f2f5;border-radius:999px;overflow:hidden}
+.traffic-source-track i{display:block;height:100%;border-radius:999px;min-width:0;transition:width .25s ease}
+.traffic-source-row strong{text-align:right;color:#344054;font-size:11px;font-weight:850;white-space:nowrap}
+.traffic-source-row strong small{font-size:10px;color:#667085;font-weight:700}
+@media(max-width:760px){.traffic-source-row{grid-template-columns:68px minmax(80px,1fr) 82px;gap:7px}.traffic-source-list{padding:8px 12px 12px}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7471,6 +7483,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
     <div id="deviceList" class="device-legend"></div>
   </div>
 </div>
+          <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
@@ -8832,6 +8845,23 @@ document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
   renderAiHistoryRows();
 });
 
+
+function renderTrafficSources(items){
+  const host=document.getElementById("trafficSourceList");
+  if(!host) return;
+  const order=["Trực tiếp","Google","Facebook","Zalo","Khác"];
+  const colors={"Trực tiếp":"#4f8cff","Google":"#20c997","Facebook":"#8b5cf6","Zalo":"#ff6b00","Khác":"#b7c0d0"};
+  const map=new Map((Array.isArray(items)?items:[]).map(x=>[String(x?.name||""),Number(x?.value||0)]));
+  const rows=order.map(name=>({name,value:map.get(name)||0}));
+  const total=rows.reduce((a,x)=>a+x.value,0);
+  const max=Math.max(1,...rows.map(x=>x.value));
+  host.innerHTML=rows.map(x=>{
+    const pct=total?((x.value/total)*100):0;
+    const width=x.value?Math.max(5,(x.value/max)*100):0;
+    return `<div class="traffic-source-row"><span class="traffic-source-name">${esc(x.name)}</span><div class="traffic-source-track"><i style="width:${width.toFixed(1)}%;background:${colors[x.name]}"></i></div><strong>${fmt(x.value)} <small>(${pct.toFixed(1)}%)</small></strong></div>`;
+  }).join("");
+}
+
 function applyAnalyticsPeriod(d,period=analyticsPeriod){
   currentAnalyticsData=d;
   analyticsPeriod=period;
@@ -8860,6 +8890,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   // V356: tất cả module thống kê bên dưới đổi theo cùng khoảng thời gian.
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
+  renderTrafficSources(ranks.trafficSources||[]);
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
   renderRank("deviceOsRanks",ranks.topDeviceOs||[]);
   renderRank("productRanks",ranks.topProducts||[]);
