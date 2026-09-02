@@ -13200,7 +13200,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     pagination.innerHTML=`${nums}<button type="button" class="ai-history-page-btn-v533 next" data-page="next" aria-label="Trang sau">›</button>`;
   }
   function renderList(){
-    if(!rows.length){list.innerHTML='<div class="ai-history-empty">Chưa có lịch sử hội thoại phù hợp.</div>';detail.innerHTML='<div class="ai-history-detail-empty"><div class="ai-history-empty-icon">💬</div><b>Chưa có cuộc trò chuyện</b><span>Khi khách chat với AI, lịch sử sẽ tự động xuất hiện ở đây.</span></div>';renderPagination();return}
+    if(!rows.length){list.innerHTML='<div class="ai-history-empty">Chưa có lịch sử hội thoại phù hợp.</div>';detail.classList.remove('ai-history-detail-content-v535');detail.classList.add('ai-history-detail-empty');detail.innerHTML='<div><div class="ai-history-empty-icon">💬</div><b>Chưa có cuộc trò chuyện</b><span>Khi khách chat với AI, lịch sử sẽ tự động xuất hiện ở đây.</span></div>';renderPagination();return}
     const pages=Math.max(1,Math.ceil(rows.length/pageSize)); if(page>pages)page=pages;
     const slice=rows.slice((page-1)*pageSize,page*pageSize);
     if(!selected||!rows.some(x=>x.sessionId===selected))selected=slice[0]?.sessionId||rows[0].sessionId;
@@ -13210,6 +13210,8 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   function renderDetail(item){
     if(!item)return;
+    detail.classList.remove('ai-history-detail-empty');
+    detail.classList.add('ai-history-detail-content-v535');
     const ch=getChannel(item);
     const msgs=item.messages||[];
     detail.innerHTML=`<div class="ai-history-conversation ai-history-conversation-v534">
@@ -13737,6 +13739,19 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 /* V534 - Thiết kế lại khung nội dung chat trong Đào tạo AI */
 #aiSettingsCard .ai-history-detail-card{background:#f8fafc!important;border:1px solid #e3e8ef!important;border-radius:16px!important;overflow:hidden!important;box-shadow:0 8px 28px rgba(15,23,42,.045)!important}
 #aiSettingsCard .ai-history-conversation-v534{width:100%;min-width:0;display:flex;flex-direction:column;background:#fff}
+/* V535: detail content must occupy the whole right panel, not keep empty-state centering */
+#aiSettingsCard #aiChatHistoryDetail.ai-history-detail-content-v535{
+  margin:0!important; padding:0!important; width:100%!important; max-width:none!important;
+  min-width:0!important; align-self:stretch!important; display:flex!important;
+  flex:1 1 auto!important; flex-direction:column!important; align-items:stretch!important;
+  justify-content:flex-start!important; text-align:left!important; color:inherit!important;
+}
+#aiSettingsCard .ai-history-detail-card{align-items:stretch!important;}
+#aiSettingsCard .ai-history-detail-card>#aiChatHistoryDetail{width:100%!important;max-width:none!important;}
+#aiSettingsCard .ai-history-messages-v534{width:100%!important;box-sizing:border-box!important;}
+#aiSettingsCard .ai-history-msg-v534{max-width:min(78%,760px)!important;}
+@media(min-width:1500px){#aiSettingsCard .ai-history-layout{grid-template-columns:minmax(520px,40%) minmax(0,60%)!important;}}
+@media(max-width:1100px){#aiSettingsCard .ai-history-msg-v534{max-width:88%!important;}}
 #aiSettingsCard .ai-history-conv-head-v534{min-height:76px;padding:14px 16px!important;background:#fff;border-bottom:1px solid #edf1f5!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;position:sticky;top:0;z-index:3}
 #aiSettingsCard .ai-history-conv-title-v534{display:flex;align-items:center;gap:11px;min-width:0}
 #aiSettingsCard .ai-history-conv-icon-v534{width:38px;height:38px;border-radius:12px;background:#fff7f2;border:1px solid #ffe3d3;display:grid;place-items:center;flex:0 0 auto}
