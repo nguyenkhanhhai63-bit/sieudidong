@@ -13210,7 +13210,29 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   function renderDetail(item){
     if(!item)return;
-    detail.innerHTML=`<div class="ai-history-conversation"><div class="ai-history-conv-head"><div><h2>Lịch sử hội thoại</h2><small>${esc(dt(item.startedAt))} · ${Number(item.messageCount||0)} tin nhắn</small></div><button class="ai-history-delete" type="button" data-history-delete="${esc(item.sessionId)}">Xóa cuộc chat</button></div><div class="ai-history-messages">${(item.messages||[]).map(m=>`<div class="ai-history-msg ${m.role==='user'?'user':'assistant'}"><div class="ai-history-bubble">${esc(m.text||'')}</div><span class="ai-history-time">${m.role==='user'?'Khách':'AI'} · ${esc(dt(m.at))}</span></div>`).join('')}</div></div>`;
+    const ch=getChannel(item);
+    const msgs=item.messages||[];
+    detail.innerHTML=`<div class="ai-history-conversation ai-history-conversation-v534">
+      <div class="ai-history-conv-head ai-history-conv-head-v534">
+        <div class="ai-history-conv-title-v534">
+          <div class="ai-history-conv-icon-v534">${iconSvg(ch.tone)}</div>
+          <div><h2>Nội dung đoạn chat</h2><small><span class="ai-history-live-dot-v534"></span>${esc(ch.name)} · ${esc(dt(item.startedAt))} · ${Number(item.messageCount||msgs.length)} tin nhắn</small></div>
+        </div>
+        <button class="ai-history-delete ai-history-delete-v534" type="button" data-history-delete="${esc(item.sessionId)}" title="Xóa cuộc chat" aria-label="Xóa cuộc chat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg><span>Xóa</span>
+        </button>
+      </div>
+      <div class="ai-history-messages ai-history-messages-v534">
+        <div class="ai-history-date-sep-v534"><span>${esc(dt(item.startedAt))}</span></div>
+        ${msgs.map((m,i)=>{const isUser=m.role==='user'; return `<div class="ai-history-msg-v534 ${isUser?'user':'assistant'}">
+          <div class="ai-history-avatar-v534">${isUser?'K':'AI'}</div>
+          <div class="ai-history-msg-body-v534">
+            <div class="ai-history-msg-meta-v534"><b>${isUser?'Khách hàng':'AI trả lời'}</b><time>${esc(dt(m.at))}</time></div>
+            <div class="ai-history-bubble-v534">${esc(m.text||'')}</div>
+          </div>
+        </div>`}).join('')}
+      </div>
+    </div>`;
   }
   async function load(){
     list.innerHTML='<div class="ai-history-empty">Đang tải lịch sử...</div>';
@@ -13710,6 +13732,55 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 @media(max-width:700px){#aiSettingsCard .ai-history-list-card-v533 .ai-history-item{grid-template-columns:32px minmax(0,1fr)!important;padding:11px 12px!important;gap:9px!important}#aiSettingsCard .ai-history-list-card-v533 .ai-history-item>time{grid-column:2;text-align:left!important;margin-top:-2px;font-size:9.5px!important}#aiSettingsCard .ai-history-channel-tag{display:none}#aiSettingsCard .ai-history-pagination-v533{gap:5px;padding:10px}#aiSettingsCard .ai-history-page-btn-v533{width:31px;height:31px}}
 </style>
 
+
+<style id="v534-ai-chat-detail-redesign">
+/* V534 - Thiết kế lại khung nội dung chat trong Đào tạo AI */
+#aiSettingsCard .ai-history-detail-card{background:#f8fafc!important;border:1px solid #e3e8ef!important;border-radius:16px!important;overflow:hidden!important;box-shadow:0 8px 28px rgba(15,23,42,.045)!important}
+#aiSettingsCard .ai-history-conversation-v534{width:100%;min-width:0;display:flex;flex-direction:column;background:#fff}
+#aiSettingsCard .ai-history-conv-head-v534{min-height:76px;padding:14px 16px!important;background:#fff;border-bottom:1px solid #edf1f5!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;position:sticky;top:0;z-index:3}
+#aiSettingsCard .ai-history-conv-title-v534{display:flex;align-items:center;gap:11px;min-width:0}
+#aiSettingsCard .ai-history-conv-icon-v534{width:38px;height:38px;border-radius:12px;background:#fff7f2;border:1px solid #ffe3d3;display:grid;place-items:center;flex:0 0 auto}
+#aiSettingsCard .ai-history-conv-icon-v534 .ai-history-channel-icon{width:24px;height:24px!important;margin:0!important}
+#aiSettingsCard .ai-history-conv-head-v534 h2{font-size:15px!important;line-height:1.2;margin:0 0 6px!important;color:#111827!important;font-weight:800!important}
+#aiSettingsCard .ai-history-conv-head-v534 small{display:flex!important;align-items:center;gap:6px;color:#8a94a6!important;font-size:10.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:540px}
+#aiSettingsCard .ai-history-live-dot-v534{width:7px;height:7px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px #dcfce7;display:inline-block;flex:0 0 auto}
+#aiSettingsCard .ai-history-delete-v534{height:36px!important;min-height:36px!important;padding:0 11px!important;border-radius:10px!important;display:inline-flex!important;align-items:center!important;gap:6px!important;background:#fff!important;border:1px solid #fecaca!important;color:#ef4444!important;font-size:11px!important;font-weight:800!important;box-shadow:none!important}
+#aiSettingsCard .ai-history-delete-v534:hover{background:#fff5f5!important;border-color:#fca5a5!important}
+#aiSettingsCard .ai-history-delete-v534 svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#aiSettingsCard .ai-history-messages-v534{max-height:650px!important;min-height:520px!important;overflow:auto!important;padding:18px 18px 24px!important;background:linear-gradient(180deg,#fbfcfe 0%,#f8fafc 100%)!important;display:flex!important;flex-direction:column!important;gap:14px!important}
+#aiSettingsCard .ai-history-date-sep-v534{display:flex;align-items:center;gap:10px;color:#98a2b3;font-size:9.5px;margin:0 4px 2px}
+#aiSettingsCard .ai-history-date-sep-v534:before,#aiSettingsCard .ai-history-date-sep-v534:after{content:"";height:1px;background:#e9edf2;flex:1}
+#aiSettingsCard .ai-history-date-sep-v534 span{padding:4px 8px;border:1px solid #e5e9ef;border-radius:999px;background:#fff;white-space:nowrap}
+#aiSettingsCard .ai-history-msg-v534{display:flex;align-items:flex-end;gap:9px;max-width:82%;animation:v534ChatIn .18s ease-out}
+#aiSettingsCard .ai-history-msg-v534.user{align-self:flex-start}
+#aiSettingsCard .ai-history-msg-v534.assistant{align-self:flex-end;flex-direction:row-reverse}
+#aiSettingsCard .ai-history-avatar-v534{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;font-size:9px;font-weight:900;border:1px solid #e5e7eb;background:#fff;color:#64748b;box-shadow:0 2px 6px rgba(15,23,42,.04)}
+#aiSettingsCard .ai-history-msg-v534.assistant .ai-history-avatar-v534{background:#fff2e9;border-color:#ffd7c2;color:#ff5a00}
+#aiSettingsCard .ai-history-msg-body-v534{min-width:0;display:flex;flex-direction:column;gap:5px}
+#aiSettingsCard .ai-history-msg-v534.assistant .ai-history-msg-body-v534{align-items:flex-end}
+#aiSettingsCard .ai-history-msg-meta-v534{display:flex;align-items:center;gap:8px;padding:0 3px;color:#98a2b3;font-size:9.5px}
+#aiSettingsCard .ai-history-msg-meta-v534 b{font-size:10px;color:#64748b;font-weight:800}
+#aiSettingsCard .ai-history-msg-v534.assistant .ai-history-msg-meta-v534 b{color:#f97316}
+#aiSettingsCard .ai-history-bubble-v534{padding:12px 14px;border-radius:15px;font-size:12.5px;line-height:1.62;white-space:pre-wrap;word-break:break-word;box-shadow:0 2px 7px rgba(15,23,42,.04);max-width:100%}
+#aiSettingsCard .ai-history-msg-v534.user .ai-history-bubble-v534{background:#fff;border:1px solid #e4e9ef;color:#1f2937;border-bottom-left-radius:5px}
+#aiSettingsCard .ai-history-msg-v534.assistant .ai-history-bubble-v534{background:linear-gradient(135deg,#fff7f2,#fff1e8);border:1px solid #ffdccc;color:#263041;border-bottom-right-radius:5px}
+#aiSettingsCard .ai-history-msg-v534.assistant .ai-history-bubble-v534:before{content:"AI TRẢ LỜI";display:block;margin-bottom:6px;color:#ff5a00;font-size:9px;font-weight:900;letter-spacing:.04em}
+@keyframes v534ChatIn{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:900px){
+  #aiSettingsCard .ai-history-msg-v534{max-width:90%}
+  #aiSettingsCard .ai-history-messages-v534{min-height:440px!important;padding:14px!important}
+}
+@media(max-width:600px){
+  #aiSettingsCard .ai-history-conv-head-v534{padding:11px 12px!important;min-height:68px}
+  #aiSettingsCard .ai-history-conv-icon-v534{display:none}
+  #aiSettingsCard .ai-history-delete-v534 span{display:none}
+  #aiSettingsCard .ai-history-delete-v534{width:36px!important;padding:0!important;justify-content:center!important}
+  #aiSettingsCard .ai-history-msg-v534{max-width:96%;gap:6px}
+  #aiSettingsCard .ai-history-avatar-v534{width:27px;height:27px;border-radius:9px}
+  #aiSettingsCard .ai-history-bubble-v534{font-size:12px;padding:10px 12px;border-radius:13px}
+  #aiSettingsCard .ai-history-msg-meta-v534{font-size:9px}
+}
+</style>
 </body>
 </html>
 
