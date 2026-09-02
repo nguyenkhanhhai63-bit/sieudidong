@@ -853,7 +853,7 @@
   @media (max-width:768px){
     #sddBackToTop{
       right:18px;
-      bottom:112px;
+      bottom:176px;
       width:48px;
       height:48px;
       box-shadow:0 7px 20px rgba(255,90,0,.28),0 0 0 4px rgba(255,90,0,.10);
@@ -862,7 +862,7 @@
     #sddBackToTop .sdd-btt-tip{display:none}
   }
   @media (max-width:420px){
-    #sddBackToTop{right:14px;bottom:106px;width:46px;height:46px}
+    #sddBackToTop{right:14px;bottom:170px;width:46px;height:46px}
   }
   @media (prefers-reduced-motion:reduce){
     #sddBackToTop{transition:none}
@@ -882,9 +882,30 @@
   if(!btn)return;
   var threshold=500;
   var ticking=false;
+
+  // V545: nút lên đầu trang tự né nút chat nổi, kể cả khi nút chat được kéo sang vị trí khác.
+  function syncAwayFromChat(){
+    var chat=document.getElementById('zaloConsultBtn') || document.querySelector('.ai-chat-launcher,.ai-round-float,.zalo-float');
+    if(!chat || chat===btn) return;
+    var cs=window.getComputedStyle(chat);
+    if(cs.display==='none' || cs.visibility==='hidden') return;
+    var r=chat.getBoundingClientRect();
+    if(!r.width || !r.height) return;
+
+    var gap=14;
+    var right=Math.max(14, Math.round(window.innerWidth-r.right));
+    var bottom=Math.max(14, Math.round(window.innerHeight-r.top+gap));
+
+    // Căn cùng mép phải với nút chat và luôn nằm phía trên nó.
+    btn.style.right=right+'px';
+    btn.style.left='auto';
+    btn.style.bottom=bottom+'px';
+  }
+
   function update(){
     var y=window.pageYOffset||document.documentElement.scrollTop||0;
     btn.classList.toggle('is-visible',y>threshold);
+    syncAwayFromChat();
     ticking=false;
   }
   function onScroll(){
@@ -899,6 +920,20 @@
   });
   window.addEventListener('scroll',onScroll,{passive:true});
   window.addEventListener('pageshow',update);
+  window.addEventListener('resize',syncAwayFromChat,{passive:true});
+  window.addEventListener('orientationchange',syncAwayFromChat,{passive:true});
+
+  var chat=document.getElementById('zaloConsultBtn') || document.querySelector('.ai-chat-launcher,.ai-round-float,.zalo-float');
+  if(chat){
+    ['pointerup','mouseup','touchend','transitionend'].forEach(function(ev){
+      chat.addEventListener(ev,function(){setTimeout(syncAwayFromChat,0);},{passive:true});
+    });
+    if(window.MutationObserver){
+      new MutationObserver(syncAwayFromChat).observe(chat,{attributes:true,attributeFilter:['style','class']});
+    }
+  }
+  setTimeout(syncAwayFromChat,100);
+  setTimeout(syncAwayFromChat,500);
   update();
 })();
 </script>
