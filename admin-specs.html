@@ -7251,6 +7251,10 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   #analyticsCard .traffic-insights-row>.traffic-hour-box{grid-column:1!important;min-height:0!important}
 }
 </style>
+
+<style id="v510-traffic-row-top">
+#analyticsCard .traffic-insights-row-top{margin:12px 0 14px!important;}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7498,6 +7502,17 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
           <div class="metric metric-ai"><small>Khách dùng AI chatbox</small><strong id="mAiUsers">0</strong><em id="mAiQuestionsPeriod">0 câu hỏi · Hôm nay</em></div>
           <div class="metric metric-total"><small>Tổng lượt truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
+        <!-- v510: hàng thứ 2 ngay sau KPI -->
+        <div class="traffic-insights-row traffic-insights-row-top">
+          <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
+          <div class="abox device-box"><h2>Thiết bị truy cập</h2>
+            <div class="device-chart-wrap">
+              <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
+              <div id="deviceList" class="device-legend"></div>
+            </div>
+          </div>
+          <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
+        </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
           <div class="metric"><small>Lượt tra bảo hành</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">Theo kỳ đang chọn</em></div>
@@ -7519,16 +7534,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
   <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm đoạn chat <span>↓</span></button></div>
 </div>
-          <div class="traffic-insights-row">
-            <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
-            <div class="abox device-box"><h2>Thiết bị truy cập</h2>
-              <div class="device-chart-wrap">
-                <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
-                <div id="deviceList" class="device-legend"></div>
-              </div>
-            </div>
-            <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
-          </div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
