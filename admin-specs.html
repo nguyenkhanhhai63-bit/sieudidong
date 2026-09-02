@@ -8261,7 +8261,6 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
   </div>
   <div id="aiQuestionHistory" class="ai-question-history"></div>
   <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
-  <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm đoạn chat <span>↓</span></button></div>
 </div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
@@ -9579,9 +9578,6 @@ function renderAiHistoryRows(){
     </div>`;
   }).join("");
 
-  const footerBtn=document.getElementById("aiHistoryFooterMoreBtn");
-  if(footerBtn) footerBtn.closest(".ai-history-footer")?.toggleAttribute("hidden", aiHistoryState.expanded || items.length<=compactLimit);
-
   if(!pager) return;
 
   if(!aiHistoryState.expanded){
@@ -9638,15 +9634,6 @@ document.getElementById("aiHistoryMoreBtn")?.addEventListener("click",()=>{
   aiHistoryState.expanded=true;
   aiHistoryState.page=1;
   renderAiHistoryRows();
-});
-
-document.getElementById("aiHistoryFooterMoreBtn")?.addEventListener("click",()=>{
-  // Hiển thị thêm các đoạn chat ngay trong card.
-  aiHistoryState.expanded=true;
-  aiHistoryState.page=1;
-  renderAiHistoryRows();
-  const host=document.getElementById("aiQuestionHistory");
-  if(host) host.scrollTo({top:0,behavior:"smooth"});
 });
 
 document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
