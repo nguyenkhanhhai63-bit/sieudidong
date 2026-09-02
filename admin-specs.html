@@ -13021,8 +13021,8 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     var grid=card.querySelector('.analytics-grid');
     var ai=card.querySelector('.ai-history-box');
     var warranty=card.querySelector('.warranty-analytics-box');
-    if(grid&&ai) grid.insertBefore(ai,grid.firstChild);
-    if(grid&&warranty) grid.insertBefore(warranty, ai ? ai.nextSibling : grid.firstChild);
+    if(grid&&ai && !ai.closest('.v518-primary-row')) grid.insertBefore(ai,grid.firstChild);
+    if(grid&&warranty && !warranty.closest('.v518-primary-row')) grid.insertBefore(warranty, ai ? ai.nextSibling : grid.firstChild);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
   setTimeout(setup,700);
@@ -13339,3 +13339,78 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 }
 </style>
+
+
+<!-- V518 PRIMARY ANALYTICS ROW TRUE FULL WIDTH -->
+<style id="v518-primary-row-full-width">
+/* Tách riêng 2 khung đầu thành một hàng 5/7 độc lập để luôn lấp kín 100% chiều ngang. */
+#analyticsCard .analytics-grid > .v518-primary-row{
+  grid-column:1 / -1!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,5fr) minmax(0,7fr)!important;
+  gap:12px!important;
+  margin:0!important;
+  padding:0!important;
+  align-items:stretch!important;
+  order:0!important;
+  box-sizing:border-box!important;
+}
+#analyticsCard .v518-primary-row > .ai-history-box,
+#analyticsCard .v518-primary-row > .warranty-analytics-box{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  grid-column:auto!important;
+  order:initial!important;
+  margin:0!important;
+  min-height:300px!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:1280px){
+  #analyticsCard .analytics-grid > .v518-primary-row{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  }
+}
+@media(max-width:900px){
+  #analyticsCard .analytics-grid > .v518-primary-row{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+}
+</style>
+<script id="v518-primary-row-full-width-js">
+(function(){
+  function setupV518(){
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var grid=card.querySelector('.analytics-grid');
+    var ai=card.querySelector('.ai-history-box');
+    var warranty=card.querySelector('.warranty-analytics-box');
+    if(!grid || !ai || !warranty) return;
+
+    var row=grid.querySelector(':scope > .v518-primary-row');
+    if(!row){
+      row=document.createElement('div');
+      row.className='v518-primary-row';
+      grid.insertBefore(row,grid.firstChild);
+    }
+    if(ai.parentElement!==row) row.appendChild(ai);
+    if(warranty.parentElement!==row) row.appendChild(warranty);
+  }
+
+  /* DOM của dashboard đã được parse trước đoạn này, chạy ngay để chặn các script layout cũ. */
+  setupV518();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setupV518,{once:true});
+  setTimeout(setupV518,100);
+  setTimeout(setupV518,800);
+  setTimeout(setupV518,1800);
+
+  var card=document.getElementById('analyticsCard');
+  if(card && window.MutationObserver){
+    new MutationObserver(function(){ setupV518(); }).observe(card,{childList:true,subtree:true});
+  }
+})();
+</script>
