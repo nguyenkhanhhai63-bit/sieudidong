@@ -13254,3 +13254,37 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #analyticsCard .analytics-grid>.warranty-analytics-box{grid-column:1/-1!important}
 }
 </style>
+
+<!-- V516 DASHBOARD TRUE FULL WIDTH -->
+<style id="v516-dashboard-true-full-width">
+/* Fix: trước đây vừa trừ chiều rộng sidebar trong width, vừa cộng margin-left sidebar => bị hụt 1 khoảng bên phải. */
+@media (min-width:1101px){
+  body.authenticated .wrap{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:calc(var(--sidebar-w) + 16px)!important;
+    padding-right:16px!important;
+    padding-top:78px!important;
+    box-sizing:border-box!important;
+  }
+  body.sidebar-collapsed .wrap{
+    width:100%!important;
+    margin:0!important;
+    padding-left:calc(var(--sidebar-w) + 16px)!important;
+    padding-right:16px!important;
+  }
+  #analyticsCard{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+  #analyticsCard .analytics-shell,
+  #analyticsCard .analytics-grid{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
