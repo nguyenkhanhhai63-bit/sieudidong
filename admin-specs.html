@@ -7719,7 +7719,8 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 <div class="used-field wide used-name-field"><label>Tên máy *</label><input id="usedName" class="used-input" autocomplete="off" placeholder="Gõ tên máy, ví dụ: Xiaomi 15 Pro"><div id="usedNameSuggest" class="used-name-suggest"></div><div class="used-smart-hint">Gõ tên máy → hệ thống tự gợi ý hãng và nhớ các máy đã nhập trước đó.</div></div>
 <div class="used-field"><label>Hãng</label><input id="usedBrand" class="used-input" list="usedBrandSuggestions" placeholder="Chọn hoặc nhập hãng"><datalist id="usedBrandSuggestions"><option>Xiaomi</option><option>Redmi</option><option>POCO</option><option>Samsung</option><option>OPPO</option><option>vivo</option><option>iQOO</option><option>OnePlus</option><option>HONOR</option><option>Realme</option><option>Tecno</option><option>Apple</option></datalist></div><div class="used-field"><label>Giá bán *</label><input id="usedPrice" class="used-input" inputmode="numeric" placeholder="12500000"></div>
 <div class="used-field"><label>Bộ nhớ</label><input id="usedMemory" class="used-input" list="usedMemorySuggestions" placeholder="Chọn nhanh dung lượng"><datalist id="usedMemorySuggestions"><option>6/128GB</option><option>8/128GB</option><option>8/256GB</option><option>12/256GB</option><option>12/512GB</option><option>16/512GB</option><option>16GB/1TB</option></datalist></div><div class="used-field"><label>Màu</label><input id="usedColor" class="used-input" list="usedColorSuggestions" placeholder="Đen"><datalist id="usedColorSuggestions"><option>Đen</option><option>Trắng</option><option>Bạc</option><option>Xanh</option><option>Xanh dương</option><option>Xanh lá</option><option>Tím</option><option>Hồng</option><option>Vàng</option><option>Cam</option></datalist></div>
-<div class="used-field"><label>Ngoại hình</label><input id="usedCondition" class="used-input" list="usedConditionSuggestions" placeholder="Chọn nhanh tình trạng"><datalist id="usedConditionSuggestions"><option>99% - Gần như mới</option><option>98% - Xước nhẹ</option><option>95% - Có xước/cấn nhẹ</option><option>90% - Có dấu hiệu sử dụng</option></datalist></div><div class="used-field"><label>Pin</label><input id="usedBattery" class="used-input" list="usedBatterySuggestions" placeholder="Ví dụ: 99%"><datalist id="usedBatterySuggestions"><option>100%</option><option>99%</option><option>95%</option><option>90%</option><option>85%</option></datalist></div>
+<div class="used-field"><label>ROM</label><input id="usedRom" class="used-input" list="usedRomSuggestions" placeholder="ROM gốc"><datalist id="usedRomSuggestions"><option>ROM gốc</option><option>ROM quốc tế</option><option>Việt hóa</option></datalist></div>
+<div class="used-field"><label>Ngoại hình</label><input id="usedCondition" class="used-input" list="usedConditionSuggestions" placeholder="Chọn nhanh tình trạng"><datalist id="usedConditionSuggestions"><option>Như mới</option><option>Máy đẹp</option><option>Xước nhẹ</option><option>Cấn nhẹ</option><option>Trầy xước nhiều</option></datalist></div><div class="used-field"><label>Pin</label><input id="usedBattery" class="used-input" list="usedBatterySuggestions" placeholder="Ví dụ: 99%"><datalist id="usedBatterySuggestions"><option>100%</option><option>99%</option><option>95%</option><option>90%</option><option>85%</option></datalist></div>
 <div class="used-field"><label>Bảo hành</label><input id="usedWarranty" class="used-input" list="usedWarrantySuggestions" placeholder="Chọn nhanh"><datalist id="usedWarrantySuggestions"><option>1 tháng</option><option>3 tháng</option><option>6 tháng</option><option>12 tháng</option><option>Bảo hành theo chính sách shop</option></datalist></div><div class="used-field"><label>IMEI / mã nội bộ</label><input id="usedImei" class="used-input" placeholder="Không hiển thị ngoài web"></div>
 <div class="used-field"><label>Trạng thái</label><select id="usedStatus" class="used-select"><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select></div>
 <div class="used-field wide"><label>Phụ kiện đi kèm</label><input id="usedAccessories" class="used-input" list="usedAccessorySuggestions" placeholder="Chọn hoặc nhập phụ kiện"><datalist id="usedAccessorySuggestions"><option>Máy trần</option><option>Máy + sạc</option><option>Máy + sạc + ốp</option><option>Fullbox</option><option>Fullbox + phụ kiện</option></datalist></div>
@@ -10684,7 +10685,7 @@ document.addEventListener("DOMContentLoaded",function(){
 (function(){
   const $=id=>document.getElementById(id);
   const els={
-    name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
+    name:$('usedName'),brand:$('usedBrand'),price:$('usedPrice'),memory:$('usedMemory'),color:$('usedColor'),rom:$('usedRom'),condition:$('usedCondition'),battery:$('usedBattery'),warranty:$('usedWarranty'),imei:$('usedImei'),status:$('usedStatus'),accessories:$('usedAccessories'),note:$('usedNote'),
     imagesInput:$('usedImagesInput'),imagePreview:$('usedImagePreview'),list:$('usedProductsList'),filter:$('usedListFilter'),search:$('usedListSearch'),
     statusText:$('usedAdminStatus'),formTitle:$('usedFormTitle'),save:$('saveUsedProduct'),reset:$('resetUsedForm'),reload:$('reloadUsedProducts'),uploadBox:$('usedImageUploadBox'),toast:$('usedAdminToast'),
     cloudStatus:$('usedCloudinaryStatus'),nameSuggest:$('usedNameSuggest'),sheetStatus:$('usedSheetStatus'),
@@ -10843,7 +10844,7 @@ document.addEventListener("DOMContentLoaded",function(){
     return {
       id:editingId||undefined,source:editingSource||undefined,sheetRow:editingSheetRow||undefined,name:els.name?.value.trim()||'',brand:els.brand?.value.trim()||'',
       price:Number(String(els.price?.value||'').replace(/[^\d]/g,''))||0,memory:els.memory?.value.trim()||'',
-      color:els.color?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',
+      color:els.color?.value.trim()||'',rom:els.rom?.value.trim()||'',condition:els.condition?.value.trim()||'',battery:els.battery?.value.trim()||'',
       warranty:els.warranty?.value.trim()||'',imei:els.imei?.value.trim()||'',status:els.status?.value||'available',
       accessories:els.accessories?.value.trim()||'',note:els.note?.value.trim()||'',
       imageAssets:assets.map(normalizedAsset),images:currentImages()
@@ -10851,12 +10852,12 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   function reset(){
     clearErrors();editingId='';editingSource='';editingSheetRow=0;assets=[];
-    ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});
+    ['name','brand','price','memory','color','rom','condition','battery','warranty','imei','accessories','note'].forEach(k=>{if(els[k])els[k].value=''});
     if(els.status)els.status.value='available';if(els.formTitle)els.formTitle.textContent='Thêm máy cũ';if(els.save)els.save.textContent='Lưu máy cũ';
     setSheetEditMode(false);
     renderImages();setStatus('');
   }
-  const SHEET_LOCKED_FIELDS=['name','brand','price','memory','condition','warranty','imei','status','accessories'];
+  const SHEET_LOCKED_FIELDS=['name','brand','price','memory','color','rom','condition','warranty','imei','status','accessories'];
   function setSheetEditMode(on){
     SHEET_LOCKED_FIELDS.forEach(k=>{
       const el=els[k]; if(!el)return;
@@ -10889,14 +10890,14 @@ document.addEventListener("DOMContentLoaded",function(){
     editingId=x.id||'';
     editingSource=x.source||'';
     editingSheetRow=Number(x.sheetRow||0)||0;
-    for(const k of ['name','brand','price','memory','color','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
+    for(const k of ['name','brand','price','memory','color','rom','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
     if(els.status)els.status.value=x.status==='sold'?'sold':'available';
     assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
     const fromSheet=x.source==='sheet';
     setSheetEditMode(fromSheet);
     if(els.formTitle)els.formTitle.textContent=fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ';
     if(els.save)els.save.textContent=fromSheet?'Lưu ảnh / ghi chú':'Lưu thay đổi';
-    setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, màu, pin hoặc ghi chú; giá/trạng thái vẫn lấy từ Sheet.':'','#667085');
+    setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, pin hoặc ghi chú; màu, ROM, giá và trạng thái lấy từ Google Sheet.':'','#667085');
     renderImages();
     document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
     if(fromSheet) setTimeout(()=>highlightImageUpload(x),260);
@@ -10934,11 +10935,11 @@ document.addEventListener("DOMContentLoaded",function(){
   function render(){
     if(!els.list)return;
     const f=els.filter?.value||'all',q=norm(els.search?.value||'');
-    const data=rows.filter(x=>(f==='all'||x.status===f)&&(!q||norm([x.name,x.brand,x.memory,x.color,x.imei].join(' ')).includes(q)));
+    const data=rows.filter(x=>(f==='all'||x.status===f)&&(!q||norm([x.name,x.brand,x.memory,x.color,x.rom,x.imei].join(' ')).includes(q)));
     if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
-      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.rom?`<span>${esc(x.rom)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
     }).join('');
   }
 

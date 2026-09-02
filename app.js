@@ -2124,6 +2124,7 @@ if(!inlineProductDetail) return;
     usedBox.innerHTML=`
       <div class="used-detail-badge">Ảnh thực tế đúng chiếc máy đang bán</div>
       ${ud.condition?`<div><span>Ngoại hình</span><strong>${ud.condition}</strong></div>`:""}
+      ${ud.rom?`<div><span>ROM</span><strong>${ud.rom}</strong></div>`:""}
       ${ud.battery?`<div><span>Tình trạng pin</span><strong>${ud.battery}</strong></div>`:""}
       ${ud.warranty?`<div><span>Bảo hành</span><strong>${ud.warranty}</strong></div>`:""}
       ${ud.accessories?`<div><span>Phụ kiện</span><strong>${ud.accessories}</strong></div>`:""}
@@ -2417,8 +2418,8 @@ window.addEventListener("popstate",()=>{
 
 function usedPublicToProducts(items){
   return (Array.isArray(items)?items:[]).map(x=>{
-    const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
-    const usedData={condition:x.condition||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
+    const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"ROM",value:x.rom||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
+    const usedData={condition:x.condition||"",rom:x.rom||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
     const image=Array.isArray(x.images)&&x.images[0]?x.images[0]:"";
     return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:canonicalBrand(x.brand)||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
       sourceType:"used",usedItemId:x.id,basePrice:Number(x.price||0),image,images:x.images||[],attributes:attrs,usedData,
