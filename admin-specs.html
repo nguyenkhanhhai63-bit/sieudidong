@@ -8319,7 +8319,7 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
         <div class="ai-v409-master-detail">
           <section class="ai-v409-list-card">
             <div id="aiKnowledgeList" class="ai-knowledge-list ai-v409-question-list"></div>
-            <div class="ai-v409-list-foot"><span id="aiKnowledgeStatus"></span><span id="aiKnowledgePager">Hiển thị tối đa 10 bản ghi</span></div>
+            <div class="ai-v409-list-foot"><span id="aiKnowledgeStatus"></span><span id="aiKnowledgePager"></span></div>
           </section>
           <section id="aiKnowledgeDetail" class="ai-v409-detail-card">
             <div class="ai-v409-detail-empty"><div>?</div><b>Chọn một câu hỏi</b><span>Chi tiết và ô đào tạo AI sẽ hiển thị tại đây.</span></div>
@@ -10209,6 +10209,10 @@ function fmtAiKnowledgeDate(v){
   try{return new Date(v).toLocaleString("vi-VN");}catch(_){return "";}
 }
 let aiKnowledgeSelectedId="";
+// v550: phân trang danh sách kiến thức AI
+let aiKnowledgePage=1;
+let aiKnowledgePageSize=10;
+let aiKnowledgeFilteredTotal=0;
 function aiKnowledgeTopicOf(x){
   const t=`${x.question||""} ${x.missing||""}`.toLowerCase();
   if(/trả góp|tra gop|lãi|lai suat|saison|mirae|trả trước|góp tháng/.test(t)) return "Trả góp";
@@ -10230,7 +10234,23 @@ function aiKnowledgeVisibleRows(){
     return statusOk && (!q||text.includes(q)) && (topic==="all"||aiKnowledgeTopicOf(x)===topic);
   });
   rows.sort((a,b)=>sort==="asked"?(Number(b.count||1)-Number(a.count||1)):(new Date(b.lastAskedAt||b.updatedAt||0)-new Date(a.lastAskedAt||a.updatedAt||0)));
-  return rows.slice(0,10);
+  aiKnowledgeFilteredTotal=rows.length;
+  const totalPages=Math.max(1,Math.ceil(rows.length/aiKnowledgePageSize));
+  if(aiKnowledgePage>totalPages) aiKnowledgePage=totalPages;
+  if(aiKnowledgePage<1) aiKnowledgePage=1;
+  const start=(aiKnowledgePage-1)*aiKnowledgePageSize;
+  return rows.slice(start,start+aiKnowledgePageSize);
+}
+function renderAiKnowledgePager(){
+  const el=document.getElementById("aiKnowledgePager"); if(!el)return;
+  const total=aiKnowledgeFilteredTotal, pages=Math.max(1,Math.ceil(total/aiKnowledgePageSize));
+  const start=total?((aiKnowledgePage-1)*aiKnowledgePageSize+1):0, end=Math.min(total,aiKnowledgePage*aiKnowledgePageSize);
+  const nums=[];
+  const add=n=>{if(n>=1&&n<=pages&&!nums.includes(n))nums.push(n)};
+  add(1); add(aiKnowledgePage-2); add(aiKnowledgePage-1); add(aiKnowledgePage); add(aiKnowledgePage+1); add(aiKnowledgePage+2); add(pages); nums.sort((a,b)=>a-b);
+  let buttons='',prev=0;
+  for(const n of nums){if(prev&&n-prev>1)buttons+='<span class="ai-k-page-dots">…</span>';buttons+=`<button type="button" class="ai-k-page-btn ${n===aiKnowledgePage?'is-active':''}" data-ai-k-page="${n}">${n}</button>`;prev=n;}
+  el.innerHTML=`<div class="ai-k-pager-info">${start}-${end} / ${total} câu</div><div class="ai-k-pager-controls"><button type="button" class="ai-k-page-btn" data-ai-k-page="prev" ${aiKnowledgePage<=1?'disabled':''}>‹</button>${buttons}<button type="button" class="ai-k-page-btn" data-ai-k-page="next" ${aiKnowledgePage>=pages?'disabled':''}>›</button><select id="aiKnowledgePageSize" aria-label="Số câu mỗi trang"><option value="10" ${aiKnowledgePageSize===10?'selected':''}>10 / trang</option><option value="20" ${aiKnowledgePageSize===20?'selected':''}>20 / trang</option><option value="50" ${aiKnowledgePageSize===50?'selected':''}>50 / trang</option></select></div>`;
 }
 function renderAiKnowledgeDetail(){
   const box=document.getElementById("aiKnowledgeDetail"); if(!box)return;
@@ -10258,7 +10278,7 @@ function renderAiKnowledge(){
   const total=document.getElementById("aiKnowledgeStatTotal"); if(total) total.textContent=aiKnowledgeItems.length;
   if(aiKnowledgeBadge){aiKnowledgeBadge.textContent=pending.length;aiKnowledgeBadge.style.display=pending.length?"inline-flex":"none";}
   const rows=aiKnowledgeVisibleRows();
-  if(!rows.length){aiKnowledgeList.innerHTML='<div class="ai-knowledge-empty">Không có mục nào trong bộ lọc này.</div>';aiKnowledgeSelectedId="";renderAiKnowledgeDetail();return;}
+  if(!rows.length){aiKnowledgeList.innerHTML='<div class="ai-knowledge-empty">Không có mục nào trong bộ lọc này.</div>';aiKnowledgeSelectedId="";renderAiKnowledgePager();renderAiKnowledgeDetail();return;}
   if(!rows.some(x=>String(x.id)===String(aiKnowledgeSelectedId))) aiKnowledgeSelectedId=String(rows[0].id);
   aiKnowledgeList.innerHTML=rows.map(x=>{
     const status=x.status||"pending",topic=aiKnowledgeTopicOf(x);
@@ -10274,6 +10294,7 @@ function renderAiKnowledge(){
       <div class="ai-knowledge-chat-chevron" aria-hidden="true">›</div>
     </div>`
   }).join("");
+  renderAiKnowledgePager();
   renderAiKnowledgeDetail();
 }
 async function loadAiKnowledgeAdmin(){
@@ -10326,10 +10347,23 @@ if(aiKnowledgeDetailBox) aiKnowledgeDetailBox.addEventListener("click",async e=>
   catch(err){if(aiKnowledgeStatus)aiKnowledgeStatus.textContent=err.message||"Không cập nhật được";}
   finally{btn.disabled=false;}
 });
-if(aiKnowledgeSearch) aiKnowledgeSearch.addEventListener("input",renderAiKnowledge);
-if(aiKnowledgeFilter) aiKnowledgeFilter.addEventListener("change",renderAiKnowledge);
-document.getElementById("aiKnowledgeTopic")?.addEventListener("change",renderAiKnowledge);
-document.getElementById("aiKnowledgeSort")?.addEventListener("change",renderAiKnowledge);
+if(aiKnowledgeSearch) aiKnowledgeSearch.addEventListener("input",()=>{aiKnowledgePage=1;renderAiKnowledge()});
+if(aiKnowledgeFilter) aiKnowledgeFilter.addEventListener("change",()=>{aiKnowledgePage=1;renderAiKnowledge()});
+document.getElementById("aiKnowledgeTopic")?.addEventListener("change",()=>{aiKnowledgePage=1;renderAiKnowledge()});
+document.getElementById("aiKnowledgeSort")?.addEventListener("change",()=>{aiKnowledgePage=1;renderAiKnowledge()});
+const aiKnowledgePagerEl=document.getElementById("aiKnowledgePager");
+aiKnowledgePagerEl?.addEventListener("click",e=>{
+  const b=e.target.closest("[data-ai-k-page]"); if(!b||b.disabled)return;
+  const pages=Math.max(1,Math.ceil(aiKnowledgeFilteredTotal/aiKnowledgePageSize));
+  const v=b.dataset.aiKPage;
+  aiKnowledgePage=v==="prev"?Math.max(1,aiKnowledgePage-1):v==="next"?Math.min(pages,aiKnowledgePage+1):Math.max(1,Math.min(pages,Number(v)||1));
+  renderAiKnowledge();
+  document.getElementById("aiKnowledgeList")?.scrollTo({top:0,behavior:"smooth"});
+});
+aiKnowledgePagerEl?.addEventListener("change",e=>{
+  if(e.target.id!=="aiKnowledgePageSize")return;
+  aiKnowledgePageSize=[10,20,50].includes(Number(e.target.value))?Number(e.target.value):10; aiKnowledgePage=1; renderAiKnowledge();
+});
 if(reloadAiKnowledge) reloadAiKnowledge.addEventListener("click",loadAiKnowledgeAdmin);
 if(aiKnowledgeManualAdd) aiKnowledgeManualAdd.addEventListener("click",async()=>{
   const question=aiKnowledgeManualQuestion?.value?.trim()||"";
@@ -14017,6 +14051,27 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #aiSettingsCard .ai-v409-detail-actions .danger{grid-column:2!important;grid-row:2!important;}
   #aiSettingsCard .ai-v409-detail-card{overflow:hidden!important;}
   #aiSettingsCard .ai-v409-answer-wrap textarea{min-height:116px!important;}
+}
+</style>
+
+<style id="v550-ai-knowledge-pagination">
+#aiSettingsCard #aiKnowledgePager{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex:1;min-width:0}
+#aiSettingsCard .ai-k-pager-info{color:#667085;white-space:nowrap;font-size:10px}
+#aiSettingsCard .ai-k-pager-controls{display:flex;align-items:center;gap:5px}
+#aiSettingsCard .ai-k-page-btn{width:30px;height:30px;padding:0;border:1px solid #e1e6ed;border-radius:8px;background:#fff;color:#475467;font-weight:800;cursor:pointer}
+#aiSettingsCard .ai-k-page-btn:hover{border-color:#ff9b66;color:#ff5a00;background:#fff8f4}
+#aiSettingsCard .ai-k-page-btn.is-active{border-color:#ff5a00;background:#fff3ec;color:#ff5a00}
+#aiSettingsCard .ai-k-page-btn:disabled{opacity:.35;cursor:not-allowed}
+#aiSettingsCard .ai-k-page-dots{padding:0 2px;color:#98a2b3}
+#aiSettingsCard #aiKnowledgePageSize{height:30px;border:1px solid #e1e6ed;border-radius:8px;background:#fff;padding:0 24px 0 8px;color:#475467;font-size:10px;font-weight:700}
+@media(max-width:760px){
+ #aiSettingsCard .ai-v409-list-foot{display:block!important;padding:10px 12px!important}
+ #aiSettingsCard #aiKnowledgeStatus{display:block;margin-bottom:8px}
+ #aiSettingsCard #aiKnowledgePager{display:block}
+ #aiSettingsCard .ai-k-pager-info{text-align:center;margin-bottom:8px}
+ #aiSettingsCard .ai-k-pager-controls{justify-content:center;overflow-x:auto;padding-bottom:2px}
+ #aiSettingsCard .ai-k-page-btn{min-width:34px;width:34px;height:34px}
+ #aiSettingsCard #aiKnowledgePageSize{height:34px;min-width:88px}
 }
 </style>
 </body>
