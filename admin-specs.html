@@ -7255,6 +7255,23 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 <style id="v510-traffic-row-top">
 #analyticsCard .traffic-insights-row-top{margin:12px 0 14px!important;}
 </style>
+
+<style id="v511-traffic-line-chart-style">
+#analyticsCard .traffic-chart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid #eef1f5}
+#analyticsCard .traffic-chart-head h2{margin:0!important;padding:0!important;border:0!important;font-size:13px!important;font-weight:800!important;color:#101828!important}
+#analyticsCard #trafficChartRange{height:34px;padding:0 32px 0 12px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#344054;font-size:11px;font-weight:700;outline:none;cursor:pointer}
+#analyticsCard #trafficChartRange:focus{border-color:#9fc0ff;box-shadow:0 0 0 3px rgba(79,140,255,.10)}
+#analyticsCard .traffic-line-chart{height:270px!important;padding:8px 10px 6px!important;display:block!important;overflow:hidden!important;background:#fff!important}
+#analyticsCard .traffic-line-svg{display:block;width:100%;height:100%;overflow:visible}
+#analyticsCard .tl-grid{stroke:#dfe6ef;stroke-width:1;stroke-dasharray:4 5}
+#analyticsCard .tl-ylabel,#analyticsCard .tl-xlabel{fill:#667085;font-size:12px;font-weight:500}
+#analyticsCard .tl-line{fill:none;stroke:#3b82f6;stroke-width:3.25;stroke-linecap:round;stroke-linejoin:round}
+#analyticsCard .tl-point>circle:first-child{fill:#3b82f6;stroke:#fff;stroke-width:2.5}
+#analyticsCard .tl-hit{fill:transparent;stroke:none;cursor:pointer}
+#analyticsCard .tl-point:hover>circle:first-child{r:6;filter:drop-shadow(0 2px 4px rgba(59,130,246,.28))}
+#analyticsCard .traffic-line-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#98a2b3;font-size:11px}
+@media(max-width:760px){#analyticsCard .traffic-line-chart{height:230px!important}#analyticsCard .traffic-chart-head{align-items:flex-start}#analyticsCard #trafficChartRange{height:32px;font-size:10px}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7521,7 +7538,18 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
         </div>
       </div>
       <div class="analytics-grid">
-          <div class="abox traffic-box"><h2 id="trafficChartTitle">Xu hướng truy cập</h2><div id="trafficChart" class="chart"></div></div>
+          <div class="abox traffic-box">
+  <div class="traffic-chart-head">
+    <h2 id="trafficChartTitle">Lượt truy cập</h2>
+    <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
+      <option value="days7" selected>7 ngày qua</option>
+      <option value="days30">30 ngày qua</option>
+      <option value="month">Tháng này</option>
+      <option value="year">Năm nay</option>
+    </select>
+  </div>
+  <div id="trafficChart" class="chart traffic-line-chart"></div>
+</div>
           <div class="abox monthly-box ai-history-box">
   <div class="ai-history-head">
     <div>
@@ -8669,32 +8697,76 @@ const ANALYTICS_PERIOD_LABELS={today:"Hôm nay",yesterday:"Hôm qua",days7:"7 ng
 function renderTrafficForPeriod(d,period){
   const chart=document.getElementById("trafficChart");
   const title=document.getElementById("trafficChartTitle");
+  const rangeSel=document.getElementById("trafficChartRange");
   if(!chart) return;
-  chart.innerHTML="";
+
+  // Biểu đồ lượt truy cập có bộ lọc riêng, mặc định 7 ngày như mẫu.
+  if(rangeSel && !rangeSel.dataset.bound){
+    rangeSel.dataset.bound="1";
+    rangeSel.addEventListener("change",()=>renderTrafficForPeriod(currentAnalyticsData,rangeSel.value));
+  }
+  const selected=(rangeSel?.value)||"days7";
   const history=Array.isArray(d?.history)?d.history:[];
   const monthly=Array.isArray(d?.monthly)?d.monthly:[];
   const today=(history.at(-1)?.date)||new Date().toISOString().slice(0,10);
   let rows=[];
-  let labelEvery=1;
-  if(period==="today") rows=history.slice(-1);
-  else if(period==="yesterday") rows=history.slice(-2,-1);
-  else if(period==="days7") rows=history.slice(-7);
-  else if(period==="days30") { rows=history.slice(-30); labelEvery=5; }
-  else if(period==="month") { rows=history.filter(x=>String(x.date||"").slice(0,7)===today.slice(0,7)); labelEvery=Math.max(1,Math.ceil(rows.length/7)); }
-  else { rows=monthly.filter(x=>String(x.month||"").startsWith(today.slice(0,4))).slice(-12); }
-  if(title) title.textContent=period==="year"?"Xu hướng truy cập theo tháng":"Xu hướng truy cập theo ngày";
-  const max=Math.max(1,...rows.map(x=>Number(x.views||0)));
-  rows.forEach((x,i)=>{
-    const w=document.createElement("div"); w.className="barwrap";
-    const name=period==="year"?String(x.month||""):String(x.date||"");
-    w.title=`${name}: ${fmt(x.views)} lượt truy cập`;
-    const b=document.createElement("div"); b.className="bar"; b.style.height=Math.max(2,Number(x.views||0)/max*100)+"%";
-    const l=document.createElement("span"); l.className="blabel";
-    if(period==="year") l.textContent=name.slice(5);
-    else l.textContent=(i%labelEvery===0||i===rows.length-1)?name.slice(5):"";
-    w.append(b,l); chart.appendChild(w);
+  let isYear=false;
+
+  if(selected==="days30") rows=history.slice(-30);
+  else if(selected==="month") rows=history.filter(x=>String(x.date||"").slice(0,7)===today.slice(0,7));
+  else if(selected==="year") { rows=monthly.filter(x=>String(x.month||"").startsWith(today.slice(0,4))).slice(-12); isYear=true; }
+  else rows=history.slice(-7);
+
+  if(title) title.textContent="Lượt truy cập";
+  chart.innerHTML="";
+  if(!rows.length){
+    chart.innerHTML='<div class="traffic-line-empty">Chưa có dữ liệu lượt truy cập.</div>';
+    return;
+  }
+
+  const values=rows.map(x=>Math.max(0,Number(x.views||0)));
+  const rawMax=Math.max(1,...values);
+  // Trục Y làm tròn đẹp theo 1K/100/10 tùy dữ liệu.
+  const magnitude=Math.pow(10,Math.max(0,String(Math.floor(rawMax)).length-1));
+  const step=Math.max(1,Math.ceil(rawMax/(3*magnitude))*magnitude);
+  const yMax=Math.max(step*3,Math.ceil(rawMax/step)*step);
+
+  const W=900,H=286, left=58,right=18,top=24,bottom=42;
+  const plotW=W-left-right, plotH=H-top-bottom;
+  const n=rows.length;
+  const x=i=>left+(n<=1?plotW/2:(i/(n-1))*plotW);
+  const y=v=>top+plotH-(v/yMax)*plotH;
+  const escHtml=v=>String(v??"").replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const labelFor=(row)=>{
+    const raw=String(isYear?row.month:row.date||"");
+    if(isYear) return raw.slice(5)+"/"+raw.slice(2,4);
+    const parts=raw.split("-"); return parts.length===3 ? `${parts[2]}/${parts[1]}` : raw;
+  };
+  const fmtAxis=v=>v>=1000?((v/1000)%1===0?(v/1000).toFixed(0):(v/1000).toFixed(1))+"K":String(Math.round(v));
+
+  let grid="";
+  for(let i=0;i<=3;i++){
+    const val=(yMax/3)*i;
+    const yy=y(val);
+    grid+=`<line x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}" class="tl-grid"/>`;
+    grid+=`<text x="${left-14}" y="${yy+4}" text-anchor="end" class="tl-ylabel">${fmtAxis(val)}</text>`;
+  }
+
+  const pts=values.map((v,i)=>[x(i),y(v)]);
+  const linePath=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ');
+  const areaPath=`M ${pts[0][0]} ${top+plotH} `+pts.map((p,i)=>(i?'L':'L')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ')+` L ${pts[pts.length-1][0]} ${top+plotH} Z`;
+
+  const maxLabels=selected==="days30"?7:12;
+  const every=Math.max(1,Math.ceil(n/maxLabels));
+  let labels="",dots="";
+  rows.forEach((row,i)=>{
+    const [xx,yy]=pts[i];
+    if(i%every===0 || i===n-1) labels+=`<text x="${xx}" y="${H-13}" text-anchor="middle" class="tl-xlabel">${escHtml(labelFor(row))}</text>`;
+    const raw=String(isYear?row.month:row.date||"");
+    dots+=`<g class="tl-point"><circle cx="${xx}" cy="${yy}" r="5"/><circle cx="${xx}" cy="${yy}" r="13" class="tl-hit"><title>${escHtml(labelFor(row))}: ${fmt(values[i])} lượt truy cập</title></circle></g>`;
   });
-  if(!rows.length){ chart.innerHTML='<div style="margin:auto;color:#98a2b3;font-size:10px">Chưa có dữ liệu trong kỳ này.</div>'; }
+
+  chart.innerHTML=`<svg class="traffic-line-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ lượt truy cập">\n    <defs><linearGradient id="trafficAreaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4f8cff" stop-opacity=".22"/><stop offset="100%" stop-color="#4f8cff" stop-opacity=".02"/></linearGradient></defs>\n    ${grid}\n    <path d="${areaPath}" fill="url(#trafficAreaGradient)" class="tl-area"/>\n    <path d="${linePath}" class="tl-line"/>\n    ${dots}${labels}\n  </svg>`;
 }
 
 function renderMonthlyAnalytics(items=[]){
