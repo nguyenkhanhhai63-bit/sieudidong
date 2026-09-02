@@ -7966,6 +7966,13 @@ body.mobile-sidebar-open .admin-sidebar .admin-tab.routing-tab,
   overflow:hidden!important;
 }
 </style>
+
+<style id="sdd-v528-logout-icon-fix">
+.sidebar-logout .sidebar-logout-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:22px!important;height:22px!important;min-width:22px!important;flex:0 0 22px!important;color:#ef4438!important;font-size:0!important;line-height:0!important}
+.sidebar-logout .sidebar-logout-icon svg{display:block!important;width:20px!important;height:20px!important;overflow:visible!important}
+.sidebar-logout{display:flex!important;align-items:center!important;gap:9px!important}
+body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important;height:22px!important;min-width:22px!important}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -8031,7 +8038,7 @@ body.mobile-sidebar-open .admin-sidebar .admin-tab.routing-tab,
       <div class="sidebar-update-label">Ngày cập nhật:</div>
       <div id="sidebarUpdatedAt" class="sidebar-update-time">28/08/2026 10:30</div>
     </div>
-    <button id="sidebarLogoutBtn" class="sidebar-logout" type="button"><span>⏻</span><span>Đăng xuất</span></button>
+    <button id="sidebarLogoutBtn" class="sidebar-logout" type="button"><span class="sidebar-logout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H6.8A1.8 1.8 0 0 0 5 5.8v12.4A1.8 1.8 0 0 0 6.8 20H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 8l4 4-4 4M18 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Đăng xuất</span></button>
   </div>
 </aside>
 
@@ -13477,6 +13484,112 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 }
 </style>
 
+
+
+<!-- v529: desktop collapsed sidebar reopen control -->
+<style id="v529-sidebar-reopen-fix">
+@media (min-width:761px){
+  #desktopSidebarReopen{
+    position:fixed!important;
+    left:12px!important;
+    top:72px!important;
+    width:48px!important;
+    height:48px!important;
+    display:none!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:1px solid #ffd2bd!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    color:#ff5a00!important;
+    box-shadow:0 8px 24px rgba(16,24,40,.12)!important;
+    cursor:pointer!important;
+    z-index:2147483600!important;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease!important;
+  }
+  #desktopSidebarReopen:hover{
+    transform:translateY(-1px)!important;
+    background:#fff7f2!important;
+    box-shadow:0 10px 28px rgba(16,24,40,.16)!important;
+  }
+  #desktopSidebarReopen svg{width:22px!important;height:22px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+  body.sidebar-collapsed #desktopSidebarReopen{display:flex!important}
+
+  /* luôn giữ rail thu gọn nhìn thấy, tránh CSS cũ biến mất hoàn toàn */
+  body.sidebar-collapsed #adminSidebar.admin-sidebar{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    transform:none!important;
+    left:0!important;
+    width:74px!important;
+    min-width:74px!important;
+    z-index:2147483000!important;
+  }
+  /* nút ở logo cũng có thể mở lại nếu rail còn hiển thị */
+  body.sidebar-collapsed #sidebarBrandToggle{
+    display:grid!important;
+    position:absolute!important;
+    right:-14px!important;
+    top:18px!important;
+    width:30px!important;
+    height:30px!important;
+    place-items:center!important;
+    border:1px solid #ffd2bd!important;
+    border-radius:10px!important;
+    background:#fff!important;
+    color:#ff5a00!important;
+    box-shadow:0 5px 14px rgba(16,24,40,.12)!important;
+    font-size:0!important;
+    z-index:5!important;
+  }
+  body.sidebar-collapsed #sidebarBrandToggle::before{
+    content:'›'!important;
+    font-size:25px!important;
+    line-height:1!important;
+    font-weight:700!important;
+    transform:translateY(-1px)!important;
+  }
+}
+@media (max-width:760px){#desktopSidebarReopen{display:none!important}}
+</style>
+<script id="v529-sidebar-reopen-fix-js">
+(function(){
+  function init(){
+    var body=document.body;
+    var sidebar=document.getElementById('adminSidebar');
+    if(!sidebar)return;
+    var btn=document.getElementById('desktopSidebarReopen');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='desktopSidebarReopen';
+      btn.type='button';
+      btn.setAttribute('aria-label','Mở rộng menu quản trị');
+      btn.setAttribute('title','Mở rộng menu');
+      btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+      document.body.appendChild(btn);
+    }
+    function expandSidebar(e){
+      if(e){e.preventDefault();e.stopPropagation();}
+      body.classList.remove('sidebar-collapsed');
+      try{localStorage.setItem('admin_sidebar_expanded','1');}catch(_){ }
+      var brand=document.getElementById('sidebarBrandToggle');
+      if(brand) brand.setAttribute('aria-label','Thu gọn menu');
+    }
+    btn.addEventListener('click',expandSidebar);
+    /* ở desktop, nút brand luôn toggle trực tiếp để không phụ thuộc JS legacy */
+    var brand=document.getElementById('sidebarBrandToggle');
+    if(brand && !brand.dataset.v529Bound){
+      brand.dataset.v529Bound='1';
+      brand.addEventListener('click',function(e){
+        if(window.innerWidth>760 && body.classList.contains('sidebar-collapsed')) expandSidebar(e);
+      },true);
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
 </body>
 </html>
 
