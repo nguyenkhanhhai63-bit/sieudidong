@@ -15511,3 +15511,65 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 }
 </style>
+
+<!-- v548: align the 4 traffic insight cards on desktop -->
+<style id="v548-traffic-cards-perfect-align">
+@media (min-width:1501px){
+  #analyticsCard .traffic-insights-row-four{
+    align-items:stretch!important;
+  }
+  #analyticsCard .traffic-insights-row-four > .abox,
+  #analyticsCard .traffic-insights-row-four > .traffic-line-card,
+  #analyticsCard .traffic-insights-row-four > .traffic-hour-box{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+
+  /* Same header height for all four cards */
+  #analyticsCard .traffic-insights-row-four > .abox > h2,
+  #analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-chart-head{
+    height:46px!important;
+    min-height:46px!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    border-bottom:1px solid #eef1f5!important;
+  }
+  #analyticsCard .traffic-insights-row-four > .abox > h2{
+    padding:0 15px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-chart-head{
+    padding:0 13px!important;
+  }
+
+  /* Same usable content height */
+  #analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-line-chart,
+  #analyticsCard .traffic-insights-row-four .device-chart-wrap,
+  #analyticsCard .traffic-insights-row-four .traffic-source-list,
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
+    height:254px!important;
+    min-height:254px!important;
+    max-height:254px!important;
+    box-sizing:border-box!important;
+  }
+
+  #analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-line-chart{
+    padding:8px 10px 10px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .device-chart-wrap{
+    padding:12px 18px!important;
+    align-items:center!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-source-list{
+    padding:14px!important;
+    justify-content:center!important;
+  }
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
+    padding:10px 12px 12px!important;
+  }
+}
+</style>
