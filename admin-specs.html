@@ -8858,7 +8858,7 @@ function renderTrafficSources(items){
   host.innerHTML=rows.map(x=>{
     const pct=total?((x.value/total)*100):0;
     const width=x.value?Math.max(5,(x.value/max)*100):0;
-    return `<div class="traffic-source-row"><span class="traffic-source-name">${esc(x.name)}</span><div class="traffic-source-track"><i style="width:${width.toFixed(1)}%;background:${colors[x.name]}"></i></div><strong>${fmt(x.value)} <small>(${pct.toFixed(1)}%)</small></strong></div>`;
+    return `<div class="traffic-source-row"><span class="traffic-source-name">${x.name}</span><div class="traffic-source-track"><i style="width:${width.toFixed(1)}%;background:${colors[x.name]}"></i></div><strong>${fmt(x.value)} <small>(${pct.toFixed(1)}%)</small></strong></div>`;
   }).join("");
 }
 
