@@ -12364,6 +12364,13 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 #analyticsCard .ai-history-pager{padding:9px 12px!important;background:#fbfcfd!important}
 #analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{max-height:330px!important}
 </style>
+
+<style id="v503-metric-icon-fix">
+#analyticsCard .metric-grid-main .metric-icon{font-size:0!important;overflow:hidden!important}
+#analyticsCard .metric-grid-main .metric-icon::before{content:none!important;display:none!important;-webkit-mask:none!important;mask:none!important}
+#analyticsCard .metric-grid-main .metric-icon svg{width:17px!important;height:17px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+#analyticsCard .metric-grid-main .metric:nth-child(6) .metric-icon svg path:last-child{stroke-width:2.2!important}
+</style>
 </body>
 </html>
 
@@ -12672,11 +12679,19 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function setup(){
     var card=document.getElementById('analyticsCard');
     if(!card) return;
-    var icons=['👥','↗','●','◉','⇄','Z','✦'];
+    var icons=[
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M5.64 5.64a9 9 0 0 0 0 12.72M18.36 5.64a9 9 0 0 1 0 12.72M8.46 8.46a5 5 0 0 0 0 7.08M15.54 8.46a5 5 0 0 1 0 7.08"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 4-4v3h9v2h-9v3L7 7ZM17 17l-4 4v-3H4v-2h9v-3l4 4Z"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v13H9l-5 4V4Z"/><path d="M8 8h8l-8 5h8"/></svg>',
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M8 6h8a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6a4 4 0 0 1 4-4Z"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M9 16h6"/></svg>'
+    ];
     card.querySelectorAll('.metric-grid-main .metric:not(.metric-total)').forEach(function(m,i){
-      if(!m.querySelector('.metric-icon')){
-        var s=document.createElement('span'); s.className='metric-icon'; s.textContent=icons[i]||'•'; m.insertBefore(s,m.firstChild);
-      }
+      var el=m.querySelector('.metric-icon');
+      if(!el){ el=document.createElement('span'); el.className='metric-icon'; m.insertBefore(el,m.firstChild); }
+      el.innerHTML=icons[i]||icons[0];
     });
     var grid=card.querySelector('.analytics-grid');
     var ai=card.querySelector('.ai-history-box');
