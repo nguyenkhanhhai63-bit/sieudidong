@@ -194,6 +194,63 @@ body > main p{
     line-height:1.2!important;
   }
 }
+
+
+/* v551 - Nut quay lai trang truoc */
+.compare-page-title-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+.compare-back-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:42px;
+  padding:0 15px;
+  border:1px solid #dfe4ea;
+  border-radius:12px;
+  background:#fff;
+  color:#27364b;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+  box-shadow:0 1px 2px rgba(15,23,42,.04);
+  transition:.18s ease;
+}
+.compare-back-btn:hover{
+  border-color:#ff5a00;
+  color:#ff5a00;
+  background:#fff8f4;
+}
+.compare-back-btn svg{width:17px;height:17px;display:block;}
+@media(max-width:899px){
+  .compare-page-title{
+    display:grid!important;
+    grid-template-columns:1fr auto;
+    gap:10px 12px!important;
+    align-items:end!important;
+  }
+  .compare-page-title > div:first-child{min-width:0;}
+  .compare-page-title-actions{
+    grid-column:1 / -1;
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .compare-back-btn,
+  .compare-change-btn{
+    width:100%!important;
+    min-height:42px!important;
+    margin:0!important;
+    padding:0 10px!important;
+    white-space:nowrap;
+  }
+}
+
 </style>
 
 </head>
@@ -204,7 +261,13 @@ body > main p{
         <h1>So sánh 2 sản phẩm</h1>
         <p>Đối chiếu trực tiếp giá, tình trạng và thông số kỹ thuật.</p>
       </div>
-      <a href="/" class="compare-change-btn">Đổi máy so sánh</a>
+      <div class="compare-page-title-actions">
+        <button type="button" class="compare-back-btn" id="compareBackBtn" aria-label="Quay lại trang trước">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Quay lại</span>
+        </button>
+        <a href="/" class="compare-change-btn">Đổi máy so sánh</a>
+      </div>
     </div>
 
     <section class="compare-page-ai">
@@ -621,5 +684,24 @@ init();
   document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
 })();
 </script>
+
+<script>
+(function(){
+  var btn=document.getElementById('compareBackBtn');
+  if(!btn) return;
+  btn.addEventListener('click', function(){
+    var sameOriginReferrer=false;
+    try{
+      sameOriginReferrer=!!document.referrer && new URL(document.referrer).origin===location.origin;
+    }catch(e){}
+    if(sameOriginReferrer && history.length>1){
+      history.back();
+    }else{
+      location.href='/';
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
