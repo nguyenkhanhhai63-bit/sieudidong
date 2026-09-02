@@ -12804,3 +12804,144 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #analyticsCard .metric-grid-main .metric{min-height:88px!important}
 }
 </style>
+
+<!-- V504 KPI TREND COMPARISON -->
+<style id="v504-kpi-trend-style">
+#analyticsCard .metric-grid-main .metric .metric-trend{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-height:16px!important;
+  margin-top:7px!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+#analyticsCard .metric-grid-main .metric .metric-trend svg{
+  width:11px!important;
+  height:11px!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2.2!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#analyticsCard .metric-grid-main .metric .metric-trend.up{color:#12b76a!important}
+#analyticsCard .metric-grid-main .metric .metric-trend.down{color:#f04438!important}
+#analyticsCard .metric-grid-main .metric .metric-trend.same{color:#98a2b3!important}
+#analyticsCard .metric-grid-main .metric .metric-trend.new{color:#12b76a!important}
+#analyticsCard .metric-grid-main .metric .metric-trend[hidden]{display:none!important}
+#analyticsCard .metric-grid-main .metric em{margin-top:6px!important}
+#analyticsCard .metric-grid-main .metric{min-height:116px!important}
+@media(max-width:560px){
+  #analyticsCard .metric-grid-main .metric{min-height:102px!important}
+}
+</style>
+<script id="v504-kpi-trend-js">
+(function(){
+  var metricMap=[
+    {id:'mTodayVisitors',key:'visitors'},
+    {id:'mTodayViews',key:'views'},
+    {id:'mDetailClicks',key:'detailClicks'},
+    {id:'mTodayCompare',key:'compare'},
+    {id:'mTodayZalo',key:'zalo'},
+    {id:'mAiUsers',key:'aiUsers'}
+  ];
+
+  function ensureTrend(el){
+    if(!el) return null;
+    var metric=el.closest('.metric');
+    if(!metric) return null;
+    var node=metric.querySelector('.metric-trend');
+    if(!node){
+      node=document.createElement('span');
+      node.className='metric-trend';
+      node.hidden=true;
+      el.insertAdjacentElement('afterend',node);
+    }
+    return node;
+  }
+
+  function trendHtml(kind,text){
+    if(kind==='up') return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4.5 6.5 8 3l3.5 3.5"/></svg><span>'+text+'</span>';
+    if(kind==='down') return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4.5 9.5 8 13l3.5-3.5"/></svg><span>'+text+'</span>';
+    if(kind==='new') return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M4.5 6.5 8 3l3.5 3.5"/></svg><span>Mới</span>';
+    return '<span>— 0%</span>';
+  }
+
+  function setTrend(el,current,previous,visible){
+    var node=ensureTrend(el);
+    if(!node) return;
+    if(!visible || !Number.isFinite(current) || !Number.isFinite(previous)){
+      node.hidden=true;
+      return;
+    }
+    node.hidden=false;
+    node.className='metric-trend';
+    if(previous===0){
+      if(current>0){ node.classList.add('new'); node.innerHTML=trendHtml('new','Mới'); }
+      else { node.classList.add('same'); node.innerHTML=trendHtml('same','0%'); }
+      return;
+    }
+    var pct=((current-previous)/Math.abs(previous))*100;
+    var abs=Math.abs(pct);
+    var label=(abs>=100 ? Math.round(abs) : abs.toFixed(1).replace('.0',''))+'%';
+    if(pct>0.049){ node.classList.add('up'); node.innerHTML=trendHtml('up','↑ '+label).replace('↑ ',''); }
+    else if(pct<-0.049){ node.classList.add('down'); node.innerHTML=trendHtml('down','↓ '+label).replace('↓ ',''); }
+    else { node.classList.add('same'); node.innerHTML=trendHtml('same','0%'); }
+  }
+
+  function updateKpiTrends(){
+    try{
+      var d=window.currentAnalyticsData || (typeof currentAnalyticsData!=='undefined' ? currentAnalyticsData : null);
+      var period=(typeof analyticsPeriod!=='undefined' ? analyticsPeriod : 'today');
+      var periods=d && d.periods ? d.periods : null;
+      var today=periods && periods.today ? periods.today : null;
+      var yesterday=periods && periods.yesterday ? periods.yesterday : null;
+      var show=period==='today' && !!today && !!yesterday;
+      metricMap.forEach(function(item){
+        var el=document.getElementById(item.id);
+        var cur=today ? Number(today[item.key]||0) : NaN;
+        var prev=yesterday ? Number(yesterday[item.key]||0) : NaN;
+        setTrend(el,cur,prev,show);
+      });
+      var online=document.getElementById('mOnlineNow');
+      if(online){
+        var n=ensureTrend(online);
+        if(n) n.hidden=true;
+      }
+      if(show){
+        var captions={mVisitors30:'So với hôm qua',mViews7:'So với hôm qua',mDetailPeriod:'So với hôm qua',mCompare30:'So với hôm qua',mZalo30:'So với hôm qua'};
+        Object.keys(captions).forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=captions[id];});
+      }
+    }catch(e){ console.warn('KPI trend:',e); }
+  }
+
+  function wrap(name){
+    var fn=window[name];
+    if(typeof fn!=='function' || fn.__v504Wrapped) return;
+    var wrapped=function(){
+      var out=fn.apply(this,arguments);
+      setTimeout(updateKpiTrends,0);
+      setTimeout(updateKpiTrends,250);
+      return out;
+    };
+    wrapped.__v504Wrapped=true;
+    window[name]=wrapped;
+  }
+
+  function setup(){
+    metricMap.forEach(function(item){ensureTrend(document.getElementById(item.id));});
+    ensureTrend(document.getElementById('mOnlineNow'));
+    wrap('applyAnalyticsPeriod');
+    wrap('mergeAnalyticsPeriodResponse');
+    updateKpiTrends();
+    setTimeout(updateKpiTrends,800);
+    setTimeout(updateKpiTrends,2200);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
+})();
+</script>
