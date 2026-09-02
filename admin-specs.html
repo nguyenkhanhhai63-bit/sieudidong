@@ -7215,6 +7215,42 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 @media(max-width:1280px){.traffic-hour-box{grid-column:span 6!important}}
 @media(max-width:760px){.traffic-hour-box{grid-column:1!important}.traffic-hour-wrap{overflow-x:auto}.traffic-hour-grid,.traffic-hour-axis{min-width:520px}}
 </style>
+
+<style id="v509-traffic-row-layout">
+/* v509: gom 3 thống kê truy cập trên cùng một hàng */
+#analyticsCard .traffic-insights-row{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  min-width:0!important;
+}
+#analyticsCard .traffic-insights-row>.abox{
+  grid-column:auto!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:280px!important;
+  height:100%!important;
+}
+#analyticsCard .traffic-insights-row .device-chart-wrap{
+  min-height:220px!important;
+}
+#analyticsCard .traffic-insights-row .traffic-source-list,
+#analyticsCard .traffic-insights-row .traffic-hour-wrap{
+  min-height:220px!important;
+}
+@media(max-width:1100px){
+  #analyticsCard .traffic-insights-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #analyticsCard .traffic-insights-row>.traffic-hour-box{grid-column:1/-1!important}
+}
+@media(max-width:760px){
+  #analyticsCard .traffic-insights-row{grid-template-columns:1fr!important;gap:10px!important}
+  #analyticsCard .traffic-insights-row>.abox,
+  #analyticsCard .traffic-insights-row>.traffic-hour-box{grid-column:1!important;min-height:0!important}
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7483,14 +7519,16 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
   <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm đoạn chat <span>↓</span></button></div>
 </div>
-          <div class="abox device-box"><h2>Thiết bị truy cập</h2>
-  <div class="device-chart-wrap">
-    <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
-    <div id="deviceList" class="device-legend"></div>
-  </div>
-</div>
-          <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
-          <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
+          <div class="traffic-insights-row">
+            <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
+            <div class="abox device-box"><h2>Thiết bị truy cập</h2>
+              <div class="device-chart-wrap">
+                <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
+                <div id="deviceList" class="device-legend"></div>
+              </div>
+            </div>
+            <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
+          </div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
