@@ -14791,3 +14791,102 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   setTimeout(bind,100);setTimeout(bind,500);setTimeout(bind,1200);
 })();
 </script>
+
+<style id="v536-ai-history-balance-polish">
+/* V536 - Tối ưu cân đối trang Lịch sử hội thoại trong Đào tạo AI */
+@media (min-width: 1200px){
+  /* Cân lại 2 cột: lịch sử gọn hơn, nội dung chat rộng hơn */
+  #aiSettingsCard .ai-history-layout{
+    grid-template-columns:minmax(470px,38%) minmax(0,62%)!important;
+    gap:14px!important;
+    align-items:stretch!important;
+  }
+
+  /* Hai khung cùng chiều cao theo viewport, hạn chế khoảng trống vô ích */
+  #aiSettingsCard .ai-history-list-card-v533,
+  #aiSettingsCard .ai-history-detail-card{
+    height:clamp(520px,calc(100vh - 330px),680px)!important;
+    min-height:520px!important;
+    max-height:680px!important;
+  }
+  #aiSettingsCard .ai-history-list-card-v533 .ai-history-list{
+    min-height:0!important;
+    max-height:none!important;
+    overflow:auto!important;
+  }
+  #aiSettingsCard .ai-history-conversation-v534,
+  #aiSettingsCard #aiChatHistoryDetail.ai-history-detail-content-v535{
+    height:100%!important;
+    min-height:0!important;
+  }
+  #aiSettingsCard .ai-history-messages-v534{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+    padding:14px 16px 18px!important;
+    gap:9px!important;
+  }
+
+  /* Bong bóng chat vừa mắt hơn, không kéo dài quá rộng */
+  #aiSettingsCard .ai-history-msg-v534.user{
+    max-width:min(54%,620px)!important;
+  }
+  #aiSettingsCard .ai-history-msg-v534.assistant{
+    max-width:min(66%,780px)!important;
+  }
+  #aiSettingsCard .ai-history-bubble-v534{
+    line-height:1.52!important;
+    padding:11px 13px!important;
+  }
+
+  /* Giảm khoảng cách thừa giữa các lượt chat */
+  #aiSettingsCard .ai-history-msg-body-v534{gap:3px!important;}
+  #aiSettingsCard .ai-history-date-sep-v534{margin:0 4px!important;}
+
+  /* Header luôn hiện khi cuộn */
+  #aiSettingsCard .ai-history-list-head-v533{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+    background:#fff!important;
+  }
+  #aiSettingsCard .ai-history-conv-head-v534{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+  }
+
+  /* Phân trang dễ bấm hơn nhưng vẫn gọn */
+  #aiSettingsCard .ai-history-pagination-v533{
+    min-height:56px!important;
+    padding:9px 12px!important;
+    flex:0 0 auto!important;
+  }
+  #aiSettingsCard .ai-history-page-btn-v533{
+    width:36px!important;
+    height:36px!important;
+  }
+}
+
+/* Desktop rộng: giữ nội dung tập trung, tránh tin nhắn trôi quá xa hai mép */
+@media (min-width: 1700px){
+  #aiSettingsCard .ai-history-layout{
+    grid-template-columns:minmax(520px,37%) minmax(0,63%)!important;
+  }
+  #aiSettingsCard .ai-history-messages-v534{
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+}
+
+/* Tablet: ưu tiên phần nội dung nhưng không làm lịch sử quá hẹp */
+@media (min-width: 901px) and (max-width: 1199px){
+  #aiSettingsCard .ai-history-layout{
+    grid-template-columns:minmax(360px,42%) minmax(0,58%)!important;
+    gap:12px!important;
+  }
+  #aiSettingsCard .ai-history-msg-v534.user{max-width:68%!important;}
+  #aiSettingsCard .ai-history-msg-v534.assistant{max-width:78%!important;}
+}
+</style>
