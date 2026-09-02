@@ -7256,6 +7256,12 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 #analyticsCard .traffic-insights-row-top{margin:12px 0 14px!important;}
 </style>
 
+<style id="v512-traffic-line-visible-fix">
+#analyticsCard .traffic-box-prominent{display:block!important;width:100%!important;margin:0 0 14px!important;min-height:330px!important;border:1px solid #e7ebf0!important;border-radius:14px!important;background:#fff!important;overflow:hidden!important}
+#analyticsCard .traffic-box-prominent .traffic-line-chart{min-height:275px!important;height:275px!important}
+@media(max-width:760px){#analyticsCard .traffic-box-prominent{min-height:280px!important}#analyticsCard .traffic-box-prominent .traffic-line-chart{min-height:225px!important;height:225px!important}}
+</style>
+
 <style id="v511-traffic-line-chart-style">
 #analyticsCard .traffic-chart-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-bottom:1px solid #eef1f5}
 #analyticsCard .traffic-chart-head h2{margin:0!important;padding:0!important;border:0!important;font-size:13px!important;font-weight:800!important;color:#101828!important}
@@ -7530,6 +7536,18 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
           </div>
           <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
         </div>
+        <div class="abox traffic-box traffic-box-prominent">
+          <div class="traffic-chart-head">
+            <h2 id="trafficChartTitle">Lượt truy cập</h2>
+            <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
+              <option value="days7" selected>7 ngày qua</option>
+              <option value="days30">30 ngày qua</option>
+              <option value="month">Tháng này</option>
+              <option value="year">Năm nay</option>
+            </select>
+          </div>
+          <div id="trafficChart" class="chart traffic-line-chart"></div>
+        </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
           <div class="metric"><small>Lượt tra bảo hành</small><strong id="mTodayWarrantyChecks">0</strong><em id="mWarrantyChecks30">Theo kỳ đang chọn</em></div>
@@ -7538,18 +7556,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
         </div>
       </div>
       <div class="analytics-grid">
-          <div class="abox traffic-box">
-  <div class="traffic-chart-head">
-    <h2 id="trafficChartTitle">Lượt truy cập</h2>
-    <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
-      <option value="days7" selected>7 ngày qua</option>
-      <option value="days30">30 ngày qua</option>
-      <option value="month">Tháng này</option>
-      <option value="year">Năm nay</option>
-    </select>
-  </div>
-  <div id="trafficChart" class="chart traffic-line-chart"></div>
-</div>
           <div class="abox monthly-box ai-history-box">
   <div class="ai-history-head">
     <div>
