@@ -7278,6 +7278,56 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 #analyticsCard .traffic-line-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#98a2b3;font-size:11px}
 @media(max-width:760px){#analyticsCard .traffic-line-chart{height:230px!important}#analyticsCard .traffic-chart-head{align-items:flex-start}#analyticsCard #trafficChartRange{height:32px;font-size:10px}}
 </style>
+
+<style id="v514-traffic-second-row-four">
+/* V514: đưa Lượt truy cập lên cùng hàng thứ 2 với 3 thống kê truy cập còn lại */
+#analyticsCard .traffic-insights-row-four{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr)!important;
+  gap:12px!important;
+  align-items:stretch!important;
+  margin:12px 0 14px!important;
+}
+#analyticsCard .traffic-insights-row-four>.abox{
+  grid-column:auto!important;
+  width:auto!important;
+  min-width:0!important;
+  min-height:280px!important;
+  height:280px!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+#analyticsCard .traffic-insights-row-four .traffic-line-card{
+  min-height:280px!important;
+  height:280px!important;
+}
+#analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-chart-head{
+  padding:12px 13px 4px!important;
+}
+#analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-chart-head h2{font-size:13px!important}
+#analyticsCard .traffic-insights-row-four #trafficChartRange{height:30px!important;font-size:10px!important;padding-left:9px!important;padding-right:26px!important}
+#analyticsCard .traffic-insights-row-four .traffic-line-card .traffic-line-chart{
+  height:226px!important;
+  min-height:226px!important;
+  padding:4px 8px 8px!important;
+}
+#analyticsCard .traffic-insights-row-four .device-chart-wrap,
+#analyticsCard .traffic-insights-row-four .traffic-source-list,
+#analyticsCard .traffic-insights-row-four .traffic-hour-wrap{min-height:218px!important}
+#analyticsCard .traffic-insights-row-four .traffic-hour-wrap{padding:12px 12px 10px!important}
+#analyticsCard .traffic-insights-row-four .traffic-hour-grid{gap:2px!important}
+#analyticsCard .traffic-insights-row-four .traffic-hour-axis{font-size:9px!important}
+@media(max-width:1500px){
+  #analyticsCard .traffic-insights-row-four{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #analyticsCard .traffic-insights-row-four>.abox{height:280px!important}
+}
+@media(max-width:760px){
+  #analyticsCard .traffic-insights-row-four{grid-template-columns:1fr!important;gap:10px!important}
+  #analyticsCard .traffic-insights-row-four>.abox{height:auto!important;min-height:260px!important}
+  #analyticsCard .traffic-insights-row-four .traffic-line-card{height:auto!important;min-height:280px!important}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7525,8 +7575,20 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
           <div class="metric metric-ai"><small>Khách dùng AI chatbox</small><strong id="mAiUsers">0</strong><em id="mAiQuestionsPeriod">0 câu hỏi · Hôm nay</em></div>
           <div class="metric metric-total"><small>Tổng lượt truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
-        <!-- v510: hàng thứ 2 ngay sau KPI -->
-        <div class="traffic-insights-row traffic-insights-row-top">
+        <!-- v514: hàng thứ 2 gồm 4 thống kê truy cập -->
+        <div class="traffic-insights-row traffic-insights-row-top traffic-insights-row-four">
+          <div class="abox traffic-line-card traffic-box-prominent">
+            <div class="traffic-chart-head">
+              <h2 id="trafficChartTitle">Lượt truy cập</h2>
+              <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
+                <option value="days7" selected>7 ngày qua</option>
+                <option value="days30">30 ngày qua</option>
+                <option value="month">Tháng này</option>
+                <option value="year">Năm nay</option>
+              </select>
+            </div>
+            <div id="trafficChart" class="chart traffic-line-chart"></div>
+          </div>
           <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
             <div class="device-chart-wrap">
@@ -7535,18 +7597,6 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
             </div>
           </div>
           <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
-        </div>
-        <div class="abox traffic-line-card traffic-box-prominent">
-          <div class="traffic-chart-head">
-            <h2 id="trafficChartTitle">Lượt truy cập</h2>
-            <select id="trafficChartRange" aria-label="Khoảng thời gian biểu đồ lượt truy cập">
-              <option value="days7" selected>7 ngày qua</option>
-              <option value="days30">30 ngày qua</option>
-              <option value="month">Tháng này</option>
-              <option value="year">Năm nay</option>
-            </select>
-          </div>
-          <div id="trafficChart" class="chart traffic-line-chart"></div>
         </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
