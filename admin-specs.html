@@ -12518,3 +12518,67 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 }
 </style>
+
+<style id="v495-analytics-redesign">
+/* V495 — Analytics dashboard redesign based on approved mockup */
+#analyticsCard{background:#f8fafc!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}
+#analyticsCard .dashboard-welcome{display:none!important}
+#analyticsCard>.head{background:transparent!important;border:0!important;padding:4px 2px 18px!important;align-items:flex-start!important}
+#analyticsCard>.head h1{font-size:26px!important;line-height:1.15!important;letter-spacing:-.5px!important;color:#101828!important}
+#analyticsCard>.head p{font-size:12px!important;color:#98a2b3!important;margin-top:7px!important}
+#analyticsCard #refreshAnalytics{height:38px!important;border:1px solid #fed7c3!important;background:#fff!important;color:#f4511e!important;border-radius:9px!important;padding:0 15px!important;font-weight:800!important}
+#analyticsCard .analytics-periodbar{margin:0 0 14px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;justify-content:flex-end!important}
+#analyticsCard .periodbar-copy{margin-right:auto!important}
+#analyticsCard .periodbar-copy strong{font-size:11px!important;color:#344054!important}
+#analyticsCard .periodbar-copy span{font-size:10px!important;color:#98a2b3!important}
+#analyticsCard .period-tabs{background:#fff!important;border:1px solid #e6eaf0!important;border-radius:9px!important;padding:3px!important;gap:2px!important}
+#analyticsCard .period-tab{height:30px!important;border:0!important;border-radius:7px!important;background:transparent!important;color:#667085!important;font-size:10px!important;font-weight:700!important;padding:0 11px!important}
+#analyticsCard .period-tab.active{background:#fff4ed!important;color:#f4511e!important;box-shadow:inset 0 0 0 1px #ffb38a!important}
+#analyticsCard .analytics-shell{padding:0!important;background:transparent!important;border:0!important}
+#analyticsCard .analytics-section-title{display:none!important}
+#analyticsCard .metric-grid-main{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:10px!important;margin:0 0 14px!important}
+#analyticsCard .metric-grid-warranty{display:none!important}
+#analyticsCard .metric{min-height:112px!important;padding:15px 14px 13px 52px!important;border:1px solid #e7ebf0!important;border-radius:12px!important;background:#fff!important;box-shadow:0 2px 8px rgba(15,23,42,.025)!important}
+#analyticsCard .metric:before{left:14px!important;top:15px!important;width:28px!important;height:28px!important;bottom:auto!important;border-radius:9px!important;background:#eef4ff!important}
+#analyticsCard .metric:nth-child(2):before{background:#ecfdf3!important}
+#analyticsCard .metric:nth-child(3):before{background:#f4f0ff!important}
+#analyticsCard .metric:nth-child(4):before{background:#fff4ed!important}
+#analyticsCard .metric:nth-child(5):before{background:#ecfdff!important}
+#analyticsCard .metric:nth-child(6):before{background:#fff1f3!important}
+#analyticsCard .metric:nth-child(7):before{background:#f2f4f7!important}
+#analyticsCard .metric small{min-height:0!important;font-size:10px!important;color:#475467!important;line-height:1.25!important}
+#analyticsCard .metric strong{font-size:25px!important;line-height:1.05!important;margin-top:8px!important;color:#101828!important}
+#analyticsCard .metric em{font-size:8px!important;margin-top:8px!important;color:#98a2b3!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#analyticsCard .metric-total{display:none!important}
+#analyticsCard .analytics-grid{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:12px!important;margin-top:0!important;align-items:stretch!important}
+#analyticsCard .abox{min-height:0!important;border:1px solid #e7ebf0!important;border-radius:12px!important;background:#fff!important;box-shadow:0 2px 8px rgba(15,23,42,.025)!important;overflow:hidden!important}
+#analyticsCard .abox>h2,#analyticsCard .compare-pairs-head,#analyticsCard .ai-history-head,#analyticsCard .warranty-analytics-head{padding:15px 16px!important;border-bottom:1px solid #f0f2f5!important;background:#fff!important}
+#analyticsCard .abox h2{font-size:13px!important;color:#101828!important;letter-spacing:-.1px!important}
+#analyticsCard .abox p{font-size:9px!important;color:#98a2b3!important}
+#analyticsCard .traffic-box{order:1;grid-column:span 7!important;min-height:315px!important}
+#analyticsCard .device-box{order:2;grid-column:span 5!important;min-height:315px!important}
+#analyticsCard .ai-history-box{order:4;grid-column:span 5!important;min-height:330px!important}
+#analyticsCard .warranty-analytics-box{order:3;grid-column:span 7!important;min-height:330px!important}
+#analyticsCard .analytics-grid>.abox:nth-child(4){order:5;grid-column:span 3!important}
+#analyticsCard .analytics-grid>.abox:nth-child(5){order:6;grid-column:span 3!important}
+#analyticsCard .analytics-grid>.abox:nth-child(6){order:7;grid-column:span 3!important}
+#analyticsCard .analytics-grid>.abox:nth-child(7){order:8;grid-column:span 3!important}
+#analyticsCard .analytics-grid>.abox:nth-child(8){order:9;grid-column:span 3!important}
+#analyticsCard .compare-pairs-box{order:10;grid-column:1/-1!important;min-height:0!important}
+#analyticsCard #trafficChart{height:250px!important;padding:14px 16px 16px!important}
+#analyticsCard .device-chart-wrap{min-height:245px!important;padding:20px 18px!important;align-items:center!important}
+#analyticsCard .device-donut{width:150px!important;height:150px!important}
+#analyticsCard .device-donut-hole{width:94px!important;height:94px!important}
+#analyticsCard .device-donut-hole strong{font-size:24px!important}
+#analyticsCard .ranklist{padding:7px 14px 12px!important}
+#analyticsCard .rankitem{min-height:34px!important;padding:7px 0!important;border-bottom:1px solid #f2f4f7!important}
+#analyticsCard .compare-pair-list{padding:8px 14px 14px!important}
+#analyticsCard .compare-pair-row{border:1px solid #edf0f3!important;border-radius:8px!important;margin-top:6px!important;background:#fff!important}
+#analyticsCard .warranty-analytics-box table{font-size:10px!important}
+#analyticsCard .warranty-analytics-box th{background:#f8fafc!important;color:#667085!important;font-size:8px!important;text-transform:uppercase!important}
+#analyticsCard .ai-question-history{padding:4px 14px 10px!important}
+#analyticsCard .ai-history-more-btn{color:#f4511e!important;border-color:#fed7c3!important;background:#fff!important}
+@media(max-width:1450px){#analyticsCard .metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:1050px){#analyticsCard .traffic-box,#analyticsCard .device-box,#analyticsCard .ai-history-box,#analyticsCard .warranty-analytics-box{grid-column:1/-1!important}#analyticsCard .analytics-grid>.abox:nth-child(n+4):nth-child(-n+8){grid-column:span 6!important}}
+@media(max-width:760px){#analyticsCard>.head{gap:10px!important}#analyticsCard>.head h1{font-size:22px!important}#analyticsCard .analytics-periodbar{align-items:flex-start!important;flex-direction:column!important}#analyticsCard .period-tabs{width:100%!important;overflow:auto!important}#analyticsCard .metric-grid-main{grid-template-columns:repeat(2,minmax(0,1fr))!important}#analyticsCard .metric{padding-left:46px!important}#analyticsCard .analytics-grid>.abox{grid-column:1/-1!important}#analyticsCard .device-chart-wrap{flex-direction:column!important}}
+</style>
