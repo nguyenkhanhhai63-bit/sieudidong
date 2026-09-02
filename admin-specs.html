@@ -13249,7 +13249,25 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       renderList();
     }catch(e){list.innerHTML='<div class="ai-history-empty">'+esc(e.message||'Không tải được lịch sử')+'</div>'}
   }
-  list.addEventListener('click',e=>{const el=e.target.closest('[data-history-id]');if(!el)return;selected=el.dataset.historyId;renderList()});
+  function scrollToHistoryDetailOnMobile(){
+    if(!window.matchMedia('(max-width: 760px)').matches)return;
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        const target=document.getElementById('aiChatHistoryDetail');
+        if(!target)return;
+        const stickyOffset=84;
+        const top=Math.max(0,target.getBoundingClientRect().top+window.scrollY-stickyOffset);
+        window.scrollTo({top,behavior:'smooth'});
+      });
+    });
+  }
+  list.addEventListener('click',e=>{
+    const el=e.target.closest('[data-history-id]');
+    if(!el)return;
+    selected=el.dataset.historyId;
+    renderList();
+    scrollToHistoryDetailOnMobile();
+  });
   pagination?.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;const pages=Math.max(1,Math.ceil(rows.length/pageSize));page=b.dataset.page==='next'?Math.min(pages,page+1):Number(b.dataset.page)||1;renderList();list.scrollTop=0});
   detail.addEventListener('click',async e=>{const b=e.target.closest('[data-history-delete]');if(!b)return;if(!confirm('Xóa cuộc hội thoại này?'))return;try{const r=await fetch('/api/admin/ai-chat-history?id='+encodeURIComponent(b.dataset.historyDelete),{method:'DELETE',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không xóa được');selected='';await load()}catch(err){alert(err.message||'Không xóa được')}});
   let historyLoadedOnce=false;
@@ -13794,6 +13812,12 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #aiSettingsCard .ai-history-avatar-v534{width:27px;height:27px;border-radius:9px}
   #aiSettingsCard .ai-history-bubble-v534{font-size:12px;padding:10px 12px;border-radius:13px}
   #aiSettingsCard .ai-history-msg-meta-v534{font-size:9px}
+}
+</style>
+
+<style id="v539-mobile-history-autoscroll-css">
+@media (max-width:760px){
+  #aiChatHistoryDetail{scroll-margin-top:84px!important}
 }
 </style>
 </body>
