@@ -13414,3 +13414,75 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 })();
 </script>
+
+
+<!-- V519 FORCE PRIMARY ROW TO REFERENCE WIDTH -->
+<style id="v519-force-primary-row-width">
+/* Fix dứt điểm khoảng trống bên phải của hàng Lịch sử AI + Tra cứu bảo hành.
+   Không dựa vào % của grid-area cũ; JS sẽ lấy đúng bề rộng hàng 4 thống kê phía trên. */
+@media (min-width:901px){
+  #analyticsCard .analytics-grid > .v518-primary-row{
+    grid-column:1 / -1!important;
+    justify-self:start!important;
+    align-self:stretch!important;
+    max-width:none!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  #analyticsCard .v518-primary-row > .ai-history-box,
+  #analyticsCard .v518-primary-row > .warranty-analytics-box{
+    min-width:0!important;
+    max-width:none!important;
+  }
+}
+</style>
+<script id="v519-force-primary-row-width-js">
+(function(){
+  function forcePrimaryRowWidth(){
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var grid=card.querySelector('.analytics-shell > .analytics-grid');
+    var row=grid && grid.querySelector(':scope > .v518-primary-row');
+    var ref=card.querySelector('.traffic-insights-row-top');
+    if(!grid || !row || !ref) return;
+
+    if(window.innerWidth<=900){
+      row.style.removeProperty('width');
+      row.style.removeProperty('min-width');
+      row.style.removeProperty('max-width');
+      row.style.removeProperty('grid-template-columns');
+      return;
+    }
+
+    var refRect=ref.getBoundingClientRect();
+    var gridRect=grid.getBoundingClientRect();
+    var w=Math.round(refRect.width || gridRect.width || 0);
+    if(w<100) return;
+
+    /* Ép bằng px để tránh các rule grid 10/12 cột cũ làm width:100% chỉ ăn theo grid-area. */
+    row.style.setProperty('width',w+'px','important');
+    row.style.setProperty('min-width',w+'px','important');
+    row.style.setProperty('max-width',w+'px','important');
+    row.style.setProperty('grid-column','1 / -1','important');
+    row.style.setProperty('justify-self','start','important');
+    row.style.setProperty('grid-template-columns','minmax(0,5fr) minmax(0,7fr)','important');
+
+    /* Đồng bộ luôn grid với hàng tham chiếu, không để container cha bó lại. */
+    grid.style.setProperty('width',w+'px','important');
+    grid.style.setProperty('min-width',w+'px','important');
+    grid.style.setProperty('max-width','none','important');
+  }
+
+  function setup(){
+    forcePrimaryRowWidth();
+    [50,150,400,900,1800].forEach(function(ms){setTimeout(forcePrimaryRowWidth,ms)});
+    window.addEventListener('resize',forcePrimaryRowWidth,{passive:true});
+    if(window.ResizeObserver){
+      var card=document.getElementById('analyticsCard');
+      var ref=card && card.querySelector('.traffic-insights-row-top');
+      if(ref) new ResizeObserver(forcePrimaryRowWidth).observe(ref);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
+})();
+</script>
