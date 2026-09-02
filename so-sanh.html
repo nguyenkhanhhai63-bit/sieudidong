@@ -465,19 +465,76 @@ body > main p{
 }
 </style>
 
+
+<style id="v556-compare-exit-link-final">
+/* v556 - Nút thoát so sánh độc lập, không phụ thuộc cụm action cũ */
+.compare-exit-row{
+  width:min(var(--sdd-content-width,1460px),100%)!important;
+  max-width:var(--sdd-content-width,1460px)!important;
+  margin:0 auto 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.compare-exit-link{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-height:42px!important;
+  padding:0 14px!important;
+  border:1px solid #ff5a00!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#ff5a00!important;
+  font-weight:800!important;
+  font-size:14px!important;
+  line-height:1!important;
+  text-decoration:none!important;
+  box-sizing:border-box!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:50!important;
+}
+.compare-exit-link svg{width:18px!important;height:18px!important;display:block!important;flex:0 0 auto!important;}
+.compare-exit-link:hover{background:#fff5ef!important;}
+@media(max-width:899px){
+  body > main.compare-page-main{padding-top:18px!important;}
+  .compare-exit-row{
+    width:100%!important;
+    max-width:none!important;
+    margin:0 0 12px!important;
+    padding:0!important;
+  }
+  .compare-exit-link{
+    width:auto!important;
+    min-width:128px!important;
+    min-height:44px!important;
+    font-size:14px!important;
+  }
+  .compare-page-title-actions{grid-template-columns:1fr!important;}
+  .compare-page-title-actions .compare-change-btn{width:100%!important;}
+}
+</style>
+
 </head>
 <body class="compare-page-body">
   <main class="compare-page-main">
+    <div class="compare-exit-row" aria-label="Điều hướng trang so sánh">
+      <a class="compare-exit-link" id="compareExitLink" href="/">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Thoát so sánh</span>
+      </a>
+    </div>
     <div class="compare-page-title">
       <div>
         <h1>So sánh 2 sản phẩm</h1>
         <p>Đối chiếu trực tiếp giá, tình trạng và thông số kỹ thuật.</p>
       </div>
       <div class="compare-page-title-actions">
-        <button type="button" class="compare-back-btn compare-back-btn-inline" id="compareBackBtn" aria-label="Quay lại trang trước">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Quay lại</span>
-        </button>
         <a href="/" class="compare-change-btn">Đổi máy so sánh</a>
       </div>
     </div>
@@ -911,6 +968,22 @@ init();
     }else{
       location.href='/';
     }
+  });
+})();
+</script>
+
+
+<script id="v556-compare-exit-script">
+(function(){
+  var a=document.getElementById('compareExitLink');
+  if(!a) return;
+  a.addEventListener('click', function(e){
+    try{
+      if(document.referrer && new URL(document.referrer, location.href).origin===location.origin){
+        e.preventDefault();
+        history.back();
+      }
+    }catch(_e){}
   });
 })();
 </script>
