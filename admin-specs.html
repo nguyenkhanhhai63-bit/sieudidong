@@ -7457,7 +7457,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   </div>
   <div id="aiQuestionHistory" class="ai-question-history"></div>
   <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
-  <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm lịch sử <span>›</span></button></div>
+  <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm đoạn chat <span>↓</span></button></div>
 </div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
   <div class="device-chart-wrap">
@@ -8698,7 +8698,7 @@ function renderAiHistoryRows(){
   }
 
   if(moreBtn){
-    moreBtn.hidden=false;
+    moreBtn.hidden=aiHistoryState.expanded || items.length<=compactLimit;
     moreBtn.textContent="Xem thêm lịch sử";
   }
 
@@ -8729,6 +8729,9 @@ function renderAiHistoryRows(){
       </div>
     </div>`;
   }).join("");
+
+  const footerBtn=document.getElementById("aiHistoryFooterMoreBtn");
+  if(footerBtn) footerBtn.closest(".ai-history-footer")?.toggleAttribute("hidden", aiHistoryState.expanded || items.length<=compactLimit);
 
   if(!pager) return;
 
@@ -8782,18 +8785,19 @@ function renderAiQuestionHistory(items=[],period="today"){
 }
 
 document.getElementById("aiHistoryMoreBtn")?.addEventListener("click",()=>{
-  // v501: Từ Tổng quan mở thẳng Đào tạo AI > Lịch sử hội thoại.
-  // Việc tải dữ liệu vẫn tuân theo v494: lần đầu tự tải, các lần sau chỉ tải khi bấm Tải lại.
-  const aiTab=document.querySelector('#adminTabs [data-tab="ai"]');
-  if(aiTab) aiTab.click();
-  setTimeout(()=>{
-    const historyTab=document.querySelector('#aiSettingsCard [data-ai-v408-tab="history"]');
-    if(historyTab) historyTab.click();
-  },80);
+  // v502: Xem thêm ngay tại dashboard, không chuyển sang trang Lịch sử hội thoại.
+  aiHistoryState.expanded=true;
+  aiHistoryState.page=1;
+  renderAiHistoryRows();
 });
 
 document.getElementById("aiHistoryFooterMoreBtn")?.addEventListener("click",()=>{
-  document.getElementById("aiHistoryMoreBtn")?.click();
+  // Hiển thị thêm các đoạn chat ngay trong card.
+  aiHistoryState.expanded=true;
+  aiHistoryState.page=1;
+  renderAiHistoryRows();
+  const host=document.getElementById("aiQuestionHistory");
+  if(host) host.scrollTo({top:0,behavior:"smooth"});
 });
 
 document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
@@ -12351,6 +12355,15 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const tab=document.querySelector('[data-ai-v408-tab="facebook"]'); if(tab)tab.addEventListener('click',load);
 })();
 </script>
+
+<style id="v502-ai-history-inline-more">
+#analyticsCard .ai-history-footer[hidden]{display:none!important}
+#analyticsCard .ai-history-footer{display:flex;justify-content:center;align-items:center;padding:10px 12px 13px;border-top:1px solid #eef1f4;background:#fff}
+#analyticsCard #aiHistoryFooterMoreBtn{border:0;background:transparent;color:#f45d14;font-weight:800;font-size:11px;cursor:pointer;padding:7px 12px;border-radius:8px}
+#analyticsCard #aiHistoryFooterMoreBtn:hover{background:#fff5ef}
+#analyticsCard .ai-history-pager{padding:9px 12px!important;background:#fbfcfd!important}
+#analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{max-height:330px!important}
+</style>
 </body>
 </html>
 
