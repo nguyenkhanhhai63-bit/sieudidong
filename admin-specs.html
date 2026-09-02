@@ -7209,6 +7209,12 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 .traffic-source-row strong small{font-size:10px;color:#667085;font-weight:700}
 @media(max-width:760px){.traffic-source-row{grid-template-columns:68px minmax(80px,1fr) 82px;gap:7px}.traffic-source-list{padding:8px 12px 12px}}
 </style>
+
+<style id="v508-hour-heatmap-style">
+.traffic-hour-box{grid-column:span 4!important}.traffic-hour-wrap{padding:14px 16px 16px}.traffic-hour-axis{display:grid;grid-template-columns:30px repeat(7,1fr);align-items:center;margin-bottom:7px;color:#667085;font-size:10px}.traffic-hour-axis span{text-align:center}.traffic-hour-axis span:first-child{text-align:left}.traffic-hour-grid{display:grid;grid-template-columns:30px repeat(24,minmax(7px,1fr));gap:3px;align-items:center}.traffic-hour-day{font-size:10px;font-weight:700;color:#667085}.traffic-hour-cell{aspect-ratio:1/1;min-height:10px;border-radius:2px;background:#eef4ff;transition:transform .12s ease}.traffic-hour-cell:hover{transform:scale(1.16);outline:1px solid #2563eb;z-index:2}.traffic-hour-legend{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#667085;font-size:10px}.traffic-hour-gradient{width:150px;height:9px;border-radius:999px;background:linear-gradient(90deg,#eef4ff,#bcd4ff,#78a8ff,#3478f6)}
+@media(max-width:1280px){.traffic-hour-box{grid-column:span 6!important}}
+@media(max-width:760px){.traffic-hour-box{grid-column:1!important}.traffic-hour-wrap{overflow-x:auto}.traffic-hour-grid,.traffic-hour-axis{min-width:520px}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -7484,6 +7490,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   </div>
 </div>
           <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
+          <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
           <div class="abox"><h2>Điện thoại khách đang dùng</h2><p class="device-analytics-note">Ghi nhận từ khách truy cập mới. Model Android lỗi hoặc không xác định sẽ được tự động gom vào một nhóm; iPhone có thể không xác định chính xác đời máy do giới hạn trình duyệt.</p><div id="deviceModelRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Hệ điều hành thiết bị</h2><p class="device-analytics-note">Thống kê Android, iOS, Windows, macOS và các hệ điều hành nhận diện được.</p><div id="deviceOsRanks" class="ranklist"></div></div>
           <div class="abox"><h2>Sản phẩm được xem nhiều</h2><div id="productRanks" class="ranklist"></div></div>
@@ -8846,6 +8853,28 @@ document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
 });
 
 
+function renderTrafficHourHeatmap(matrix){
+  const host=document.getElementById("trafficHourHeatmap");
+  if(!host) return;
+  const data=Array.from({length:7},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
+  const max=Math.max(1,...data.flat());
+  const days=["T2","T3","T4","T5","T6","T7","CN"];
+  const axisHours=[0,4,8,12,16,20,24];
+  const axis=`<div class="traffic-hour-axis"><span></span>${axisHours.map(h=>`<span>${h}</span>`).join("")}</div>`;
+  let cells='<div class="traffic-hour-grid">';
+  data.forEach((row,r)=>{
+    cells+=`<span class="traffic-hour-day">${days[r]}</span>`;
+    row.forEach((v,h)=>{
+      const ratio=v/max;
+      const alpha=v?(.14+ratio*.82):.06;
+      const bg=v?`rgba(52,120,246,${alpha.toFixed(3)})`:'#eef4ff';
+      cells+=`<i class="traffic-hour-cell" style="background:${bg}" title="${days[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
+    });
+  });
+  cells+='</div>';
+  host.innerHTML=axis+cells+'<div class="traffic-hour-legend"><span>Thấp</span><i class="traffic-hour-gradient"></i><span>Cao</span></div>';
+}
+
 function renderTrafficSources(items){
   const host=document.getElementById("trafficSourceList");
   if(!host) return;
@@ -8891,6 +8920,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderTrafficSources(ranks.trafficSources||[]);
+  renderTrafficHourHeatmap(ranks.hourlyHeatmap||[]);
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
   renderRank("deviceOsRanks",ranks.topDeviceOs||[]);
   renderRank("productRanks",ranks.topProducts||[]);
