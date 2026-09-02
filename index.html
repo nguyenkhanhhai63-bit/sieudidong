@@ -796,5 +796,112 @@
 })();
 </script>
 
+
+
+<style id="v544-back-to-top-style">
+  #sddBackToTop{
+    position:fixed;
+    right:18px;
+    bottom:106px;
+    width:52px;
+    height:52px;
+    border:0;
+    border-radius:50%;
+    background:#ff5a00;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:2147483000;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(12px) scale(.92);
+    transition:opacity .22s ease,transform .22s ease,visibility .22s ease,box-shadow .22s ease;
+    box-shadow:0 8px 24px rgba(255,90,0,.28),0 0 0 5px rgba(255,90,0,.10);
+    -webkit-tap-highlight-color:transparent;
+  }
+  #sddBackToTop.is-visible{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0) scale(1);
+  }
+  #sddBackToTop:hover{
+    transform:translateY(-2px) scale(1.03);
+    box-shadow:0 12px 28px rgba(255,90,0,.34),0 0 0 6px rgba(255,90,0,.12);
+  }
+  #sddBackToTop:active{transform:scale(.96)}
+  #sddBackToTop svg{width:25px;height:25px;display:block}
+  #sddBackToTop .sdd-btt-tip{
+    position:absolute;
+    right:62px;
+    top:50%;
+    transform:translateY(-50%);
+    white-space:nowrap;
+    background:#111827;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    padding:8px 10px;
+    border-radius:8px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s ease;
+  }
+  #sddBackToTop:hover .sdd-btt-tip{opacity:1}
+  @media (max-width:768px){
+    #sddBackToTop{
+      right:18px;
+      bottom:112px;
+      width:48px;
+      height:48px;
+      box-shadow:0 7px 20px rgba(255,90,0,.28),0 0 0 4px rgba(255,90,0,.10);
+    }
+    #sddBackToTop svg{width:23px;height:23px}
+    #sddBackToTop .sdd-btt-tip{display:none}
+  }
+  @media (max-width:420px){
+    #sddBackToTop{right:14px;bottom:106px;width:46px;height:46px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #sddBackToTop{transition:none}
+    html{scroll-behavior:auto!important}
+  }
+</style>
+<button id="sddBackToTop" type="button" aria-label="Lên đầu trang" title="Lên đầu trang">
+  <span class="sdd-btt-tip">Lên đầu trang</span>
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5"></path>
+    <path d="M6.5 10.5 12 5l5.5 5.5"></path>
+  </svg>
+</button>
+<script id="v544-back-to-top-script">
+(function(){
+  var btn=document.getElementById('sddBackToTop');
+  if(!btn)return;
+  var threshold=500;
+  var ticking=false;
+  function update(){
+    var y=window.pageYOffset||document.documentElement.scrollTop||0;
+    btn.classList.toggle('is-visible',y>threshold);
+    ticking=false;
+  }
+  function onScroll(){
+    if(!ticking){
+      window.requestAnimationFrame(update);
+      ticking=true;
+    }
+  }
+  btn.addEventListener('click',function(){
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({top:0,left:0,behavior:reduce?'auto':'smooth'});
+  });
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('pageshow',update);
+  update();
+})();
+</script>
+
 </body>
 </html>
