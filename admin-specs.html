@@ -12661,3 +12661,104 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   setTimeout(setup,700);
 })();
 </script>
+
+<!-- V500 DASHBOARD LAYOUT OPTIMIZED -->
+<style id="v500-dashboard-layout-optimized">
+/* Giữ dashboard trong một khung đọc dễ nhìn trên màn hình lớn */
+:root{--v500-dashboard-max:1440px}
+@media (min-width:1101px){
+  body.authenticated .wrap{
+    width:calc(100vw - var(--sidebar-w) - 32px)!important;
+    max-width:var(--v500-dashboard-max)!important;
+    margin-left:calc(var(--sidebar-w) + 16px)!important;
+    margin-right:auto!important;
+    padding-top:78px!important;
+  }
+}
+#analyticsCard{max-width:var(--v500-dashboard-max)!important;margin:0 auto!important}
+#analyticsCard>.head{padding-bottom:12px!important}
+#analyticsCard>.head h1{font-size:24px!important}
+#analyticsCard>.head p{font-size:12px!important}
+.analytics-periodbar{margin-bottom:12px!important}
+.period-tab{font-size:11px!important;height:32px!important}
+
+/* KPI */
+#analyticsCard .metric-grid.metric-grid-main{gap:10px!important;margin-bottom:12px!important}
+#analyticsCard .metric-grid-main .metric{
+  min-height:104px!important;padding:14px 12px 12px 51px!important;border-radius:10px!important
+}
+#analyticsCard .metric-grid-main .metric-icon{left:12px!important;top:13px!important;width:30px!important;height:30px!important;border-radius:8px!important}
+#analyticsCard .metric-grid-main .metric small{font-size:11px!important;line-height:1.25!important}
+#analyticsCard .metric-grid-main .metric strong{font-size:22px!important;margin-top:6px!important}
+#analyticsCard .metric-grid-main .metric em{font-size:9.5px!important;margin-top:8px!important}
+
+/* Bố cục cố định, không để các card tự nhảy tạo khoảng trống */
+#analyticsCard .analytics-grid{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  gap:12px!important;
+  align-items:stretch!important
+}
+#analyticsCard .analytics-grid>.abox{width:auto!important;min-width:0!important;height:auto!important;margin:0!important}
+#analyticsCard .analytics-grid>.ai-history-box{order:1!important;grid-column:span 5!important;min-height:300px!important}
+#analyticsCard .analytics-grid>.warranty-analytics-box{order:2!important;grid-column:span 7!important;min-height:300px!important}
+#analyticsCard .analytics-grid>.traffic-box{order:3!important;grid-column:span 7!important;min-height:270px!important}
+#analyticsCard .analytics-grid>.device-box{order:4!important;grid-column:span 5!important;min-height:270px!important}
+
+/* 4 khối xếp hạng đầu tiên */
+#analyticsCard .analytics-grid>.abox:nth-of-type(4),
+#analyticsCard .analytics-grid>.abox:nth-of-type(5),
+#analyticsCard .analytics-grid>.abox:nth-of-type(6),
+#analyticsCard .analytics-grid>.abox:nth-of-type(7){order:5!important;grid-column:span 3!important;min-height:210px!important}
+/* Sản phẩm so sánh nhiều */
+#analyticsCard .analytics-grid>.abox:nth-of-type(8){order:6!important;grid-column:span 4!important;min-height:210px!important}
+#analyticsCard .analytics-grid>.compare-pairs-box{order:7!important;grid-column:span 8!important;min-height:210px!important}
+
+#analyticsCard .abox>h2,
+#analyticsCard .ai-history-head,
+#analyticsCard .warranty-analytics-head,
+#analyticsCard .compare-pairs-head{padding:13px 15px!important}
+#analyticsCard .abox>h2,
+#analyticsCard .ai-history-head h2,
+#analyticsCard .warranty-analytics-head h2,
+#analyticsCard .compare-pairs-head h2{font-size:13px!important}
+#analyticsCard .ai-history-head p,
+#analyticsCard .warranty-analytics-head p,
+#analyticsCard .compare-pairs-head p{font-size:10px!important}
+#analyticsCard .ai-question-history{max-height:225px!important;padding:6px 13px 10px!important}
+#analyticsCard .warranty-recent-table{font-size:10.5px!important}
+#analyticsCard .warranty-recent-table th{font-size:9.5px!important;padding:8px 10px!important}
+#analyticsCard .warranty-recent-table td{padding:9px 10px!important}
+#analyticsCard .chart{height:205px!important;padding:12px 15px!important}
+#analyticsCard .device-chart-wrap{min-height:214px!important;padding:15px 18px!important;gap:24px!important}
+#analyticsCard .device-donut{width:130px!important;height:130px!important;flex-basis:130px!important}
+#analyticsCard .device-analytics-note{display:none!important}
+#analyticsCard .ranklist{padding:7px 12px 11px!important}
+#analyticsCard .rankrow{min-height:30px!important;font-size:10.5px!important}
+#analyticsCard .compare-pair-list{padding:7px 12px 11px!important}
+#analyticsCard .compare-pair-row-compact{min-height:33px!important;font-size:10.5px!important}
+#analyticsCard .analytics-footer-note{font-size:10px!important;padding-top:12px!important}
+
+@media(max-width:1280px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #analyticsCard .analytics-grid>.ai-history-box,
+  #analyticsCard .analytics-grid>.warranty-analytics-box{grid-column:span 6!important}
+  #analyticsCard .analytics-grid>.traffic-box{grid-column:span 7!important}
+  #analyticsCard .analytics-grid>.device-box{grid-column:span 5!important}
+  #analyticsCard .analytics-grid>.abox:nth-of-type(4),
+  #analyticsCard .analytics-grid>.abox:nth-of-type(5),
+  #analyticsCard .analytics-grid>.abox:nth-of-type(6),
+  #analyticsCard .analytics-grid>.abox:nth-of-type(7){grid-column:span 6!important}
+  #analyticsCard .analytics-grid>.abox:nth-of-type(8){grid-column:span 4!important}
+  #analyticsCard .analytics-grid>.compare-pairs-box{grid-column:span 8!important}
+}
+@media(max-width:900px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #analyticsCard .analytics-grid>.abox{grid-column:1/-1!important}
+}
+@media(max-width:560px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:1fr!important}
+  #analyticsCard .metric-grid-main .metric{min-height:88px!important}
+}
+</style>
