@@ -13219,3 +13219,38 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
 })();
 </script>
+
+<!-- V515 FULL WIDTH DASHBOARD -->
+<style id="v515-dashboard-full-width">
+/* Kéo dashboard giãn hết phần không gian còn lại bên phải, bỏ giới hạn 1440px */
+:root{--v500-dashboard-max:none!important}
+@media (min-width:1101px){
+  body.authenticated .wrap{
+    width:calc(100vw - var(--sidebar-w) - 32px)!important;
+    max-width:none!important;
+    margin-left:calc(var(--sidebar-w) + 16px)!important;
+    margin-right:16px!important;
+  }
+}
+#analyticsCard{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+/* Hàng Lịch sử AI + Tra cứu bảo hành luôn sử dụng trọn chiều ngang */
+#analyticsCard .analytics-grid{
+  width:100%!important;
+  max-width:none!important;
+}
+#analyticsCard .analytics-grid>.ai-history-box{grid-column:span 5!important}
+#analyticsCard .analytics-grid>.warranty-analytics-box{grid-column:span 7!important}
+@media(max-width:1280px){
+  #analyticsCard .analytics-grid>.ai-history-box,
+  #analyticsCard .analytics-grid>.warranty-analytics-box{grid-column:span 6!important}
+}
+@media(max-width:900px){
+  #analyticsCard .analytics-grid>.ai-history-box,
+  #analyticsCard .analytics-grid>.warranty-analytics-box{grid-column:1/-1!important}
+}
+</style>
