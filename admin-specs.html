@@ -12645,6 +12645,57 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #analyticsCard .traffic-line-card .traffic-line-chart{height:225px!important;min-height:225px!important}
 }
 </style>
+
+
+<!-- V517 SYNC LOWER DASHBOARD WIDTH -->
+<style id="v517-dashboard-grid-width-fix">
+/* Hàng Lịch sử AI + bảo hành và các card bên dưới phải rộng đúng bằng hàng thống kê truy cập phía trên. */
+@media (min-width:901px){
+  #analyticsCard .analytics-shell{overflow:visible!important;}
+  #analyticsCard .analytics-shell > .analytics-grid{
+    max-width:none!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
+<script id="v517-dashboard-grid-width-fix-js">
+(function(){
+  function syncLowerGridWidth(){
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var ref=card.querySelector('.traffic-insights-row-top');
+    var grid=card.querySelector('.analytics-shell > .analytics-grid');
+    if(!ref || !grid) return;
+    if(window.innerWidth<=900){
+      grid.style.removeProperty('width');
+      grid.style.removeProperty('max-width');
+      grid.style.removeProperty('min-width');
+      return;
+    }
+    var w=Math.round(ref.getBoundingClientRect().width);
+    if(w>0){
+      grid.style.setProperty('width',w+'px','important');
+      grid.style.setProperty('max-width','none','important');
+      grid.style.setProperty('min-width',w+'px','important');
+    }
+  }
+  function setup(){
+    syncLowerGridWidth();
+    setTimeout(syncLowerGridWidth,100);
+    setTimeout(syncLowerGridWidth,500);
+    setTimeout(syncLowerGridWidth,1200);
+    window.addEventListener('resize',syncLowerGridWidth,{passive:true});
+    if(window.ResizeObserver){
+      var ref=document.querySelector('#analyticsCard .traffic-insights-row-top');
+      if(ref) new ResizeObserver(syncLowerGridWidth).observe(ref);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
+})();
+</script>
 </body>
 </html>
 
