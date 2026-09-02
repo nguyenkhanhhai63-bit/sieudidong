@@ -10298,7 +10298,22 @@ async function mutateAiKnowledge(id,action,answer=""){
 }
 if(aiKnowledgeList) aiKnowledgeList.addEventListener("click",e=>{
   const item=e.target.closest("[data-ai-knowledge-id]"); if(!item)return;
-  aiKnowledgeSelectedId=String(item.dataset.aiKnowledgeId||""); renderAiKnowledge();
+  aiKnowledgeSelectedId=String(item.dataset.aiKnowledgeId||"");
+  renderAiKnowledge();
+
+  // v541: Trên mobile, chọn câu hỏi xong tự cuộn xuống phần Chi tiết câu hỏi.
+  if(window.matchMedia && window.matchMedia("(max-width: 760px)").matches){
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        const detail=document.getElementById("aiKnowledgeDetail");
+        if(!detail) return;
+        const topbar=document.querySelector(".admin-mobile-header, .mobile-admin-header, .admin-topbar, header");
+        const topOffset=(topbar && topbar.getBoundingClientRect().height) ? Math.min(110, topbar.getBoundingClientRect().height + 12) : 82;
+        const y=detail.getBoundingClientRect().top + window.pageYOffset - topOffset;
+        window.scrollTo({top:Math.max(0,y),behavior:"smooth"});
+      });
+    });
+  }
 });
 const aiKnowledgeDetailBox=document.getElementById("aiKnowledgeDetail");
 if(aiKnowledgeDetailBox) aiKnowledgeDetailBox.addEventListener("click",async e=>{
@@ -13956,6 +13971,12 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #aiSettingsCard .ai-knowledge-chat-card .ai-knowledge-meta span:nth-child(2),
   #aiSettingsCard .ai-knowledge-chat-card .ai-knowledge-meta span:nth-child(3){display:none!important}
   #aiSettingsCard .ai-knowledge-chat-chevron{display:none!important}
+}
+</style>
+
+<style id="v541-mobile-knowledge-detail-autoscroll-css">
+@media (max-width:760px){
+  #aiKnowledgeDetail{scroll-margin-top:86px!important;}
 }
 </style>
 </body>
