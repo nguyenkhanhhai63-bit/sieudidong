@@ -13590,6 +13590,66 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+
+<!-- v531: remove duplicate desktop reopen button; keep one arrow on rail -->
+<style id="v531-single-sidebar-reopen-control">
+@media (min-width:761px){
+  /* Chỉ dùng nút mũi tên gắn ở mép rail; ẩn nút nổi v529 để không bị 2 nút chồng nhau */
+  #desktopSidebarReopen{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+  body.sidebar-collapsed #sidebarBrandToggle{
+    display:grid!important;
+    position:fixed!important;
+    left:66px!important;
+    top:96px!important;
+    right:auto!important;
+    width:32px!important;
+    height:32px!important;
+    border:1px solid #e4e7ec!important;
+    border-radius:10px!important;
+    background:#fff!important;
+    color:#667085!important;
+    box-shadow:0 4px 12px rgba(16,24,40,.10)!important;
+    z-index:2147483646!important;
+    place-items:center!important;
+    font-size:0!important;
+  }
+  body.sidebar-collapsed #sidebarBrandToggle::before{
+    content:'›'!important;
+    font-size:27px!important;
+    line-height:1!important;
+    font-weight:700!important;
+    color:#667085!important;
+    transform:translateY(-1px)!important;
+  }
+  body.sidebar-collapsed #sidebarBrandToggle:hover{
+    color:#ff5a00!important;
+    border-color:#ffd2bd!important;
+    background:#fff7f2!important;
+  }
+}
+</style>
+<script id="v531-single-sidebar-reopen-control-js">
+(function(){
+  function bind(){
+    var brand=document.getElementById('sidebarBrandToggle');
+    if(!brand || brand.dataset.v531Bound)return;
+    brand.dataset.v531Bound='1';
+    brand.addEventListener('click',function(e){
+      if(window.innerWidth<=760 || !document.body.classList.contains('sidebar-collapsed')) return;
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      document.body.classList.remove('sidebar-collapsed');
+      document.documentElement.style.setProperty('--sidebar-w','276px');
+      brand.setAttribute('aria-label','Thu gọn menu');
+      var t=document.getElementById('sidebarToggle');
+      if(t)t.setAttribute('aria-expanded','true');
+      try{localStorage.setItem('admin_sidebar_expanded','1');}catch(_){}
+    },true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+  setTimeout(bind,120);
+})();
+</script>
 </body>
 </html>
 
