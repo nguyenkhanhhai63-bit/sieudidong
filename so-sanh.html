@@ -251,21 +251,68 @@ body > main p{
   }
 }
 
+
+/* v552 - nut Quay lai tach rieng, luon nhin thay */
+.compare-top-nav{
+  width:min(var(--sdd-content-width),100%);
+  max-width:var(--sdd-content-width);
+  margin:0 auto 10px;
+  display:flex!important;
+  align-items:center;
+  justify-content:flex-start;
+  box-sizing:border-box;
+}
+.compare-back-btn-standalone{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:relative!important;
+  z-index:5;
+}
+.compare-page-title-actions{
+  display:flex!important;
+  justify-content:flex-end;
+}
+@media(max-width:899px){
+  .compare-top-nav{
+    width:100%!important;
+    max-width:none!important;
+    margin:0 0 10px!important;
+  }
+  .compare-back-btn-standalone{
+    width:auto!important;
+    min-width:108px;
+    min-height:40px!important;
+    padding:0 13px!important;
+  }
+  .compare-page-title-actions{
+    grid-column:auto!important;
+    width:auto!important;
+    display:flex!important;
+  }
+  .compare-page-title-actions .compare-change-btn{
+    width:auto!important;
+    min-width:126px;
+  }
+}
+
 </style>
 
 </head>
 <body class="compare-page-body">
   <main class="compare-page-main">
+    <div class="compare-top-nav">
+      <button type="button" class="compare-back-btn compare-back-btn-standalone" id="compareBackBtn" aria-label="Quay lại trang trước">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Quay lại</span>
+      </button>
+    </div>
     <div class="compare-page-title">
       <div>
         <h1>So sánh 2 sản phẩm</h1>
         <p>Đối chiếu trực tiếp giá, tình trạng và thông số kỹ thuật.</p>
       </div>
       <div class="compare-page-title-actions">
-        <button type="button" class="compare-back-btn" id="compareBackBtn" aria-label="Quay lại trang trước">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Quay lại</span>
-        </button>
         <a href="/" class="compare-change-btn">Đổi máy so sánh</a>
       </div>
     </div>
