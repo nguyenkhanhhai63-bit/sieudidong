@@ -7187,7 +7187,11 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 </style>
 
 
-</head>
+<style id="v501-ai-history-more-style">
+.ai-history-footer{display:flex;justify-content:center;align-items:center;padding:10px 12px 12px;border-top:1px solid #edf1f5;background:#fff}
+#aiHistoryFooterMoreBtn{border:0;background:transparent;color:#f45d14;font-weight:700;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px}
+#aiHistoryFooterMoreBtn:hover{background:#fff5ef}
+</style></head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
 
@@ -7453,6 +7457,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
   </div>
   <div id="aiQuestionHistory" class="ai-question-history"></div>
   <div id="aiHistoryPager" class="ai-history-pager" hidden></div>
+  <div class="ai-history-footer"><button id="aiHistoryFooterMoreBtn" type="button">Xem thêm lịch sử <span>›</span></button></div>
 </div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
   <div class="device-chart-wrap">
@@ -8687,14 +8692,14 @@ function renderAiHistoryRows(){
 
   if(!items.length){
     host.innerHTML='<div class="ai-history-empty">Chưa có câu hỏi AI trong khoảng thời gian này.</div>';
-    if(moreBtn) moreBtn.hidden=true;
+    if(moreBtn){ moreBtn.hidden=false; moreBtn.textContent="Xem thêm lịch sử"; }
     if(pager) pager.hidden=true;
     return;
   }
 
   if(moreBtn){
-    moreBtn.hidden=items.length<=compactLimit;
-    moreBtn.textContent=aiHistoryState.expanded?"Thu gọn":"Xem thêm";
+    moreBtn.hidden=false;
+    moreBtn.textContent="Xem thêm lịch sử";
   }
 
   let visible=[];
@@ -8777,9 +8782,18 @@ function renderAiQuestionHistory(items=[],period="today"){
 }
 
 document.getElementById("aiHistoryMoreBtn")?.addEventListener("click",()=>{
-  aiHistoryState.expanded=!aiHistoryState.expanded;
-  aiHistoryState.page=1;
-  renderAiHistoryRows();
+  // v501: Từ Tổng quan mở thẳng Đào tạo AI > Lịch sử hội thoại.
+  // Việc tải dữ liệu vẫn tuân theo v494: lần đầu tự tải, các lần sau chỉ tải khi bấm Tải lại.
+  const aiTab=document.querySelector('#adminTabs [data-tab="ai"]');
+  if(aiTab) aiTab.click();
+  setTimeout(()=>{
+    const historyTab=document.querySelector('#aiSettingsCard [data-ai-v408-tab="history"]');
+    if(historyTab) historyTab.click();
+  },80);
+});
+
+document.getElementById("aiHistoryFooterMoreBtn")?.addEventListener("click",()=>{
+  document.getElementById("aiHistoryMoreBtn")?.click();
 });
 
 document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
