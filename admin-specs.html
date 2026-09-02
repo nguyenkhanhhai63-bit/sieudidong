@@ -12968,7 +12968,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const tabs=document.getElementById('adminTabs');tabs?.addEventListener('click',e=>{const btn=e.target.closest('[data-tab]');if(!btn)return;const active=btn.dataset.tab==='footer';card.style.display=active?'':'none';card.classList.toggle('active',active);if(active){document.getElementById('adminPageTitle').textContent='Quản lý Footer';document.getElementById('adminPageSubtitle').textContent='Tùy chỉnh nội dung, icon và màu sắc footer website';load()}});
 })();
 
-</script>\n
+</script>
 
 <script id="accessory-admin-v399-js">
 (()=>{
@@ -13305,7 +13305,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   if(historyTab?.classList.contains('is-active')) setTimeout(loadOnceOnFirstOpen,0);
   reload?.addEventListener('click',async()=>{historyLoadedOnce=true;await load();});
 })();
-</script>\n
+</script>
 <script id="v474-facebook-comment-ai-admin">
 (()=>{
   const $=id=>document.getElementById(id);
@@ -13977,6 +13977,46 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 <style id="v541-mobile-knowledge-detail-autoscroll-css">
 @media (max-width:760px){
   #aiKnowledgeDetail{scroll-margin-top:86px!important;}
+}
+</style>
+
+<style id="v542-mobile-question-detail-footer-fix">
+@media (max-width:760px){
+  /* Fix thanh hành động cuối Chi tiết câu hỏi */
+  #aiSettingsCard .ai-v409-detail-actions{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    padding:10px 12px 12px!important;
+    align-items:stretch!important;
+  }
+  #aiSettingsCard .ai-v409-detail-actions button{
+    width:100%!important;
+    min-width:0!important;
+    min-height:44px!important;
+    height:44px!important;
+    margin:0!important;
+    padding:0 10px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    white-space:nowrap!important;
+    line-height:1!important;
+    font-size:12px!important;
+    border-radius:10px!important;
+  }
+  #aiSettingsCard .ai-v409-detail-actions .train{
+    grid-column:1 / -1!important;
+    grid-row:1!important;
+    height:48px!important;
+    font-size:13px!important;
+    font-weight:800!important;
+  }
+  #aiSettingsCard .ai-v409-detail-actions .secondary{grid-column:1!important;grid-row:2!important;}
+  #aiSettingsCard .ai-v409-detail-actions .danger{grid-column:2!important;grid-row:2!important;}
+  #aiSettingsCard .ai-v409-detail-card{overflow:hidden!important;}
+  #aiSettingsCard .ai-v409-answer-wrap textarea{min-height:116px!important;}
 }
 </style>
 </body>
