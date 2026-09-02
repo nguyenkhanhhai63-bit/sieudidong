@@ -12656,7 +12656,7 @@ document.addEventListener("DOMContentLoaded",function(){
     let opened=false;
 
     function drawerMode(){
-      return window.innerWidth <= 1100;
+      return window.innerWidth <= 760;
     }
 
     function forceOpen(){
@@ -14489,3 +14489,99 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #analyticsCard .metric-grid-main .metric strong{font-size:19px!important}
 }
 </style>
+
+
+<!-- v530: desktop sidebar collapse/reopen definitive fix -->
+<style id="v530-desktop-sidebar-definitive-fix">
+@media (min-width:761px){
+  body.sidebar-collapsed #adminSidebar.admin-sidebar{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    transform:translate3d(0,0,0)!important;
+    left:0!important;
+    width:84px!important;
+    min-width:84px!important;
+    max-width:84px!important;
+  }
+  body.sidebar-collapsed #sidebarBrandToggle{
+    display:grid!important;
+    position:fixed!important;
+    left:58px!important;
+    top:74px!important;
+    right:auto!important;
+    width:38px!important;
+    height:38px!important;
+    border:1px solid #ffd2bd!important;
+    border-radius:12px!important;
+    background:#fff!important;
+    color:#ff5a00!important;
+    box-shadow:0 8px 22px rgba(16,24,40,.16)!important;
+    z-index:2147483646!important;
+    place-items:center!important;
+    font-size:0!important;
+    cursor:pointer!important;
+    overflow:visible!important;
+  }
+  body.sidebar-collapsed #sidebarBrandToggle::before{
+    content:'›'!important;
+    display:block!important;
+    font-size:30px!important;
+    line-height:1!important;
+    font-weight:800!important;
+    transform:translateY(-1px)!important;
+  }
+  body:not(.sidebar-collapsed) #desktopSidebarReopen{display:none!important}
+}
+</style>
+<script id="v530-desktop-sidebar-definitive-fix-js">
+(function(){
+  function clearMobileInlineStyles(){
+    if(window.innerWidth<=760)return;
+    var sidebar=document.getElementById('adminSidebar');
+    var backdrop=document.getElementById('mobileAdminDrawerBackdrop');
+    if(sidebar){
+      sidebar.classList.remove('mobile-open');
+      ['display','position','left','top','bottom','width','min-width','max-width','height','transform','visibility','opacity','pointer-events','z-index']
+        .forEach(function(x){sidebar.style.removeProperty(x);});
+    }
+    if(backdrop){
+      backdrop.classList.remove('show');
+      ['display','visibility','opacity','pointer-events','z-index'].forEach(function(x){backdrop.style.removeProperty(x);});
+    }
+    document.body.classList.remove('mobile-sidebar-open');
+    document.documentElement.style.overflow='';
+  }
+  function expandDesktop(e){
+    if(window.innerWidth<=760)return;
+    if(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();}
+    clearMobileInlineStyles();
+    document.body.classList.remove('sidebar-collapsed');
+    document.documentElement.style.setProperty('--sidebar-w','276px');
+    var b=document.getElementById('sidebarBrandToggle');
+    if(b)b.setAttribute('aria-label','Thu gọn menu');
+    var t=document.getElementById('sidebarToggle');
+    if(t)t.setAttribute('aria-expanded','true');
+    try{localStorage.setItem('admin_sidebar_expanded','1');}catch(_){ }
+  }
+  function bind(){
+    clearMobileInlineStyles();
+    var brand=document.getElementById('sidebarBrandToggle');
+    if(brand && !brand.dataset.v530Bound){
+      brand.dataset.v530Bound='1';
+      brand.addEventListener('click',function(e){
+        if(window.innerWidth>760 && document.body.classList.contains('sidebar-collapsed')) expandDesktop(e);
+      },true);
+    }
+    var reopen=document.getElementById('desktopSidebarReopen');
+    if(reopen && !reopen.dataset.v530Bound){
+      reopen.dataset.v530Bound='1';
+      reopen.addEventListener('click',expandDesktop,true);
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
+  window.addEventListener('resize',function(){ if(window.innerWidth>760){ clearMobileInlineStyles(); bind(); } });
+  setTimeout(bind,100);setTimeout(bind,500);setTimeout(bind,1200);
+})();
+</script>
