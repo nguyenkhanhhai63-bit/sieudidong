@@ -12288,9 +12288,20 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   list.addEventListener('click',e=>{const el=e.target.closest('[data-history-id]');if(!el)return;selected=el.dataset.historyId;renderList()});
   detail.addEventListener('click',async e=>{const b=e.target.closest('[data-history-delete]');if(!b)return;if(!confirm('Xóa cuộc hội thoại này?'))return;try{const r=await fetch('/api/admin/ai-chat-history?id='+encodeURIComponent(b.dataset.historyDelete),{method:'DELETE',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không xóa được');selected='';await load()}catch(err){alert(err.message||'Không xóa được')}});
-  // v490: Lịch sử chỉ gọi API khi người dùng chủ động bấm nút Tải lại.
-  // Chuyển tab, tìm kiếm hoặc đổi giới hạn sẽ không tự fetch lại dữ liệu.
-  reload?.addEventListener('click',load);
+  // v494: Tự tải đúng 1 lần khi người dùng mở tab Lịch sử trong phiên trang hiện tại.
+  // Sau lần tải đầu, chuyển qua lại các tab KHÔNG gọi API lại; muốn cập nhật phải bấm Tải lại.
+  let historyLoadedOnce=false;
+  async function loadOnceOnFirstOpen(){
+    if(historyLoadedOnce)return;
+    historyLoadedOnce=true;
+    await load();
+  }
+  const historyTab=card.querySelector('[data-ai-v408-tab="history"]');
+  historyTab?.addEventListener('click',loadOnceOnFirstOpen);
+  // Nếu trình duyệt nhớ tab Lịch sử từ lần trước và trang mở thẳng tab này thì vẫn tải 1 lần.
+  if(historyTab?.classList.contains('is-active')) setTimeout(loadOnceOnFirstOpen,0);
+  // Chỉ nút Tải lại mới được phép fetch thêm sau lần tải đầu.
+  reload?.addEventListener('click',async()=>{historyLoadedOnce=true;await load();});
 })();
 </script>\n
 <script id="v474-facebook-comment-ai-admin">
