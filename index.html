@@ -1000,146 +1000,119 @@
     </button>
 
 
-<script id="v598-ai-chat-conversation-context">
+<script id="v599-ai-chat-context-safe">
 (function(){
-  const STORAGE_KEY='sdd-ai-chat-context-v598';
+  const STORAGE_KEY='sdd-ai-chat-context-v599';
   const MAX_TURNS=8;
   const MAX_AGE=2*60*60*1000;
   const originalFetch=window.fetch.bind(window);
 
+  function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim()}
   function loadState(){
     try{
       const s=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}');
-      if(!s || !Array.isArray(s.turns)) return {ts:Date.now(),turns:[]};
-      if(Date.now()-Number(s.ts||0)>MAX_AGE) return {ts:Date.now(),turns:[]};
+      if(!s||!Array.isArray(s.turns)||Date.now()-Number(s.ts||0)>MAX_AGE) return {ts:Date.now(),turns:[]};
       return {ts:Number(s.ts||Date.now()),turns:s.turns.slice(-MAX_TURNS)};
-    }catch(e){ return {ts:Date.now(),turns:[]}; }
+    }catch(e){return {ts:Date.now(),turns:[]}}
   }
-  function saveState(state){
-    try{
-      state.ts=Date.now();
-      state.turns=(state.turns||[]).slice(-MAX_TURNS);
-      sessionStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    }catch(e){}
+  function saveState(st){
+    try{st.ts=Date.now();st.turns=(st.turns||[]).slice(-MAX_TURNS);sessionStorage.setItem(STORAGE_KEY,JSON.stringify(st))}catch(e){}
   }
-  function clean(v){ return String(v==null?'':v).replace(/\s+/g,' ').trim(); }
   function isAiChatUrl(input){
-    try{
-      const u=typeof input==='string'?input:(input&&input.url)||'';
-      return /\/api\/ai-chat(?:\?|$)/i.test(String(u));
-    }catch(e){ return false; }
+    try{const u=typeof input==='string'?input:(input&&input.url)||'';return /\/api\/ai-chat(?:\?|$)/i.test(String(u))}catch(e){return false}
   }
   function pickMessageKey(obj){
-    if(!obj||typeof obj!=='object') return '';
+    if(!obj||typeof obj!=='object')return '';
     const keys=['message','question','text','prompt','query','content','userMessage','user_message'];
-    for(const k of keys){ if(typeof obj[k]==='string' && clean(obj[k])) return k; }
-    for(const k of Object.keys(obj)){
-      if(typeof obj[k]==='string' && clean(obj[k]) && /message|question|prompt|query|text/i.test(k)) return k;
-    }
+    for(const k of keys){if(typeof obj[k]==='string'&&clean(obj[k]))return k}
     return '';
   }
-  function makeContext(turns,current){
-    if(!turns.length) return current;
-    const recent=turns.slice(-5).map((t,i)=>{
-      const q=clean(t.user).slice(0,260);
-      const a=clean(t.assistant).slice(0,420);
-      return `${i+1}. Khách: ${q}${a?`\n   Shop: ${a}`:''}`;
-    }).join('\n');
-    return [
-      '[NGỮ CẢNH HỘI THOẠI - KHÔNG NHẮC LẠI PHẦN NÀY CHO KHÁCH]',
-      'Đây là tin nhắn nối tiếp trong cùng một phiên chat. Hãy hiểu câu mới dựa trên các câu trước, nhất là tên máy, tình trạng New/Like New, dung lượng, màu, giá và nhu cầu mà khách đang nhắc tới.',
-      'Lịch sử chỉ dùng để hiểu khách đang nói về cái gì. Giá và tồn kho phải luôn lấy từ dữ liệu hiện tại của shop, không lấy số cũ trong lịch sử nếu dữ liệu hiện tại khác.',
-      recent,
-      `[TIN NHẮN MỚI CỦA KHÁCH]\n${current}`,
-      'Trả lời trực tiếp tin nhắn mới, tự nhiên như nhân viên đang chat. Nếu khách hỏi tiếp kiểu “còn không”, “con đó”, “like new ko”, “bản 256”, “không có iQOO hả” thì phải nối đúng với chủ đề ngay trước đó, không tự đổi sang phiên bản khác.'
-    ].join('\n');
+
+  // Tin nhắn có tên hãng/model rõ ràng phải được coi là câu hỏi MỚI, tuyệt đối không trộn câu trả lời cũ vào.
+  function hasExplicitProduct(q){
+    q=clean(q).toLowerCase();
+    const brands=/\b(xiaomi|redmi|poco|iqoo|vivo|oppo|oneplus|honor|realme|samsung|iphone|apple|nubia|zte|lenovo|huawei|infinix|tecno|rog|asus)\b/i;
+    const model=/\b[a-z]{0,5}\d{1,4}[a-z]{0,5}\b/i;
+    return brands.test(q)||model.test(q);
+  }
+  function isFollowUp(q){
+    q=clean(q).toLowerCase();
+    if(!q||q.length>110||hasExplicitProduct(q))return false;
+    return /^(còn|con đó|máy đó|bản đó|loại đó|cái đó|nó|like new|new|fullbox|seal|màu|bản|ram|rom|dung lượng|giá|bao nhiêu|có giảm|hs|học sinh|còn hàng|hết hàng|còn ko|còn k|còn không|có ko|có k|có không|thì sao|sao shop)/i.test(q)
+      || /\b(con đó|máy đó|bản đó|còn (ko|k|không)|like new|bản 256|bản 512|màu gì|giá sao|giá bao nhiêu)\b/i.test(q);
+  }
+  function subjectFromUser(q){
+    q=clean(q);
+    if(!hasExplicitProduct(q))return '';
+    // Giữ nguyên câu user trước nhưng bỏ bớt từ đệm; KHÔNG lấy câu trả lời AI để tránh nhảy sang máy khác.
+    return q.replace(/^(shop\s+|bên shop\s+|cho hỏi\s+|có\s+)/i,'')
+      .replace(/\b(hả shop|nha shop|shop ơi|không shop|ko shop|k shop)\b.*$/i,'')
+      .replace(/[?!.]+$/,'').trim().slice(0,120);
+  }
+  function resolveMessage(current,state){
+    current=clean(current);
+    // Câu có tên máy rõ ràng luôn gửi NGUYÊN VĂN. Đây là điểm sửa lỗi hỏi Redmi nhưng AI trả OnePlus.
+    if(hasExplicitProduct(current)||!isFollowUp(current))return current;
+    for(let i=state.turns.length-1;i>=0;i--){
+      const subject=subjectFromUser(state.turns[i].user);
+      if(subject)return `${subject}. ${current}`;
+    }
+    return current;
   }
   function findAnswer(obj,depth){
-    depth=depth||0;
-    if(depth>4 || obj==null) return '';
-    if(typeof obj==='string') return clean(obj);
-    if(Array.isArray(obj)){
-      for(let i=obj.length-1;i>=0;i--){ const r=findAnswer(obj[i],depth+1); if(r) return r; }
-      return '';
-    }
+    depth=depth||0;if(depth>4||obj==null)return '';
+    if(typeof obj==='string')return clean(obj);
+    if(Array.isArray(obj)){for(let i=obj.length-1;i>=0;i--){const r=findAnswer(obj[i],depth+1);if(r)return r}return ''}
     if(typeof obj==='object'){
-      const preferred=['answer','reply','response','message','text','content','output','result'];
-      for(const k of preferred){ if(k in obj){ const r=findAnswer(obj[k],depth+1); if(r) return r; } }
-      for(const k of Object.keys(obj)){ const r=findAnswer(obj[k],depth+1); if(r && r.length>2) return r; }
+      for(const k of ['answer','reply','response','message','text','content','output','result']){if(k in obj){const r=findAnswer(obj[k],depth+1);if(r)return r}}
+      for(const k of Object.keys(obj)){const r=findAnswer(obj[k],depth+1);if(r&&r.length>2)return r}
     }
     return '';
   }
   function remember(user,answer){
-    user=clean(user); answer=clean(answer);
-    if(!user) return;
-    const st=loadState();
-    st.turns.push({user:user,assistant:answer,ts:Date.now()});
-    saveState(st);
+    user=clean(user);answer=clean(answer);if(!user)return;
+    const st=loadState();st.turns.push({user,assistant:answer,ts:Date.now()});saveState(st);
   }
 
   window.fetch=async function(input,init){
-    if(!isAiChatUrl(input)) return originalFetch(input,init);
+    if(!isAiChatUrl(input))return originalFetch(input,init);
     init=init?Object.assign({},init):{};
     const state=loadState();
     let originalUser='';
-    let changed=false;
-
     try{
       if(typeof init.body==='string'){
         const ct=String((init.headers&&((init.headers['Content-Type'])||(init.headers['content-type'])))||'');
-        if(/json/i.test(ct) || /^\s*[\[{]/.test(init.body)){
-          const obj=JSON.parse(init.body);
-          const key=pickMessageKey(obj);
+        if(/json/i.test(ct)||/^\s*[\[{]/.test(init.body)){
+          const obj=JSON.parse(init.body),key=pickMessageKey(obj);
           if(key){
             originalUser=clean(obj[key]);
+            obj[key]=resolveMessage(originalUser,state);
+            // Chỉ gửi lịch sử user ở field phụ; không nhét câu trả lời AI vào câu hỏi chính.
             obj.originalMessage=originalUser;
-            obj.conversationHistory=state.turns.slice(-5);
-            obj.conversationContext=state.turns.slice(-5).map(t=>({user:t.user,assistant:t.assistant}));
-            if(state.turns.length) obj[key]=makeContext(state.turns,originalUser);
-            init.body=JSON.stringify(obj); changed=true;
+            obj.conversationHistory=state.turns.slice(-5).map(t=>({user:t.user}));
+            init.body=JSON.stringify(obj);
           }
         }else{
-          const sp=new URLSearchParams(init.body);
-          const keys=['message','question','text','prompt','query','content'];
+          const sp=new URLSearchParams(init.body),keys=['message','question','text','prompt','query','content'];
           const key=keys.find(k=>clean(sp.get(k)));
-          if(key){
-            originalUser=clean(sp.get(key));
-            sp.set('originalMessage',originalUser);
-            sp.set('conversationHistory',JSON.stringify(state.turns.slice(-5)));
-            if(state.turns.length) sp.set(key,makeContext(state.turns,originalUser));
-            init.body=sp.toString(); changed=true;
-          }
+          if(key){originalUser=clean(sp.get(key));sp.set(key,resolveMessage(originalUser,state));sp.set('originalMessage',originalUser);init.body=sp.toString()}
         }
       }else if(init.body instanceof FormData){
-        const fd=new FormData(); init.body.forEach((v,k)=>fd.append(k,v));
-        const keys=['message','question','text','prompt','query','content'];
-        const key=keys.find(k=>typeof fd.get(k)==='string'&&clean(fd.get(k)));
-        if(key){
-          originalUser=clean(fd.get(key));
-          fd.set('originalMessage',originalUser);
-          fd.set('conversationHistory',JSON.stringify(state.turns.slice(-5)));
-          if(state.turns.length) fd.set(key,makeContext(state.turns,originalUser));
-          init.body=fd; changed=true;
-        }
+        const fd=new FormData();init.body.forEach((v,k)=>fd.append(k,v));
+        const keys=['message','question','text','prompt','query','content'],key=keys.find(k=>typeof fd.get(k)==='string'&&clean(fd.get(k)));
+        if(key){originalUser=clean(fd.get(key));fd.set(key,resolveMessage(originalUser,state));fd.set('originalMessage',originalUser);init.body=fd}
       }
     }catch(e){}
 
     const res=await originalFetch(input,init);
     if(originalUser){
-      try{
-        const clone=res.clone();
-        const text=await clone.text();
-        let answer='';
-        try{ answer=findAnswer(JSON.parse(text),0); }catch(e){ answer=clean(text); }
-        if(answer && answer.length>1200) answer=answer.slice(0,1200);
-        remember(originalUser,answer);
-      }catch(e){ remember(originalUser,''); }
+      try{const text=await res.clone().text();let answer='';try{answer=findAnswer(JSON.parse(text),0)}catch(e){answer=clean(text)};remember(originalUser,answer.slice(0,1200))}catch(e){remember(originalUser,'')}
     }
     return res;
   };
-
-  // Cho phép reset ngữ cảnh thủ công từ console khi cần hỗ trợ kỹ thuật.
-  window.SDD_RESET_AI_CHAT_CONTEXT=function(){ try{sessionStorage.removeItem(STORAGE_KEY)}catch(e){} };
+  window.SDD_RESET_AI_CHAT_CONTEXT=function(){try{sessionStorage.removeItem(STORAGE_KEY);sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}};
+  // Xóa context lỗi của bản v598 ngay lần đầu nâng cấp.
+  try{sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}
 })();
 </script>
 <script src="/app.js?v=493"></script>
