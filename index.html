@@ -430,6 +430,30 @@
  });
 })();
 </script>
+<script id="v576-home-category-hard-navigation">
+(function(){
+  const categoryPaths = new Set(['/dien-thoai','/may-tinh-bang','/may-cu','/phu-kien']);
+  function cleanPath(href){
+    try { return new URL(href, location.origin).pathname.replace(/\/$/, '') || '/'; } catch(e){ return ''; }
+  }
+  // Khi đang ở Trang chủ, ép các nút danh mục chuyển trang thật ngay lần bấm đầu tiên.
+  // Chạy ở capture phase để không bị router SPA cũ giữ lại trạng thái Trang chủ.
+  document.addEventListener('click', function(e){
+    if(location.pathname !== '/' && location.pathname !== '/index.html') return;
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a) return;
+    const path = cleanPath(a.getAttribute('href'));
+    if(!categoryPaths.has(path)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    document.body.classList.remove('sdd-home-all-mode');
+    const home = document.getElementById('sddHomeAllProducts');
+    if(home) home.style.display='none';
+    window.location.assign(path);
+  }, true);
+})();
+</script>
 
 <footer class="sdd-site-footer" id="siteFooter" aria-label="Thông tin Siêu Di Động">
     <div class="sdd-footer-main sdd-footer-balanced">
