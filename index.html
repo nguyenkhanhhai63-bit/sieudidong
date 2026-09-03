@@ -469,6 +469,64 @@
  });
 })();
 </script>
+<script id="v579-home-sort-functional">
+(function(){
+  var select=document.getElementById('sortSelect');
+  if(!select) return;
+
+  function textOf(el){ return (el.textContent||'').replace(/\s+/g,' ').trim(); }
+  function getPrice(el){
+    var nodes=el.querySelectorAll('[class*="price"],.price,.product-price,.acc-public-price');
+    for(var i=0;i<nodes.length;i++){
+      var m=textOf(nodes[i]).match(/([0-9][0-9.]{2,})\s*đ/i);
+      if(m) return parseInt(m[1].replace(/\./g,''),10)||0;
+    }
+    var m=textOf(el).match(/([0-9][0-9.]{2,})\s*đ/i);
+    return m?parseInt(m[1].replace(/\./g,''),10)||0:0;
+  }
+  function getName(el){
+    var n=el.querySelector('h2,h3,.product-name,.name,[class*="name"]');
+    return textOf(n||el).toLocaleLowerCase('vi');
+  }
+  function rememberOriginal(grid){
+    Array.from(grid.children).forEach(function(el,i){
+      if(!el.dataset.sddOriginalOrder) el.dataset.sddOriginalOrder=String(i+1);
+    });
+  }
+  function sortGrid(grid,mode){
+    if(!grid) return;
+    var cards=Array.from(grid.children).filter(function(el){return !el.matches('.loading,.empty,.acc-public-empty')});
+    if(cards.length<2) return;
+    rememberOriginal(grid);
+    cards.sort(function(a,b){
+      if(mode==='price-asc') return getPrice(a)-getPrice(b);
+      if(mode==='price-desc') return getPrice(b)-getPrice(a);
+      if(mode==='name-asc') return getName(a).localeCompare(getName(b),'vi');
+      return (+a.dataset.sddOriginalOrder||0)-(+b.dataset.sddOriginalOrder||0);
+    });
+    cards.forEach(function(card){grid.appendChild(card)});
+  }
+  function applySort(){
+    var mode=select.value;
+    if(document.body.classList.contains('sdd-home-all-mode')){
+      document.querySelectorAll('#sddHomeAllProducts .sdd-all-grid').forEach(function(grid){sortGrid(grid,mode)});
+    }else{
+      sortGrid(document.getElementById('productGrid'),mode);
+    }
+  }
+  select.addEventListener('change',function(){
+    applySort();
+    // Một số danh sách trang chủ được nạp bất đồng bộ qua iframe; áp lại sau khi clone xong.
+    setTimeout(applySort,300);
+    setTimeout(applySort,900);
+  });
+  // Nếu người dùng chọn sắp xếp trong lúc danh sách trang chủ còn đang tải, tự áp khi DOM thay đổi.
+  var home=document.getElementById('sddHomeAllProducts');
+  if(home && window.MutationObserver){
+    new MutationObserver(function(){ if(select.value!=='default') applySort(); }).observe(home,{childList:true,subtree:true});
+  }
+})();
+</script>
 <script id="v576-home-category-hard-navigation">
 (function(){
   const categoryPaths = new Set(['/dien-thoai','/may-tinh-bang','/may-cu','/phu-kien']);
