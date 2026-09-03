@@ -221,6 +221,45 @@
 }
 </style>
 
+
+<style id="v577-fix-mobile-sort-toolbar">
+/* V577 - fix thanh sắp xếp mobile: bỏ đường kẻ/khối thừa phía trên */
+@media (max-width: 899px){
+  .sdd-catalog-toolbar{
+    min-height:0!important;
+    height:auto!important;
+    padding:10px 12px!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    border-top:1px solid #eef1f4!important;
+    background:#fff!important;
+  }
+  .sdd-catalog-toolbar .summary:empty{display:none!important}
+  .sdd-catalog-toolbar .catalog-sort-area{
+    width:auto!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+  }
+  .sdd-catalog-toolbar .catalog-sort-area::before,
+  .sdd-catalog-toolbar .catalog-sort-area::after{display:none!important;content:none!important}
+  .sdd-catalog-toolbar .catalog-sort-area>span{display:none!important}
+  .sdd-catalog-toolbar .sort-select{
+    width:182px!important;
+    max-width:100%!important;
+    margin:0!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
