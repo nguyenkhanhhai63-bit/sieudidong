@@ -692,6 +692,45 @@ body > main p{
 }
 </style>
 
+
+<style id="v562-compare-mobile-no-top-gap-no-home-btn">
+/* v562 - bỏ nút Về trang chủ và triệt tiêu khoảng trống trên cùng */
+html, body.compare-page-body{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+body.compare-page-body{
+  margin:0!important;
+}
+body.compare-page-body > .compare-site-header{
+  margin-top:0!important;
+  top:0!important;
+}
+.compare-exit-row,
+.compare-exit-link,
+#compareExitLink{
+  display:none!important;
+}
+@media (max-width:899px){
+  html, body.compare-page-body{
+    margin:0!important;
+    padding:0!important;
+  }
+  body.compare-page-body > .compare-site-header{
+    margin:0!important;
+    padding-top:0!important;
+    transform:none!important;
+  }
+  body.compare-page-body > .compare-site-header + main.compare-page-main{
+    margin-top:0!important;
+    padding-top:14px!important;
+  }
+  body.compare-page-body > main.compare-page-main > .compare-page-title{
+    margin-top:0!important;
+  }
+}
+</style>
+
 </head>
 <body class="compare-page-body">
 
@@ -712,13 +751,6 @@ body > main p{
 </header>
 
   <main class="compare-page-main">
-    <div class="compare-exit-row" aria-label="Điều hướng trang so sánh">
-      <a class="compare-exit-link" id="compareExitLink" href="/">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Về trang chủ</span>
-      </a>
-      
-    </div>
     <div class="compare-page-title">
       <div>
         <h1>So sánh 2 sản phẩm</h1>
