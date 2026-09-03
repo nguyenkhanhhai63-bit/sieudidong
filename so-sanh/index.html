@@ -625,6 +625,21 @@ body > main p{
 }
 </style>
 
+
+<style id="v559-compare-change-placement">
+.compare-mobile-change-wrap{display:none;}
+@media(max-width:899px){
+  .compare-exit-row{display:flex!important;grid-template-columns:none!important;margin-bottom:16px!important;}
+  .compare-exit-link{width:auto!important;min-width:142px!important;}
+  .compare-mobile-change-wrap{display:block!important;margin:-2px 0 14px!important;}
+  .compare-mobile-change-btn-bottom{
+    width:100%!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    border:1px solid #ff5a00!important;border-radius:12px!important;background:#fff!important;color:#f04b00!important;
+    font-size:14px!important;font-weight:800!important;text-decoration:none!important;box-sizing:border-box!important;
+  }
+}
+</style>
+
 </head>
 <body class="compare-page-body">
   <main class="compare-page-main">
@@ -633,7 +648,7 @@ body > main p{
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Về trang chủ</span>
       </a>
-      <a class="compare-mobile-change-btn" href="/">Đổi máy so sánh</a>
+      
     </div>
     <div class="compare-page-title">
       <div>
@@ -668,6 +683,10 @@ body > main p{
       </div>
       <div id="compareAiResult" class="compare-page-ai-result">Chọn nhu cầu rồi bấm “Gemini phân tích” để nhận gợi ý.</div>
     </section>
+
+    <div class="compare-mobile-change-wrap">
+      <a class="compare-mobile-change-btn compare-mobile-change-btn-bottom" href="/">⇄ Đổi máy so sánh</a>
+    </div>
 
     <section id="comparePageContent" class="compare-page-content">
       <div class="compare-page-loading">Đang tải dữ liệu so sánh...</div>
