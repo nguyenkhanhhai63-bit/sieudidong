@@ -1000,69 +1000,343 @@
     </button>
 
 
+<script id="v598-ai-chat-conversation-context">
+(function(){
+  const STORAGE_KEY='sdd-ai-chat-context-v598';
+  const MAX_TURNS=8;
+  const MAX_AGE=2*60*60*1000;
+  const originalFetch=window.fetch.bind(window);
+
+  function loadState(){
+    try{
+      const s=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'{}');
+      if(!s || !Array.isArray(s.turns)) return {ts:Date.now(),turns:[]};
+      if(Date.now()-Number(s.ts||0)>MAX_AGE) return {ts:Date.now(),turns:[]};
+      return {ts:Number(s.ts||Date.now()),turns:s.turns.slice(-MAX_TURNS)};
+    }catch(e){ return {ts:Date.now(),turns:[]}; }
+  }
+  function saveState(state){
+    try{
+      state.ts=Date.now();
+      state.turns=(state.turns||[]).slice(-MAX_TURNS);
+      sessionStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }catch(e){}
+  }
+  function clean(v){ return String(v==null?'':v).replace(/\s+/g,' ').trim(); }
+  function isAiChatUrl(input){
+    try{
+      const u=typeof input==='string'?input:(input&&input.url)||'';
+      return /\/api\/ai-chat(?:\?|$)/i.test(String(u));
+    }catch(e){ return false; }
+  }
+  function pickMessageKey(obj){
+    if(!obj||typeof obj!=='object') return '';
+    const keys=['message','question','text','prompt','query','content','userMessage','user_message'];
+    for(const k of keys){ if(typeof obj[k]==='string' && clean(obj[k])) return k; }
+    for(const k of Object.keys(obj)){
+      if(typeof obj[k]==='string' && clean(obj[k]) && /message|question|prompt|query|text/i.test(k)) return k;
+    }
+    return '';
+  }
+  function makeContext(turns,current){
+    if(!turns.length) return current;
+    const recent=turns.slice(-5).map((t,i)=>{
+      const q=clean(t.user).slice(0,260);
+      const a=clean(t.assistant).slice(0,420);
+      return `${i+1}. Khách: ${q}${a?`\n   Shop: ${a}`:''}`;
+    }).join('\n');
+    return [
+      '[NGỮ CẢNH HỘI THOẠI - KHÔNG NHẮC LẠI PHẦN NÀY CHO KHÁCH]',
+      'Đây là tin nhắn nối tiếp trong cùng một phiên chat. Hãy hiểu câu mới dựa trên các câu trước, nhất là tên máy, tình trạng New/Like New, dung lượng, màu, giá và nhu cầu mà khách đang nhắc tới.',
+      'Lịch sử chỉ dùng để hiểu khách đang nói về cái gì. Giá và tồn kho phải luôn lấy từ dữ liệu hiện tại của shop, không lấy số cũ trong lịch sử nếu dữ liệu hiện tại khác.',
+      recent,
+      `[TIN NHẮN MỚI CỦA KHÁCH]\n${current}`,
+      'Trả lời trực tiếp tin nhắn mới, tự nhiên như nhân viên đang chat. Nếu khách hỏi tiếp kiểu “còn không”, “con đó”, “like new ko”, “bản 256”, “không có iQOO hả” thì phải nối đúng với chủ đề ngay trước đó, không tự đổi sang phiên bản khác.'
+    ].join('\n');
+  }
+  function findAnswer(obj,depth){
+    depth=depth||0;
+    if(depth>4 || obj==null) return '';
+    if(typeof obj==='string') return clean(obj);
+    if(Array.isArray(obj)){
+      for(let i=obj.length-1;i>=0;i--){ const r=findAnswer(obj[i],depth+1); if(r) return r; }
+      return '';
+    }
+    if(typeof obj==='object'){
+      const preferred=['answer','reply','response','message','text','content','output','result'];
+      for(const k of preferred){ if(k in obj){ const r=findAnswer(obj[k],depth+1); if(r) return r; } }
+      for(const k of Object.keys(obj)){ const r=findAnswer(obj[k],depth+1); if(r && r.length>2) return r; }
+    }
+    return '';
+  }
+  function remember(user,answer){
+    user=clean(user); answer=clean(answer);
+    if(!user) return;
+    const st=loadState();
+    st.turns.push({user:user,assistant:answer,ts:Date.now()});
+    saveState(st);
+  }
+
+  window.fetch=async function(input,init){
+    if(!isAiChatUrl(input)) return originalFetch(input,init);
+    init=init?Object.assign({},init):{};
+    const state=loadState();
+    let originalUser='';
+    let changed=false;
+
+    try{
+      if(typeof init.body==='string'){
+        const ct=String((init.headers&&((init.headers['Content-Type'])||(init.headers['content-type'])))||'');
+        if(/json/i.test(ct) || /^\s*[\[{]/.test(init.body)){
+          const obj=JSON.parse(init.body);
+          const key=pickMessageKey(obj);
+          if(key){
+            originalUser=clean(obj[key]);
+            obj.originalMessage=originalUser;
+            obj.conversationHistory=state.turns.slice(-5);
+            obj.conversationContext=state.turns.slice(-5).map(t=>({user:t.user,assistant:t.assistant}));
+            if(state.turns.length) obj[key]=makeContext(state.turns,originalUser);
+            init.body=JSON.stringify(obj); changed=true;
+          }
+        }else{
+          const sp=new URLSearchParams(init.body);
+          const keys=['message','question','text','prompt','query','content'];
+          const key=keys.find(k=>clean(sp.get(k)));
+          if(key){
+            originalUser=clean(sp.get(key));
+            sp.set('originalMessage',originalUser);
+            sp.set('conversationHistory',JSON.stringify(state.turns.slice(-5)));
+            if(state.turns.length) sp.set(key,makeContext(state.turns,originalUser));
+            init.body=sp.toString(); changed=true;
+          }
+        }
+      }else if(init.body instanceof FormData){
+        const fd=new FormData(); init.body.forEach((v,k)=>fd.append(k,v));
+        const keys=['message','question','text','prompt','query','content'];
+        const key=keys.find(k=>typeof fd.get(k)==='string'&&clean(fd.get(k)));
+        if(key){
+          originalUser=clean(fd.get(key));
+          fd.set('originalMessage',originalUser);
+          fd.set('conversationHistory',JSON.stringify(state.turns.slice(-5)));
+          if(state.turns.length) fd.set(key,makeContext(state.turns,originalUser));
+          init.body=fd; changed=true;
+        }
+      }
+    }catch(e){}
+
+    const res=await originalFetch(input,init);
+    if(originalUser){
+      try{
+        const clone=res.clone();
+        const text=await clone.text();
+        let answer='';
+        try{ answer=findAnswer(JSON.parse(text),0); }catch(e){ answer=clean(text); }
+        if(answer && answer.length>1200) answer=answer.slice(0,1200);
+        remember(originalUser,answer);
+      }catch(e){ remember(originalUser,''); }
+    }
+    return res;
+  };
+
+  // Cho phép reset ngữ cảnh thủ công từ console khi cần hỗ trợ kỹ thuật.
+  window.SDD_RESET_AI_CHAT_CONTEXT=function(){ try{sessionStorage.removeItem(STORAGE_KEY)}catch(e){} };
+})();
+</script>
 <script src="/app.js?v=493"></script>
-<script id="v595-home-use-exact-native-phone-compare-dock">
+<script id="v596-home-native-compare-dock-computed-exact">
 (function(){
   const KEY='sieudidong-compare-v1', HOST_ID='sddHomeNativeCompareHost';
-  let frame=null,seq=0;
-  function read(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v.slice(0,2):[]}catch(e){return[]}}
+  let frame=null, seq=0, resizeTimer=null;
+
+  function read(){
+    try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v.slice(0,2):[]}
+    catch(e){return[]}
+  }
   function isHome(){return document.body.classList.contains('sdd-home-all-mode')}
   function removeHost(){const h=document.getElementById(HOST_ID);if(h)h.remove()}
+
   function findDock(doc){
-    const go=[...doc.querySelectorAll('button,a,[role="button"]')].find(el=>(el.textContent||'').replace(/\s+/g,' ').trim()==='So sánh 2 máy');
+    const go=[...doc.querySelectorAll('button,a,[role="button"]')]
+      .find(el=>(el.textContent||'').replace(/\s+/g,' ').trim()==='So sánh 2 máy');
     if(!go)return null;
-    let n=go,fallback=null;
+    let n=go, fallback=null;
     while(n&&n!==doc.body){
       const t=(n.textContent||'').replace(/\s+/g,' ').trim();
       if(t.includes('Đã chọn đủ 2 máy')&&t.includes('So sánh 2 máy')){
         fallback=n;
-        try{const cs=doc.defaultView.getComputedStyle(n);if(cs.position==='fixed'||cs.position==='sticky')return n}catch(e){}
+        try{
+          const cs=doc.defaultView.getComputedStyle(n);
+          if(cs.position==='fixed'||cs.position==='sticky')return n;
+        }catch(e){}
       }
       n=n.parentElement;
     }
     return fallback;
   }
-  function notify(items){try{document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items}}))}catch(e){}}
+
+  // Copy TOÀN BỘ computed style từ thanh native bên tab Điện thoại.
+  // Như vậy CSS riêng của Trang chủ không thể làm thanh bị lệch/khác nữa.
+  function copyComputedTree(src, dst, win){
+    if(src.nodeType!==1 || dst.nodeType!==1)return;
+    const cs=win.getComputedStyle(src);
+    let css='';
+    for(let i=0;i<cs.length;i++){
+      const prop=cs[i];
+      const val=cs.getPropertyValue(prop);
+      const pri=cs.getPropertyPriority(prop);
+      css+=prop+':'+val+(pri?' !important':'')+';';
+    }
+    dst.setAttribute('style',css);
+    // Giữ class/data/aria để logic click vẫn nhận đúng.
+    for(let i=0;i<src.children.length;i++){
+      if(dst.children[i]) copyComputedTree(src.children[i],dst.children[i],win);
+    }
+  }
+
+  function notify(items){
+    try{document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items}}))}catch(e){}
+  }
+
   function wire(clone){
     const removeBtns=[...clone.querySelectorAll('button,a,[role="button"]')].filter(el=>{
-      const t=(el.textContent||'').trim(),a=el.getAttribute('aria-label')||'';return t==='×'||/bỏ|xóa.*sản phẩm/i.test(a)
+      const t=(el.textContent||'').trim(), a=el.getAttribute('aria-label')||'';
+      return t==='×'||/bỏ|xóa.*sản phẩm/i.test(a);
     });
-    removeBtns.forEach((el,i)=>el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const items=read();if(i<items.length)items.splice(i,1);localStorage.setItem(KEY,JSON.stringify(items));removeHost();notify(items)}));
+    removeBtns.forEach((el,i)=>el.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      const items=read();
+      if(i<items.length)items.splice(i,1);
+      localStorage.setItem(KEY,JSON.stringify(items));
+      removeHost();notify(items);
+    }));
+
     clone.querySelectorAll('button,a,[role="button"]').forEach(el=>{
       const t=(el.textContent||'').replace(/\s+/g,' ').trim();
-      if(t==='Xóa')el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();localStorage.setItem(KEY,'[]');removeHost();notify([])});
+      if(t==='Xóa') el.addEventListener('click',e=>{
+        e.preventDefault();e.stopPropagation();
+        localStorage.setItem(KEY,'[]');removeHost();notify([]);
+      });
       if(t==='So sánh 2 máy'){
         if(el.tagName==='A')el.href='/so-sanh.html';
         else el.addEventListener('click',e=>{e.preventDefault();location.href='/so-sanh.html'});
       }
     });
   }
+
   function mount(doc,mySeq){
     if(mySeq!==seq||!isHome()||read().length!==2)return;
     const dock=findDock(doc);if(!dock)return;
     removeHost();
-    const host=document.createElement('div');host.id=HOST_ID;host.style.display='contents';
-    const clone=dock.cloneNode(true);clone.removeAttribute('hidden');
-    clone.style.removeProperty('display');clone.style.removeProperty('visibility');clone.style.removeProperty('opacity');
-    wire(clone);host.appendChild(clone);document.body.appendChild(host);
+
+    const host=document.createElement('div');
+    host.id=HOST_ID;
+    // Host không tạo layout mới; thanh clone giữ position fixed y chang native.
+    host.style.cssText='display:contents!important;';
+
+    const clone=dock.cloneNode(true);
+    copyComputedTree(dock,clone,doc.defaultView);
+    clone.removeAttribute('hidden');
+    clone.style.setProperty('display',doc.defaultView.getComputedStyle(dock).display,'important');
+    clone.style.setProperty('visibility','visible','important');
+    clone.style.setProperty('opacity','1','important');
+    clone.style.setProperty('pointer-events','auto','important');
+    clone.style.setProperty('z-index','2147483000','important');
+
+    // Chặn các selector .sdd-home-all-mode ... tác động vào clone.
+    clone.setAttribute('data-sdd-native-compare-exact','1');
+    wire(clone);
+    host.appendChild(clone);
+    document.body.appendChild(host);
   }
+
   function loadNative(){
-    if(!isHome()||read().length!==2){removeHost();if(frame){frame.remove();frame=null}return}
-    const mySeq=++seq;if(frame)frame.remove();
-    frame=document.createElement('iframe');frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
-    frame.style.cssText='position:fixed!important;width:430px!important;height:932px!important;left:-10000px!important;top:-10000px!important;opacity:0!important;pointer-events:none!important;border:0!important;';
+    if(!isHome()||read().length!==2){
+      removeHost();if(frame){frame.remove();frame=null}return;
+    }
+    const mySeq=++seq;
+    if(frame)frame.remove();
+    frame=document.createElement('iframe');
+    frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
+    const w=Math.max(320,Math.min(720,window.innerWidth||430));
+    const h=Math.max(700,window.innerHeight||932);
+    frame.style.cssText='position:fixed!important;width:'+w+'px!important;height:'+h+'px!important;left:-10000px!important;top:-10000px!important;opacity:0!important;pointer-events:none!important;border:0!important;';
     frame.src='/dien-thoai?_nativeCompare=1&_t='+Date.now();
-    frame.onload=function(){let tries=0;(function tick(){if(mySeq!==seq)return;try{const d=frame.contentDocument;if(d&&findDock(d)){mount(d,mySeq);return}}catch(e){}if(++tries<25)setTimeout(tick,120)})()};
+    frame.onload=function(){
+      let tries=0;
+      (function tick(){
+        if(mySeq!==seq)return;
+        try{
+          const d=frame.contentDocument;
+          if(d&&findDock(d)){mount(d,mySeq);return}
+        }catch(e){}
+        if(++tries<35)setTimeout(tick,120);
+      })();
+    };
     document.body.appendChild(frame);
   }
+
   document.addEventListener('sdd-compare-changed',()=>setTimeout(loadNative,0));
   document.addEventListener('sdd-home-grid-ready',()=>setTimeout(loadNative,0));
   window.addEventListener('pageshow',()=>setTimeout(loadNative,80));
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(loadNative,350),{once:true});else setTimeout(loadNative,350);
+  window.addEventListener('resize',()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(loadNative,180);
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(loadNative,350),{once:true});
+  else setTimeout(loadNative,350);
 })();
 </script>
 
 
+
+
+<script id="v597-sync-home-compare-buttons-after-dock-clear">
+(function(){
+  const KEY='sieudidong-compare-v1';
+  function txt(el){return (el&&el.textContent||'').replace(/\s+/g,' ').trim()}
+  function read(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function selectedName(x){return typeof x==='string'?x:(x&&x.name)||''}
+  function cardOf(el,home){
+    let n=el;
+    while(n&&n!==home){
+      const p=n.parentElement;
+      if(p&&p.classList&&p.classList.contains('sdd-all-grid')) return n;
+      n=p;
+    }
+    return null;
+  }
+  function productName(card){
+    if(!card)return '';
+    const n=card.querySelector('h1,h2,h3,h4,.product-name,.name,[class*="product-name"]');
+    if(n&&txt(n))return txt(n);
+    const vals=[...card.querySelectorAll('strong,b,a,div,span')].map(txt).filter(Boolean);
+    return vals.find(v=>!/^chi tiết$/i.test(v)&&!/so\s*sánh/i.test(v)&&!/^✓?\s*đã chọn$/i.test(v)&&!/còn hàng|hết hàng/i.test(v)&&!/^[\d.]+\s*đ$/i.test(v))||'';
+  }
+  function sync(){
+    if(!document.body.classList.contains('sdd-home-all-mode'))return;
+    const home=document.getElementById('sddHomeAllProducts');
+    if(!home)return;
+    const names=new Set(read().map(selectedName).filter(Boolean));
+    home.querySelectorAll('button,a,[role="button"]').forEach(btn=>{
+      const t=txt(btn);
+      const isCmp=btn.dataset.sddCompareControl==='1'||btn.dataset.sddCompareSelected==='1'||/so\s*sánh/i.test(t)||/^✓?\s*đã chọn$/i.test(t);
+      if(!isCmp)return;
+      const name=productName(cardOf(btn,home));
+      const on=!!(name&&names.has(name));
+      btn.dataset.sddCompareControl='1';
+      btn.dataset.sddCompareSelected=on?'1':'0';
+      btn.textContent=on?'✓ Đã chọn':'+ So sánh';
+      btn.classList.toggle('selected',on);
+      btn.classList.toggle('active',on);
+      btn.setAttribute('aria-pressed',on?'true':'false');
+    });
+  }
+  document.addEventListener('sdd-compare-changed',()=>setTimeout(sync,0));
+  document.addEventListener('sdd-home-grid-ready',()=>setTimeout(sync,0));
+  window.addEventListener('pageshow',()=>setTimeout(sync,0));
+  window.addEventListener('storage',e=>{if(e.key===KEY)setTimeout(sync,0)});
+})();
+</script>
 
 <script>
 /* V175: tự đổi phía chữ "Tư vấn ngay" theo vị trí nút chat */
