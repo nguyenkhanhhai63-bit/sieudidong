@@ -8072,6 +8072,14 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
  #usedProductsCard .used-item-actions{grid-column:1/-1!important;grid-template-columns:repeat(2,1fr)!important}
 }
 </style>
+
+<style id="v611-warranty-purchase-date">
+#warrantyRecentList .warranty-recent-table th:last-child,
+#warrantyRecentList .warranty-recent-table td.warranty-purchase-date{
+  min-width:130px; white-space:nowrap;
+}
+#warrantyRecentList .warranty-purchase-date-item{font-weight:700;color:#334155;line-height:1.45}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -9495,10 +9503,23 @@ function renderWarrantyRecent(items=[]){
         }
         return fmt(count)+" sản phẩm";
       })()}</td>
+      <td class="warranty-purchase-date">${(()=>{
+        if(x.status!=="found") return "—";
+        const vals=[];
+        const push=v=>{
+          const t=String(v||"").trim();
+          if(t && !vals.includes(t)) vals.push(t);
+        };
+        if(Array.isArray(x.purchaseDates)) x.purchaseDates.forEach(push);
+        if(Array.isArray(x.items)) x.items.forEach(it=>push(it&&it.purchaseDate));
+        push(x.purchaseDate);
+        if(!vals.length) return "—";
+        return vals.map(v=>`<div class="warranty-purchase-date-item">${v.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}</div>`).join("");
+      })()}</td>
     </tr>`;
   }).join("");
   host.innerHTML=`<div class="warranty-table-scroll"><table class="warranty-recent-table">
-    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm đã mua</th></tr></thead>
+    <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm đã mua</th><th>Ngày khách mua</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
