@@ -1000,24 +1000,28 @@
     </button>
 
 
-<style id="v593-home-compare-dock-native-style">
-#sddHomeCompareDock{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:2147483000;width:min(560px,100vw);display:none;background:#fff;border:1px solid #e5e7eb;border-bottom:0;border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(15,23,42,.16);font-family:inherit;overflow:hidden}
+<style id="v594-home-compare-dock-match-phone-native">
+#sddHomeCompareDock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:2147483000;width:min(512px,calc(100vw - 24px));display:none;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 8px 28px rgba(15,23,42,.18);font-family:inherit;overflow:hidden}
 #sddHomeCompareDock.is-show{display:block}
-#sddHomeCompareDock .sdd-hcd-items{display:flex;gap:8px;padding:10px 10px 4px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:auto;scrollbar-color:#b8b8b8 #efefef}
+#sddHomeCompareDock .sdd-hcd-items{display:flex;gap:8px;padding:10px 12px 4px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:auto;scrollbar-color:#b8b8b8 #efefef}
 #sddHomeCompareDock .sdd-hcd-items::-webkit-scrollbar{height:5px}
 #sddHomeCompareDock .sdd-hcd-items::-webkit-scrollbar-track{background:#efefef}
 #sddHomeCompareDock .sdd-hcd-items::-webkit-scrollbar-thumb{background:#b8b8b8;border-radius:999px}
-#sddHomeCompareDock .sdd-hcd-item{flex:0 0 calc(50% - 4px);min-width:0;height:42px;display:flex;align-items:center;gap:6px;padding:0 8px 0 12px;background:#f8fafc;border:1px solid #eef2f6;border-radius:10px;color:#374151;font-size:12px;font-weight:800}
+#sddHomeCompareDock .sdd-hcd-item{flex:0 0 248px;min-width:248px;height:42px;display:flex;align-items:center;gap:6px;padding:0 8px 0 12px;background:#f8fafc;border:1px solid #eef2f6;border-radius:10px;color:#374151;font-size:12px;font-weight:800}
 #sddHomeCompareDock .sdd-hcd-item-name{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #sddHomeCompareDock .sdd-hcd-remove{width:28px;height:28px;flex:0 0 28px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:#f1f3f5;color:#111827;font-size:20px;line-height:1;cursor:pointer;padding:0}
 #sddHomeCompareDock .sdd-hcd-bottom{display:flex;align-items:center;gap:8px;padding:10px 12px 12px}
 #sddHomeCompareDock .sdd-hcd-status{min-width:0;flex:1;color:#667085;font-size:11px;font-weight:800;white-space:nowrap}
 #sddHomeCompareDock .sdd-hcd-clear{height:42px;padding:0 14px;border:1px solid #d7dde5;border-radius:11px;background:#fff;color:#475467;font-size:13px;font-weight:700;cursor:pointer}
 #sddHomeCompareDock .sdd-hcd-go{height:42px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #ff5a00;border-radius:11px;background:#ff5a00;color:#fff;text-decoration:none;font-size:13px;font-weight:800;white-space:nowrap}
-@media(min-width:601px){#sddHomeCompareDock{bottom:16px;border-bottom:1px solid #e5e7eb;border-radius:18px}}
-@media(max-width:600px){#sddHomeCompareDock{width:100vw}.sdd-hcd-bottom{padding-bottom:max(12px,env(safe-area-inset-bottom))}}
+@media(max-width:600px){
+ #sddHomeCompareDock{width:calc(100vw - 24px);bottom:max(14px,env(safe-area-inset-bottom));border-radius:14px}
+ #sddHomeCompareDock .sdd-hcd-items{padding:10px 12px 4px}
+ #sddHomeCompareDock .sdd-hcd-item{flex-basis:248px;min-width:248px}
+ #sddHomeCompareDock .sdd-hcd-bottom{padding:10px 12px 12px}
+}
 </style>
-<script id="v593-home-compare-dock-native-copy">
+<script id="v594-home-compare-dock-phone-native-copy">
 (function(){
   const KEY='sieudidong-compare-v1';
   function read(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v.slice(0,2):[]}catch(e){return[]}}
