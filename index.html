@@ -1350,6 +1350,12 @@
     clone.style.setProperty('pointer-events','auto','important');
     clone.style.setProperty('z-index','2147483000','important');
 
+    // Desktop: iframe dùng đúng bề rộng viewport thật để lấy style native desktop.
+    // Không ép thanh so sánh theo layout 720px/mobile như các bản trước.
+    if((window.innerWidth||0)>=900){
+      clone.style.setProperty('max-width','calc(100vw - 48px)','important');
+    }
+
     // Chặn các selector .sdd-home-all-mode ... tác động vào clone.
     clone.setAttribute('data-sdd-native-compare-exact','1');
     wire(clone);
@@ -1365,7 +1371,7 @@
     if(frame)frame.remove();
     frame=document.createElement('iframe');
     frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
-    const w=Math.max(320,Math.min(720,window.innerWidth||430));
+    const w=Math.max(320,window.innerWidth||430);
     const h=Math.max(700,window.innerHeight||932);
     frame.style.cssText='position:fixed!important;width:'+w+'px!important;height:'+h+'px!important;left:-10000px!important;top:-10000px!important;opacity:0!important;pointer-events:none!important;border:0!important;';
     frame.src='/dien-thoai?_nativeCompare=1&_t='+Date.now();
