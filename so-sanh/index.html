@@ -730,16 +730,6 @@ body.compare-page-body > .compare-site-header{
   }
 }
 </style>
-
-
-<style id="v563-compare-original-mobile-drawer">
-@media(max-width:899px){
- #sddMobileDrawer{display:block!important;position:fixed!important;inset:0!important;z-index:2147483645!important;background:rgba(15,23,42,0)!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;transition:background-color .22s ease,opacity .22s ease,visibility 0s linear .22s!important}
- #sddMobileDrawer .sdd-mobile-drawer-panel{display:flex!important;flex-direction:column!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;width:min(86vw,330px)!important;background:#fff!important;transform:translate3d(-100%,0,0)!important;transition:transform .25s cubic-bezier(.22,.61,.36,1)!important;overflow:auto!important}
- #sddMobileDrawer.is-open{visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(15,23,42,.38)!important;transition:background-color .22s ease,opacity .22s ease!important}
- #sddMobileDrawer.is-open .sdd-mobile-drawer-panel{transform:translate3d(0,0,0)!important}
-}
-</style>
 <!-- v565: compare page now reuses the exact original site header markup -->
 </head>
 <body class="compare-page-body">
@@ -1242,53 +1232,6 @@ document.getElementById("compareAiBtn").addEventListener("click",async()=>{
 
 init();
 </script>
-
-
-<script id="v335-header-runtime">
-(function(){
-  const menu=document.getElementById("sddMobileMenuBtn");
-  const drawer=document.getElementById("sddMobileDrawer");
-  const close=document.getElementById("sddMobileDrawerClose");
-
-  function openDrawer(){
-    if(!drawer)return;
-    drawer.hidden=false;
-    document.body.style.overflow="hidden";
-  }
-  function closeDrawer(){
-    if(!drawer)return;
-    drawer.hidden=true;
-    document.body.style.overflow="";
-  }
-
-  menu?.addEventListener("click",openDrawer);
-  close?.addEventListener("click",closeDrawer);
-  drawer?.addEventListener("click",e=>{if(e.target===drawer)closeDrawer()});
-  drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
-
-  const input=document.getElementById("searchInput");
-  const clear=document.getElementById("clearSearch");
-  const submit=document.querySelector(".sdd-search-submit");
-
-  function runSearch(){
-    const q=(input?.value||"").trim();
-    location.href=q?"/?q="+encodeURIComponent(q):"/#products";
-  }
-
-  submit?.addEventListener("click",runSearch);
-  input?.addEventListener("keydown",e=>{
-    if(e.key==="Enter"){e.preventDefault();runSearch();}
-  });
-  clear?.addEventListener("click",()=>{
-    if(input){input.value="";input.focus();}
-  });
-
-  document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-})();
-</script>
-
 <script>
 (function(){
   var btn=document.getElementById('compareBackBtn');
@@ -1336,5 +1279,6 @@ init();
 })();
 </script>
 
+  <script src="/app.js?v=493"></script>
 </body>
 </html>
