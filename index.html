@@ -699,7 +699,7 @@
 })();
 </script>
 
-<script id="v588-home-detail-button-fix">
+<script id="v589-home-product-click-detail-fix">
 (function(){
   function cleanText(el){return (el&&el.textContent||'').replace(/\s+/g,' ').trim()}
   function cardOf(el,root){
@@ -718,33 +718,53 @@
     var vals=Array.from(card.querySelectorAll('strong,b,a,div,span')).map(cleanText).filter(Boolean);
     return vals.find(function(v){return !/^chi tiết$/i.test(v)&&!/so\s*sánh/i.test(v)&&!/còn hàng|hết hàng/i.test(v)&&!/^[\d.]+\s*đ$/i.test(v)})||'';
   }
+  function goToDetail(card){
+    if(!card)return false;
+    var grid=card.closest('.sdd-all-grid');
+    var path=grid&&grid.getAttribute('data-home-cat');
+    var name=productName(card);
+    if(!path||!name)return false;
+    location.href=path+'?openProduct='+encodeURIComponent(name);
+    return true;
+  }
 
-  // Card ở Trang chủ là bản clone từ iframe nên listener "Chi tiết" gốc không được clone theo.
-  // Khi bấm Chi tiết, chuyển sang đúng danh mục và mang theo tên sản phẩm cần mở.
+  // Các card ở Trang chủ là bản clone từ iframe nên mọi listener click gốc đều bị mất.
+  // Bắt click trên toàn bộ card: ảnh, tên, vùng trống và nút Chi tiết đều mở đúng sản phẩm.
   document.addEventListener('click',function(e){
     if(!document.body.classList.contains('sdd-home-all-mode'))return;
     var home=document.getElementById('sddHomeAllProducts');
     if(!home)return;
-    var btn=e.target&&e.target.closest?e.target.closest('button,a,[role="button"]'):null;
-    if(!btn||!home.contains(btn)||!/^chi tiết$/i.test(cleanText(btn)))return;
-    var grid=btn.closest('.sdd-all-grid');
-    var card=cardOf(btn,home);
-    var name=productName(card);
-    var path=grid&&grid.getAttribute('data-home-cat');
-    if(!path||!name)return;
-    e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-    location.href=path+'?openProduct='+encodeURIComponent(name);
+    var card=cardOf(e.target,home);
+    if(!card)return;
+
+    // Nút So sánh có xử lý riêng, không biến thành mở Chi tiết.
+    var control=e.target&&e.target.closest?e.target.closest('button,a,[role="button"]'):null;
+    if(control&&/so\s*sánh/i.test(cleanText(control)))return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    goToDetail(card);
   },true);
 
-  // Ở trang danh mục, đợi app.js render xong rồi gọi đúng nút Chi tiết gốc của card cần mở.
+  // Trên trang danh mục, nhận openProduct rồi kích hoạt chính card gốc của app.js.
+  // Ưu tiên click cả card (cơ chế gốc), nếu chưa mở thì thử nút Chi tiết bên trong.
   (function openRequestedProduct(){
     if(location.pathname==='/'||location.pathname==='/index.html')return;
     var wanted='';
     try{wanted=new URL(location.href).searchParams.get('openProduct')||''}catch(_){return}
     if(!wanted)return;
     var target=wanted.replace(/\s+/g,' ').trim().toLocaleLowerCase('vi');
-    var tries=0;
+    var tries=0, opened=false;
+    function clearParam(){
+      try{var u=new URL(location.href);u.searchParams.delete('openProduct');history.replaceState(history.state,'',u.pathname+(u.search?u.search:'')+u.hash)}catch(_){}
+    }
+    function isDetailOpen(){
+      var d=document.getElementById('inlineProductDetail');
+      return !!(d && !d.hidden && d.offsetParent!==null);
+    }
     function findAndOpen(){
+      if(opened)return;
       tries++;
       var grid=document.querySelector('#productGrid,.product-grid,.products-grid,#accPublicGrid');
       if(grid){
@@ -754,18 +774,22 @@
           card=cards.find(function(c){var n=productName(c).replace(/\s+/g,' ').trim().toLocaleLowerCase('vi');return n&&target&&(n.indexOf(target)>=0||target.indexOf(n)>=0)});
         }
         if(card){
-          var detail=Array.from(card.querySelectorAll('button,a,[role="button"]')).find(function(x){return /^chi tiết$/i.test(cleanText(x))});
-          if(detail){
-            try{var u=new URL(location.href);u.searchParams.delete('openProduct');history.replaceState(history.state,'',u.pathname+(u.search?u.search:'')+u.hash)}catch(_){}
-            detail.click();
-            return;
-          }
+          opened=true;
+          clearParam();
+          // Click vào chính card gốc để chạy event đang hoạt động ngoài Trang chủ.
+          try{card.click()}catch(_){}
+          setTimeout(function(){
+            if(isDetailOpen())return;
+            var detail=Array.from(card.querySelectorAll('button,a,[role="button"]')).find(function(x){return /^chi tiết$/i.test(cleanText(x))});
+            if(detail){try{detail.click()}catch(_){}}
+          },80);
+          return;
         }
       }
-      if(tries<40)setTimeout(findAndOpen,250);
+      if(tries<50)setTimeout(findAndOpen,200);
     }
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(findAndOpen,250)},{once:true});
-    else setTimeout(findAndOpen,250);
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(findAndOpen,200)},{once:true});
+    else setTimeout(findAndOpen,200);
   })();
 })();
 </script>
