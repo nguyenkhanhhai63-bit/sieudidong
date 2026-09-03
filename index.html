@@ -630,7 +630,7 @@
   if(!home) return;
 
   function text(el){ return (el&&el.textContent||'').replace(/\s+/g,' ').trim(); }
-  function isCompareControl(el){ return !!el && /so\s*sánh/i.test(text(el)); }
+  function isCompareControl(el){ return !!el && (el.dataset.sddCompareControl==='1' || /so\s*sánh/i.test(text(el)) || el.dataset.sddCompareSelected==='1'); }
   function cardOf(el){
     let n=el;
     while(n && n!==home){
@@ -663,8 +663,10 @@
   function selectedName(x){ return typeof x==='string'?x:(x&&x.name)||''; }
   function controls(){ return [...home.querySelectorAll('button,a,[role="button"]')].filter(isCompareControl); }
   function syncButtons(){
+    [...home.querySelectorAll('button,a,[role="button"]')].forEach(function(btn){ if(/so\s*sánh/i.test(text(btn))) btn.dataset.sddCompareControl='1'; });
     const names=new Set(read().map(selectedName).filter(Boolean));
     controls().forEach(function(btn){
+      btn.dataset.sddCompareControl='1';
       const info=infoFromCard(cardOf(btn));
       const on=!!(info&&info.name&&names.has(info.name));
       btn.dataset.sddCompareSelected=on?'1':'0';
