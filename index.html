@@ -1000,9 +1000,9 @@
     </button>
 
 
-<script id="v599-ai-chat-context-safe">
+<script id="v602-ai-chat-reason-before-answer">
 (function(){
-  const STORAGE_KEY='sdd-ai-chat-context-v599';
+  const STORAGE_KEY='sdd-ai-chat-context-v602';
   const MAX_TURNS=8;
   const MAX_AGE=2*60*60*1000;
   const originalFetch=window.fetch.bind(window);
@@ -1049,13 +1049,40 @@
       .replace(/\b(hả shop|nha shop|shop ơi|không shop|ko shop|k shop)\b.*$/i,'')
       .replace(/[?!.]+$/,'').trim().slice(0,120);
   }
+  function looksLikeWarrantyLookup(q){
+    q=clean(q).toLowerCase();
+    return /(?:tra\s*cứu|check|kiểm\s*tra)\s*(?:bảo\s*hành|bh)|(?:bảo\s*hành|bh)\s*(?:của\s*)?(?:máy\s*)?(?:tôi|mình|em|anh|chị)|số\s*điện\s*thoại.*bảo\s*hành/i.test(q);
+  }
+  function normalizeCurrentQuestion(q){
+    q=clean(q);
+    if(!q)return q;
+    const low=q.toLowerCase();
+    const explicit=hasExplicitProduct(q);
+    const asksPrice=/(giá|bao nhiêu|nhiêu tiền|mấy triệu|giá sao)/i.test(low);
+    const asksStock=/(có hàng|còn hàng|còn ko|còn k|còn không|có ko|có k|có không|sẵn hàng)/i.test(low);
+    const asksWarranty=/(bảo hành|bh)/i.test(low);
+    const asksVariant=/(ram|rom|dung lượng|bản 256|bản 512|màu|like new|newseal|fullbox|seal)/i.test(low);
+    const intentCount=[asksPrice,asksStock,asksWarranty,asksVariant].filter(Boolean).length;
+
+    // Câu có tên máy + nhiều ý phải được hiểu như MỘT câu hỏi tổng hợp về sản phẩm.
+    // Đặc biệt không được thấy chữ "bảo hành" rồi nhảy sang luồng tra cứu máy đã mua.
+    if(explicit && intentCount>=2 && !looksLikeWarrantyLookup(q)){
+      const parts=[];
+      if(asksStock)parts.push('tình trạng còn hàng hiện tại');
+      if(asksPrice)parts.push('giá bán hiện tại');
+      if(asksVariant)parts.push('đúng phiên bản/màu/dung lượng khách đang hỏi');
+      if(asksWarranty)parts.push('chính sách bảo hành khi mua sản phẩm này');
+      return `Hãy đọc kỹ toàn bộ câu hỏi khách rồi trả lời đúng đủ từng ý, không trả lời theo một từ khóa riêng lẻ. Câu khách: "${q}". Đây là câu hỏi về sản phẩm, KHÔNG phải yêu cầu tra cứu bảo hành máy đã mua. Cần trả lời: ${parts.join('; ')}. Nếu dữ liệu nào chưa chắc thì nói chưa có thông tin, không tự suy đoán và không chuyển sang sản phẩm khác.`;
+    }
+    return q;
+  }
   function resolveMessage(current,state){
-    current=clean(current);
-    // Câu có tên máy rõ ràng luôn gửi NGUYÊN VĂN. Đây là điểm sửa lỗi hỏi Redmi nhưng AI trả OnePlus.
+    current=normalizeCurrentQuestion(current);
+    // Câu có tên máy rõ ràng luôn ưu tiên câu HIỆN TẠI, không để lịch sử kéo sang sản phẩm khác.
     if(hasExplicitProduct(current)||!isFollowUp(current))return current;
     for(let i=state.turns.length-1;i>=0;i--){
       const subject=subjectFromUser(state.turns[i].user);
-      if(subject)return `${subject}. ${current}`;
+      if(subject)return normalizeCurrentQuestion(`${subject}. ${current}`);
     }
     return current;
   }
@@ -1110,9 +1137,9 @@
     }
     return res;
   };
-  window.SDD_RESET_AI_CHAT_CONTEXT=function(){try{sessionStorage.removeItem(STORAGE_KEY);sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}};
+  window.SDD_RESET_AI_CHAT_CONTEXT=function(){try{sessionStorage.removeItem(STORAGE_KEY);sessionStorage.removeItem('sdd-ai-chat-context-v599');sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}};
   // Xóa context lỗi của bản v598 ngay lần đầu nâng cấp.
-  try{sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}
+  try{sessionStorage.removeItem('sdd-ai-chat-context-v599');sessionStorage.removeItem('sdd-ai-chat-context-v598')}catch(e){}
 })();
 </script>
 <script src="/app.js?v=493"></script>
