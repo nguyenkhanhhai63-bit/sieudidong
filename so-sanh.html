@@ -1253,12 +1253,20 @@ init();
   function openDrawer(){
     if(!drawer)return;
     drawer.hidden=false;
+    // CSS của menu mobile dùng .is-open để bật overlay + trượt panel vào.
+    requestAnimationFrame(()=>drawer.classList.add("is-open"));
     document.body.style.overflow="hidden";
+    menu?.setAttribute("aria-expanded","true");
   }
   function closeDrawer(){
     if(!drawer)return;
-    drawer.hidden=true;
+    drawer.classList.remove("is-open");
     document.body.style.overflow="";
+    menu?.setAttribute("aria-expanded","false");
+    // Chờ animation đóng xong rồi mới hidden để không bị giật.
+    window.setTimeout(()=>{
+      if(!drawer.classList.contains("is-open")) drawer.hidden=true;
+    },260);
   }
 
   menu?.addEventListener("click",openDrawer);
