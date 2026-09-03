@@ -1244,20 +1244,40 @@
   function removeHost(){const h=document.getElementById(HOST_ID);if(h)h.remove()}
 
   function findDock(doc){
-    const go=[...doc.querySelectorAll('button,a,[role="button"]')]
-      .find(el=>(el.textContent||'').replace(/\s+/g,' ').trim()==='So sánh 2 máy');
-    if(!go)return null;
-    let n=go, fallback=null;
-    while(n&&n!==doc.body){
-      const t=(n.textContent||'').replace(/\s+/g,' ').trim();
-      if(t.includes('Đã chọn đủ 2 máy')&&t.includes('So sánh 2 máy')){
-        fallback=n;
-        try{
-          const cs=doc.defaultView.getComputedStyle(n);
-          if(cs.position==='fixed'||cs.position==='sticky')return n;
-        }catch(e){}
+    // Ưu tiên tìm đúng thanh compare native bằng position fixed/sticky.
+    // Hỗ trợ cả trạng thái mới chọn 1 máy lẫn đủ 2 máy.
+    const all=[...doc.querySelectorAll('body *')];
+    let fallback=null;
+    for(const el of all){
+      const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+      if(!t||t.length>500)continue;
+      const looksCompare=(/Đã chọn/i.test(t)&&(/So sánh/i.test(t)||/Xóa/i.test(t)||/Chọn thêm/i.test(t)));
+      if(!looksCompare)continue;
+      try{
+        const cs=doc.defaultView.getComputedStyle(el);
+        if(cs.position==='fixed'||cs.position==='sticky')return el;
+      }catch(e){}
+      fallback=fallback||el;
+    }
+
+    // Fallback: đi ngược từ các nút đặc trưng của thanh compare.
+    const anchors=[...doc.querySelectorAll('button,a,[role="button"]')].filter(el=>{
+      const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+      return t==='So sánh 2 máy'||t==='Xóa'||/Chọn thêm.*máy/i.test(t);
+    });
+    for(const a of anchors){
+      let n=a;
+      while(n&&n!==doc.body){
+        const t=(n.textContent||'').replace(/\s+/g,' ').trim();
+        if(/Đã chọn/i.test(t)&&(/So sánh/i.test(t)||/Xóa/i.test(t)||/Chọn thêm/i.test(t))){
+          try{
+            const cs=doc.defaultView.getComputedStyle(n);
+            if(cs.position==='fixed'||cs.position==='sticky')return n;
+          }catch(e){}
+          fallback=fallback||n;
+        }
+        n=n.parentElement;
       }
-      n=n.parentElement;
     }
     return fallback;
   }
@@ -1312,7 +1332,7 @@
   }
 
   function mount(doc,mySeq){
-    if(mySeq!==seq||!isHome()||read().length!==2)return;
+    if(mySeq!==seq||!isHome()||read().length<1)return;
     const dock=findDock(doc);if(!dock)return;
     removeHost();
 
@@ -1338,7 +1358,7 @@
   }
 
   function loadNative(){
-    if(!isHome()||read().length!==2){
+    if(!isHome()||read().length<1){
       removeHost();if(frame){frame.remove();frame=null}return;
     }
     const mySeq=++seq;
