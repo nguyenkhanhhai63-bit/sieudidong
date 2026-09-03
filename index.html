@@ -387,6 +387,50 @@
   <section id="inlineProductDetail" class="inline-product-detail" hidden></section>
 
   <main id="sddAccessoryPage"><div class="acc-public-head"><div><h1>Phụ kiện</h1><p>Ốp lưng, củ sạc, cáp sạc, tai nghe và phụ kiện công nghệ tại Siêu Di Động</p></div></div><div class="acc-public-tools"><input id="accPublicSearch" type="search" placeholder="Tìm phụ kiện..."><select id="accPublicSort"><option value="default">Sắp xếp mặc định</option><option value="priceAsc">Giá thấp đến cao</option><option value="priceDesc">Giá cao đến thấp</option><option value="name">Tên A–Z</option></select></div><div id="accPublicCats" class="acc-cat-tabs"></div><div id="accPublicGrid" class="acc-public-grid"><div class="acc-public-empty">Đang tải phụ kiện...</div></div></main>
+
+<style id="v574-home-all-products-css">
+#sddHomeAllProducts{display:none}
+@media(min-width:1px){
+ body.sdd-home-all-mode .catalog-overview,body.sdd-home-all-mode>#productGrid,body.sdd-home-all-mode .page>#productGrid{display:none!important}
+ body.sdd-home-all-mode #sddHomeAllProducts{display:block;max-width:1500px;margin:28px auto 44px;padding:0 18px}
+ .sdd-all-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px}.sdd-all-head h1{margin:0;font-size:26px}.sdd-all-head p{margin:5px 0 0;color:#667085;font-size:13px}
+ .sdd-all-section{margin:0 0 30px}.sdd-all-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.sdd-all-title h2{margin:0;font-size:20px}.sdd-all-title a{color:#e84f00;text-decoration:none;font-size:13px;font-weight:800}
+ .sdd-all-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.sdd-all-grid>.loading{grid-column:1/-1;padding:24px;text-align:center;color:#98a2b3;background:#fff;border:1px solid #eaecf0;border-radius:14px}
+ .sdd-home-loader-frame{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1440px!important;height:1200px!important;opacity:0!important;pointer-events:none!important}
+ @media(max-width:1180px){.sdd-all-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+ @media(max-width:850px){body.sdd-home-all-mode #sddHomeAllProducts{padding:0 12px;margin-top:16px}.sdd-all-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sdd-all-head h1{font-size:21px}.sdd-all-title h2{font-size:18px}}
+}
+</style>
+<section id="sddHomeAllProducts" aria-label="Tất cả sản phẩm tại Siêu Di Động">
+ <div class="sdd-all-head"><div><h1>Tất cả sản phẩm</h1><p>Toàn bộ sản phẩm shop đang có, chia theo từng danh mục.</p></div></div>
+ <section class="sdd-all-section"><div class="sdd-all-title"><h2>Điện thoại</h2><a href="/dien-thoai">Xem tất cả ›</a></div><div class="sdd-all-grid" data-home-cat="/dien-thoai"><div class="loading">Đang tải điện thoại...</div></div></section>
+ <section class="sdd-all-section"><div class="sdd-all-title"><h2>Máy tính bảng</h2><a href="/may-tinh-bang">Xem tất cả ›</a></div><div class="sdd-all-grid" data-home-cat="/may-tinh-bang"><div class="loading">Đang tải máy tính bảng...</div></div></section>
+ <section class="sdd-all-section"><div class="sdd-all-title"><h2>Máy cũ</h2><a href="/may-cu">Xem tất cả ›</a></div><div class="sdd-all-grid" data-home-cat="/may-cu"><div class="loading">Đang tải máy cũ...</div></div></section>
+ <section class="sdd-all-section"><div class="sdd-all-title"><h2>Phụ kiện</h2><a href="/phu-kien">Xem tất cả ›</a></div><div class="sdd-all-grid" data-home-cat="/phu-kien"><div class="loading">Đang tải phụ kiện...</div></div></section>
+</section>
+<script id="v574-home-all-products-js">
+(function(){
+ if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
+ document.body.classList.add('sdd-home-all-mode');
+ const jobs=[...document.querySelectorAll('[data-home-cat]')];
+ function pickGrid(doc,path){
+   if(path==='/phu-kien') return doc.querySelector('#accPublicGrid');
+   return doc.querySelector('#productGrid,.product-grid,.products-grid');
+ }
+ function readyGrid(g){return g&&g.children.length&&!(g.children.length===1&&/Đang tải/i.test(g.textContent||''));}
+ jobs.forEach(host=>{
+   const path=host.getAttribute('data-home-cat');
+   const f=document.createElement('iframe');f.className='sdd-home-loader-frame';f.src=path+(path.includes('?')?'&':'?')+'_homeall=1';f.setAttribute('aria-hidden','true');document.body.appendChild(f);
+   let done=false,tries=0;
+   const finish=()=>{if(done)return;let d;try{d=f.contentDocument}catch(e){};const g=d&&pickGrid(d,path);if(!readyGrid(g)){if(++tries<80)return setTimeout(finish,250);host.innerHTML='<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Mở danh mục</a></div>';done=true;f.remove();return}
+     done=true;host.innerHTML='';[...g.children].forEach(el=>{if(el.matches('.loading,.empty,.acc-public-empty'))return;const c=el.cloneNode(true);host.appendChild(c)});if(!host.children.length)host.innerHTML='<div class="loading">Hiện chưa có sản phẩm trong danh mục này.</div>';
+     host.querySelectorAll('button').forEach(b=>{b.addEventListener('click',()=>{location.href=path})});f.remove();
+   };
+   f.addEventListener('load',()=>setTimeout(finish,250));setTimeout(finish,1200);
+ });
+})();
+</script>
+
 <footer class="sdd-site-footer" id="siteFooter" aria-label="Thông tin Siêu Di Động">
     <div class="sdd-footer-main sdd-footer-balanced">
       <section class="sdd-footer-col sdd-footer-store">
