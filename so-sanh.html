@@ -741,6 +741,16 @@ body.compare-page-body > .compare-site-header{
 }
 </style>
 <!-- v565: compare page now reuses the exact original site header markup -->
+
+<style id="v567-mobile-menu-hard-fix">
+@media(max-width:899px){
+  #sddMobileMenuBtn{position:relative!important;z-index:2147483644!important;pointer-events:auto!important;touch-action:manipulation!important;cursor:pointer!important}
+  .commerce-header.sdd-header-v164,.commerce-header-inner.sdd-header-main{position:relative!important;z-index:1000!important}
+  #sddMobileDrawer[hidden]{display:none!important}
+  #sddMobileDrawer:not([hidden]){display:block!important}
+  #sddMobileDrawer{position:fixed!important;inset:0!important;z-index:2147483646!important}
+}
+</style>
 </head>
 <body class="compare-page-body">
 
@@ -859,7 +869,67 @@ body.compare-page-body > .compare-site-header{
   </div>
 </header>
 
-  <main class="compare-page-main">
+  
+<script id="v567-mobile-menu-hard-runtime">
+(function(){
+  function getDrawer(){ return document.getElementById('sddMobileDrawer'); }
+  function getBtn(){ return document.getElementById('sddMobileMenuBtn'); }
+  function openMenu(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    var d=getDrawer(), b=getBtn();
+    if(!d) return false;
+    d.hidden=false;
+    d.removeAttribute('hidden');
+    d.classList.add('is-open');
+    d.style.visibility='visible';
+    d.style.opacity='1';
+    d.style.pointerEvents='auto';
+    document.documentElement.classList.add('sdd-menu-open');
+    document.body.style.overflow='hidden';
+    if(b) b.setAttribute('aria-expanded','true');
+    return false;
+  }
+  function closeMenu(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    var d=getDrawer(), b=getBtn();
+    if(!d) return false;
+    d.classList.remove('is-open');
+    d.style.visibility='';
+    d.style.opacity='';
+    d.style.pointerEvents='';
+    document.documentElement.classList.remove('sdd-menu-open');
+    document.body.style.overflow='';
+    if(b) b.setAttribute('aria-expanded','false');
+    setTimeout(function(){ if(!d.classList.contains('is-open')) d.hidden=true; },260);
+    return false;
+  }
+  window.__sddOpenMenu=openMenu;
+  window.__sddCloseMenu=closeMenu;
+
+  function bind(){
+    var b=getBtn(), d=getDrawer(), c=document.getElementById('sddMobileDrawerClose');
+    if(b && !b.dataset.v567Bound){
+      b.dataset.v567Bound='1';
+      b.setAttribute('aria-expanded','false');
+      b.addEventListener('click',openMenu,true);
+      b.addEventListener('touchend',function(e){ if(e.cancelable) e.preventDefault(); openMenu(e); },{capture:true,passive:false});
+    }
+    if(c && !c.dataset.v567Bound){ c.dataset.v567Bound='1'; c.addEventListener('click',closeMenu,true); }
+    if(d && !d.dataset.v567Bound){
+      d.dataset.v567Bound='1';
+      d.addEventListener('click',function(e){ if(e.target===d) closeMenu(e); });
+      d.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',closeMenu); });
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
+  // Fallback bắt click ở document, kể cả khi listener trên nút bị code khác ghi đè.
+  document.addEventListener('click',function(e){
+    var t=e.target && e.target.closest ? e.target.closest('#sddMobileMenuBtn') : null;
+    if(t) openMenu(e);
+  },true);
+})();
+</script>
+<main class="compare-page-main">
     <div class="compare-page-title">
       <div>
         <h1>So sánh 2 sản phẩm</h1>
@@ -1244,58 +1314,7 @@ init();
 </script>
 
 
-<script id="v335-header-runtime">
-(function(){
-  const menu=document.getElementById("sddMobileMenuBtn");
-  const drawer=document.getElementById("sddMobileDrawer");
-  const close=document.getElementById("sddMobileDrawerClose");
 
-  function openDrawer(){
-    if(!drawer)return;
-    drawer.hidden=false;
-    // CSS của menu mobile dùng .is-open để bật overlay + trượt panel vào.
-    requestAnimationFrame(()=>drawer.classList.add("is-open"));
-    document.body.style.overflow="hidden";
-    menu?.setAttribute("aria-expanded","true");
-  }
-  function closeDrawer(){
-    if(!drawer)return;
-    drawer.classList.remove("is-open");
-    document.body.style.overflow="";
-    menu?.setAttribute("aria-expanded","false");
-    // Chờ animation đóng xong rồi mới hidden để không bị giật.
-    window.setTimeout(()=>{
-      if(!drawer.classList.contains("is-open")) drawer.hidden=true;
-    },260);
-  }
-
-  menu?.addEventListener("click",openDrawer);
-  close?.addEventListener("click",closeDrawer);
-  drawer?.addEventListener("click",e=>{if(e.target===drawer)closeDrawer()});
-  drawer?.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeDrawer));
-
-  const input=document.getElementById("searchInput");
-  const clear=document.getElementById("clearSearch");
-  const submit=document.querySelector(".sdd-search-submit");
-
-  function runSearch(){
-    const q=(input?.value||"").trim();
-    location.href=q?"/?q="+encodeURIComponent(q):"/#products";
-  }
-
-  submit?.addEventListener("click",runSearch);
-  input?.addEventListener("keydown",e=>{
-    if(e.key==="Enter"){e.preventDefault();runSearch();}
-  });
-  clear?.addEventListener("click",()=>{
-    if(input){input.value="";input.focus();}
-  });
-
-  document.getElementById("sddConsultAction")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddNavConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-  document.getElementById("sddMobileConsultBtn")?.addEventListener("click",()=>location.href="/#products");
-})();
-</script>
 
 <script>
 (function(){
