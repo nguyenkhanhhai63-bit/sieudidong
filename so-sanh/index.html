@@ -731,6 +731,40 @@ body.compare-page-body > .compare-site-header{
 }
 </style>
 <!-- v565: compare page now reuses the exact original site header markup -->
+
+<style id="v570-compare-native-target-menu">
+/* v570: menu so sánh dùng điều hướng #target thuần trình duyệt, không phụ thuộc app.js */
+@media(max-width:899px){
+  #compareMobileMenuBtn{
+    display:grid!important;place-items:center!important;position:relative!important;
+    z-index:2147483646!important;pointer-events:auto!important;touch-action:manipulation!important;
+    cursor:pointer!important;text-decoration:none!important;color:inherit!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  #compareMobileDrawer{
+    display:block!important;position:fixed!important;inset:0!important;z-index:2147483647!important;
+    visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+    background:rgba(15,23,42,0)!important;transition:opacity .18s ease,visibility 0s linear .22s,background-color .18s ease!important;
+  }
+  #compareMobileDrawer .sdd-mobile-drawer-panel{
+    display:flex!important;flex-direction:column!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;
+    width:min(86vw,330px)!important;background:#fff!important;overflow:auto!important;
+    transform:translate3d(-100%,0,0)!important;transition:transform .24s cubic-bezier(.22,.61,.36,1)!important;
+    box-shadow:18px 0 40px rgba(15,23,42,.16)!important;
+  }
+  #compareMobileDrawer:target{
+    visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(15,23,42,.38)!important;
+    transition:opacity .18s ease,background-color .18s ease!important;
+  }
+  #compareMobileDrawer:target .sdd-mobile-drawer-panel{transform:translate3d(0,0,0)!important}
+  #compareMobileDrawer::before{content:"";position:absolute;inset:0;background:transparent}
+  #compareMobileDrawerClose{
+    display:grid!important;place-items:center!important;width:38px!important;height:38px!important;border-radius:10px!important;
+    text-decoration:none!important;color:#111827!important;font-size:28px!important;line-height:1!important;position:relative!important;z-index:2!important;
+  }
+}
+@media(min-width:900px){#compareMobileDrawer{display:none!important}}
+</style>
 </head>
 <body class="compare-page-body">
 
@@ -747,7 +781,7 @@ body.compare-page-body > .compare-site-header{
   </div>
 
   <div class="commerce-header-inner sdd-header-main">
-    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+    <a class="sdd-mobile-menu-btn" id="compareMobileMenuBtn" href="#compareMobileDrawer" role="button" aria-label="Mở danh mục">☰</a>
 
     <div class="commerce-brand-block">
       <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
@@ -803,7 +837,8 @@ body.compare-page-body > .compare-site-header{
     </div>
   </div>
 
-  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+  <div class="sdd-mobile-drawer compare-mobile-drawer" id="compareMobileDrawer">
+    <a class="compare-mobile-drawer-backdrop" href="#" aria-label="Đóng menu" style="position:absolute;inset:0;display:block"></a>
     <div class="sdd-mobile-drawer-panel">
       <div class="sdd-mobile-drawer-head">
         <div class="sdd-mobile-drawer-title">
@@ -813,7 +848,7 @@ body.compare-page-body > .compare-site-header{
             <small>Siêu Di Động Quy Nhơn</small>
           </div>
         </div>
-        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+        <a id="compareMobileDrawerClose" class="compare-mobile-drawer-close" href="#" role="button" aria-label="Đóng">×</a>
       </div>
 
       <nav class="sdd-mobile-nav-list">
