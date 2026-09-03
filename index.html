@@ -623,85 +623,79 @@
 })();
 </script>
 
-<script id="v586-home-compare-button-fix">
+<script id="v587-home-compare-button-fix">
 (function(){
   const STORAGE_KEY='sieudidong-compare-v1';
   const home=document.getElementById('sddHomeAllProducts');
   if(!home) return;
 
   function text(el){ return (el&&el.textContent||'').replace(/\s+/g,' ').trim(); }
-  function isCompareButton(btn){ return /so\s*sánh/i.test(text(btn)); }
-  function cardOf(btn){
-    return btn.closest('.product-card,.product-item,.card,[class*="product-card"],[class*="product-item"],.acc-public-card,.acc-public-item') || btn.parentElement;
+  function isCompareControl(el){ return !!el && /so\s*sánh/i.test(text(el)); }
+  function cardOf(el){
+    let n=el;
+    while(n && n!==home){
+      const p=n.parentElement;
+      if(p && p.classList && p.classList.contains('sdd-all-grid')) return n;
+      n=p;
+    }
+    return null;
   }
+  function firstText(card,sel){ const e=card&&card.querySelector(sel); return text(e); }
   function infoFromCard(card){
-    const nameEl=card && card.querySelector('h2,h3,.product-name,.name,[class*="product-name"],[class*="name"]');
-    const img=card && card.querySelector('img');
-    const priceEl=card && card.querySelector('.product-price,.acc-public-price,.price,[class*="price"]');
-    const rawPrice=text(priceEl||card).match(/([0-9][0-9.]*)\s*đ/i);
+    if(!card) return null;
+    let name=firstText(card,'h1,h2,h3,h4,.product-name,.name,[class*="product-name"]');
+    if(!name){
+      const candidates=[...card.querySelectorAll('strong,b,a,div,span')].map(text).filter(Boolean);
+      name=candidates.find(v=>!/^\+?\s*so\s*sánh$/i.test(v) && !/^chi tiết$/i.test(v) && !/còn hàng|hết hàng/i.test(v) && !/^[\d.]+\s*đ$/i.test(v))||'';
+    }
+    const img=card.querySelector('img');
+    let price=0;
+    const priceNodes=[...card.querySelectorAll('.product-price,.acc-public-price,.price,[class*="price"]'),card];
+    for(const node of priceNodes){
+      const m=text(node).match(/([0-9][0-9.]*)\s*đ/i);
+      if(m){ price=parseInt(m[1].replace(/\./g,''),10)||0; if(price) break; }
+    }
     const t=text(card);
-    return {
-      name:text(nameEl),
-      image:img ? (img.currentSrc||img.src||img.getAttribute('src')||'') : '',
-      price:rawPrice ? (parseInt(rawPrice[1].replace(/\./g,''),10)||0) : 0,
-      onHand:/còn\s*hàng/i.test(t) ? 1 : 0
-    };
+    return {name:name,image:img?(img.currentSrc||img.src||img.getAttribute('src')||''):'',price:price,onHand:/còn\s*hàng/i.test(t)?1:0};
   }
-  function read(){
-    try{ const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); return Array.isArray(v)?v:[]; }catch(e){ return []; }
-  }
-  function write(v){
-    try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(v.slice(0,2))); }catch(e){}
-  }
+  function read(){ try{const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]} }
+  function write(v){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(v.slice(0,2)))}catch(e){} }
   function selectedName(x){ return typeof x==='string'?x:(x&&x.name)||''; }
+  function controls(){ return [...home.querySelectorAll('button,a,[role="button"]')].filter(isCompareControl); }
   function syncButtons(){
     const names=new Set(read().map(selectedName).filter(Boolean));
-    home.querySelectorAll('button').forEach(function(btn){
-      if(!isCompareButton(btn)) return;
+    controls().forEach(function(btn){
       const info=infoFromCard(cardOf(btn));
-      const on=!!info.name && names.has(info.name);
+      const on=!!(info&&info.name&&names.has(info.name));
       btn.dataset.sddCompareSelected=on?'1':'0';
-      if(on){
-        btn.textContent='✓ Đã chọn so sánh';
-        btn.classList.add('selected','active');
-        btn.setAttribute('aria-pressed','true');
-      }else{
-        btn.textContent='+ So sánh';
-        btn.classList.remove('selected','active');
-        btn.setAttribute('aria-pressed','false');
-      }
+      btn.textContent=on?'✓ Đã chọn so sánh':'+ So sánh';
+      btn.classList.toggle('selected',on);btn.classList.toggle('active',on);
+      btn.setAttribute('aria-pressed',on?'true':'false');
     });
   }
-
-  home.addEventListener('click',function(e){
+  function handle(e){
     if(!document.body.classList.contains('sdd-home-all-mode')) return;
-    const btn=e.target.closest('button');
-    if(!btn || !home.contains(btn) || !isCompareButton(btn)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-
+    const btn=e.target&&e.target.closest?e.target.closest('button,a,[role="button"]'):null;
+    if(!btn || !home.contains(btn) || !isCompareControl(btn)) return;
+    e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
     const info=infoFromCard(cardOf(btn));
-    if(!info.name) return;
+    if(!info || !info.name){ console.warn('Không đọc được sản phẩm để so sánh'); return; }
     let list=read();
     const idx=list.findIndex(x=>selectedName(x)===info.name);
-    if(idx>=0){
-      list.splice(idx,1);
-    }else{
-      if(list.length>=2){
-        alert('Chỉ chọn tối đa 2 sản phẩm để so sánh.');
-        return;
-      }
+    if(idx>=0) list.splice(idx,1);
+    else {
+      if(list.length>=2){ alert('Chỉ chọn tối đa 2 sản phẩm để so sánh.'); return; }
       list.push(info);
     }
-    write(list);
-    syncButtons();
-    document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items:list}}));
-  },true);
+    write(list); syncButtons();
+    try{document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items:list}}))}catch(_){ }
+  }
 
+  // Delegate ở document capture để bắt được cả card clone từ iframe và không phụ thuộc listener của app.js.
+  document.addEventListener('click',handle,true);
   document.addEventListener('sdd-home-grid-ready',syncButtons);
   window.addEventListener('pageshow',syncButtons);
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',syncButtons,{once:true}); else syncButtons();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncButtons,{once:true});else syncButtons();
 })();
 </script>
 <script id="v576-home-category-hard-navigation">
