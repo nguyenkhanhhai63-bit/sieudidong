@@ -698,6 +698,77 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncButtons,{once:true});else syncButtons();
 })();
 </script>
+
+<script id="v588-home-detail-button-fix">
+(function(){
+  function cleanText(el){return (el&&el.textContent||'').replace(/\s+/g,' ').trim()}
+  function cardOf(el,root){
+    var n=el;
+    while(n&&n!==root){
+      var p=n.parentElement;
+      if(p&&p.classList&&p.classList.contains('sdd-all-grid')) return n;
+      n=p;
+    }
+    return null;
+  }
+  function productName(card){
+    if(!card)return '';
+    var n=card.querySelector('h1,h2,h3,h4,.product-name,.name,[class*="product-name"]');
+    if(n&&cleanText(n))return cleanText(n);
+    var vals=Array.from(card.querySelectorAll('strong,b,a,div,span')).map(cleanText).filter(Boolean);
+    return vals.find(function(v){return !/^chi tiết$/i.test(v)&&!/so\s*sánh/i.test(v)&&!/còn hàng|hết hàng/i.test(v)&&!/^[\d.]+\s*đ$/i.test(v)})||'';
+  }
+
+  // Card ở Trang chủ là bản clone từ iframe nên listener "Chi tiết" gốc không được clone theo.
+  // Khi bấm Chi tiết, chuyển sang đúng danh mục và mang theo tên sản phẩm cần mở.
+  document.addEventListener('click',function(e){
+    if(!document.body.classList.contains('sdd-home-all-mode'))return;
+    var home=document.getElementById('sddHomeAllProducts');
+    if(!home)return;
+    var btn=e.target&&e.target.closest?e.target.closest('button,a,[role="button"]'):null;
+    if(!btn||!home.contains(btn)||!/^chi tiết$/i.test(cleanText(btn)))return;
+    var grid=btn.closest('.sdd-all-grid');
+    var card=cardOf(btn,home);
+    var name=productName(card);
+    var path=grid&&grid.getAttribute('data-home-cat');
+    if(!path||!name)return;
+    e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    location.href=path+'?openProduct='+encodeURIComponent(name);
+  },true);
+
+  // Ở trang danh mục, đợi app.js render xong rồi gọi đúng nút Chi tiết gốc của card cần mở.
+  (function openRequestedProduct(){
+    if(location.pathname==='/'||location.pathname==='/index.html')return;
+    var wanted='';
+    try{wanted=new URL(location.href).searchParams.get('openProduct')||''}catch(_){return}
+    if(!wanted)return;
+    var target=wanted.replace(/\s+/g,' ').trim().toLocaleLowerCase('vi');
+    var tries=0;
+    function findAndOpen(){
+      tries++;
+      var grid=document.querySelector('#productGrid,.product-grid,.products-grid,#accPublicGrid');
+      if(grid){
+        var cards=Array.from(grid.children).filter(function(x){return !x.matches('.loading,.empty,.acc-public-empty')});
+        var card=cards.find(function(c){return productName(c).replace(/\s+/g,' ').trim().toLocaleLowerCase('vi')===target});
+        if(!card){
+          card=cards.find(function(c){var n=productName(c).replace(/\s+/g,' ').trim().toLocaleLowerCase('vi');return n&&target&&(n.indexOf(target)>=0||target.indexOf(n)>=0)});
+        }
+        if(card){
+          var detail=Array.from(card.querySelectorAll('button,a,[role="button"]')).find(function(x){return /^chi tiết$/i.test(cleanText(x))});
+          if(detail){
+            try{var u=new URL(location.href);u.searchParams.delete('openProduct');history.replaceState(history.state,'',u.pathname+(u.search?u.search:'')+u.hash)}catch(_){}
+            detail.click();
+            return;
+          }
+        }
+      }
+      if(tries<40)setTimeout(findAndOpen,250);
+    }
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(findAndOpen,250)},{once:true});
+    else setTimeout(findAndOpen,250);
+  })();
+})();
+</script>
 <script id="v576-home-category-hard-navigation">
 (function(){
   const categoryPaths = new Set(['/dien-thoai','/may-tinh-bang','/may-cu','/phu-kien']);
