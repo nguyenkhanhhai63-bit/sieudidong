@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>iPhone cũ | Siêu Di Động Quy Nhơn</title>
+  <meta name="description" content="Danh sách iPhone cũ đang có tại Siêu Di Động, đồng bộ trực tiếp từ Google Sheet.">
+  <link rel="canonical" href="https://sieudidong.vn/may-cu-iphone/">
+  <link rel="icon" type="image/jpeg" href="/assets/logo-square.jpg">
+  <link rel="stylesheet" href="/styles.css?v=487">
+  <style>
+    :root{--orange:#ff5a00;--ink:#101828;--muted:#667085;--line:#e4e7ec;--bg:#f5f6f8}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .iphone-used-top{height:4px;background:var(--orange)}
+    .iphone-used-head{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(16,24,40,.05)}
+    .iphone-used-head-inner{max-width:1280px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:14px}
+    .iphone-used-menu{display:none;width:48px;height:48px;border:1px solid var(--line);border-radius:13px;background:#f8fafc;font-size:25px;cursor:pointer}
+    .iphone-used-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:900;font-size:20px}.iphone-used-logo img{width:50px;height:50px;border-radius:14px}.iphone-used-logo small{display:block;color:var(--muted);font-size:11px;font-weight:600;margin-top:2px}
+    .iphone-used-nav{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.iphone-used-nav a{padding:10px 12px;border-radius:10px;color:#344054;text-decoration:none;font-weight:700;font-size:13px}.iphone-used-nav a.active,.iphone-used-nav a:hover{color:var(--orange);background:#fff3ec}
+    .iphone-used-wrap{max-width:1280px;margin:0 auto;padding:28px 20px 50px}.iphone-used-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}.iphone-used-hero h1{margin:0;font-size:30px}.iphone-used-hero p{margin:7px 0 0;color:var(--muted);font-size:14px}.iphone-used-sync{font-size:12px;color:var(--muted);text-align:right}.iphone-used-sync strong{color:#067647}
+    .iphone-used-tools{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;grid-template-columns:minmax(220px,1fr) 190px 170px auto;gap:10px;margin-bottom:16px}.iphone-used-tools input,.iphone-used-tools select,.iphone-used-tools button{height:44px;border:1px solid #d0d5dd;border-radius:10px;padding:0 12px;background:#fff;font-size:14px}.iphone-used-tools button{border-color:var(--orange);color:#fff;background:var(--orange);font-weight:800;cursor:pointer}
+    .iphone-used-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.iphone-used-pill{background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-size:12px;color:var(--muted)}.iphone-used-pill b{color:var(--ink)}
+    .iphone-used-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.iphone-used-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;min-width:0;display:flex;flex-direction:column;gap:10px;box-shadow:0 5px 18px rgba(16,24,40,.035)}.iphone-used-card h2{font-size:16px;line-height:1.35;margin:0}.iphone-used-meta{display:flex;gap:6px;flex-wrap:wrap}.iphone-used-meta span{padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:11px;font-weight:700}.iphone-used-condition{font-size:12px;color:#475467;line-height:1.45}.iphone-used-price{font-size:22px;color:#e11900;font-weight:900;margin-top:auto;padding-top:4px}.iphone-used-stock{display:inline-flex;align-self:flex-start;padding:6px 9px;border-radius:999px;background:#ecfdf3;color:#067647;font-size:12px;font-weight:800}.iphone-used-note{font-size:12px;color:var(--muted);line-height:1.45;border-top:1px solid #f0f2f5;padding-top:9px}.iphone-used-empty{grid-column:1/-1;background:#fff;border:1px dashed #d0d5dd;border-radius:16px;padding:50px 20px;text-align:center;color:var(--muted)}.iphone-used-error{color:#b42318}.iphone-used-source{margin-top:18px;font-size:11px;color:#98a2b3;text-align:center}
+    .iphone-used-drawer{display:none;position:fixed;inset:0;z-index:50;background:rgba(16,24,40,.48)}.iphone-used-drawer.open{display:block}.iphone-used-drawer-panel{width:min(86vw,340px);height:100%;background:#fff;padding:18px;box-shadow:20px 0 50px rgba(0,0,0,.16)}.iphone-used-drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.iphone-used-drawer-head strong{font-size:18px}.iphone-used-close{border:0;background:#f2f4f7;width:42px;height:42px;border-radius:50%;font-size:24px}.iphone-used-drawer a{display:block;text-decoration:none;color:#101828;font-weight:750;padding:14px 12px;border-radius:11px;margin:2px 0}.iphone-used-drawer a.active{background:#fff1e8;color:#f04b00}
+    @media(max-width:1000px){.iphone-used-grid{grid-template-columns:repeat(3,1fr)}.iphone-used-tools{grid-template-columns:1fr 1fr}.iphone-used-nav{display:none}.iphone-used-menu{display:block}.iphone-used-logo{margin-right:auto}}
+    @media(max-width:700px){.iphone-used-head-inner{padding:10px 12px}.iphone-used-logo span{display:none}.iphone-used-logo img{width:52px;height:52px}.iphone-used-wrap{padding:20px 12px 40px}.iphone-used-hero{align-items:flex-start;flex-direction:column}.iphone-used-hero h1{font-size:25px}.iphone-used-sync{text-align:left}.iphone-used-tools{grid-template-columns:1fr}.iphone-used-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.iphone-used-card{padding:11px;border-radius:14px}.iphone-used-card h2{font-size:14px}.iphone-used-price{font-size:18px}.iphone-used-note{font-size:11px}}
+  </style>
+</head>
+<body>
+<div class="iphone-used-top"></div>
+<header class="iphone-used-head">
+  <div class="iphone-used-head-inner">
+    <button id="iphoneMenu" class="iphone-used-menu" type="button" aria-label="Mở menu">☰</button>
+    <a class="iphone-used-logo" href="/"><img src="/assets/logo-square.jpg" alt="Siêu Di Động"><span>SIÊU DI ĐỘNG<small>Chuyên Android giá tốt</small></span></a>
+    <nav class="iphone-used-nav">
+      <a href="/">Trang chủ</a><a href="/dien-thoai">Điện thoại</a><a href="/may-tinh-bang">Máy tính bảng</a><a href="/may-cu">Máy cũ</a><a class="active" href="/may-cu-iphone/">iPhone cũ</a><a href="/phu-kien">Phụ kiện</a><a href="/tra-gop">Trả góp</a>
+    </nav>
+  </div>
+</header>
+<div id="iphoneDrawer" class="iphone-used-drawer"><div class="iphone-used-drawer-panel"><div class="iphone-used-drawer-head"><strong>Danh mục</strong><button id="iphoneClose" class="iphone-used-close">×</button></div><a href="/">Trang chủ</a><a href="/dien-thoai">Điện thoại</a><a href="/may-tinh-bang">Máy tính bảng</a><a href="/may-cu">Máy cũ Android</a><a class="active" href="/may-cu-iphone/">iPhone cũ</a><a href="/phu-kien">Phụ kiện</a><a href="/tra-gop">Trả góp</a><a href="/tra-cuu-bao-hanh">Tra cứu bảo hành</a></div></div>
+<main class="iphone-used-wrap">
+  <div class="iphone-used-hero"><div><h1>Danh sách iPhone cũ</h1><p>Hàng iPhone cũ đang có tại shop, đồng bộ trực tiếp từ Google Sheet.</p></div><div class="iphone-used-sync" id="syncText">Đang kết nối Google Sheet...</div></div>
+  <div class="iphone-used-tools"><input id="q" type="search" placeholder="Tìm iPhone, màu, dung lượng..."><select id="capacity"><option value="">Tất cả dung lượng</option></select><select id="sort"><option value="default">Mới nhập trước</option><option value="price-asc">Giá thấp → cao</option><option value="price-desc">Giá cao → thấp</option><option value="name">Tên A → Z</option></select><button id="reload" type="button">Đồng bộ lại</button></div>
+  <div class="iphone-used-stats"><span class="iphone-used-pill">Đang còn: <b id="count">0</b> máy</span><span class="iphone-used-pill">Nguồn: <b>Google Sheet iPhone</b></span></div>
+  <section id="grid" class="iphone-used-grid"><div class="iphone-used-empty">Đang tải danh sách...</div></section>
+  <div class="iphone-used-source">Chỉ hiển thị thông tin bán hàng. IMEI, giá nhập, lợi nhuận và thông tin khách hàng không được công khai.</div>
+</main>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+(function(){
+  const SHEET_ID='1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw';
+  const GID='1876632092';
+  const SHEET_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/edit?gid='+GID;
+  const $=id=>document.getElementById(id), grid=$('grid'), count=$('count'), sync=$('syncText');
+  let items=[];
+  const norm=s=>String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
+  const money=n=>new Intl.NumberFormat('vi-VN').format(Number(n||0))+' đ';
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const num=v=>{if(typeof v==='number')return v; const x=String(v??'').replace(/[^0-9.-]/g,''); return Number(x)||0};
+  const canon=h=>norm(h).replace(/[^a-z0-9]+/g,'');
+  function load(){
+    sync.textContent='Đang kết nối Google Sheet...'; grid.innerHTML='<div class="iphone-used-empty">Đang đồng bộ dữ liệu...</div>';
+    google.charts.load('current',{packages:['table']});
+    google.charts.setOnLoadCallback(()=>{
+      const q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+GID+'&headers=1');
+      q.setQuery('select *');
+      q.send(handle);
+    });
+  }
+  function handle(res){
+    if(res.isError()){sync.innerHTML='<span class="iphone-used-error">Không đọc được Google Sheet</span>';grid.innerHTML='<div class="iphone-used-empty iphone-used-error">Không kết nối được Sheet. Hãy kiểm tra quyền chia sẻ của Google Sheet.</div>';return}
+    const t=res.getDataTable(), headers={};
+    for(let c=0;c<t.getNumberOfColumns();c++){headers[canon(t.getColumnLabel(c))]=c}
+    const col=(...names)=>{for(const n of names){const k=canon(n);if(k in headers)return headers[k]}return -1};
+    const get=(r,c)=>c<0?'':(t.getFormattedValue(r,c)||t.getValue(r,c)||'');
+    const C={name:col('TÊN MÁY','TEN MAY'),brand:col('HÃNG','HANG'),condition:col('TÌNH TRẠNG','TINH TRANG'),color:col('MÀU','MAU'),capacity:col('DUNG LƯỢNG','DUNG LUONG'),price:col('GIÁ BÁN','GIA BAN'),dateIn:col('NGÀY NHẬP','NGAY NHAP'),status:col('TRẠNG THÁI','TRANG THAI'),acc:col('PHỤ KIỆN','PHU KIEN'),note:col('GHI CHÚ','GHI CHU')};
+    items=[];
+    for(let r=0;r<t.getNumberOfRows();r++){
+      const name=String(get(r,C.name)||'').trim(); if(!name)continue;
+      const status=String(get(r,C.status)||'').trim();
+      if(status && !norm(status).includes('chua ban') && !norm(status).includes('con hang')) continue;
+      items.push({name,brand:String(get(r,C.brand)||'IPHONE').trim(),condition:String(get(r,C.condition)||'').trim(),color:String(get(r,C.color)||'').trim(),capacity:String(get(r,C.capacity)||'').trim(),price:num(get(r,C.price)),dateIn:String(get(r,C.dateIn)||'').trim(),status,acc:String(get(r,C.acc)||'').trim(),note:String(get(r,C.note)||'').trim(),row:r});
+    }
+    fillCapacity(); render();
+    sync.innerHTML='<strong>✓ Đã đồng bộ</strong> • '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  }
+  function fillCapacity(){const el=$('capacity'),cur=el.value;const vals=[...new Set(items.map(x=>x.capacity).filter(Boolean))].sort((a,b)=>num(a)-num(b));el.innerHTML='<option value="">Tất cả dung lượng</option>'+vals.map(x=>'<option>'+esc(x)+'</option>').join('');el.value=vals.includes(cur)?cur:''}
+  function render(){
+    const q=norm($('q').value),cap=$('capacity').value,sort=$('sort').value;
+    let a=items.filter(x=>(!q||norm([x.name,x.color,x.capacity,x.condition].join(' ')).includes(q))&&(!cap||x.capacity===cap));
+    if(sort==='price-asc')a.sort((x,y)=>x.price-y.price);else if(sort==='price-desc')a.sort((x,y)=>y.price-x.price);else if(sort==='name')a.sort((x,y)=>x.name.localeCompare(y.name,'vi'));else a.sort((x,y)=>x.row-y.row);
+    count.textContent=a.length;
+    if(!a.length){grid.innerHTML='<div class="iphone-used-empty">Không có iPhone phù hợp bộ lọc.</div>';return}
+    grid.innerHTML=a.map(x=>`<article class="iphone-used-card"><h2>${esc(x.name)}</h2><div class="iphone-used-meta">${x.capacity?`<span>${esc(x.capacity)}GB</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.condition?`<span>Tình trạng ${esc(x.condition)}</span>`:''}</div>${x.condition?`<div class="iphone-used-condition">Ngoại hình / pin: ${esc(x.condition)}</div>`:''}<div class="iphone-used-price">${money(x.price)}</div><span class="iphone-used-stock">✓ Còn hàng</span>${x.acc?`<div class="iphone-used-note"><b>Phụ kiện:</b> ${esc(x.acc)}</div>`:''}${x.note?`<div class="iphone-used-note">${esc(x.note)}</div>`:''}</article>`).join('');
+  }
+  $('q').addEventListener('input',render);$('capacity').addEventListener('change',render);$('sort').addEventListener('change',render);$('reload').addEventListener('click',load);
+  const drawer=$('iphoneDrawer');$('iphoneMenu').onclick=()=>drawer.classList.add('open');$('iphoneClose').onclick=()=>drawer.classList.remove('open');drawer.onclick=e=>{if(e.target===drawer)drawer.classList.remove('open')};
+  load();
+})();
+</script>
+</body>
+</html>
