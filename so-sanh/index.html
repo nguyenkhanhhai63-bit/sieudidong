@@ -659,8 +659,58 @@ body > main p{
 }
 </style>
 
+
+<style id="v561-compare-site-header">
+.compare-site-header{position:relative;z-index:60;background:#fff;border-top:4px solid #ff5a00;border-bottom:1px solid #e5e7eb;box-shadow:0 3px 14px rgba(15,23,42,.05)}
+.compare-site-header-inner{max-width:1500px;margin:0 auto;padding:12px 18px;display:grid;grid-template-columns:48px 54px minmax(240px,1fr);gap:10px;align-items:center}
+.compare-site-menu-btn{width:48px;height:48px;border:1px solid #e2e8f0;border-radius:13px;background:#f8fafc;color:#0f172a;display:grid;place-items:center;cursor:pointer}
+.compare-site-menu-btn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.compare-site-logo{width:54px;height:54px;border-radius:15px;overflow:hidden;display:block;box-shadow:0 7px 18px rgba(255,90,0,.16)}
+.compare-site-logo img{display:block;width:100%;height:100%;object-fit:cover}
+.compare-site-search{height:48px;border:1px solid #dbe3ee;border-radius:14px;background:#f8fafc;display:flex;align-items:center;gap:10px;padding:0 14px;box-sizing:border-box}
+.compare-site-search svg{width:20px;height:20px;stroke:#94a3b8;fill:none;stroke-width:2;flex:none}
+.compare-site-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#0f172a;font:inherit;font-size:15px}
+.compare-site-search input::placeholder{color:#94a3b8}
+.compare-site-menu{display:none;position:absolute;left:18px;top:74px;min-width:210px;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:13px;box-shadow:0 14px 34px rgba(15,23,42,.14)}
+.compare-site-menu.is-open{display:block}
+.compare-site-menu a{display:block;padding:10px 12px;border-radius:9px;color:#334155;text-decoration:none;font-size:14px;font-weight:700}
+.compare-site-menu a:hover{background:#fff4ed;color:#ff5a00}
+@media(min-width:900px){
+ .compare-site-header-inner{grid-template-columns:52px 58px minmax(320px,720px);justify-content:center;padding:14px 24px}
+ .compare-site-menu-btn{width:50px;height:50px}.compare-site-logo{width:58px;height:58px}.compare-site-search{height:50px}
+ .compare-site-menu{left:max(24px,calc((100vw - 880px)/2));top:82px}
+}
+@media(max-width:899px){
+ html body.compare-page-body>.compare-site-header+main.compare-page-main{padding-top:10px!important}
+ .compare-site-header-inner{padding:10px 12px;grid-template-columns:46px 52px minmax(0,1fr);gap:8px}
+ .compare-site-menu-btn{width:46px;height:46px;border-radius:12px}
+ .compare-site-logo{width:52px;height:52px;border-radius:14px}
+ .compare-site-search{height:46px;padding:0 12px;border-radius:13px}
+ .compare-site-search input{font-size:14px}
+ .compare-site-menu{left:12px;right:12px;top:68px;min-width:0}
+ .compare-exit-row{margin-top:0!important}
+}
+</style>
+
 </head>
 <body class="compare-page-body">
+
+<header class="compare-site-header" aria-label="Thanh điều hướng Siêu Di Động">
+  <div class="compare-site-header-inner">
+    <button class="compare-site-menu-btn" id="compareSiteMenuBtn" type="button" aria-label="Mở menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a class="compare-site-logo" href="/" aria-label="Về trang chủ Siêu Di Động"><img src="/assets/logo-square.jpg" alt="Siêu Di Động"></a>
+    <form class="compare-site-search" id="compareSiteSearch" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+      <input id="compareSiteSearchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off" aria-label="Tìm sản phẩm">
+    </form>
+  </div>
+  <nav class="compare-site-menu" id="compareSiteMenu" aria-label="Menu nhanh">
+    <a href="/">Trang chủ</a><a href="/#products">Điện thoại</a><a href="/may-cu">Máy cũ</a><a href="/tra-gop">Trả góp</a><a href="/tra-cuu-bao-hanh">Tra cứu bảo hành</a>
+  </nav>
+</header>
+
   <main class="compare-page-main">
     <div class="compare-exit-row" aria-label="Điều hướng trang so sánh">
       <a class="compare-exit-link" id="compareExitLink" href="/">
@@ -1129,6 +1179,19 @@ init();
       }
     }catch(_e){}
   });
+})();
+</script>
+
+
+<script id="v561-compare-site-header-js">
+(function(){
+ const btn=document.getElementById('compareSiteMenuBtn'), menu=document.getElementById('compareSiteMenu');
+ if(btn&&menu){
+   btn.addEventListener('click',function(e){e.stopPropagation();const open=menu.classList.toggle('is-open');btn.setAttribute('aria-expanded',open?'true':'false');});
+   document.addEventListener('click',function(e){if(!menu.contains(e.target)&&e.target!==btn){menu.classList.remove('is-open');btn.setAttribute('aria-expanded','false');}});
+ }
+ const form=document.getElementById('compareSiteSearch'), input=document.getElementById('compareSiteSearchInput');
+ if(form&&input){form.addEventListener('submit',function(e){e.preventDefault();const q=input.value.trim();location.href=q?('/?q='+encodeURIComponent(q)):'/';});}
 })();
 </script>
 
