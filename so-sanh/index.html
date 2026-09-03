@@ -640,6 +640,25 @@ body > main p{
 }
 </style>
 
+
+<style id="v560-compare-mobile-remove-top-gap">
+/* v560 - loại bỏ khoảng trống thừa phía trên trang so sánh trên mobile */
+@media (max-width:899px){
+  html body.compare-page-body > main.compare-page-main{
+    margin-top:0!important;
+    padding-top:14px!important;
+    min-height:0!important;
+  }
+  html body.compare-page-body > main.compare-page-main > .compare-exit-row{
+    margin-top:0!important;
+    padding-top:0!important;
+  }
+  html body.compare-page-body > main.compare-page-main > :first-child{
+    margin-top:0!important;
+  }
+}
+</style>
+
 </head>
 <body class="compare-page-body">
   <main class="compare-page-main">
