@@ -1990,3 +1990,85 @@
 
 </body>
 </html>
+
+<!-- v613: desktop search fallback for home all-products mode -->
+<style id="v613-desktop-search-fix-css">
+@media (min-width: 769px){
+  body.sdd-desktop-searching #sddHomeAllProducts{display:block!important}
+  body.sdd-desktop-searching #sddHomeAllProducts .sdd-all-section{display:block}
+  body.sdd-desktop-searching .catalog-overview.sdd-catalog-showcase{display:none!important}
+  #v613DesktopSearchStatus{max-width:100%;margin:0 0 16px;padding:12px 14px;border:1px solid #e4e7ec;border-radius:12px;background:#fff;color:#667085;font-size:14px}
+  #v613DesktopSearchStatus strong{color:#101828}
+}
+</style>
+<script id="v613-desktop-search-fix-js">
+(function(){
+  var input=document.getElementById('searchInput');
+  if(!input || window.__V613_DESKTOP_SEARCH__) return;
+  window.__V613_DESKTOP_SEARCH__=1;
+  var home=document.getElementById('sddHomeAllProducts');
+  if(!home) return;
+
+  function desktop(){ return window.matchMedia('(min-width: 769px)').matches; }
+  function norm(s){
+    return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function tokens(s){ return norm(s).split(/\s+/).filter(Boolean); }
+  function getCards(){
+    var out=[];
+    home.querySelectorAll('.sdd-all-grid').forEach(function(grid){
+      Array.from(grid.children).forEach(function(card){
+        if(card.classList && !card.classList.contains('loading')) out.push({grid:grid,card:card});
+      });
+    });
+    return out;
+  }
+  function ensureStatus(){
+    var el=document.getElementById('v613DesktopSearchStatus');
+    if(!el){
+      el=document.createElement('div'); el.id='v613DesktopSearchStatus'; el.hidden=true;
+      home.insertBefore(el,home.firstChild);
+    }
+    return el;
+  }
+  function reset(){
+    document.body.classList.remove('sdd-desktop-searching');
+    var status=ensureStatus(); status.hidden=true;
+    home.querySelectorAll('.sdd-all-section').forEach(function(sec){sec.style.display='';});
+    getCards().forEach(function(x){x.card.style.display='';});
+  }
+  function run(){
+    if(!desktop()) return;
+    var q=input.value.trim();
+    if(!q){ reset(); return; }
+    document.body.classList.add('sdd-desktop-searching');
+    var qs=tokens(q), found=0;
+    home.querySelectorAll('.sdd-all-section').forEach(function(sec){
+      var any=0;
+      var grid=sec.querySelector('.sdd-all-grid');
+      if(!grid) return;
+      Array.from(grid.children).forEach(function(card){
+        if(card.classList && card.classList.contains('loading')) return;
+        var hay=norm(card.innerText || card.textContent || '');
+        var ok=qs.every(function(t){return hay.indexOf(t)>=0;});
+        card.style.display=ok?'':'none';
+        if(ok){any++;found++;}
+      });
+      sec.style.display=any?'':'none';
+    });
+    var status=ensureStatus(); status.hidden=false;
+    status.innerHTML=found ? 'Tìm thấy <strong>'+found+'</strong> sản phẩm cho “<strong>'+q.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})+'</strong>”' : 'Không tìm thấy sản phẩm phù hợp với “<strong>'+q.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})+'</strong>”';
+    try{ home.scrollIntoView({block:'start',behavior:'smooth'}); }catch(e){}
+  }
+  var timer=0;
+  input.addEventListener('input',function(){ if(!desktop())return; clearTimeout(timer); timer=setTimeout(run,120); },true);
+  input.addEventListener('keydown',function(e){ if(desktop() && e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); run(); } },true);
+  var submit=document.querySelector('.sdd-search-submit');
+  if(submit) submit.addEventListener('click',function(e){ if(!desktop())return; e.preventDefault(); e.stopPropagation(); run(); },true);
+  var clear=document.getElementById('clearSearch');
+  if(clear) clear.addEventListener('click',function(){ if(!desktop())return; setTimeout(function(){input.value='';reset();},0); },true);
+  window.addEventListener('resize',function(){ if(!desktop()) reset(); });
+  // Nếu sản phẩm tải chậm, chạy lại một lần sau khi dữ liệu trang chủ đã render.
+  setTimeout(function(){ if(desktop() && input.value.trim()) run(); },1200);
+})();
+</script>
