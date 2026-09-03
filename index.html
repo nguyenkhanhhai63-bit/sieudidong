@@ -531,6 +531,84 @@
   });
 })();
 </script>
+<script id="v582-home-price-filter-functional">
+(function(){
+  // Chỉ bổ sung lọc giá cho Trang chủ "Tất cả sản phẩm".
+  // Không observer, không clone/append lại DOM để tránh lag/treo trang.
+  var box=document.getElementById('priceFilters');
+  var home=document.getElementById('sddHomeAllProducts');
+  if(!box || !home) return;
+  var activeRange=null;
+
+  function text(el){ return (el && el.textContent || '').replace(/\s+/g,' ').trim(); }
+  function cardPrice(card){
+    var selectors=['.product-price','.acc-public-price','[class*="price"]','.price'];
+    for(var i=0;i<selectors.length;i++){
+      var nodes=card.querySelectorAll(selectors[i]);
+      for(var j=0;j<nodes.length;j++){
+        var m=text(nodes[j]).match(/([0-9][0-9.]*)\s*đ/i);
+        if(m) return parseInt(m[1].replace(/\./g,''),10)||0;
+      }
+    }
+    var m=text(card).match(/([0-9][0-9.]*)\s*đ/i);
+    return m?parseInt(m[1].replace(/\./g,''),10)||0:0;
+  }
+  function rangeFromLabel(label){
+    label=(label||'').toLowerCase().replace(/–/g,'-');
+    if(label.indexOf('dưới 5')>=0) return [0,5000000];
+    if(label.indexOf('5 - 10')>=0 || label.indexOf('5-10')>=0) return [5000000,10000000];
+    if(label.indexOf('10 - 15')>=0 || label.indexOf('10-15')>=0) return [10000000,15000000];
+    if(label.indexOf('15 - 20')>=0 || label.indexOf('15-20')>=0) return [15000000,20000000];
+    if(label.indexOf('trên')>=0 && label.indexOf('20')>=0) return [20000000,Infinity];
+    return null;
+  }
+  function matches(price,r){
+    if(!r) return true;
+    if(r[1]===Infinity) return price>=r[0];
+    if(r[0]===0) return price>0 && price<r[1];
+    return price>=r[0] && price<r[1];
+  }
+  function apply(){
+    if(!document.body.classList.contains('sdd-home-all-mode')) return;
+    home.querySelectorAll('.sdd-all-section').forEach(function(section){
+      var cards=section.querySelectorAll('.sdd-all-grid > *:not(.loading):not(.empty):not(.acc-public-empty)');
+      var shown=0;
+      cards.forEach(function(card){
+        var ok=matches(cardPrice(card),activeRange);
+        card.style.display=ok?'':'none';
+        if(ok) shown++;
+      });
+      var old=section.querySelector('.sdd-price-empty');
+      if(activeRange && cards.length && !shown){
+        if(!old){
+          old=document.createElement('div'); old.className='loading sdd-price-empty'; old.textContent='Không có sản phẩm trong mức giá này.';
+          section.querySelector('.sdd-all-grid').appendChild(old);
+        }
+      }else if(old) old.remove();
+    });
+  }
+  function setActive(btn){
+    box.querySelectorAll('button,[role="button"],.active,.selected').forEach(function(x){
+      if(x!==btn){ x.classList.remove('active','selected'); x.removeAttribute('aria-pressed'); }
+    });
+    if(btn){ btn.classList.add('active'); btn.setAttribute('aria-pressed','true'); }
+  }
+  box.addEventListener('click',function(e){
+    if(!document.body.classList.contains('sdd-home-all-mode')) return;
+    var btn=e.target.closest('button,[role="button"],a');
+    if(!btn || !box.contains(btn)) return;
+    var r=rangeFromLabel(text(btn));
+    if(!r) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var same=activeRange && activeRange[0]===r[0] && activeRange[1]===r[1];
+    activeRange=same?null:r;
+    setActive(same?null:btn);
+    apply();
+  },true);
+  document.addEventListener('sdd-home-grid-ready',function(){ if(activeRange) apply(); });
+})();
+</script>
 <script id="v576-home-category-hard-navigation">
 (function(){
   const categoryPaths = new Set(['/dien-thoai','/may-tinh-bang','/may-cu','/phu-kien']);
