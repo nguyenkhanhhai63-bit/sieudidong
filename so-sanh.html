@@ -740,21 +740,80 @@ body.compare-page-body > .compare-site-header{
  #sddMobileDrawer.is-open .sdd-mobile-drawer-panel{transform:translate3d(0,0,0)!important}
 }
 </style>
+<!-- v565: compare page now reuses the exact original site header markup -->
 </head>
 <body class="compare-page-body">
 
-<header class="compare-site-header" aria-label="Thanh điều hướng Siêu Di Động">
-  <div class="compare-site-header-inner">
-    <button class="compare-site-menu-btn sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở menu" aria-expanded="false">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-    <a class="compare-site-logo" href="/" aria-label="Về trang chủ Siêu Di Động"><img src="/assets/logo-square.jpg" alt="Siêu Di Động"></a>
-    <form class="compare-site-search" id="compareSiteSearch" role="search">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
-      <input id="compareSiteSearchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off" aria-label="Tìm sản phẩm">
-    </form>
+<header class="commerce-header sdd-header-v164">
+  <div class="sdd-top-strip">
+    <div class="sdd-top-strip-inner">
+      <span class="sdd-top-message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Siêu Di Động - Chuyên Android giá tốt tại Quy Nhơn</span></span>
+      <div class="sdd-top-benefits">
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg>Hỗ trợ tư vấn</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.1-8 10-4.6-1.9-8-5-8-10V6l8-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Bảo hành uy tín</span>
+        <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>Cửa hàng Quy Nhơn</span>
+      </div>
+    </div>
   </div>
-<div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+
+  <div class="commerce-header-inner sdd-header-main">
+    <button class="sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở danh mục">☰</button>
+
+    <div class="commerce-brand-block">
+      <a class="commerce-logo" href="/" aria-label="Siêu Di Động">
+        <img class="commerce-logo-mark" src="/assets/logo-square.jpg" alt="Siêu Di Động">
+        <span class="sdd-brand-copy">
+          <span class="commerce-logo-text">SIÊU DI ĐỘNG</span>
+          <small>Chuyên Android giá tốt</small>
+        </span>
+      </a>
+    </div>
+
+    <div class="commerce-search sdd-header-search">
+      <span class="sdd-search-leading"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></span>
+      <input id="searchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off">
+      <button id="clearSearch" type="button" aria-label="Xóa tìm kiếm">×</button>
+      <button class="sdd-search-submit" type="button" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></button>
+      <div id="searchSuggestions" class="search-suggestions" hidden></div>
+    </div>
+
+    <div class="sdd-header-actions">
+      <button class="sdd-header-action" id="sddConsultAction" type="button">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1v-5Zm16 0h-3v6h2a1 1 0 0 0 1-1v-5Z"/></svg></span>
+        <span><strong>Tư vấn</strong><small>Online</small></span>
+      </button>
+      <a class="sdd-header-action sdd-store-action" href="#products">
+        <span class="sdd-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1-5H5l-1 5Z"/><path d="M5 10v9h14v-9M9 19v-5h6v5"/><path d="M4 10c0 1.5 1 2.5 2.5 2.5S9 11.5 9 10c0 1.5 1 2.5 3 2.5s3-1 3-2.5c0 1.5 1 2.5 2.5 2.5S20 11.5 20 10"/></svg></span>
+        <span><strong>Cửa hàng</strong><small>Quy Nhơn</small></span>
+      </a>
+    </div>
+
+    <div class="commerce-header-note">Tư vấn <span>•</span> Cửa hàng Quy Nhơn</div>
+  </div>
+
+  <div class="sdd-header-nav">
+    <div class="sdd-header-nav-inner">
+      <nav class="sdd-main-nav" aria-label="Điều hướng chính">
+        <a href="/" class="active">Trang chủ</a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone">Điện thoại</a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet">Máy tính bảng</a>
+        <a href="/may-cu" data-sdd-main-nav="used">Máy cũ</a>
+        <a href="/phu-kien">Phụ kiện</a>
+        <a href="/dich-vu">Dịch vụ</a>
+        <a href="/tra-gop">Trả góp</a>
+        <a href="/order-may">Theo yêu cầu</a>
+        <button id="sddNavConsultBtn" type="button">Tư vấn</button>
+        <a id="sddWarrantyBtn" class="sdd-warranty-nav-btn" href="/tra-cuu-bao-hanh">Tra cứu BH</a>
+      </nav>
+
+      <a class="sdd-nav-store" href="#products">
+        <span>⌖</span>
+        <strong>Cửa hàng Quy Nhơn</strong>
+      </a>
+    </div>
+  </div>
+
+  <div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
     <div class="sdd-mobile-drawer-panel">
       <div class="sdd-mobile-drawer-head">
         <div class="sdd-mobile-drawer-title">
@@ -798,7 +857,6 @@ body.compare-page-body > .compare-site-header{
       </div>
     </div>
   </div>
-
 </header>
 
   <main class="compare-page-main">
@@ -1280,63 +1338,4 @@ init();
 
 </body>
 </html>
-<style id="v564-compare-mobile-header-fix">
-/* v564 - sửa header mobile bị bung hàng sau khi khôi phục menu gốc */
-@media(max-width:899px){
-  body.compare-page-body > .compare-site-header{
-    min-height:0!important;
-  }
-  body.compare-page-body .compare-site-header-inner{
-    width:100%!important;
-    max-width:none!important;
-    min-height:0!important;
-    padding:10px 12px!important;
-    display:grid!important;
-    grid-template-columns:52px minmax(0,1fr) 46px!important;
-    grid-template-areas:"logo search menu"!important;
-    gap:8px!important;
-    align-items:center!important;
-    box-sizing:border-box!important;
-  }
-  body.compare-page-body .compare-site-logo{
-    grid-area:logo!important;
-    position:static!important;
-    inset:auto!important;
-    margin:0!important;
-    width:52px!important;
-    height:52px!important;
-  }
-  body.compare-page-body .compare-site-search{
-    grid-area:search!important;
-    position:static!important;
-    inset:auto!important;
-    margin:0!important;
-    width:100%!important;
-    min-width:0!important;
-    height:46px!important;
-    display:flex!important;
-  }
-  body.compare-page-body .compare-site-search input{
-    display:block!important;
-    width:100%!important;
-    min-width:0!important;
-  }
-  body.compare-page-body .compare-site-menu-btn,
-  body.compare-page-body .sdd-mobile-menu-btn{
-    grid-area:menu!important;
-    position:static!important;
-    inset:auto!important;
-    float:none!important;
-    transform:none!important;
-    margin:0!important;
-    width:46px!important;
-    height:46px!important;
-    display:grid!important;
-    place-items:center!important;
-  }
-  body.compare-page-body > .compare-site-header + main.compare-page-main{
-    margin-top:0!important;
-    padding-top:14px!important;
-  }
-}
-</style>
+
