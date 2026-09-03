@@ -8521,10 +8521,10 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
   <div id="usedSheetConfigMsg" class="used-sheet-config-msg">Đang tải cấu hình...</div>
 </div>
 <div class="used-sheet-config" id="usedIphoneSheetConfig">
-  <div class="used-sheet-config-head"><div><strong>Google Sheet máy cũ iPhone</strong><br><span>Danh sách iPhone cũ dùng nguồn Sheet riêng và hiển thị tại /may-cu-iphone/.</span></div></div>
+  <div class="used-sheet-config-head"><div><strong>Google Sheet máy cũ iPhone</strong><br><span>Nguồn iPhone cũ dùng Sheet riêng nhưng được hiển thị chung trong mục Máy cũ.</span></div></div>
   <div class="used-sheet-config-row">
     <input class="used-sheet-url" type="url" readonly value="https://docs.google.com/spreadsheets/d/1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw/edit?gid=1876632092#gid=1876632092">
-    <a class="secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center" href="/may-cu-iphone/" target="_blank" rel="noopener">Mở danh sách iPhone</a>
+    <a class="secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center" href="/may-cu" target="_blank" rel="noopener">Mở mục Máy cũ</a>
     <a class="secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center" href="https://docs.google.com/spreadsheets/d/1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw/edit?gid=1876632092#gid=1876632092" target="_blank" rel="noopener">Mở Google Sheet</a>
   </div>
   <div class="used-sheet-config-msg" style="color:#15803d">✓ Đã cấu hình nguồn iPhone • GID 1876632092</div>
@@ -11648,6 +11648,8 @@ document.addEventListener("DOMContentLoaded",function(){
 
 
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
 <div id="usedAdminToast" class="used-admin-toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -11662,6 +11664,9 @@ document.addEventListener("DOMContentLoaded",function(){
     sheetUrl:$('usedSheetUrl'),sheetSave:$('saveUsedSheetUrl'),sheetReset:$('resetUsedSheetUrl'),sheetConfigMsg:$('usedSheetConfigMsg')
   };
   let rows=[], editingId='', editingSource='', editingSheetRow=0, assets=[], toastTimer=null;
+  const IPHONE_USED_SHEET_ID='1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw';
+  const IPHONE_USED_GID='1876632092';
+  const IPHONE_USED_SHEET_URL='https://docs.google.com/spreadsheets/d/'+IPHONE_USED_SHEET_ID+'/edit?gid='+IPHONE_USED_GID+'#gid='+IPHONE_USED_GID;
 
   const BRAND_RULES=[['redmi','Redmi'],['poco','POCO'],['xiaomi','Xiaomi'],['samsung','Samsung'],['galaxy','Samsung'],['oppo','OPPO'],['vivo','vivo'],['iqoo','iQOO'],['oneplus','OnePlus'],['honor','HONOR'],['realme','Realme'],['tecno','Tecno'],['iphone','Apple'],['ipad','Apple']];
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -11682,6 +11687,62 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   function currentImages(){return assets.map(imageUrl).filter(Boolean)}
   function guessBrand(name){const n=norm(name);return (BRAND_RULES.find(([k])=>n.includes(k))||[])[1]||''}
+
+  function usedCanon(v){return norm(v).replace(/[^a-z0-9]+/g,'')}
+  function usedNum(v){
+    if(typeof v==='number' && Number.isFinite(v)) return v;
+    const raw=String(v??'').trim(); if(!raw)return 0;
+    const digits=raw.replace(/[^0-9.-]/g,''); return Number(digits)||0;
+  }
+  function loadIphoneUsedSheetRows(){
+    return new Promise((resolve)=>{
+      const finish=(items,warning='')=>resolve({items:Array.isArray(items)?items:[],warning});
+      const run=()=>{
+        try{
+          const q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+IPHONE_USED_SHEET_ID+'/gviz/tq?gid='+IPHONE_USED_GID+'&headers=1');
+          q.setQuery('select *');
+          q.send(res=>{
+            try{
+              if(res.isError()) return finish([], 'iPhone Sheet: '+res.getMessage());
+              const t=res.getDataTable(), headers={};
+              for(let c=0;c<t.getNumberOfColumns();c++)headers[usedCanon(t.getColumnLabel(c))]=c;
+              const col=(...names)=>{for(const name of names){const k=usedCanon(name);if(k in headers)return headers[k]}return -1};
+              const get=(r,c)=>c<0?'':(t.getFormattedValue(r,c)||t.getValue(r,c)||'');
+              const C={
+                name:col('TÊN MÁY','TEN MAY'),brand:col('HÃNG','HANG'),condition:col('TÌNH TRẠNG','TINH TRANG'),
+                color:col('MÀU','MAU'),memory:col('DUNG LƯỢNG','DUNG LUONG'),imei:col('IMEI'),price:col('GIÁ BÁN','GIA BAN'),
+                dateIn:col('NGÀY NHẬP','NGAY NHAP'),dateOut:col('NGÀY BÁN','NGAY BAN'),status:col('TRẠNG THÁI','TRANG THAI'),
+                accessories:col('PHỤ KIỆN','PHU KIEN'),note:col('GHI CHÚ','GHI CHU')
+              };
+              const out=[];
+              for(let r=0;r<t.getNumberOfRows();r++){
+                const name=String(get(r,C.name)||'').trim(); if(!name)continue;
+                const stText=String(get(r,C.status)||'').trim();
+                const sold=norm(stText).includes('da ban');
+                const imei=String(get(r,C.imei)||'').trim();
+                const memory=String(get(r,C.memory)||'').trim().replace(/\s*gb$/i,'');
+                out.push({
+                  id:'iphone-sheet-'+(imei||String(r+2)), name, brand:String(get(r,C.brand)||'IPHONE').trim()||'IPHONE',
+                  price:usedNum(get(r,C.price)), memory, color:String(get(r,C.color)||'').trim(), rom:'',
+                  condition:String(get(r,C.condition)||'').trim(), battery:'', warranty:'', imei,
+                  status:sold?'sold':'available', accessories:String(get(r,C.accessories)||'').trim(), note:String(get(r,C.note)||'').trim(),
+                  images:[], imageAssets:[], source:'iphone_sheet', sheetRow:r+2, sheetUrl:IPHONE_USED_SHEET_URL,
+                  dateIn:String(get(r,C.dateIn)||'').trim(), dateOut:String(get(r,C.dateOut)||'').trim()
+                });
+              }
+              finish(out,'');
+            }catch(err){finish([], 'iPhone Sheet: '+(err?.message||'Không đọc được dữ liệu'))}
+          });
+        }catch(err){finish([], 'iPhone Sheet: '+(err?.message||'Không kết nối được'))}
+      };
+      try{
+        if(window.google?.visualization?.Query) return run();
+        if(!window.google?.charts) return finish([], 'iPhone Sheet: thư viện Google Charts chưa tải');
+        google.charts.load('current',{packages:['table']});
+        google.charts.setOnLoadCallback(run);
+      }catch(err){finish([], 'iPhone Sheet: '+(err?.message||'Không tải được thư viện'))}
+    });
+  }
 
   function setSheetConfigMsg(msg,color=''){if(!els.sheetConfigMsg)return;els.sheetConfigMsg.textContent=msg||'';els.sheetConfigMsg.style.color=color||''}
   async function loadSheetSettings(){
@@ -11909,7 +11970,14 @@ document.addEventListener("DOMContentLoaded",function(){
     if(!data.length){els.list.innerHTML='<div class="used-empty">Chưa có máy cũ trong nhóm này.</div>';return}
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
-      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.rom?`<span>${esc(x.rom)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':''}</div><div class="used-item-actions"><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}</div></div>`;
+      const badge=x.source==='iphone_sheet'?'<span class="used-sheet-badge">iPhone Sheet</span>':(x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':'');
+      let actions='';
+      if(x.source==='iphone_sheet'){
+        actions='<button type="button" data-act="open-iphone-sheet">Mở Google Sheet</button><button type="button" data-act="toggle">Đổi trạng thái ở Sheet</button>';
+      }else{
+        actions=`<button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
+      }
+      return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.rom?`<span>${esc(x.rom)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${badge}</div><div class="used-item-actions">${actions}</div></div>`;
     }).join('');
   }
 
@@ -11920,11 +11988,27 @@ document.addEventListener("DOMContentLoaded",function(){
   }
   async function loadUsedProducts(force=false){
     if(rows.length&&!force){render();checkCloudinary();return}
-    setStatus('Đang tải...','#667085');
+    setStatus('Đang tải máy cũ Android + iPhone...','#667085');
     try{
-      const r=await fetch('/api/admin/used-products?ts='+Date.now()+(force?'&force=1':''),{cache:'no-store',credentials:'same-origin'});
-      const d=await r.json();if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
-      rows=d.items||[];render();setStatus('');checkCloudinary();if(els.sheetStatus){const sh=d.sheet||{};els.sheetStatus.textContent=sh.warning?('Google Sheet: '+sh.warning):('✓ Google Sheet đã kết nối • '+rows.length+' dòng • cập nhật '+(sh.fetchedAt?new Date(sh.fetchedAt).toLocaleString('vi-VN'):'vừa xong'));els.sheetStatus.className='used-sheet-status '+(sh.warning?'warn':'ok');if(els.sheetUrl&&sh.url)els.sheetUrl.value=sh.url}
+      const [apiResult,iphoneResult]=await Promise.all([
+        fetch('/api/admin/used-products?ts='+Date.now()+(force?'&force=1':''),{cache:'no-store',credentials:'same-origin'}).then(async r=>{
+          const d=await r.json().catch(()=>({})); if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`); return d;
+        }),
+        loadIphoneUsedSheetRows()
+      ]);
+      const androidRows=Array.isArray(apiResult.items)?apiResult.items:[];
+      const iphoneRows=Array.isArray(iphoneResult.items)?iphoneResult.items:[];
+      rows=[...androidRows,...iphoneRows];
+      render(); setStatus(''); checkCloudinary();
+      if(els.sheetStatus){
+        const sh=apiResult.sheet||{};
+        const parts=[];
+        parts.push(sh.warning?('Android Sheet: '+sh.warning):('✓ Android Sheet: '+androidRows.length+' máy'));
+        parts.push(iphoneResult.warning?iphoneResult.warning:('✓ iPhone Sheet: '+iphoneRows.length+' máy'));
+        els.sheetStatus.textContent=parts.join(' • ');
+        els.sheetStatus.className='used-sheet-status '+((sh.warning||iphoneResult.warning)?'warn':'ok');
+        if(els.sheetUrl&&sh.url)els.sheetUrl.value=sh.url;
+      }
     }catch(e){setStatus(e.message||'Không tải được danh sách.','#b42318');toast(e.message||'Không tải được danh sách.','error')}
   }
   window.loadUsedProducts=loadUsedProducts;
@@ -11955,8 +12039,9 @@ document.addEventListener("DOMContentLoaded",function(){
   els.list?.addEventListener('click',async e=>{
     const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
     const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
+    if(act==='open-iphone-sheet'){window.open(x.sheetUrl||IPHONE_USED_SHEET_URL,'_blank','noopener');return}
     if(act==='edit')return edit(x);
-    if(act==='toggle'){if(x.source==='sheet'){toast('Trạng thái lấy từ Google Sheet. Hãy đổi cột TRẠNG THÁI trên Sheet rồi bấm Đồng bộ Sheet.','error');return}try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
+    if(act==='toggle'){if(x.source==='sheet'||x.source==='iphone_sheet'){toast('Trạng thái lấy từ Google Sheet. Hãy đổi cột TRẠNG THÁI trên đúng Sheet rồi bấm Đồng bộ Sheet.','error');return}try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
     if(act==='delete'){
       if(!confirm(`Xóa "${x.name}" khỏi danh sách máy cũ?\nẢnh Cloudinary của máy này cũng sẽ được xóa.`))return;
       try{
