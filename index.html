@@ -1004,5 +1004,23 @@
 })();
 </script>
 
+
+<!-- v571: remove the product-detail "Về trang chủ" button only -->
+<script id="v571-remove-product-home-button">
+(function(){
+  function removeHomeButton(){
+    var root=document.getElementById('inlineProductDetail');
+    if(!root) return;
+    root.querySelectorAll('a,button').forEach(function(el){
+      var text=(el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+      if(text==='về trang chủ' || text==='← về trang chủ') el.remove();
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',removeHomeButton);
+  else removeHomeButton();
+  var root=document.getElementById('inlineProductDetail');
+  if(root) new MutationObserver(removeHomeButton).observe(root,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
