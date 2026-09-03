@@ -7973,6 +7973,105 @@ body.mobile-sidebar-open .admin-sidebar .admin-tab.routing-tab,
 .sidebar-logout{display:flex!important;align-items:center!important;gap:9px!important}
 body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important;height:22px!important;min-width:22px!important}
 </style>
+
+<style id="v606-used-redesign">
+/* v606 - redesigned Used Products admin */
+#usedProductsCard.used-products-panel{
+  --used-orange:#ff5a00;--used-border:#e7eaf0;--used-soft:#f7f8fa;--used-text:#172033;
+  padding:0!important;background:#f5f7fa!important;border:0!important;box-shadow:none!important;
+}
+#usedProductsCard .used-page-head{
+  margin:0 0 14px!important;padding:18px 20px!important;background:#fff;border:1px solid var(--used-border);
+  border-radius:16px;box-shadow:0 4px 18px rgba(16,24,40,.035);align-items:center;
+}
+#usedProductsCard .used-page-head h1{font-size:22px!important;margin-bottom:4px!important;color:var(--used-text)}
+#usedProductsCard .used-page-head p{max-width:780px;margin:0;color:#667085}
+#usedProductsCard .used-page-head #reloadUsedProducts{height:42px;padding:0 16px;border-color:#ffd2ba;color:#d94800;background:#fff7f2}
+#usedProductsCard .used-source-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-bottom:14px}
+#usedProductsCard .used-sheet-config{margin:0!important;padding:16px 17px!important;border:1px solid var(--used-border)!important;border-radius:16px!important;box-shadow:0 3px 14px rgba(16,24,40,.025);min-width:0}
+#usedProductsCard .used-sheet-config-head{margin-bottom:11px!important}
+#usedProductsCard .used-sheet-config-head strong{font-size:14px!important;color:#172033}
+#usedProductsCard .used-sheet-config-head span{font-size:11px!important;line-height:1.45}
+#usedProductsCard .used-sheet-config-row{grid-template-columns:minmax(0,1fr) auto auto!important}
+#usedProductsCard .used-sheet-url{height:38px!important;font-size:12px!important;background:#fafbfc}
+#usedProductsCard .used-sheet-config-row button,#usedProductsCard .used-sheet-config-row a{height:38px!important;box-sizing:border-box;padding:0 12px!important;font-size:11.5px!important}
+#usedProductsCard .used-sheet-config-msg{font-size:11px!important;margin-top:7px!important}
+#usedProductsCard .used-admin-shell{
+  max-width:none!important;margin:0!important;padding:0!important;display:grid!important;
+  grid-template-columns:minmax(430px,500px) minmax(0,1fr)!important;gap:14px!important;align-items:start;
+}
+#usedProductsCard .used-admin-form,#usedProductsCard .used-admin-listbox{
+  border:1px solid var(--used-border)!important;border-radius:16px!important;background:#fff!important;
+  box-shadow:0 4px 18px rgba(16,24,40,.035)!important;padding:16px!important;min-width:0;
+}
+#usedProductsCard .used-admin-form{position:sticky!important;top:76px!important}
+#usedProductsCard .used-admin-form h2,#usedProductsCard .used-admin-listbox h2{font-size:17px!important;color:#172033}
+#usedProductsCard .used-admin-help{font-size:11px!important;margin-bottom:12px!important}
+#usedProductsCard .used-form-grid{grid-template-columns:1fr 1fr!important;gap:9px 10px!important}
+#usedProductsCard .used-field{gap:4px!important}
+#usedProductsCard .used-field label{font-size:10.5px!important}
+#usedProductsCard .used-input,#usedProductsCard .used-select{height:37px!important;padding:0 10px!important;font-size:12px!important;border-radius:8px!important}
+#usedProductsCard .used-textarea{min-height:64px!important;padding:9px 10px!important;font-size:12px!important}
+#usedProductsCard .used-image-upload{padding:12px!important;border-radius:10px!important}
+#usedProductsCard .used-upload-btn{height:34px!important;font-size:11px!important}
+#usedProductsCard .used-upload-note,#usedProductsCard .used-cloudinary-status{font-size:10.5px!important}
+#usedProductsCard .used-form-actions{padding-top:12px;margin-top:4px;border-top:1px solid #f0f2f5}
+#usedProductsCard .used-form-actions button{height:38px!important}
+#usedProductsCard .used-admin-listbox{padding:0!important;overflow:hidden}
+#usedProductsCard .used-list-head{
+  position:sticky;top:0;z-index:5;margin:0!important;padding:15px 16px!important;background:#fff;
+  border-bottom:1px solid #edf0f3;align-items:center!important;
+}
+#usedProductsCard .used-list-tools{gap:7px!important}
+#usedProductsCard .used-list-search{height:36px!important;width:250px!important;background:#fafbfc}
+#usedProductsCard .used-list-tools select{height:36px!important;min-width:100px;background:#fafbfc}
+#usedProductsCard #usedProductsList{padding:8px 12px 14px;max-height:720px;overflow:auto;scrollbar-gutter:stable}
+#usedProductsCard #usedProductsList::-webkit-scrollbar{width:8px}
+#usedProductsCard #usedProductsList::-webkit-scrollbar-thumb{background:#d6dbe3;border-radius:8px;border:2px solid #fff}
+#usedProductsCard .used-item-card{
+  grid-template-columns:84px minmax(0,1fr) 138px!important;gap:12px!important;padding:11px!important;margin:6px 0;
+  border:1px solid #edf0f3!important;border-radius:13px;background:#fff;align-items:center;transition:.15s ease;
+}
+#usedProductsCard .used-item-card:hover{border-color:#ffd1b6!important;box-shadow:0 5px 16px rgba(16,24,40,.055);transform:translateY(-1px)}
+#usedProductsCard .used-item-photo{width:84px!important;height:84px!important;border-radius:10px!important;background:#f7f8fa}
+#usedProductsCard .used-item-main strong{font-size:13px!important;color:#172033;line-height:1.3}
+#usedProductsCard .used-item-meta{gap:5px 8px!important;margin-top:5px!important;font-size:10.5px!important;line-height:1.4}
+#usedProductsCard .used-item-price{font-size:15px!important;margin-top:5px!important}
+#usedProductsCard .used-item-state{margin-top:5px!important;padding:3px 7px!important}
+#usedProductsCard .used-sheet-badge{margin:5px 0 0 5px!important;padding:3px 6px!important;font-size:9px!important}
+#usedProductsCard .used-item-actions{gap:6px!important}
+#usedProductsCard .used-item-actions button{height:32px!important;padding:0 8px!important;font-size:10.5px!important;border-radius:8px!important}
+#usedProductsCard .used-empty{min-height:220px;display:grid;place-items:center}
+@media(max-width:1250px){
+ #usedProductsCard .used-source-grid{grid-template-columns:1fr}
+ #usedProductsCard .used-admin-shell{grid-template-columns:minmax(380px,460px) minmax(0,1fr)!important}
+ #usedProductsCard .used-list-search{width:190px!important}
+}
+@media(max-width:980px){
+ #usedProductsCard .used-admin-shell{grid-template-columns:1fr!important}
+ #usedProductsCard .used-admin-form{position:static!important}
+ #usedProductsCard #usedProductsList{max-height:none}
+}
+@media(max-width:700px){
+ #usedProductsCard{background:#fff!important}
+ #usedProductsCard .used-page-head{padding:14px!important;border-radius:12px}
+ #usedProductsCard .used-page-head{align-items:flex-start!important;gap:10px!important;flex-direction:column!important}
+ #usedProductsCard .used-source-grid{gap:10px}
+ #usedProductsCard .used-sheet-config{padding:13px!important;border-radius:12px!important}
+ #usedProductsCard .used-sheet-config-row{grid-template-columns:1fr!important}
+ #usedProductsCard .used-sheet-config-row button,#usedProductsCard .used-sheet-config-row a{width:100%!important}
+ #usedProductsCard .used-admin-shell{gap:10px!important}
+ #usedProductsCard .used-admin-form,#usedProductsCard .used-admin-listbox{border-radius:12px!important}
+ #usedProductsCard .used-form-grid{grid-template-columns:1fr!important}
+ #usedProductsCard .used-field.wide,#usedProductsCard .used-image-upload{grid-column:auto!important}
+ #usedProductsCard .used-list-head{align-items:stretch!important;flex-direction:column!important}
+ #usedProductsCard .used-list-tools{display:grid!important;grid-template-columns:1fr 110px}
+ #usedProductsCard .used-list-search{width:100%!important}
+ #usedProductsCard .used-item-card{grid-template-columns:70px minmax(0,1fr)!important;padding:9px!important}
+ #usedProductsCard .used-item-photo{width:70px!important;height:70px!important}
+ #usedProductsCard .used-item-actions{grid-column:1/-1!important;grid-template-columns:repeat(2,1fr)!important}
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -8509,10 +8608,11 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
   </div>
 </section>
 
-<section id="usedProductsCard" class="card panel" data-panel="used" style="display:none">
-<div class="head"><div><h1>Danh sách máy cũ</h1><p>Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet. Ảnh thực tế vẫn lưu trên Cloudinary và ghép theo IMEI.</p><div id="usedSheetStatus" class="used-sheet-status">Google Sheet: đang kiểm tra kết nối...</div></div><button id="reloadUsedProducts" class="secondary" type="button">Đồng bộ Sheet</button></div>
+<section id="usedProductsCard" class="card panel used-products-panel" data-panel="used" style="display:none">
+<div class="head used-page-head"><div><h1>Danh sách máy cũ</h1><p>Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet. Ảnh thực tế vẫn lưu trên Cloudinary và ghép theo IMEI.</p><div id="usedSheetStatus" class="used-sheet-status">Google Sheet: đang kiểm tra kết nối...</div></div><button id="reloadUsedProducts" class="secondary" type="button">Đồng bộ Sheet</button></div>
+<div class="used-source-grid">
 <div class="used-sheet-config">
-  <div class="used-sheet-config-head"><div><strong>Link Google Sheet máy cũ</strong><br><span>Có thể đổi sang Sheet khác bất cứ lúc nào. Hệ thống tự nhận Sheet ID và GID từ link.</span></div></div>
+  <div class="used-sheet-config-head"><div><strong>Google Sheet máy cũ Android</strong><br><span>Có thể đổi sang Sheet khác bất cứ lúc nào. Hệ thống tự nhận Sheet ID và GID từ link.</span></div></div>
   <div class="used-sheet-config-row">
     <input id="usedSheetUrl" class="used-sheet-url" type="url" autocomplete="off" placeholder="https://docs.google.com/spreadsheets/d/.../edit?gid=...">
     <button id="saveUsedSheetUrl" class="primary" type="button">Lưu & đồng bộ</button>
@@ -8528,6 +8628,7 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
     <a class="secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center" href="https://docs.google.com/spreadsheets/d/1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw/edit?gid=1876632092#gid=1876632092" target="_blank" rel="noopener">Mở Google Sheet</a>
   </div>
   <div class="used-sheet-config-msg" style="color:#15803d">✓ Đã cấu hình nguồn iPhone • GID 1876632092</div>
+</div>
 </div>
 <div class="used-admin-shell">
 <div class="used-admin-form"><h2 id="usedFormTitle">Thêm máy cũ</h2><p class="used-admin-help">IMEI chỉ lưu nội bộ, không hiển thị cho khách.</p><div class="used-form-grid">
