@@ -1156,6 +1156,12 @@
 .sdd-iphone-used-public-card .sdd-iphone-stock{align-self:flex-start;padding:6px 9px;border-radius:999px;background:#ecfdf3;color:#067647;font-size:12px;font-weight:800;margin-bottom:8px}
 .sdd-iphone-used-public-card .sdd-iphone-extra{border-top:1px solid #f0f2f5;padding-top:8px;color:#667085;font-size:11px;line-height:1.45}
 .sdd-iphone-used-public-card .sdd-iphone-source{margin-top:7px;font-size:10px;color:#98a2b3}
+.sdd-iphone-used-public-card .sdd-iphone-detail-btn{margin-top:10px;width:100%;height:40px;border:1.5px solid #ff5a00;border-radius:9px;background:#fff;color:#e84d00;font-weight:800;cursor:pointer}.sdd-iphone-used-public-card .sdd-iphone-detail-btn:hover{background:#fff7f2}
+#inlineProductDetail.sdd-iphone-detail-open{padding:24px 0 48px!important}
+.sdd-iphone-detail-shell{background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:18px;box-shadow:0 10px 34px rgba(16,24,40,.06)}
+.sdd-iphone-detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.sdd-iphone-detail-head h1{font-size:26px;margin:0;color:#101828}.sdd-iphone-detail-close{width:42px;height:42px;border:1px solid #e4e7ec;border-radius:12px;background:#fff;font-size:22px;cursor:pointer}
+.sdd-iphone-detail-main{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(0,1.15fr);gap:28px;align-items:start}.sdd-iphone-detail-gallery{background:#fafafa;border-radius:16px;min-height:430px;display:grid;place-items:center;padding:18px}.sdd-iphone-detail-gallery img{max-width:100%;max-height:430px;object-fit:contain}.sdd-iphone-detail-info .price{font-size:30px;font-weight:900;color:#e11900;margin:6px 0 12px}.sdd-iphone-detail-stock{display:inline-flex;background:#ecfdf3;color:#067647;border-radius:999px;padding:7px 11px;font-weight:800;font-size:13px;margin-bottom:18px}.sdd-iphone-detail-specs{display:grid;grid-template-columns:160px 1fr;border:1px solid #e4e7ec;border-radius:14px;overflow:hidden}.sdd-iphone-detail-specs div{padding:12px 14px;border-bottom:1px solid #eef1f4}.sdd-iphone-detail-specs div:nth-last-child(-n+2){border-bottom:0}.sdd-iphone-detail-specs .k{font-weight:800;background:#fafafa}.sdd-iphone-detail-note{margin-top:16px;padding:14px;border-radius:12px;background:#fff7f2;color:#475467;line-height:1.55}.sdd-iphone-detail-contact{display:block;margin-top:18px;width:100%;height:48px;border:0;border-radius:11px;background:#ff5a00;color:#fff;font-weight:850;font-size:15px;cursor:pointer}
+@media(max-width:899px){#inlineProductDetail.sdd-iphone-detail-open{padding:14px 8px 32px!important}.sdd-iphone-detail-shell{padding:14px}.sdd-iphone-detail-head h1{font-size:21px}.sdd-iphone-detail-main{grid-template-columns:1fr;gap:16px}.sdd-iphone-detail-gallery{min-height:285px}.sdd-iphone-detail-gallery img{max-height:300px}.sdd-iphone-detail-specs{grid-template-columns:120px 1fr}}
 @media(max-width:700px){.sdd-iphone-used-public-card{padding:10px}.sdd-iphone-used-public-card .sdd-iphone-placeholder{height:175px}.sdd-iphone-used-public-card .sdd-iphone-phone{width:84px;height:138px}.sdd-iphone-used-public-card h3{font-size:14px}.sdd-iphone-used-public-card .sdd-iphone-price{font-size:18px}}
 </style>
 <section id="sddIphoneInsideUsed" hidden aria-hidden="true"></section>
@@ -1191,7 +1197,7 @@
     var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';
     var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
     var visual=first?'<div class="sdd-iphone-placeholder"><img class="sdd-iphone-real-img" src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>':'<div class="sdd-iphone-placeholder"><div class="sdd-iphone-phone"></div></div>';
-    return '<article class="sdd-iphone-used-public-card" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual+'<h3>'+esc(x.name)+'</h3><div class="sdd-iphone-tags">'+(cap?'<span>'+esc(cap)+'</span>':'')+(x.color?'<span>'+esc(x.color)+'</span>':'')+(x.condition?'<span>Tình trạng '+esc(x.condition)+'</span>':'')+'</div><div class="sdd-iphone-price">'+money(x.price)+'</div><span class="sdd-iphone-stock">✓ Còn hàng</span>'+(x.acc?'<div class="sdd-iphone-extra"><b>Phụ kiện:</b> '+esc(x.acc)+'</div>':'')+(x.note?'<div class="sdd-iphone-extra">'+esc(x.note)+'</div>':'')+'<div class="sdd-iphone-source">iPhone cũ</div></article>'
+    return '<article class="sdd-iphone-used-public-card" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual+'<h3>'+esc(x.name)+'</h3><div class="sdd-iphone-tags">'+(cap?'<span>'+esc(cap)+'</span>':'')+(x.color?'<span>'+esc(x.color)+'</span>':'')+(x.condition?'<span>Tình trạng '+esc(x.condition)+'</span>':'')+'</div><div class="sdd-iphone-price">'+money(x.price)+'</div><span class="sdd-iphone-stock">✓ Còn hàng</span>'+(x.acc?'<div class="sdd-iphone-extra"><b>Phụ kiện:</b> '+esc(x.acc)+'</div>':'')+(x.note?'<div class="sdd-iphone-extra">'+esc(x.note)+'</div>':'')+'<div class="sdd-iphone-source">iPhone cũ</div><button type="button" class="sdd-iphone-detail-btn" data-sdd-iphone-detail="1">Chi tiết</button></article>'
   }
   function normalizeImages(x){
     var a=Array.isArray(x&&x.imageAssets)?x.imageAssets:[], im=Array.isArray(x&&x.images)?x.images:[];
@@ -1224,6 +1230,40 @@
     if(window.google&&google.visualization&&google.visualization.Query)return go();
     var sc=document.createElement('script');sc.src='https://www.gstatic.com/charts/loader.js';sc.onload=function(){google.charts.load('current',{packages:['table']});google.charts.setOnLoadCallback(go)};document.head.appendChild(sc);
   }
+  function findItemByCard(card){
+    var imei=String(card&&card.getAttribute('data-imei')||'');
+    return items.find(function(x){return String(x.imei||'')===imei})||null;
+  }
+  function openIphoneDetail(x){
+    if(!x)return;
+    var root=document.getElementById('inlineProductDetail'); if(!root)return;
+    var page=document.querySelector('main.page');
+    var imgs=Array.isArray(x.images)?x.images.filter(Boolean):[];
+    var img=imgs[0]||'';
+    var visual=img?'<img src="'+esc(img)+'" alt="'+esc(x.name)+'">':'<div class="sdd-iphone-phone" style="transform:scale(1.35)"></div>';
+    var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'—';
+    root.innerHTML='<div class="sdd-iphone-detail-shell"><div class="sdd-iphone-detail-head"><h1>'+esc(x.name)+'</h1><button type="button" class="sdd-iphone-detail-close" aria-label="Đóng">×</button></div><div class="sdd-iphone-detail-main"><div class="sdd-iphone-detail-gallery">'+visual+'</div><div class="sdd-iphone-detail-info"><div class="price">'+money(x.price)+'</div><div class="sdd-iphone-detail-stock">✓ Còn hàng</div><div class="sdd-iphone-detail-specs"><div class="k">Dung lượng</div><div>'+esc(cap)+'</div><div class="k">Màu sắc</div><div>'+(esc(x.color)||'—')+'</div><div class="k">Tình trạng pin</div><div>'+(esc(x.condition)||'—')+(x.condition?'%':'')+'</div><div class="k">Phụ kiện</div><div>'+(esc(x.acc)||'—')+'</div></div>'+(x.note?'<div class="sdd-iphone-detail-note">'+esc(x.note)+'</div>':'')+'<button type="button" class="sdd-iphone-detail-contact">Liên hệ mua hàng</button></div></div></div>';
+    root.hidden=false; root.classList.add('sdd-iphone-detail-open','v322-aligned','v340-header-aligned');
+    if(page)page.style.display='none';
+    window.scrollTo({top:0,behavior:'auto'});
+    var close=root.querySelector('.sdd-iphone-detail-close'); if(close)close.onclick=closeIphoneDetail;
+    var contact=root.querySelector('.sdd-iphone-detail-contact'); if(contact)contact.onclick=function(){var z=document.querySelector('[data-zalo-link],a[href*="zalo.me"]');if(z){z.click()}else{location.href='tel:0353105423'}};
+  }
+  function closeIphoneDetail(){
+    var root=document.getElementById('inlineProductDetail'); var page=document.querySelector('main.page');
+    if(root){root.hidden=true;root.innerHTML='';root.classList.remove('sdd-iphone-detail-open')}
+    if(page)page.style.display='';
+  }
+  document.addEventListener('click',function(e){
+    if(((location.pathname||'/').replace(/\/+$/,'')||'/')!=='/may-cu')return;
+    var btn=e.target&&e.target.closest?e.target.closest('[data-sdd-iphone-detail="1"]'):null;
+    var card=e.target&&e.target.closest?e.target.closest('.sdd-iphone-used-public-card[data-sdd-iphone-sheet="1"]'):null;
+    if(!card)return;
+    if(!btn && e.target.closest('button,a,input,select,textarea'))return;
+    e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    openIphoneDetail(findItemByCard(card));
+  },true);
+
   loadPublicImageMap();
   fetch(CSV,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){if(!consume(parseCSV(t)))loadViaCharts()}).catch(loadViaCharts);
   var grid=document.getElementById('productGrid');if(grid){new MutationObserver(function(){setTimeout(merge,0)}).observe(grid,{childList:true});}
