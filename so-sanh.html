@@ -731,12 +731,21 @@ body.compare-page-body > .compare-site-header{
 }
 </style>
 
+
+<style id="v563-compare-original-mobile-drawer">
+@media(max-width:899px){
+ #sddMobileDrawer{display:block!important;position:fixed!important;inset:0!important;z-index:2147483645!important;background:rgba(15,23,42,0)!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;transition:background-color .22s ease,opacity .22s ease,visibility 0s linear .22s!important}
+ #sddMobileDrawer .sdd-mobile-drawer-panel{display:flex!important;flex-direction:column!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;width:min(86vw,330px)!important;background:#fff!important;transform:translate3d(-100%,0,0)!important;transition:transform .25s cubic-bezier(.22,.61,.36,1)!important;overflow:auto!important}
+ #sddMobileDrawer.is-open{visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(15,23,42,.38)!important;transition:background-color .22s ease,opacity .22s ease!important}
+ #sddMobileDrawer.is-open .sdd-mobile-drawer-panel{transform:translate3d(0,0,0)!important}
+}
+</style>
 </head>
 <body class="compare-page-body">
 
 <header class="compare-site-header" aria-label="Thanh điều hướng Siêu Di Động">
   <div class="compare-site-header-inner">
-    <button class="compare-site-menu-btn" id="compareSiteMenuBtn" type="button" aria-label="Mở menu" aria-expanded="false">
+    <button class="compare-site-menu-btn sdd-mobile-menu-btn" id="sddMobileMenuBtn" type="button" aria-label="Mở menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a class="compare-site-logo" href="/" aria-label="Về trang chủ Siêu Di Động"><img src="/assets/logo-square.jpg" alt="Siêu Di Động"></a>
@@ -745,9 +754,51 @@ body.compare-page-body > .compare-site-header{
       <input id="compareSiteSearchInput" type="search" placeholder="Bạn cần tìm sản phẩm gì?" autocomplete="off" aria-label="Tìm sản phẩm">
     </form>
   </div>
-  <nav class="compare-site-menu" id="compareSiteMenu" aria-label="Menu nhanh">
-    <a href="/">Trang chủ</a><a href="/#products">Điện thoại</a><a href="/may-cu">Máy cũ</a><a href="/tra-gop">Trả góp</a><a href="/tra-cuu-bao-hanh">Tra cứu bảo hành</a>
-  </nav>
+<div class="sdd-mobile-drawer" id="sddMobileDrawer" hidden>
+    <div class="sdd-mobile-drawer-panel">
+      <div class="sdd-mobile-drawer-head">
+        <div class="sdd-mobile-drawer-title">
+          <img src="/assets/logo-square.jpg" alt="">
+          <div>
+            <strong>Danh mục</strong>
+            <small>Siêu Di Động Quy Nhơn</small>
+          </div>
+        </div>
+        <button id="sddMobileDrawerClose" type="button" aria-label="Đóng">×</button>
+      </div>
+
+      <nav class="sdd-mobile-nav-list">
+        <a href="/" data-sdd-drawer-nav="home"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span><span>Trang chủ</span><b>›</b></a>
+        <a href="/dien-thoai" data-sdd-main-nav="phone" data-sdd-drawer-nav="phone"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4"/><path d="M11 18.5h2"/></svg></span><span>Điện thoại</span><b>›</b></a>
+        <a href="/may-tinh-bang" data-sdd-main-nav="tablet" data-sdd-drawer-nav="tablet"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9.5 17h5"/></svg></span><span>Máy tính bảng</span><b>›</b></a>
+        <a href="/may-cu" data-sdd-main-nav="used" data-sdd-drawer-nav="used"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M10 6h4"/><path d="M9 15.5c1.7-2 4.3-2 6 0"/><path d="M10.5 18h3"/></svg></span><span>Máy cũ</span><b>›</b></a>
+        <a href="/phu-kien" data-sdd-drawer-nav="accessory"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6a4 4 0 0 1 8 0v2"/><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M9 12v1M15 12v1"/></svg></span><span>Phụ kiện</span><b>›</b></a>
+        <a href="/dich-vu" data-sdd-drawer-nav="service"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5 17.5 3.5l3 3-3 3"/><path d="M4 20l8.5-8.5"/><path d="M5 4h5l1.5 1.5L8 9H4V5a1 1 0 0 1 1-1Z"/><path d="m12.5 14.5 2 2L13 18l-2-2"/></svg></span><span>Dịch vụ</span><b>›</b></a>
+        <a href="/tra-gop" data-sdd-drawer-nav="installment"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span><span>Trả góp</span><b>›</b></a>
+        <a href="/order-may" data-sdd-drawer-nav="order"><span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/><path d="M9 13h6"/></svg></span><span>Theo yêu cầu</span><b>›</b></a>
+        <a href="/tra-cuu-bao-hanh" class="sdd-mobile-warranty-menu-item" data-sdd-drawer-nav="warranty">
+          <span class="sdd-mobile-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.4 7 10 4.1-1.6 7-5.2 7-10V6l-7-3Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg></span>
+          <span>
+            <strong>Tra cứu bảo hành</strong>
+            <small>Kiểm tra bằng số điện thoại</small>
+          </span>
+          <b>›</b>
+        </a>
+      </nav>
+
+      <div class="sdd-mobile-drawer-footer">
+        <button id="sddMobileConsultBtn" type="button">
+          <span class="sdd-zalo-dot">Z</span>
+          <span>
+            <strong>Nhắn Zalo tư vấn ngay</strong>
+            <small>Nhân viên hỗ trợ trực tiếp</small>
+          </span>
+          <b>›</b>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </header>
 
   <main class="compare-page-main">
