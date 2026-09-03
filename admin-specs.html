@@ -12025,11 +12025,12 @@ document.addEventListener("DOMContentLoaded",function(){
     for(const k of ['name','brand','price','memory','color','rom','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
     if(els.status)els.status.value=x.status==='sold'?'sold':'available';
     assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
-    const fromSheet=x.source==='sheet';
+    const fromSheet=x.source==='sheet'||x.source==='iphone_sheet';
+    const fromIphoneSheet=x.source==='iphone_sheet';
     setSheetEditMode(fromSheet);
-    if(els.formTitle)els.formTitle.textContent=fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ';
+    if(els.formTitle)els.formTitle.textContent=fromIphoneSheet?'Cập nhật ảnh iPhone từ Google Sheet':(fromSheet?'Cập nhật ảnh máy từ Google Sheet':'Sửa máy cũ');
     if(els.save)els.save.textContent=fromSheet?'Lưu ảnh / ghi chú':'Lưu thay đổi';
-    setStatus(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, pin hoặc ghi chú; màu, ROM, giá và trạng thái lấy từ Google Sheet.':'','#667085');
+    setStatus(fromIphoneSheet?'iPhone này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh thực tế; ảnh sẽ gắn theo IMEI và hiển thị ngoài mục Máy cũ.':(fromSheet?'Máy này đồng bộ từ Google Sheet. Bạn chỉ cần thêm ảnh, pin hoặc ghi chú; màu, ROM, giá và trạng thái lấy từ Google Sheet.':''),'#667085');
     renderImages();
     document.getElementById('usedProductsCard')?.scrollIntoView({behavior:'smooth',block:'start'});
     if(fromSheet) setTimeout(()=>highlightImageUpload(x),260);
@@ -12074,7 +12075,7 @@ document.addEventListener("DOMContentLoaded",function(){
       const badge=x.source==='iphone_sheet'?'<span class="used-sheet-badge">iPhone Sheet</span>':(x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':'');
       let actions='';
       if(x.source==='iphone_sheet'){
-        actions='<button type="button" data-act="open-iphone-sheet">Mở Google Sheet</button><button type="button" data-act="toggle">Đổi trạng thái ở Sheet</button>';
+        actions=`<button type="button" data-act="edit">${imgs.length?'Cập nhật ảnh':'Thêm ảnh'}</button><button type="button" data-act="open-iphone-sheet">Mở Google Sheet</button><button type="button" data-act="toggle">Đổi trạng thái ở Sheet</button>`;
       }else{
         actions=`<button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
       }
@@ -12085,7 +12086,17 @@ document.addEventListener("DOMContentLoaded",function(){
   async function apiSave(item){
     const r=await fetch('/api/admin/used-products',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({item})});
     let d={};try{d=await r.json()}catch(_){d={error:'Máy chủ trả dữ liệu không hợp lệ'}}
-    if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);rows=d.items||rows;render();return d.item;
+    if(!r.ok)throw new Error(d.error||`Lỗi ${r.status}`);
+    if(item?.source==='iphone_sheet'){
+      // iPhone Sheet được tải riêng ở client; sau khi lưu overlay ảnh phải tải lại để ghép đúng theo IMEI.
+      rows=[];
+      await loadUsedProducts(true);
+    }else{
+      const iphoneKeep=rows.filter(x=>x.source==='iphone_sheet');
+      rows=[...(Array.isArray(d.items)?d.items:rows.filter(x=>x.source!=='iphone_sheet')),...iphoneKeep];
+      render();
+    }
+    return d.item;
   }
   async function loadUsedProducts(force=false){
     if(rows.length&&!force){render();checkCloudinary();return}
@@ -12097,8 +12108,29 @@ document.addEventListener("DOMContentLoaded",function(){
         }),
         loadIphoneUsedSheetRows()
       ]);
-      const androidRows=Array.isArray(apiResult.items)?apiResult.items:[];
+      const apiRows=Array.isArray(apiResult.items)?apiResult.items:[];
       const iphoneRows=Array.isArray(iphoneResult.items)?iphoneResult.items:[];
+      const iphoneByKey=new Map();
+      iphoneRows.forEach(x=>{
+        const keys=[String(x.id||''),String(x.imei||'')].filter(Boolean);
+        keys.forEach(k=>iphoneByKey.set(k,x));
+      });
+      const androidRows=[];
+      apiRows.forEach(x=>{
+        const isIphoneOverlay=x?.source==='iphone_sheet'||String(x?.id||'').startsWith('iphone-sheet-');
+        const target=iphoneByKey.get(String(x?.id||''))||iphoneByKey.get(String(x?.imei||''));
+        if(isIphoneOverlay&&target){
+          const a=Array.isArray(x.imageAssets)?x.imageAssets:[];
+          const im=Array.isArray(x.images)?x.images:[];
+          if(a.length)target.imageAssets=a;
+          if(im.length)target.images=im;
+          if(x.battery)target.battery=x.battery;
+          if(x.warranty)target.warranty=x.warranty;
+          if(x.note&&!target.note)target.note=x.note;
+          return;
+        }
+        androidRows.push(x);
+      });
       rows=[...androidRows,...iphoneRows];
       render(); setStatus(''); checkCloudinary();
       if(els.sheetStatus){
@@ -12116,11 +12148,11 @@ document.addEventListener("DOMContentLoaded",function(){
 
   els.save?.addEventListener('click',async()=>{
     clearErrors();const x=formData();
-    const wasSheet=editingSource==='sheet';
+    const wasSheet=editingSource==='sheet'||editingSource==='iphone_sheet';
     if(!x.name)return fail(els.name,'Vui lòng nhập tên máy.');
     if(!wasSheet && !x.price)return fail(els.price,'Vui lòng nhập giá bán.');
     if(!x.images.length)return fail(els.imagesInput,'Bạn chưa có ảnh thực tế. Hãy upload ít nhất 1 ảnh lên Cloudinary.');
-    els.save.disabled=true;els.save.textContent='Đang lưu...';setStatus(wasSheet?'Đang gắn ảnh với máy trên Google Sheet theo IMEI...':'Đang lưu thông tin vào Redis...','#667085');
+    els.save.disabled=true;els.save.textContent='Đang lưu...';setStatus(wasSheet?'Đang gắn ảnh với máy Google Sheet theo IMEI...':'Đang lưu thông tin vào Redis...','#667085');
     try{
       await apiSave(x);
       reset();
