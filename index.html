@@ -1024,12 +1024,12 @@
 </script>
 
 
-<style id="v572-product-detail-desktop-balance">
-/* v572 - cân lại trang chi tiết trên desktop, cùng trục với footer */
+<style id="v573-product-detail-desktop-balance">
+/* v573 - mở rộng trang chi tiết desktop để cân đúng bề ngang footer */
 @media (min-width:1100px){
   #inlineProductDetail:not([hidden]){
-    width:min(1380px,calc(100vw - 72px))!important;
-    max-width:1380px!important;
+    width:min(1540px,calc(100vw - 72px))!important;
+    max-width:1540px!important;
     margin:26px auto 50px!important;
     padding:0!important;
     box-sizing:border-box!important;
@@ -1069,7 +1069,7 @@
   body.v572-product-detail-active #siteFooter{margin-top:0!important}
 }
 @media (min-width:1450px){
-  #inlineProductDetail:not([hidden]){width:min(1400px,calc(100vw - 96px))!important;max-width:1400px!important}
+  #inlineProductDetail:not([hidden]){width:min(1580px,calc(100vw - 96px))!important;max-width:1580px!important}
   #inlineProductDetail .v322-product-card{
     grid-template-columns:minmax(320px,1fr) minmax(420px,1.22fr) minmax(300px,.82fr)!important;
     gap:30px!important;
@@ -1077,7 +1077,7 @@
   }
 }
 </style>
-<script id="v572-product-detail-desktop-balance-js">
+<script id="v573-product-detail-desktop-balance-js">
 (function(){
   function sync(){
     var root=document.getElementById('inlineProductDetail');
@@ -1090,8 +1090,8 @@
     if(footer){
       var r=footer.getBoundingClientRect();
       if(r.width>900 && r.width<window.innerWidth-20){
-        root.style.width=Math.min(r.width,1400)+'px';
-        root.style.maxWidth=Math.min(r.width,1400)+'px';
+        root.style.width=Math.min(r.width,1580)+'px';
+        root.style.maxWidth=Math.min(r.width,1580)+'px';
         root.style.marginLeft='auto';
         root.style.marginRight='auto';
       }
