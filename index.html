@@ -668,7 +668,7 @@
       const info=infoFromCard(cardOf(btn));
       const on=!!(info&&info.name&&names.has(info.name));
       btn.dataset.sddCompareSelected=on?'1':'0';
-      btn.textContent=on?'✓ Đã chọn so sánh':'+ So sánh';
+      btn.textContent=on?'✓ Đã chọn':'+ So sánh';
       btn.classList.toggle('selected',on);btn.classList.toggle('active',on);
       btn.setAttribute('aria-pressed',on?'true':'false');
     });
