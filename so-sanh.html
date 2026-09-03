@@ -1280,3 +1280,63 @@ init();
 
 </body>
 </html>
+<style id="v564-compare-mobile-header-fix">
+/* v564 - sửa header mobile bị bung hàng sau khi khôi phục menu gốc */
+@media(max-width:899px){
+  body.compare-page-body > .compare-site-header{
+    min-height:0!important;
+  }
+  body.compare-page-body .compare-site-header-inner{
+    width:100%!important;
+    max-width:none!important;
+    min-height:0!important;
+    padding:10px 12px!important;
+    display:grid!important;
+    grid-template-columns:52px minmax(0,1fr) 46px!important;
+    grid-template-areas:"logo search menu"!important;
+    gap:8px!important;
+    align-items:center!important;
+    box-sizing:border-box!important;
+  }
+  body.compare-page-body .compare-site-logo{
+    grid-area:logo!important;
+    position:static!important;
+    inset:auto!important;
+    margin:0!important;
+    width:52px!important;
+    height:52px!important;
+  }
+  body.compare-page-body .compare-site-search{
+    grid-area:search!important;
+    position:static!important;
+    inset:auto!important;
+    margin:0!important;
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    display:flex!important;
+  }
+  body.compare-page-body .compare-site-search input{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  body.compare-page-body .compare-site-menu-btn,
+  body.compare-page-body .sdd-mobile-menu-btn{
+    grid-area:menu!important;
+    position:static!important;
+    inset:auto!important;
+    float:none!important;
+    transform:none!important;
+    margin:0!important;
+    width:46px!important;
+    height:46px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  body.compare-page-body > .compare-site-header + main.compare-page-main{
+    margin-top:0!important;
+    padding-top:14px!important;
+  }
+}
+</style>
