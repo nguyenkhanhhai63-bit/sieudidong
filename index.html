@@ -1160,77 +1160,49 @@
 </style>
 <section id="sddIphoneInsideUsed" hidden aria-hidden="true"></section>
 <script src="/app.js?v=493"></script>
-<script id="v607-iphone-used-merge-into-product-grid">
+<script id="v608-iphone-used-merge-public-fix">
 (function(){
   var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
   if(path!=='/may-cu') return;
   var SHEET_ID='1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw', GID='1876632092';
-  var items=[];
-  var norm=function(s){return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d')};
-  var canon=function(s){return norm(s).replace(/[^a-z0-9]+/g,'')};
-  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
-  var rawNum=function(v){if(typeof v==='number')return v;return Number(String(v==null?'':v).replace(/[^0-9.-]/g,''))||0};
-  var priceNum=function(v){var n=rawNum(v);return n>0&&n<100000?n*1000:n};
-  var money=function(n){return new Intl.NumberFormat('vi-VN').format(Number(n||0))+' đ'};
-  function ensureCharts(cb){
-    if(window.google&&google.visualization&&google.visualization.Query)return cb();
-    var old=document.querySelector('script[data-sdd-google-charts]');
-    if(old){old.addEventListener('load',function(){try{google.charts.load('current',{packages:['table']});google.charts.setOnLoadCallback(cb)}catch(e){setTimeout(cb,300)}});return}
-    var sc=document.createElement('script');sc.src='https://www.gstatic.com/charts/loader.js';sc.dataset.sddGoogleCharts='1';
-    sc.onload=function(){google.charts.load('current',{packages:['table']});google.charts.setOnLoadCallback(cb)};
-    document.head.appendChild(sc);
+  var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&gid='+GID;
+  var items=[], merging=false;
+  function norm(s){return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d')}
+  function canon(s){return norm(s).replace(/[^a-z0-9]+/g,'')}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function priceNum(v){var n=Number(String(v==null?'':v).replace(/[^0-9.-]/g,''))||0;return n>0&&n<100000?n*1000:n}
+  function money(n){return new Intl.NumberFormat('vi-VN').format(Number(n||0))+' đ'}
+  function parseCSV(text){
+    var rows=[],row=[],cell='',q=false;
+    for(var i=0;i<text.length;i++){var ch=text[i];if(q){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++}else if(ch==='"')q=false;else cell+=ch}else{if(ch==='"')q=true;else if(ch===','){row.push(cell);cell=''}else if(ch==='\n'){row.push(cell.replace(/\r$/,''));rows.push(row);row=[];cell=''}else cell+=ch}}
+    if(cell||row.length){row.push(cell);rows.push(row)} return rows;
   }
-  function loadSheet(){
-    ensureCharts(function(){
-      try{
-        var q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+GID+'&headers=1');
-        q.setQuery('select *');q.send(handle);
-      }catch(e){console.warn('iPhone used sync:',e)}
-    });
-  }
-  function handle(res){
-    if(res.isError()){console.warn('Không đọc được Sheet iPhone cũ:',res.getMessage&&res.getMessage());return}
-    var t=res.getDataTable(),headers={};
-    for(var c=0;c<t.getNumberOfColumns();c++)headers[canon(t.getColumnLabel(c))]=c;
+  function consume(rows){
+    if(!rows||rows.length<2)return false;
+    var headers={}; rows[0].forEach(function(h,i){headers[canon(h)]=i});
     function col(){for(var i=0;i<arguments.length;i++){var k=canon(arguments[i]);if(k in headers)return headers[k]}return -1}
-    function get(r,c){if(c<0)return '';var f=t.getFormattedValue(r,c);var v=t.getValue(r,c);return f!==''&&f!=null?f:(v==null?'':v)}
     var C={name:col('TÊN MÁY','TEN MAY'),brand:col('HÃNG','HANG'),condition:col('TÌNH TRẠNG','TINH TRANG'),color:col('MÀU','MAU'),capacity:col('DUNG LƯỢNG','DUNG LUONG'),price:col('GIÁ BÁN','GIA BAN'),status:col('TRẠNG THÁI','TRANG THAI'),acc:col('PHỤ KIỆN','PHU KIEN'),note:col('GHI CHÚ','GHI CHU')};
+    if(C.name<0||C.price<0)return false;
     items=[];
-    for(var r=0;r<t.getNumberOfRows();r++){
-      var name=String(get(r,C.name)||'').trim();if(!name)continue;
-      var brand=String(get(r,C.brand)||'').trim(), st=String(get(r,C.status)||'').trim(), ns=norm(st);
-      if(brand && !/iphone|apple/i.test(brand+' '+name)) continue;
-      if(st && !ns.includes('chua ban') && !ns.includes('con hang')) continue;
-      items.push({name:name,condition:String(get(r,C.condition)||'').trim(),color:String(get(r,C.color)||'').trim(),capacity:String(get(r,C.capacity)||'').trim(),price:priceNum(get(r,C.price)),acc:String(get(r,C.acc)||'').trim(),note:String(get(r,C.note)||'').trim(),row:r});
-    }
-    mergeWhenReady(0);
+    for(var r=1;r<rows.length;r++){var a=rows[r]||[],name=String(a[C.name]||'').trim();if(!name)continue;var brand=String(a[C.brand]||'').trim(),st=String(a[C.status]||'').trim(),ns=norm(st);if(brand&&!/iphone|apple/i.test(brand+' '+name))continue;if(st&&!ns.includes('chua ban')&&!ns.includes('con hang'))continue;items.push({name:name,condition:String(a[C.condition]||'').trim(),color:String(a[C.color]||'').trim(),capacity:String(a[C.capacity]||'').trim(),price:priceNum(a[C.price]),acc:String(a[C.acc]||'').trim(),note:String(a[C.note]||'').trim()})}
+    merge(); return true;
   }
-  function card(x){
-    var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';
-    return '<article class="sdd-iphone-used-public-card" data-sdd-iphone-sheet="1" data-price="'+x.price+'">'+
-      '<div class="sdd-iphone-placeholder"><div class="sdd-iphone-phone"></div></div>'+
-      '<h3>'+esc(x.name)+'</h3><div class="sdd-iphone-tags">'+
-      (cap?'<span>'+esc(cap)+'</span>':'')+(x.color?'<span>'+esc(x.color)+'</span>':'')+(x.condition?'<span>Tình trạng '+esc(x.condition)+'</span>':'')+
-      '</div><div class="sdd-iphone-price">'+money(x.price)+'</div><span class="sdd-iphone-stock">✓ Còn hàng</span>'+
-      (x.acc?'<div class="sdd-iphone-extra"><b>Phụ kiện:</b> '+esc(x.acc)+'</div>':'')+
-      (x.note?'<div class="sdd-iphone-extra">'+esc(x.note)+'</div>':'')+
-      '<div class="sdd-iphone-source">Google Sheet iPhone</div></article>';
+  function card(x){var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';return '<article class="sdd-iphone-used-public-card" data-sdd-iphone-sheet="1" data-price="'+x.price+'"><div class="sdd-iphone-placeholder"><div class="sdd-iphone-phone"></div></div><h3>'+esc(x.name)+'</h3><div class="sdd-iphone-tags">'+(cap?'<span>'+esc(cap)+'</span>':'')+(x.color?'<span>'+esc(x.color)+'</span>':'')+(x.condition?'<span>Tình trạng '+esc(x.condition)+'</span>':'')+'</div><div class="sdd-iphone-price">'+money(x.price)+'</div><span class="sdd-iphone-stock">✓ Còn hàng</span>'+(x.acc?'<div class="sdd-iphone-extra"><b>Phụ kiện:</b> '+esc(x.acc)+'</div>':'')+(x.note?'<div class="sdd-iphone-extra">'+esc(x.note)+'</div>':'')+'<div class="sdd-iphone-source">iPhone cũ</div></article>'}
+  function merge(){
+    if(merging||!items.length)return;var grid=document.getElementById('productGrid');if(!grid)return;
+    if(/Đang tải/i.test(grid.textContent||''))return;
+    merging=true;grid.querySelectorAll('[data-sdd-iphone-sheet="1"]').forEach(function(e){e.remove()});
+    var box=document.createElement('div');box.innerHTML=items.map(card).join('');while(box.firstElementChild)grid.appendChild(box.firstElementChild);merging=false;
   }
-  function mergeWhenReady(tryNo){
-    var grid=document.getElementById('productGrid');
-    if(!grid){if(tryNo<60)setTimeout(function(){mergeWhenReady(tryNo+1)},200);return}
-    var loading=(grid.children.length===1 && /Đang tải/i.test(grid.textContent||''));
-    if(loading && tryNo<60){setTimeout(function(){mergeWhenReady(tryNo+1)},200);return}
-    grid.querySelectorAll('[data-sdd-iphone-sheet="1"]').forEach(function(el){el.remove()});
-    if(items.length){var box=document.createElement('div');box.innerHTML=items.map(card).join('');while(box.firstElementChild)grid.appendChild(box.firstElementChild)}
-    // Cập nhật tóm tắt nếu có, nhưng không phá logic app.js.
-    var summary=document.getElementById('summary');
-    if(summary && items.length){var old=summary.textContent||'';if(!/iPhone cũ/i.test(old))summary.textContent=(old?old+' • ':'')+'+'+items.length+' iPhone cũ'}
-    document.dispatchEvent(new CustomEvent('sdd-iphone-used-merged',{detail:{count:items.length}}));
+  function loadViaCharts(){
+    function go(){try{var q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+GID+'&headers=1');q.setQuery('select *');q.send(function(res){if(res.isError())return;var t=res.getDataTable(),rows=[[]];for(var c=0;c<t.getNumberOfColumns();c++)rows[0].push(t.getColumnLabel(c));for(var r=0;r<t.getNumberOfRows();r++){var a=[];for(c=0;c<t.getNumberOfColumns();c++)a.push(t.getFormattedValue(r,c)||t.getValue(r,c)||'');rows.push(a)}consume(rows)})}catch(e){}}
+    if(window.google&&google.visualization&&google.visualization.Query)return go();
+    var sc=document.createElement('script');sc.src='https://www.gstatic.com/charts/loader.js';sc.onload=function(){google.charts.load('current',{packages:['table']});google.charts.setOnLoadCallback(go)};document.head.appendChild(sc);
   }
-  loadSheet();
-  // Nút đồng bộ ở admin/public khác có thể phát custom event; hỗ trợ tải lại nhẹ.
-  window.SDD_RELOAD_IPHONE_USED_PUBLIC=function(){loadSheet()};
+  fetch(CSV,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){if(!consume(parseCSV(t)))loadViaCharts()}).catch(loadViaCharts);
+  var grid=document.getElementById('productGrid');if(grid){new MutationObserver(function(){setTimeout(merge,0)}).observe(grid,{childList:true});}
+  var tries=0,t=setInterval(function(){merge();if(++tries>120)clearInterval(t)},500);
+  window.SDD_RELOAD_IPHONE_USED_PUBLIC=function(){fetch(CSV+'&_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){consume(parseCSV(t))}).catch(loadViaCharts)};
 })();
 </script>
 <script id="v596-home-native-compare-dock-computed-exact">
