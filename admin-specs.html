@@ -15736,3 +15736,38 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
 }
 </style>
+
+<!-- V600 AI HISTORY USE EMPTY SPACE -->
+<style id="v600-ai-history-fill-empty-space">
+/* Tận dụng phần trống sẵn có trong card Lịch sử khách hỏi AI, không tăng chiều cao card. */
+#analyticsCard .v518-primary-row > .ai-history-box,
+#analyticsCard .analytics-grid > .ai-history-box{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+}
+#analyticsCard .ai-history-head{
+  flex:0 0 auto!important;
+}
+#analyticsCard .ai-question-history{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  height:auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-bottom:14px!important;
+}
+#analyticsCard .ai-history-pager{
+  flex:0 0 auto!important;
+}
+/* Rule cũ giới hạn 330px khi có phân trang sẽ tạo khoảng trắng lớn. */
+#analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{
+  max-height:none!important;
+}
+@media(max-width:900px){
+  #analyticsCard .ai-question-history{
+    max-height:420px!important;
+  }
+}
+</style>
