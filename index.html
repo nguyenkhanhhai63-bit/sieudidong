@@ -2153,6 +2153,75 @@ body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-detail
 })();
 </script>
 
+
+
+<!-- v626: align all used cards in the same grid row exactly -->
+<style id="v626-used-row-exact-align">
+/* Một hàng = một chiều cao. Android và iPhone dùng cùng cơ chế stretch của CSS Grid. */
+body.v615-used-page #productGrid{
+  align-items:stretch!important;
+  grid-auto-rows:auto!important;
+}
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+  align-self:stretch!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+}
+/* Khung media iPhone dùng đúng chiều cao khung media Android, không tự tạo tỷ lệ riêng. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{
+  aspect-ratio:auto!important;
+  box-sizing:border-box!important;
+}
+/* Cụm nút luôn nằm cùng đường đáy giữa các card trong một hàng. */
+body.v615-used-page #productGrid .v615-used-actions{
+  margin-top:auto!important;
+  padding-top:8px!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .v615-used-card,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+    height:100%!important;
+    align-self:stretch!important;
+  }
+}
+</style>
+<script id="v626-used-row-exact-align-js">
+(function(){
+  if(window.__V626_USED_ALIGN__) return;
+  window.__V626_USED_ALIGN__=1;
+  var raf=0;
+  function alignMedia(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(function(){
+      var grid=document.getElementById('productGrid');
+      if(!grid || !document.body.classList.contains('v615-used-page')) return;
+      var ref=grid.querySelector(':scope > .v615-used-card:not(.sdd-iphone-used-public-card) .v615-used-img-wrap');
+      if(!ref) return;
+      var h=Math.round(ref.getBoundingClientRect().height);
+      if(!h) return;
+      grid.querySelectorAll(':scope > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap').forEach(function(media){
+        media.style.setProperty('height',h+'px','important');
+        media.style.setProperty('min-height',h+'px','important');
+        media.style.setProperty('max-height',h+'px','important');
+        media.style.setProperty('aspect-ratio','auto','important');
+      });
+    });
+  }
+  function boot(){
+    alignMedia();
+    var g=document.getElementById('productGrid');
+    if(g) new MutationObserver(alignMedia).observe(g,{childList:true,subtree:true});
+    window.addEventListener('resize',alignMedia,{passive:true});
+    setTimeout(alignMedia,250);setTimeout(alignMedia,800);setTimeout(alignMedia,1600);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
 </body>
 </html>
 
@@ -2700,68 +2769,4 @@ body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
 
 
 
-<!-- v625: pixel-align iPhone used cards to Android used cards -->
-<style id="v625-iphone-pixel-align">
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
-  box-sizing:border-box!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{
-  box-sizing:border-box!important;
-}
-</style>
-<script id="v625-iphone-pixel-align-js">
-(function(){
-  if(window.__V625_IPHONE_ALIGN__) return;
-  window.__V625_IPHONE_ALIGN__=1;
-  var raf=0;
-  function sync(){
-    cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(function(){
-      var grid=document.getElementById('productGrid');
-      if(!grid) return;
-      var ref=grid.querySelector(':scope > .v615-used-card:not(.sdd-iphone-used-public-card)');
-      if(!ref) return;
-      var refMedia=ref.querySelector('.v615-used-img-wrap');
-      var iphones=grid.querySelectorAll(':scope > .sdd-iphone-used-public-card.v615-used-card');
-      if(!iphones.length) return;
 
-      var cardH=Math.round(ref.getBoundingClientRect().height);
-      var mediaH=refMedia ? Math.round(refMedia.getBoundingClientRect().height) : 0;
-      iphones.forEach(function(card){
-        if(mediaH){
-          var media=card.querySelector('.sdd-iphone-placeholder.v615-used-img-wrap');
-          if(media){
-            media.style.setProperty('height',mediaH+'px','important');
-            media.style.setProperty('min-height',mediaH+'px','important');
-            media.style.setProperty('max-height',mediaH+'px','important');
-            media.style.setProperty('aspect-ratio','auto','important');
-          }
-        }
-        if(cardH){
-          card.style.setProperty('height',cardH+'px','important');
-          card.style.setProperty('min-height',cardH+'px','important');
-          card.style.setProperty('max-height',cardH+'px','important');
-          card.style.setProperty('display','flex','important');
-          card.style.setProperty('flex-direction','column','important');
-          var actions=card.querySelector('.v615-used-actions');
-          if(actions) actions.style.setProperty('margin-top','auto','important');
-        }
-      });
-    });
-  }
-  function boot(){
-    sync();
-    var g=document.getElementById('productGrid');
-    if(g){
-      new MutationObserver(sync).observe(g,{childList:true,subtree:true});
-      if(window.ResizeObserver){
-        var ro=new ResizeObserver(sync);
-        Array.from(g.children).filter(function(x){return x.classList.contains('v615-used-card')&&!x.classList.contains('sdd-iphone-used-public-card')}).slice(0,3).forEach(function(x){ro.observe(x)});
-      }
-    }
-    window.addEventListener('resize',sync,{passive:true});
-    setTimeout(sync,300);setTimeout(sync,900);setTimeout(sync,1800);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
-})();
-</script>
