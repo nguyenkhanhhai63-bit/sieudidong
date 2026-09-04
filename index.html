@@ -3718,3 +3718,24 @@ body.v615-used-page #productGrid > .v615-used-card > .v615-used-actions > *{
   }
 }
 </style>
+
+<!-- v647: align iPhone used price row vertically with Android used cards -->
+<style id="v647-used-price-align-android">
+@media (min-width:1100px){
+  /* iPhone đang có vùng tên ngắn hơn Android khoảng 10px, làm giá bị nhảy lên trên.
+     Giữ nguyên card/nút dưới, chỉ tăng vùng tên để hàng giá nằm ngang Android. */
+  body.v615-used-page #productGrid > .v639-iphone-used-card > .v615-used-name,
+  body.v615-used-page #productGrid > .v639-iphone-used-card > h3.v615-used-name{
+    box-sizing:border-box!important;
+    height:48px!important;
+    min-height:48px!important;
+    max-height:48px!important;
+    flex:0 0 48px!important;
+    margin:0 0 7px!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+    overflow:hidden!important;
+  }
+}
+</style>
