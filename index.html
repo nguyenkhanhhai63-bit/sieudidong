@@ -676,7 +676,7 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
       var cards=Array.from(grid.children).filter(function(el){return !el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty')});
       var shown=0;
       cards.forEach(function(card){
-        var show=ok(priceOf(card),activeRange);
+        var show=ok(priceOf(card),activeRange) && (!window.__sddHomeBrandMatch || window.__sddHomeBrandMatch(card));
         card.hidden=!show;
         card.style.display=show?'':'none';
         if(show)shown++;
@@ -716,8 +716,108 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
   },true);
 
   document.addEventListener('sdd-home-grid-ready',function(){apply()});
+  document.addEventListener('sdd-home-filter-changed',function(){apply()});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){markActive();apply()},{once:true});else{markActive();apply()}
   setTimeout(function(){markActive();apply()},600);
+})();
+</script>
+
+
+<script id="v648-home-brand-filter-functional">
+(function(){
+  var box=document.getElementById('categoryFilters');
+  var home=document.getElementById('sddHomeAllProducts');
+  if(!box || !home) return;
+
+  var activeBrand='';
+
+  function text(el){ return (el&&el.textContent||'').replace(/\s+/g,' ').trim(); }
+  function norm(s){
+    return (s||'').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function slugFromLabel(label){
+    var n=norm(label);
+    if(/\bxiaomi\b|\bmi\b/.test(n)) return 'xiaomi';
+    if(/\boppo\b/.test(n)) return 'oppo';
+    if(/\bvivo\b/.test(n)) return 'vivo';
+    if(/\bhonor\b/.test(n)) return 'honor';
+    if(/\brealme\b/.test(n)) return 'realme';
+    if(/\bsamsung\b/.test(n)) return 'samsung';
+    if(/\boneplus\b/.test(n)) return 'oneplus';
+    if(/\biqoo\b/.test(n)) return 'iqoo';
+    if(/\biphone\b|\bapple\b/.test(n)) return 'apple';
+    if(/\bpoco\b/.test(n)) return 'poco';
+    if(/\bredmi\b/.test(n)) return 'redmi';
+    if(/\bnubia\b|\bzte\b/.test(n)) return 'nubia';
+    return '';
+  }
+  function cardHaystack(card){
+    var img=card.querySelector('img');
+    return norm(text(card)+' '+(img?((img.alt||'')+' '+(img.title||'')):'')+' '+(card.dataset.brand||''));
+  }
+  function matches(card){
+    if(!activeBrand) return true;
+    var h=cardHaystack(card);
+    if(activeBrand==='xiaomi') return /\b(xiaomi|redmi|poco|mi)\b/.test(h);
+    if(activeBrand==='oppo') return /\boppo\b/.test(h);
+    if(activeBrand==='vivo') return /\bvivo\b/.test(h);
+    if(activeBrand==='honor') return /\bhonor\b/.test(h);
+    if(activeBrand==='realme') return /\brealme\b/.test(h);
+    if(activeBrand==='samsung') return /\bsamsung\b|\bgalaxy\b/.test(h);
+    if(activeBrand==='oneplus') return /\boneplus\b/.test(h);
+    if(activeBrand==='iqoo') return /\biqoo\b/.test(h);
+    if(activeBrand==='apple') return /\biphone\b|\bapple\b/.test(h);
+    if(activeBrand==='poco') return /\bpoco\b/.test(h);
+    if(activeBrand==='redmi') return /\bredmi\b/.test(h);
+    if(activeBrand==='nubia') return /\bnubia\b|\bzte\b/.test(h);
+    return true;
+  }
+
+  window.__sddHomeBrandMatch=matches;
+
+  function markActive(){
+    box.querySelectorAll('button,[role="button"],a').forEach(function(b){
+      var slug=slugFromLabel(text(b));
+      var on=!!slug && slug===activeBrand;
+      b.classList.toggle('active',on);
+      b.classList.toggle('selected',on);
+      if(on)b.setAttribute('aria-pressed','true'); else b.removeAttribute('aria-pressed');
+    });
+  }
+  function setUrl(){
+    try{
+      var u=new URL(location.href);
+      if(activeBrand)u.searchParams.set('brand',activeBrand); else u.searchParams.delete('brand');
+      history.replaceState(history.state,'',u.pathname+(u.search?'?'+u.searchParams.toString():'')+u.hash);
+    }catch(e){}
+  }
+  function apply(){
+    if(!document.body.classList.contains('sdd-home-all-mode')) return;
+    document.dispatchEvent(new CustomEvent('sdd-home-filter-changed'));
+  }
+
+  try{ activeBrand=norm(new URL(location.href).searchParams.get('brand')||''); }catch(e){}
+
+  box.addEventListener('click',function(e){
+    if(!document.body.classList.contains('sdd-home-all-mode')) return;
+    var b=e.target.closest('button,[role="button"],a');
+    if(!b || !box.contains(b)) return;
+    var slug=slugFromLabel(text(b));
+    if(!slug) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    activeBrand=(activeBrand===slug)?'':slug;
+    markActive();
+    setUrl();
+    apply();
+  },true);
+
+  document.addEventListener('sdd-home-grid-ready',function(){ markActive(); apply(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ markActive(); apply(); },{once:true});
+  else { markActive(); apply(); }
+  setTimeout(function(){ markActive(); apply(); },700);
 })();
 </script>
 
