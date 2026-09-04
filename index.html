@@ -260,6 +260,98 @@
 }
 </style>
 
+
+
+<!-- v638: desktop used cards exact same geometry for Android + iPhone -->
+<style id="v638-desktop-used-cards-exact-equal">
+@media (min-width:1100px){
+  /* Cả Android và iPhone cùng một grid row và cùng chiều cao */
+  body.v615-used-page #productGrid{
+    align-items:stretch!important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+    align-self:stretch!important;
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    padding:10px!important;
+    border-radius:16px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* QUAN TRỌNG: dùng CHUNG đúng một kích thước khung ảnh cho cả 2 loại */
+  body.v615-used-page #productGrid > .v615-used-card .v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+    width:100%!important;
+    height:255px!important;
+    min-height:255px!important;
+    max-height:255px!important;
+    aspect-ratio:auto!important;
+    margin:0 0 11px!important;
+    border-radius:11px!important;
+    box-sizing:border-box!important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card .v615-used-img-wrap img,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-real-img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
+
+  /* Tên / giá / trạng thái cùng chiều cao và khoảng cách */
+  body.v615-used-page #productGrid > .v615-used-card .v615-used-name,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{
+    margin:0 0 7px!important;
+    height:38px!important;
+    min-height:38px!important;
+    max-height:38px!important;
+    font-size:14px!important;
+    line-height:1.35!important;
+    font-weight:850!important;
+    color:#667085!important;
+    display:-webkit-box!important;
+    -webkit-line-clamp:2!important;
+    -webkit-box-orient:vertical!important;
+    overflow:hidden!important;
+  }
+  body.v615-used-page #productGrid .v615-used-price,
+  body.v615-used-page #productGrid .sdd-iphone-price.v615-used-price{
+    margin:1px 0 7px!important;
+    font-size:18px!important;
+    line-height:1.15!important;
+    font-weight:950!important;
+  }
+  body.v615-used-page #productGrid .v615-used-stock,
+  body.v615-used-page #productGrid .sdd-iphone-stock.v615-used-stock{
+    margin:0 0 6px!important;
+    padding:5px 8px!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+  }
+
+  /* Hai nút luôn nằm cùng đáy và bằng nhau 50/50 */
+  body.v615-used-page #productGrid .v615-used-actions{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;
+    margin-top:auto!important;
+    padding-top:8px!important;
+  }
+  body.v615-used-page #productGrid .v615-used-actions > *{
+    width:100%!important;
+    min-width:0!important;
+    height:34px!important;
+    margin:0!important;
+    padding:0 8px!important;
+    box-sizing:border-box!important;
+  }
+}
+</style>
 </head>
 <body>
 
