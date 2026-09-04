@@ -3657,3 +3657,64 @@ body.v615-used-page #productGrid > .v639-iphone-used-card{
   align-self:stretch!important;
 }
 </style>
+
+
+<!-- v646: final used-product typography identical to normal phone product cards -->
+<style id="v646-used-font-exact-phone-card">
+/* Máy cũ dùng đúng kiểu chữ của card Điện thoại thường */
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .v615-used-card *{
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  letter-spacing: 0 !important;
+}
+
+/* Tên máy: đen, đậm và cùng cỡ với bên Điện thoại */
+body.v615-used-page #productGrid > .v615-used-card > .v615-used-name,
+body.v615-used-page #productGrid > .v615-used-card > h3.v615-used-name,
+body.v615-used-page #productGrid > .v639-iphone-used-card > h3.v615-used-name{
+  color:#101828 !important;
+  font-size:16px !important;
+  font-weight:700 !important;
+  line-height:1.35 !important;
+}
+
+/* Giá */
+body.v615-used-page #productGrid > .v615-used-card > .v615-used-price{
+  color:#e60000 !important;
+  font-size:18px !important;
+  font-weight:700 !important;
+  line-height:1.2 !important;
+}
+
+/* Tình trạng hàng */
+body.v615-used-page #productGrid > .v615-used-card > .v615-used-stock{
+  font-size:11px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+}
+
+/* Nút So sánh / Chi tiết */
+body.v615-used-page #productGrid > .v615-used-card > .v615-used-actions > *{
+  font-size:11px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+}
+
+@media (max-width:700px){
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-name,
+  body.v615-used-page #productGrid > .v615-used-card > h3.v615-used-name,
+  body.v615-used-page #productGrid > .v639-iphone-used-card > h3.v615-used-name{
+    font-size:14px !important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-price{
+    font-size:18px !important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-stock{
+    font-size:10px !important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-actions > *{
+    font-size:10.5px !important;
+  }
+}
+</style>
