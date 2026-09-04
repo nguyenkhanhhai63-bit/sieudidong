@@ -2107,6 +2107,52 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-deta
 })();
 </script>
 
+
+<!-- v624: iPhone used cards mirror the visible Android used-card layout -->
+<style id="v624-iphone-card-match-android">
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card.v615-used-card{align-self:start!important;height:auto!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:230px!important;min-height:230px!important;max-height:230px!important;aspect-ratio:auto!important;margin:0 0 14px!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-tags,
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-extra,
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-source{display:none!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card h3.v615-used-name{min-height:44px!important;max-height:44px!important;overflow:hidden!important;margin:0 0 9px!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-price{margin:4px 0 8px!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-stock{margin:0 0 10px!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .v615-used-actions{margin-top:0!important;padding-top:2px!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .v624-iphone-compare{height:40px!important;border:1px solid #d7dee7!important;border-radius:9px!important;background:#fff!important;color:#344054!important;font-size:12px!important;font-weight:800!important}
+body.v615-used-page #productGrid>.sdd-iphone-used-public-card .sdd-iphone-detail-btn{height:40px!important;margin:0!important;width:100%!important}
+@media(max-width:700px){
+ body.v615-used-page #productGrid>.sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:190px!important;min-height:190px!important;max-height:190px!important}
+ body.v615-used-page #productGrid>.sdd-iphone-used-public-card h3.v615-used-name{min-height:39px!important;max-height:39px!important}
+ body.v615-used-page #productGrid>.sdd-iphone-used-public-card .v615-used-actions{grid-template-columns:1fr!important}
+}
+</style>
+<script id="v624-iphone-card-match-android-js">
+(function(){
+ function fix(card){
+   if(!card||card.dataset.v624Done==='1')return;
+   card.dataset.v624Done='1';
+   var actions=card.querySelector('.v615-used-actions');
+   var detail=card.querySelector('.sdd-iphone-detail-btn');
+   if(!actions&&detail){actions=document.createElement('div');actions.className='v615-used-actions';detail.parentNode.insertBefore(actions,detail);actions.appendChild(detail)}
+   if(actions&&!actions.querySelector('.v624-iphone-compare')){
+     var b=document.createElement('button');b.type='button';b.className='v624-iphone-compare';b.textContent='+ So sánh';
+     b.addEventListener('click',function(){
+       var name=(card.querySelector('h3')||{}).textContent||'iPhone';
+       var ev=new CustomEvent('sdd:iphone-used-compare',{bubbles:true,detail:{card:card,name:name.trim(),imei:card.getAttribute('data-imei')||''}});
+       card.dispatchEvent(ev);
+       b.textContent=b.textContent.indexOf('Đã chọn')>-1?'+ So sánh':'✓ Đã chọn';
+     });
+     actions.insertBefore(b,actions.firstChild);
+   }
+ }
+ function run(){document.querySelectorAll('#productGrid>.sdd-iphone-used-public-card').forEach(fix)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(run,0)});else setTimeout(run,0);
+ var g=document.getElementById('productGrid');if(g)new MutationObserver(run).observe(g,{childList:true});
+ setTimeout(run,800);setTimeout(run,1800);
+})();
+</script>
+
 </body>
 </html>
 
@@ -2651,13 +2697,5 @@ body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
 }
 </style>
 
-<!-- v623: iPhone cũ dùng CHÍNH layout/card engine của Android, không CSS riêng chiều cao -->
-<style id="v623-iphone-exact-android-card">
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{align-self:stretch!important}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:3/4!important}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-phone{width:92px!important;height:150px!important;max-width:none!important;max-height:none!important;transform:scale(.9)!important}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-source{display:none!important}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-detail-btn{margin-top:0!important;width:auto!important}
-@media(max-width:700px){body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:auto!important;aspect-ratio:3/4!important}}
-</style>
+
 
