@@ -2343,8 +2343,11 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-deta
     return [].slice.call(card.querySelectorAll('button,a,[role="button"]')).find(function(el){return re.test((el.textContent||'').trim());});
   }
   function decorate(card){
-    if(!card || card.classList.contains('sdd-iphone-used-public-card') || card.dataset.v615Done==='1')return;
+    if(!card || card.dataset.v615Done==='1')return;
     card.dataset.v615Done='1';card.classList.add('v615-used-card');
+    var iphone=card.classList.contains('sdd-iphone-used-public-card');
+    var ph=iphone?card.querySelector('.sdd-iphone-placeholder'):null;
+    if(ph)ph.classList.add('v615-used-img-wrap');
     var img=card.querySelector('img');
     if(img && !img.closest('.v615-used-img-wrap')){
       var w=document.createElement('div');w.className='v615-used-img-wrap';
@@ -2354,8 +2357,8 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-deta
     }
     var name=card.querySelector('h2,h3,h4,.product-name,.name,.title');
     if(name)name.classList.add('v615-used-name');
-    var price=moneyNode(card);if(price)price.classList.add('v615-used-price');
-    var stock=textLeaf(card,/^(✓\s*)?(còn hàng|hết hàng)$/i);
+    var price=iphone?card.querySelector('.sdd-iphone-price'):moneyNode(card);if(price)price.classList.add('v615-used-price');
+    var stock=iphone?card.querySelector('.sdd-iphone-stock'):textLeaf(card,/^(✓\s*)?(còn hàng|hết hàng)$/i);
     if(stock){stock.classList.add('v615-used-stock');if(/hết hàng/i.test(stock.textContent||''))stock.classList.add('v615-out')}
     var detail=buttonBy(card,/^chi tiết$/i),compare=buttonBy(card,/(so sánh|đã chọn)/i);
     if(detail||compare){
@@ -2648,231 +2651,13 @@ body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
 }
 </style>
 
-<!-- v619: iPhone used cards use the same compact auto-height rhythm as Android used cards -->
-<style id="v619-iphone-used-compact-same-as-android">
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
-  display:flex!important;
-  flex-direction:column!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  align-self:start!important;
-  justify-content:flex-start!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{
-  min-height:0!important;
-  height:auto!important;
-  margin:0 0 8px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags{
-  min-height:0!important;
-  margin:0 0 8px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price{
-  margin:4px 0 8px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{
-  margin:0 0 7px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-extra{
-  margin:0!important;
-  padding:7px 0!important;
-  min-height:0!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-source{
-  display:none!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
-  margin:8px 0 0!important;
-  flex:none!important;
-}
-@media(max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{margin-bottom:6px!important}
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags{margin-bottom:6px!important}
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price{margin:3px 0 6px!important}
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{margin-bottom:6px!important}
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{margin-top:7px!important}
-}
+<!-- v623: iPhone cũ dùng CHÍNH layout/card engine của Android, không CSS riêng chiều cao -->
+<style id="v623-iphone-exact-android-card">
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{align-self:stretch!important}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:3/4!important}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-phone{width:92px!important;height:150px!important;max-width:none!important;max-height:none!important;transform:scale(.9)!important}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-source{display:none!important}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-detail-btn{margin-top:0!important;width:auto!important}
+@media(max-width:700px){body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap{height:auto!important;aspect-ratio:3/4!important}}
 </style>
 
-<!-- v620: make iPhone used cards truly match compact Android card height -->
-<style id="v620-iphone-match-android-card">
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
-  height:auto!important;
-  min-height:0!important;
-  align-self:start!important;
-  padding:10px!important;
-}
-/* iPhone media follows the REAL rendered Android media height, not 3:4 card width */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
-  height:var(--v620-used-media-h,180px)!important;
-  min-height:0!important;
-  aspect-ratio:auto!important;
-  margin:0 0 8px!important;
-  border-radius:10px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-real-img{
-  width:100%!important;
-  height:100%!important;
-  object-fit:contain!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
-  width:68px!important;
-  height:112px!important;
-  border-radius:16px!important;
-  transform:none!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:before{
-  width:28px!important;height:7px!important;top:7px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:after{
-  bottom:14px!important;font-size:10px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{
-  margin:0 0 6px!important;
-  font-size:14px!important;
-  line-height:1.3!important;
-  min-height:0!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags{
-  margin:0 0 6px!important;
-  min-height:0!important;
-  gap:4px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags span{
-  padding:3px 6px!important;
-  font-size:9px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price{
-  margin:2px 0 6px!important;
-  font-size:18px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{
-  margin:0 0 5px!important;
-  padding:4px 7px!important;
-  font-size:9.5px!important;
-}
-/* Keep accessory/warranty in detail page; list card stays compact like Android */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-extra,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-source{
-  display:none!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
-  margin:6px 0 0!important;
-  height:34px!important;
-  flex:none!important;
-}
-@media(max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
-    height:var(--v620-used-media-h,150px)!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
-    width:58px!important;height:96px!important;
-  }
-}
-</style>
-<script id="v620-sync-iphone-media-to-android">
-(function(){
-  function sync(){
-    var grid=document.querySelector('body.v615-used-page #productGrid');
-    if(!grid) return;
-    var android=grid.querySelector('.v615-used-card .v615-used-img-wrap');
-    if(!android) return;
-    var h=Math.round(android.getBoundingClientRect().height||0);
-    if(h>80) grid.style.setProperty('--v620-used-media-h',h+'px');
-  }
-  function schedule(){ requestAnimationFrame(function(){requestAnimationFrame(sync)}); }
-  document.addEventListener('DOMContentLoaded',schedule);
-  window.addEventListener('load',schedule);
-  window.addEventListener('resize',function(){clearTimeout(window.__v620rt);window.__v620rt=setTimeout(sync,120)});
-  setTimeout(schedule,500); setTimeout(schedule,1200); setTimeout(schedule,2500);
-})();
-</script>
-
-<!-- v622: iPhone media visually matches Android card; keep equal media box, enlarge placeholder phone -->
-<style id="v622-iphone-media-visual-balance">
-/* This block is intentionally last so it overrides v617/v620/v621 legacy rules. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  align-self:start!important;
-  padding:10px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
-  width:100%!important;
-  height:var(--v622-used-media-h,255px)!important;
-  min-height:var(--v622-used-media-h,255px)!important;
-  max-height:var(--v622-used-media-h,255px)!important;
-  aspect-ratio:auto!important;
-  margin:0 0 10px!important;
-  border-radius:10px!important;
-  overflow:hidden!important;
-  background:#f5f6f8!important;
-  display:grid!important;
-  place-items:center!important;
-}
-/* Uploaded iPhone photos fill the same visual footprint as Android photos. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-real-img{
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-  object-position:center!important;
-  display:block!important;
-}
-/* The old generic phone placeholder was visually too tiny. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
-  width:112px!important;
-  height:188px!important;
-  max-width:46%!important;
-  max-height:78%!important;
-  border-radius:24px!important;
-  transform:none!important;
-  box-shadow:inset 0 0 0 5px #344054,0 12px 28px rgba(16,24,40,.18)!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:before{
-  width:39px!important;height:9px!important;top:9px!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:after{
-  bottom:20px!important;font-size:12px!important;
-}
-@media (min-width:701px) and (max-width:1099px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
-    width:96px!important;height:162px!important;
-  }
-}
-@media (max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
-    height:var(--v622-used-media-h,150px)!important;
-    min-height:var(--v622-used-media-h,150px)!important;
-    max-height:var(--v622-used-media-h,150px)!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
-    width:68px!important;height:114px!important;max-width:48%!important;max-height:80%!important;
-    border-radius:17px!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:before{
-    width:26px!important;height:7px!important;top:7px!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone:after{
-    bottom:13px!important;font-size:9px!important;
-  }
-}
-</style>
-<script id="v622-sync-iphone-media-exact-android-height">
-(function(){
-  function sync(){
-    var grid=document.querySelector('body.v615-used-page #productGrid');
-    if(!grid) return;
-    var media=grid.querySelector('.v615-used-card .v615-used-img-wrap');
-    if(!media) return;
-    var h=Math.round(media.getBoundingClientRect().height||0);
-    if(h>100) grid.style.setProperty('--v622-used-media-h',h+'px');
-  }
-  function schedule(){requestAnimationFrame(function(){requestAnimationFrame(sync)});}
-  document.addEventListener('DOMContentLoaded',schedule);
-  window.addEventListener('load',schedule);
-  window.addEventListener('resize',function(){clearTimeout(window.__v622rt);window.__v622rt=setTimeout(sync,120);},{passive:true});
-  setTimeout(schedule,250);setTimeout(schedule,900);setTimeout(schedule,1800);setTimeout(schedule,3200);
-})();
-</script>
