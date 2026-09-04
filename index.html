@@ -723,7 +723,7 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
 </script>
 
 
-<script id="v648-home-brand-filter-functional">
+<script id="v649-home-brand-filter-functional">
 (function(){
   var box=document.getElementById('categoryFilters');
   var home=document.getElementById('sddHomeAllProducts');
@@ -739,6 +739,9 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
   }
   function slugFromLabel(label){
     var n=norm(label);
+    // POCO/Redmi phải bắt trước Xiaomi vì một số card logo có thể chứa thêm chữ Xiaomi.
+    if(/\bpoco\b/.test(n)) return 'poco';
+    if(/\bredmi\b/.test(n)) return 'redmi';
     if(/\bxiaomi\b|\bmi\b/.test(n)) return 'xiaomi';
     if(/\boppo\b/.test(n)) return 'oppo';
     if(/\bvivo\b/.test(n)) return 'vivo';
@@ -748,14 +751,27 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
     if(/\boneplus\b/.test(n)) return 'oneplus';
     if(/\biqoo\b/.test(n)) return 'iqoo';
     if(/\biphone\b|\bapple\b/.test(n)) return 'apple';
-    if(/\bpoco\b/.test(n)) return 'poco';
-    if(/\bredmi\b/.test(n)) return 'redmi';
     if(/\bnubia\b|\bzte\b/.test(n)) return 'nubia';
     return '';
   }
+  function slugOfBrandItem(el){
+    if(!el) return '';
+    var raw=(el.getAttribute('data-brand')||el.getAttribute('data-category')||el.getAttribute('data-value')||el.getAttribute('value')||'');
+    return slugFromLabel(raw)||slugFromLabel(text(el));
+  }
+  function directBrandItem(target){
+    var n=target;
+    while(n && n!==box){
+      if(n.parentElement===box) return n;
+      n=n.parentElement;
+    }
+    return null;
+  }
   function cardHaystack(card){
     var img=card.querySelector('img');
-    return norm(text(card)+' '+(img?((img.alt||'')+' '+(img.title||'')):'')+' '+(card.dataset.brand||''));
+    var extras='';
+    ['brand','category','name','productName','title'].forEach(function(k){ if(card.dataset && card.dataset[k]) extras+=' '+card.dataset[k]; });
+    return norm(text(card)+' '+(img?((img.alt||'')+' '+(img.title||'')):'')+' '+extras);
   }
   function matches(card){
     if(!activeBrand) return true;
@@ -777,9 +793,10 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
 
   window.__sddHomeBrandMatch=matches;
 
+  function brandItems(){ return Array.prototype.slice.call(box.children||[]); }
   function markActive(){
-    box.querySelectorAll('button,[role="button"],a').forEach(function(b){
-      var slug=slugFromLabel(text(b));
+    brandItems().forEach(function(b){
+      var slug=slugOfBrandItem(b);
       var on=!!slug && slug===activeBrand;
       b.classList.toggle('active',on);
       b.classList.toggle('selected',on);
@@ -793,18 +810,44 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
       history.replaceState(history.state,'',u.pathname+(u.search?'?'+u.searchParams.toString():'')+u.hash);
     }catch(e){}
   }
+  function directApplyFallback(){
+    // Bộ lọc giá v584 sẽ xử lý kết hợp brand + giá. Phần này là fallback nếu handler cũ chưa chạy.
+    home.querySelectorAll(':scope > .sdd-all-section').forEach(function(section){
+      var grid=section.querySelector('.sdd-all-grid');
+      if(!grid) return;
+      var cards=Array.prototype.slice.call(grid.children).filter(function(el){
+        return !el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty');
+      });
+      var shown=0;
+      cards.forEach(function(card){
+        // Không bật lại card đang bị bộ lọc giá ẩn; chỉ ép ẩn card sai hãng.
+        var brandOk=matches(card);
+        if(!brandOk){ card.hidden=true; card.style.display='none'; }
+        else {
+          // Khi không có price trên URL thì brand được quyền bật lại.
+          var hasPrice=false; try{hasPrice=!!new URL(location.href).searchParams.get('price')}catch(e){}
+          if(!hasPrice){ card.hidden=false; card.style.display=''; }
+        }
+        if(!card.hidden && card.style.display!=='none') shown++;
+      });
+      if(activeBrand && cards.length && shown===0) section.hidden=true;
+      else if(!activeBrand || shown>0) section.hidden=false;
+    });
+  }
   function apply(){
     if(!document.body.classList.contains('sdd-home-all-mode')) return;
     document.dispatchEvent(new CustomEvent('sdd-home-filter-changed'));
+    setTimeout(directApplyFallback,0);
   }
 
   try{ activeBrand=norm(new URL(location.href).searchParams.get('brand')||''); }catch(e){}
 
+  // Bắt click trên TOÀN BỘ card hãng, kể cả card là DIV (không chỉ button/a như bản cũ).
   box.addEventListener('click',function(e){
     if(!document.body.classList.contains('sdd-home-all-mode')) return;
-    var b=e.target.closest('button,[role="button"],a');
-    if(!b || !box.contains(b)) return;
-    var slug=slugFromLabel(text(b));
+    var item=directBrandItem(e.target);
+    if(!item) return;
+    var slug=slugOfBrandItem(item);
     if(!slug) return;
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -817,7 +860,11 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
   document.addEventListener('sdd-home-grid-ready',function(){ markActive(); apply(); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ markActive(); apply(); },{once:true});
   else { markActive(); apply(); }
+
+  // categoryFilters được app.js dựng sau khi trang load, nên đồng bộ active khi card hãng vừa xuất hiện.
+  new MutationObserver(function(){ markActive(); }).observe(box,{childList:true,subtree:true});
   setTimeout(function(){ markActive(); apply(); },700);
+  setTimeout(function(){ markActive(); apply(); },1600);
 })();
 </script>
 
