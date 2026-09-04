@@ -2568,3 +2568,50 @@ body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
   }
 }
 </style>
+
+<!-- v619: iPhone used cards use the same compact auto-height rhythm as Android used cards -->
+<style id="v619-iphone-used-compact-same-as-android">
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
+  display:flex!important;
+  flex-direction:column!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+  justify-content:flex-start!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{
+  min-height:0!important;
+  height:auto!important;
+  margin:0 0 8px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags{
+  min-height:0!important;
+  margin:0 0 8px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price{
+  margin:4px 0 8px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{
+  margin:0 0 7px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-extra{
+  margin:0!important;
+  padding:7px 0!important;
+  min-height:0!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-source{
+  display:none!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
+  margin:8px 0 0!important;
+  flex:none!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{margin-bottom:6px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags{margin-bottom:6px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price{margin:3px 0 6px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{margin-bottom:6px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{margin-top:7px!important}
+}
+</style>
