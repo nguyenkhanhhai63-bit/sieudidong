@@ -1219,11 +1219,25 @@
       try{var r=await fetch(urls[i],{cache:'no-store',credentials:'same-origin'});if(!r.ok)continue;var d=await r.json();var arr=Array.isArray(d)?d:(Array.isArray(d.items)?d.items:[]);if(arr.length){applyPublicImageRows(arr);return}}catch(e){}
     }
   }
+  var lastMergeSignature='';
   function merge(){
     if(merging||!items.length)return;var grid=document.getElementById('productGrid');if(!grid)return;
     if(/Đang tải/i.test(grid.textContent||''))return;
-    merging=true;grid.querySelectorAll('[data-sdd-iphone-sheet="1"]').forEach(function(e){e.remove()});
-    var box=document.createElement('div');box.innerHTML=items.map(card).join('');while(box.firstElementChild)grid.appendChild(box.firstElementChild);merging=false;
+    // v627: chỉ render lại khi dữ liệu iPhone thực sự thay đổi.
+    // Trước đây chính MutationObserver + setInterval gọi merge liên tục,
+    // mỗi lần lại xóa/thêm toàn bộ card iPhone nên màn hình bị nháy.
+    var sig=items.map(function(x){
+      var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
+      return [x.imei,x.name,x.capacity,x.color,x.condition,x.price,x.acc,x.note,first].join('|');
+    }).join('||');
+    var current=grid.querySelectorAll('[data-sdd-iphone-sheet="1"]');
+    if(sig===lastMergeSignature && current.length===items.length)return;
+    merging=true;
+    current.forEach(function(e){e.remove()});
+    var box=document.createElement('div');box.innerHTML=items.map(card).join('');
+    while(box.firstElementChild)grid.appendChild(box.firstElementChild);
+    lastMergeSignature=sig;
+    merging=false;
   }
   function loadViaCharts(){
     function go(){try{var q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+GID+'&headers=1');q.setQuery('select *');q.send(function(res){if(res.isError())return;var t=res.getDataTable(),rows=[[]];for(var c=0;c<t.getNumberOfColumns();c++)rows[0].push(t.getColumnLabel(c));for(var r=0;r<t.getNumberOfRows();r++){var a=[];for(c=0;c<t.getNumberOfColumns();c++)a.push(t.getFormattedValue(r,c)||t.getValue(r,c)||'');rows.push(a)}consume(rows)})}catch(e){}}
@@ -1266,8 +1280,20 @@
 
   loadPublicImageMap();
   fetch(CSV,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){if(!consume(parseCSV(t)))loadViaCharts()}).catch(loadViaCharts);
-  var grid=document.getElementById('productGrid');if(grid){new MutationObserver(function(){setTimeout(merge,0)}).observe(grid,{childList:true});}
-  var tries=0,t=setInterval(function(){merge();if(++tries>120)clearInterval(t)},500);
+  var grid=document.getElementById('productGrid');
+  if(grid){
+    new MutationObserver(function(muts){
+      // Chỉ cần gắn lại iPhone nếu renderer chính vừa thay đổi danh sách.
+      // merge() đã có signature guard nên observer không tự tạo vòng lặp.
+      var need=false;
+      for(var i=0;i<muts.length;i++){
+        if(muts[i].addedNodes.length||muts[i].removedNodes.length){need=true;break;}
+      }
+      if(need)setTimeout(merge,0);
+    }).observe(grid,{childList:true});
+  }
+  // Retry ngắn lúc tải trang, không chạy 60 giây và không rebuild liên tục.
+  [250,700,1400,2500].forEach(function(ms){setTimeout(merge,ms)});
   window.SDD_RELOAD_IPHONE_USED_PUBLIC=function(){loadPublicImageMap();fetch(CSV+'&_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){consume(parseCSV(t))}).catch(loadViaCharts)};
 })();
 </script>
@@ -2770,3 +2796,45 @@ body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
 
 
 
+
+
+<!-- v627: equal action buttons + stop used-grid visual flicker -->
+<style id="v627-used-actions-equal">
+body.v615-used-page #productGrid .v615-used-actions{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  box-sizing:border-box!important;
+}
+body.v615-used-page #productGrid .v615-used-actions > button,
+body.v615-used-page #productGrid .v615-used-actions > a,
+body.v615-used-page #productGrid .v615-used-actions > [role="button"]{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:34px!important;
+  margin:0!important;
+  padding:0 8px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid .v615-used-actions{gap:6px!important}
+  body.v615-used-page #productGrid .v615-used-actions > button,
+  body.v615-used-page #productGrid .v615-used-actions > a,
+  body.v615-used-page #productGrid .v615-used-actions > [role="button"]{height:32px!important;padding:0 5px!important}
+}
+/* Không animate/transform card lúc renderer đang gắn dữ liệu, tránh cảm giác nháy. */
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
+  transition:border-color .15s ease,box-shadow .15s ease!important;
+}
+body.v615-used-page #productGrid > .v615-used-card:hover,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card:hover{
+  transform:none!important;
+}
+</style>
