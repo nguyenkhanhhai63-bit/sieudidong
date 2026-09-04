@@ -352,6 +352,12 @@
   }
 }
 </style>
+
+<style id="v639-iphone-use-android-card-only">
+/* iPhone không còn class/layout riêng: toàn bộ kích thước kế thừa trực tiếp từ .v615-used-card của Android. */
+body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image{display:grid!important;place-items:center!important;background:#f7f8fa!important;color:#667085!important;}
+body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{font-size:12px!important;font-weight:500!important;color:#667085!important;}
+</style>
 </head>
 <body>
 
@@ -1288,8 +1294,11 @@
   function card(x){
     var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';
     var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
-    var visual=first?'<div class="sdd-iphone-placeholder"><img class="sdd-iphone-real-img" src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>':'<div class="sdd-iphone-placeholder sdd-iphone-no-image-wrap"><span class="sdd-iphone-no-image">Chưa có ảnh</span></div>';
-    return '<article class="sdd-iphone-used-public-card v615-used-card" data-v615-done="1" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual.replace('sdd-iphone-placeholder','sdd-iphone-placeholder v615-used-img-wrap')+'<h3 class="v615-used-name">'+esc(x.name)+'</h3><div class="sdd-iphone-price v615-used-price">'+money(x.price)+'</div><span class="sdd-iphone-stock v615-used-stock">✓ Còn hàng</span><div class="v615-used-actions"><button type="button" class="sdd-iphone-detail-btn v615-detail" data-sdd-iphone-detail="1">Chi tiết</button></div></article>'
+    /* v639: iPhone dùng CHÍNH XÁC cấu trúc card Android, chỉ thay dữ liệu bên trong. */
+    var visual=first
+      ? '<div class="v615-used-img-wrap"><img src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>'
+      : '<div class="v615-used-img-wrap v639-no-image"><span>Chưa có ảnh</span></div>';
+    return '<article class="v615-used-card v639-iphone-used-card" data-v615-done="1" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual+'<h3 class="v615-used-name">'+esc(x.name)+'</h3><div class="v615-used-price">'+money(x.price)+'</div><span class="v615-used-stock">✓ Còn hàng</span><div class="v615-used-actions"><button type="button" class="v615-compare v639-iphone-compare">+ So sánh</button><button type="button" class="v615-detail" data-sdd-iphone-detail="1">Chi tiết</button></div></article>'
   }
   function normalizeImages(x){
     var a=Array.isArray(x&&x.imageAssets)?x.imageAssets:[], im=Array.isArray(x&&x.images)?x.images:[];
@@ -1363,7 +1372,7 @@
   document.addEventListener('click',function(e){
     if(((location.pathname||'/').replace(/\/+$/,'')||'/')!=='/may-cu')return;
     var btn=e.target&&e.target.closest?e.target.closest('[data-sdd-iphone-detail="1"]'):null;
-    var card=e.target&&e.target.closest?e.target.closest('.sdd-iphone-used-public-card[data-sdd-iphone-sheet="1"]'):null;
+    var card=e.target&&e.target.closest?e.target.closest('[data-sdd-iphone-sheet="1"]'):null;
     if(!card)return;
     if(!btn && e.target.closest('button,a,input,select,textarea'))return;
     e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
