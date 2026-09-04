@@ -3577,3 +3577,26 @@ body.v615-used-page #productGrid > .v615-used-card .v615-used-actions > *{
   letter-spacing:0!important;
 }
 </style>
+
+
+<!-- v644: force Android + iPhone used cards to the exact same outer size in each grid row -->
+<style id="v644-used-card-exact-same-size">
+body.v615-used-page #productGrid{
+  align-items:stretch!important;
+}
+body.v615-used-page #productGrid > .v615-used-card{
+  width:100%!important;
+  min-width:0!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:stretch!important;
+  box-sizing:border-box!important;
+}
+/* iPhone dùng đúng kích thước ngoài của card Android, không còn tự co ngắn. */
+body.v615-used-page #productGrid > .v639-iphone-used-card{
+  width:100%!important;
+  height:100%!important;
+  align-self:stretch!important;
+}
+</style>
