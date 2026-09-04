@@ -1196,7 +1196,7 @@
   function card(x){
     var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';
     var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
-    var visual=first?'<div class="sdd-iphone-placeholder"><img class="sdd-iphone-real-img" src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>':'<div class="sdd-iphone-placeholder"><div class="sdd-iphone-phone"></div></div>';
+    var visual=first?'<div class="sdd-iphone-placeholder"><img class="sdd-iphone-real-img" src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>':'<div class="sdd-iphone-placeholder sdd-iphone-no-image-wrap"><span class="sdd-iphone-no-image">Chưa có ảnh</span></div>';
     return '<article class="sdd-iphone-used-public-card" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual+'<h3>'+esc(x.name)+'</h3><div class="sdd-iphone-tags">'+(cap?'<span>'+esc(cap)+'</span>':'')+(x.color?'<span>'+esc(x.color)+'</span>':'')+(x.condition?'<span>Tình trạng '+esc(x.condition)+'</span>':'')+'</div><div class="sdd-iphone-price">'+money(x.price)+'</div><span class="sdd-iphone-stock">✓ Còn hàng</span>'+(x.acc?'<div class="sdd-iphone-extra"><b>Phụ kiện:</b> '+esc(x.acc)+'</div>':'')+(x.note?'<div class="sdd-iphone-extra">'+esc(x.note)+'</div>':'')+'<div class="sdd-iphone-source">iPhone cũ</div><button type="button" class="sdd-iphone-detail-btn" data-sdd-iphone-detail="1">Chi tiết</button></article>'
   }
   function normalizeImages(x){
@@ -1254,7 +1254,7 @@
     var page=document.querySelector('main.page');
     var imgs=Array.isArray(x.images)?x.images.filter(Boolean):[];
     var img=imgs[0]||'';
-    var visual=img?'<img src="'+esc(img)+'" alt="'+esc(x.name)+'">':'<div class="sdd-iphone-phone" style="transform:scale(1.35)"></div>';
+    var visual=img?'<img src="'+esc(img)+'" alt="'+esc(x.name)+'">':'<div class="sdd-iphone-detail-no-image">Chưa có ảnh</div>';
     var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'—';
     root.innerHTML='<div class="sdd-iphone-detail-shell"><div class="sdd-iphone-detail-head"><h1>'+esc(x.name)+'</h1><button type="button" class="sdd-iphone-detail-close" aria-label="Đóng">×</button></div><div class="sdd-iphone-detail-main"><div class="sdd-iphone-detail-gallery">'+visual+'</div><div class="sdd-iphone-detail-info"><div class="price">'+money(x.price)+'</div><div class="sdd-iphone-detail-stock">✓ Còn hàng</div><div class="sdd-iphone-detail-specs"><div class="k">Dung lượng</div><div>'+esc(cap)+'</div><div class="k">Màu sắc</div><div>'+(esc(x.color)||'—')+'</div><div class="k">Tình trạng pin</div><div>'+(esc(x.condition)||'—')+(x.condition?'%':'')+'</div><div class="k">Phụ kiện</div><div>'+(esc(x.acc)||'—')+'</div></div>'+(x.note?'<div class="sdd-iphone-detail-note">'+esc(x.note)+'</div>':'')+'<button type="button" class="sdd-iphone-detail-contact">Liên hệ mua hàng</button></div></div></div>';
     root.hidden=false; root.classList.add('sdd-iphone-detail-open','v322-aligned','v340-header-aligned');
@@ -2248,6 +2248,28 @@ body.v615-used-page #productGrid .v615-used-actions{
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
+
+<!-- v628: no fake iPhone graphic when no uploaded photo -->
+<style id="v628-iphone-no-fake-placeholder">
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap{
+  background:#fff!important;
+  border-top:1px solid #e5e7eb!important;
+  border-bottom:1px solid #e5e7eb!important;
+  border-left:0!important;
+  border-right:0!important;
+  border-radius:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image{
+  color:#667085!important;
+  font-size:12px!important;
+  font-weight:500!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{display:none!important}
+.sdd-iphone-detail-no-image{min-height:280px;display:flex;align-items:center;justify-content:center;color:#667085;background:#f8fafc;border-radius:14px;font-size:14px}
+</style>
 </body>
 </html>
 
