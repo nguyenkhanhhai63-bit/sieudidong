@@ -2216,38 +2216,7 @@ body.v615-used-page #productGrid .v615-used-actions{
   }
 }
 </style>
-<script id="v626-used-row-exact-align-js">
-(function(){
-  if(window.__V626_USED_ALIGN__) return;
-  window.__V626_USED_ALIGN__=1;
-  var raf=0;
-  function alignMedia(){
-    cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(function(){
-      var grid=document.getElementById('productGrid');
-      if(!grid || !document.body.classList.contains('v615-used-page')) return;
-      var ref=grid.querySelector(':scope > .v615-used-card:not(.sdd-iphone-used-public-card) .v615-used-img-wrap');
-      if(!ref) return;
-      var h=Math.round(ref.getBoundingClientRect().height);
-      if(!h) return;
-      grid.querySelectorAll(':scope > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-placeholder.v615-used-img-wrap').forEach(function(media){
-        media.style.setProperty('height',h+'px','important');
-        media.style.setProperty('min-height',h+'px','important');
-        media.style.setProperty('max-height',h+'px','important');
-        media.style.setProperty('aspect-ratio','auto','important');
-      });
-    });
-  }
-  function boot(){
-    alignMedia();
-    var g=document.getElementById('productGrid');
-    if(g) new MutationObserver(alignMedia).observe(g,{childList:true,subtree:true});
-    window.addEventListener('resize',alignMedia,{passive:true});
-    setTimeout(alignMedia,250);setTimeout(alignMedia,800);setTimeout(alignMedia,1600);
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
-})();
-</script>
+<!-- v633: removed v626 delayed media alignment script -->
 
 <!-- v628: no fake iPhone graphic when no uploaded photo -->
 <style id="v628-iphone-no-fake-placeholder">
@@ -3058,5 +3027,80 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{font-size:14px!important;min-height:39px!important;max-height:39px!important}
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-price{font-size:18px!important}
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important;font-size:10px!important}
+}
+</style>
+
+<!-- v633: compact iPhone used card to the same natural Android card height -->
+<style id="v633-iphone-natural-android-height">
+/* Không kéo các card trong hàng cao bằng nhau nữa. */
+body.v615-used-page #productGrid{
+  align-items:start!important;
+  grid-auto-rows:auto!important;
+}
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+}
+/* iPhone dùng đúng khung ảnh 230px như Android desktop. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+  width:100%!important;
+  height:230px!important;
+  min-height:230px!important;
+  max-height:230px!important;
+  aspect-ratio:auto!important;
+  margin:0 0 14px!important;
+  box-sizing:border-box!important;
+}
+/* Tên một dòng thì chỉ chiếm một dòng, giống Android; không chừa 44px giả. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{
+  min-height:0!important;
+  max-height:none!important;
+  height:auto!important;
+  margin:0 0 9px!important;
+  color:#667085!important;
+  font-size:16px!important;
+  line-height:1.38!important;
+  overflow:hidden!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-price{
+  margin:4px 0 8px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-stock{
+  margin:0 0 6px!important;
+}
+/* Nút đi ngay sau nội dung như Android, không auto đẩy xuống đáy. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions{
+  margin-top:8px!important;
+  padding-top:0!important;
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{
+  height:34px!important;
+  min-width:0!important;
+  width:100%!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+    height:190px!important;
+    min-height:190px!important;
+    max-height:190px!important;
+    margin-bottom:11px!important;
+  }
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{
+    min-height:0!important;max-height:none!important;height:auto!important;font-size:14px!important;
+  }
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions{gap:6px!important;margin-top:7px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important}
 }
 </style>
