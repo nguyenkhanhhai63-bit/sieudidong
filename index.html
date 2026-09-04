@@ -2270,6 +2270,45 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-i
 body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{display:none!important}
 .sdd-iphone-detail-no-image{min-height:280px;display:flex;align-items:center;justify-content:center;color:#667085;background:#f8fafc;border-radius:14px;font-size:14px}
 </style>
+
+<!-- v632: stable iPhone card layout; remove delayed legacy resize that caused 1-2s jump -->
+<style id="v632-stable-iphone-card-layout">
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  align-self:start!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+  height:230px!important;min-height:230px!important;max-height:230px!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+    height:190px!important;min-height:190px!important;max-height:190px!important;
+  }
+}
+</style>
+<script id="v632-stable-iphone-card-layout-js">
+(function(){
+  function normalize(){
+    var grid=document.getElementById('productGrid'); if(!grid) return;
+    grid.querySelectorAll(':scope > .sdd-iphone-used-public-card').forEach(function(card){
+      card.classList.add('v615-used-card');
+      card.style.removeProperty('height');
+      card.style.removeProperty('min-height');
+      card.style.removeProperty('max-height');
+      var media=card.querySelector('.sdd-iphone-placeholder,.sdd-iphone-no-image-wrap');
+      if(media) media.classList.add('v615-used-img-wrap');
+      var name=card.querySelector('h3'); if(name) name.classList.add('v615-used-name');
+      var price=card.querySelector('.sdd-iphone-price'); if(price) price.classList.add('v615-used-price');
+      var stock=card.querySelector('.sdd-iphone-stock'); if(stock) stock.classList.add('v615-used-stock');
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',normalize,{once:true}); else normalize();
+  window.addEventListener('load',normalize,{once:true});
+})();
+</script>
+
 </body>
 </html>
 
@@ -2880,61 +2919,6 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   width:100%!important;
 }
 </style>
-<script id="v629-iphone-exact-android-size-js">
-(function(){
-  'use strict';
-  var timer=0, observer=null;
-  function isUsedPage(){
-    var p=(location.pathname||'/').replace(/\/+$/,'')||'/';
-    return p==='/may-cu' || p==='/may-cu/index.html';
-  }
-  function sync(){
-    timer=0;
-    if(!isUsedPage()) return;
-    var grid=document.getElementById('productGrid');
-    if(!grid) return;
-    var refCard=grid.querySelector(':scope > .v615-used-card:not(.sdd-iphone-used-public-card)');
-    if(!refCard) return;
-    var refMedia=refCard.querySelector('.v615-used-img-wrap');
-    if(!refMedia) return;
-    var mediaH=Math.round(refMedia.getBoundingClientRect().height);
-    var cardH=Math.round(refCard.getBoundingClientRect().height);
-    if(mediaH<40 || cardH<100) return;
-    grid.querySelectorAll(':scope > .sdd-iphone-used-public-card.v615-used-card').forEach(function(card){
-      var media=card.querySelector('.sdd-iphone-no-image-wrap, .sdd-iphone-placeholder');
-      if(media){
-        media.style.setProperty('height',mediaH+'px','important');
-        media.style.setProperty('min-height',mediaH+'px','important');
-        media.style.setProperty('max-height',mediaH+'px','important');
-      }
-      card.style.setProperty('height',cardH+'px','important');
-      card.style.setProperty('min-height',cardH+'px','important');
-      card.style.setProperty('max-height',cardH+'px','important');
-    });
-  }
-  function schedule(){
-    clearTimeout(timer);
-    timer=setTimeout(sync,50);
-  }
-  function boot(){
-    if(!isUsedPage()) return;
-    schedule();
-    var grid=document.getElementById('productGrid');
-    if(grid && window.MutationObserver){
-      observer=new MutationObserver(function(muts){
-        var changed=muts.some(function(m){return m.type==='childList';});
-        if(changed) schedule();
-      });
-      observer.observe(grid,{childList:true,subtree:true});
-    }
-    window.addEventListener('resize',schedule,{passive:true});
-    window.addEventListener('load',schedule,{once:true});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
-  else boot();
-})();
-</script>
-
 <!-- v630: iPhone public card information matches Android card exactly -->
 <style id="v630-iphone-info-match-android">
 /* iPhone vẫn giữ dữ liệu đầy đủ trong trang Chi tiết, nhưng card danh sách chỉ hiện đúng các dòng Android đang có. */
@@ -2987,24 +2971,6 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important;font-size:10px!important}
 }
 </style>
-<script id="v630-iphone-info-match-android-js">
-(function(){
-  'use strict';
-  function fix(){
-    var grid=document.getElementById('productGrid');
-    if(!grid || !document.body.classList.contains('v615-used-page')) return;
-    grid.querySelectorAll(':scope > .sdd-iphone-used-public-card').forEach(function(card){
-      var name=card.querySelector('h3'); if(name) name.classList.add('v615-used-name');
-      var price=card.querySelector('.sdd-iphone-price'); if(price) price.classList.add('v615-used-price');
-      var stock=card.querySelector('.sdd-iphone-stock'); if(stock) stock.classList.add('v615-used-stock');
-    });
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,0)}); else setTimeout(fix,0);
-  var g=document.getElementById('productGrid');
-  if(g && window.MutationObserver) new MutationObserver(function(m){if(m.some(function(x){return x.type==='childList'})) requestAnimationFrame(fix)}).observe(g,{childList:true});
-})();
-</script>
-
 <!-- v631: iPhone used cards use the exact same visible information layout as Android -->
 <style id="v631-iphone-visible-layout-exact">
 body.v615-used-page #productGrid{
@@ -3094,17 +3060,3 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important;font-size:10px!important}
 }
 </style>
-<script id="v631-disable-legacy-iphone-size-sync">
-(function(){
-  function clearLegacySizing(){
-    var grid=document.getElementById('productGrid'); if(!grid)return;
-    grid.querySelectorAll(':scope > .sdd-iphone-used-public-card').forEach(function(card){
-      card.style.removeProperty('height');card.style.removeProperty('min-height');card.style.removeProperty('max-height');
-      var media=card.querySelector('.sdd-iphone-placeholder,.sdd-iphone-no-image-wrap');
-      if(media){media.style.removeProperty('height');media.style.removeProperty('min-height');media.style.removeProperty('max-height');}
-    });
-  }
-  function run(){clearLegacySizing();setTimeout(clearLegacySizing,100);setTimeout(clearLegacySizing,500)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
-})();
-</script>
