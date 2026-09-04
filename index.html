@@ -2514,3 +2514,57 @@ body.v615-used-page #productGrid .sdd-iphone-detail-btn{
   body.v615-used-page #productGrid .sdd-iphone-detail-btn{height:32px!important;font-size:10px!important}
 }
 </style>
+
+<!-- v618: remove blank space in used-product cards; height follows content -->
+<style id="v618-used-card-auto-height">
+/* Không ép tất cả card trong cùng hàng cao bằng card dài nhất */
+body.v615-used-page #productGrid{
+  align-items:start!important;
+  grid-auto-rows:auto!important;
+}
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+}
+/* Bỏ các khoảng đệm chiều cao nhân tạo trong phần nội dung */
+body.v615-used-page #productGrid > .v615-used-card .v615-used-name,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{
+  min-height:0!important;
+  height:auto!important;
+}
+body.v615-used-page #productGrid .v615-used-tags,
+body.v615-used-page #productGrid .sdd-iphone-tags{
+  min-height:0!important;
+}
+/* Nút nằm ngay sau nội dung thay vì bị đẩy xuống đáy card */
+body.v615-used-page #productGrid .v615-used-actions{
+  margin-top:8px!important;
+  padding-top:0!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
+  margin-top:8px!important;
+}
+/* Nếu card không có phụ kiện/bảo hành thì khoảng cách sau trạng thái vẫn gọn */
+body.v615-used-page #productGrid .v615-used-stock,
+body.v615-used-page #productGrid .sdd-iphone-stock{
+  margin-bottom:6px!important;
+}
+body.v615-used-page #productGrid .v615-used-meta:last-of-type,
+body.v615-used-page #productGrid .sdd-iphone-extra:last-of-type{
+  margin-bottom:0!important;
+}
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .v615-used-card,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  body.v615-used-page #productGrid .v615-used-actions,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
+    margin-top:7px!important;
+  }
+}
+</style>
