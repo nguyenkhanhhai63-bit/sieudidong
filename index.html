@@ -3116,3 +3116,84 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   }
 }
 </style>
+
+
+<!-- v635: exact live alignment of iPhone used cards to first Android used card -->
+<style id="v635-iphone-exact-live-align">
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+  box-sizing:border-box!important;
+  align-self:start!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+  aspect-ratio:auto!important;
+  box-sizing:border-box!important;
+  flex:0 0 auto!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions{
+  margin-top:auto!important;
+  padding-top:8px!important;
+}
+</style>
+<script id="v635-iphone-exact-live-align-js">
+(function(){
+  var raf=0;
+  function visible(el){
+    if(!el) return false;
+    var r=el.getBoundingClientRect();
+    return r.width>20 && r.height>20 && getComputedStyle(el).display!=='none';
+  }
+  function refCard(grid){
+    var list=grid.querySelectorAll(':scope > .v615-used-card:not(.sdd-iphone-used-public-card)');
+    for(var i=0;i<list.length;i++) if(visible(list[i])) return list[i];
+    return null;
+  }
+  function sync(){
+    raf=0;
+    var grid=document.getElementById('productGrid');
+    if(!grid || !document.body.classList.contains('v615-used-page')) return;
+    var ref=refCard(grid); if(!ref) return;
+    var refMedia=ref.querySelector('.v615-used-img-wrap');
+    var cardH=Math.round(ref.getBoundingClientRect().height);
+    var mediaH=refMedia?Math.round(refMedia.getBoundingClientRect().height):0;
+    if(cardH<100) return;
+    grid.querySelectorAll(':scope > .sdd-iphone-used-public-card').forEach(function(card){
+      card.classList.add('v615-used-card');
+      card.style.setProperty('height',cardH+'px','important');
+      card.style.setProperty('min-height',cardH+'px','important');
+      card.style.setProperty('max-height',cardH+'px','important');
+      var media=card.querySelector('.sdd-iphone-placeholder,.sdd-iphone-no-image-wrap');
+      if(media && mediaH>50){
+        media.classList.add('v615-used-img-wrap');
+        media.style.setProperty('height',mediaH+'px','important');
+        media.style.setProperty('min-height',mediaH+'px','important');
+        media.style.setProperty('max-height',mediaH+'px','important');
+      }
+      var actions=card.querySelector('.v615-used-actions');
+      if(actions){
+        actions.style.setProperty('margin-top','auto','important');
+        actions.style.setProperty('padding-top','8px','important');
+      }
+    });
+  }
+  function schedule(){
+    if(raf) cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(sync);
+  }
+  function boot(){
+    var grid=document.getElementById('productGrid');
+    if(!grid) return;
+    schedule();
+    new MutationObserver(schedule).observe(grid,{childList:true,subtree:false});
+    if(window.ResizeObserver){
+      var ro=new ResizeObserver(schedule);
+      var ref=refCard(grid); if(ref) ro.observe(ref);
+    }
+    window.addEventListener('resize',schedule,{passive:true});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
+})();
+</script>
