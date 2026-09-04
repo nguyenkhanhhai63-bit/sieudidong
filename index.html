@@ -3520,3 +3520,37 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card >
   border-bottom:1px solid #e5e7eb!important;
 }
 </style>
+
+<!-- v642: identical price divider + spacing for Android and iPhone on desktop -->
+<style id="v642-used-price-spacing-identical">
+@media (min-width:1100px){
+  /* Cùng một rule cho Android + iPhone: đường ngang và khoảng cách tuyệt đối giống nhau */
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-price{
+    box-sizing:border-box!important;
+    width:100%!important;
+    height:32px!important;
+    min-height:32px!important;
+    max-height:32px!important;
+    flex:0 0 32px!important;
+    line-height:21px!important;
+    margin:0 0 9px!important;
+    padding:0 0 10px!important;
+    border-bottom:1px solid #e5e7eb!important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-stock{
+    height:24px!important;
+    min-height:24px!important;
+    max-height:24px!important;
+    flex:0 0 24px!important;
+    margin:0!important;
+  }
+  body.v615-used-page #productGrid > .v615-used-card > .v615-used-actions{
+    margin-top:auto!important;
+    padding-top:8px!important;
+    height:42px!important;
+    min-height:42px!important;
+    max-height:42px!important;
+    flex:0 0 42px!important;
+  }
+}
+</style>
