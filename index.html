@@ -2028,6 +2028,85 @@
 })();
 </script>
 
+
+
+<!-- v621: force iPhone used card media to the same compact visual height as Android cards -->
+<style id="v621-iphone-used-final-compact-fix">
+/* Desktop: iPhone image area must NOT use the old 3:4 portrait box. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
+  width:100%!important;
+  height:255px!important;
+  min-height:255px!important;
+  max-height:255px!important;
+  aspect-ratio:auto!important;
+  margin:0 0 10px!important;
+  border-radius:10px!important;
+  overflow:hidden!important;
+  background:#f5f6f8!important;
+  display:grid!important;
+  place-items:center!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-real-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
+  width:66px!important;
+  height:110px!important;
+  transform:none!important;
+}
+/* Keep the rest of the iPhone card tight like Android. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+  padding:10px!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card h3{
+  margin:0 0 6px!important;
+  min-height:0!important;
+  max-height:none!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-price,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-stock{
+  min-height:0!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-detail-btn{
+  margin-top:7px!important;
+}
+@media (min-width:701px) and (max-width:1099px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
+    height:210px!important;min-height:210px!important;max-height:210px!important;
+  }
+}
+@media (max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder{
+    height:150px!important;min-height:150px!important;max-height:150px!important;
+    margin-bottom:8px!important;
+  }
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-phone{
+    width:54px!important;height:90px!important;
+  }
+}
+</style>
+<script id="v621-disable-old-iphone-media-sync">
+(function(){
+  /* The old v620 script can write a large CSS variable after render. v621 uses
+     explicit responsive heights, so remove that variable whenever the used grid appears. */
+  function clearOldVar(){
+    var g=document.querySelector('body.v615-used-page #productGrid');
+    if(g) g.style.removeProperty('--v620-used-media-h');
+  }
+  document.addEventListener('DOMContentLoaded',clearOldVar);
+  window.addEventListener('load',clearOldVar);
+  setTimeout(clearOldVar,300);setTimeout(clearOldVar,1200);setTimeout(clearOldVar,2500);
+})();
+</script>
+
 </body>
 </html>
 
