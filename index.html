@@ -3214,3 +3214,86 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actio
   body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important;font-size:10px!important}
 }
 </style>
+
+<!-- v637: iPhone used card = exact Android v617/v618 card geometry, CSS only -->
+<style id="v637-iphone-exact-android-card">
+/* Không đo/ép chiều cao bằng JS. iPhone dùng đúng hình học card Android. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
+  position:relative!important;
+  background:#fff!important;
+  border:1px solid #e7e9ee!important;
+  border-radius:16px!important;
+  padding:10px!important;
+  min-width:0!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+  overflow:hidden!important;
+  box-shadow:0 3px 12px rgba(16,24,40,.055)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+}
+/* Khung ảnh CHÍNH XÁC như Android: theo chiều rộng card, tỉ lệ 3:4. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+  position:relative!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:3/4!important;
+  margin:0 0 11px!important;
+  border-radius:11px!important;
+  overflow:hidden!important;
+  background:#f5f6f8!important;
+  border:0!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-real-img{
+  width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important;
+}
+/* Phần nội dung sao chép đúng spacing của Android card. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{
+  margin:0 0 7px!important;
+  min-height:0!important;max-height:none!important;height:auto!important;
+  font-size:14px!important;line-height:1.35!important;font-weight:850!important;color:#667085!important;
+  display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-price{
+  margin:1px 0 7px!important;font-size:18px!important;line-height:1.15!important;font-weight:950!important;color:#e11900!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-stock{
+  display:inline-flex!important;align-self:flex-start!important;
+  margin:0 0 6px!important;padding:5px 8px!important;border-radius:999px!important;
+  background:#ecfdf3!important;color:#067647!important;font-size:10px!important;line-height:1.2!important;font-weight:850!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions{
+  width:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;margin-top:8px!important;padding-top:0!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{
+  width:100%!important;min-width:0!important;height:34px!important;margin:0!important;padding:0 7px!important;
+  border-radius:8px!important;box-sizing:border-box!important;font-size:10.5px!important;font-weight:800!important;
+}
+/* Không cho CSS iPhone cũ chèn thêm khoảng trống. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-tags,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-extra,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-source{display:none!important}
+
+@media(max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{padding:8px!important;border-radius:13px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-placeholder.v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap.v615-used-img-wrap{
+    width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:3/4!important;margin-bottom:9px!important;
+  }
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-name{font-size:13px!important;margin-bottom:7px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-price{font-size:16px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions{gap:6px!important;margin-top:7px!important}
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card .v615-used-actions > *{height:32px!important;font-size:10px!important}
+}
+</style>
