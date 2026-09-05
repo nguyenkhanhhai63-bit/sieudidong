@@ -21,7 +21,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   </div>
   <section class="hero">
     <h1>Bảng giá Siêu Di Động</h1>
-    <p>Bảng giá tự động: chỉ lấy sản phẩm đang còn hàng, gộp theo model và ưu tiên dung lượng + giá thấp nhất hiện có.</p>
+    <p>Bảng giá tự động: mỗi máy chỉ hiện 1 dòng, lấy phiên bản còn hàng có giá thấp nhất và hiển thị đúng dung lượng của phiên bản đó.</p>
     <div class="toolbar"><input id="search" class="search" type="search" placeholder="Tìm tên máy..."><div id="syncStatus" class="status">Đang đồng bộ giá từ website...</div></div>
   </section>
   <section class="sheet">
@@ -31,7 +31,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     </div>
     <div class="foot"><b>SIÊU DI ĐỘNG</b><span id="updatedText">Đang cập nhật...</span><b>Giá có thể thay đổi theo thị trường</b></div>
   </section>
-  <div class="note">Mỗi model chỉ hiển thị một dòng: ưu tiên phiên bản còn hàng có giá thấp nhất. Dung lượng đi theo đúng phiên bản giá thấp nhất đó.</div>
+  <div class="note">Mỗi máy chỉ hiển thị 1 dòng: chọn đúng phiên bản còn hàng có giá thấp nhất; cột Bộ nhớ đi theo chính phiên bản đó.</div>
 </div>
 <script>
 (function(){
@@ -128,11 +128,13 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function pickLowestVariants(list){
+    // Mỗi model chỉ hiện 1 dòng: lấy đúng phiên bản CÒN HÀNG có GIÁ THẤP NHẤT.
+    // Bộ nhớ hiển thị luôn đi theo chính phiên bản giá thấp nhất đó.
     const map=new Map();
-    list.forEach(it=>{
+    list.filter(it=>it&&it.stock&&it.price>0).forEach(it=>{
       const key=(it.type+'|'+baseName(it.name)).toLocaleLowerCase('vi');
       const prev=map.get(key);
-      if(!prev || it.price<prev.price || (it.price===prev.price && it.memoryRank<prev.memoryRank))map.set(key,it);
+      if(!prev || it.price<prev.price || (it.price===prev.price && it.memoryRank<prev.memoryRank)) map.set(key,it);
     });
     return [...map.values()];
   }
