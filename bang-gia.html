@@ -194,9 +194,18 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   .sheet .tbl td{font-size:calc(7.45pt * var(--print-density,1) * var(--manual-font,1))!important;padding:calc(.38mm * var(--print-density,1) * var(--manual-row,1)) calc(.44mm * var(--print-density,1))!important;}
 }
 
+
+/* v690: chế độ xem trước A4 nhúng trong Admin */
+body.admin-a4-preview{margin:0!important;padding:0!important;background:#dde2e8!important;overflow:hidden!important;}
+body.admin-a4-preview .top,body.admin-a4-preview .hero,body.admin-a4-preview .note{display:none!important;}
+body.admin-a4-preview .wrap{width:1440px!important;max-width:none!important;margin:0!important;padding:0!important;}
+body.admin-a4-preview .sheet{width:1400px!important;height:990px!important;min-height:990px!important;max-height:990px!important;margin:8px auto!important;padding:8px!important;box-sizing:border-box!important;border:1px solid #aeb6c2!important;border-radius:4px!important;box-shadow:none!important;background:#fff!important;}
+body.admin-a4-preview .sheet .grid{min-height:0!important;}
+body.admin-a4-preview .foot{margin-top:auto!important;}
 </style>
 </head>
 <body>
+<script>if(new URLSearchParams(location.search).get('adminPreview')==='1'){document.body.classList.add('admin-a4-preview');document.documentElement.classList.add('admin-a4-preview-html');}</script>
 <div class="wrap">
   <div class="top">
     <a class="brand" href="./index.html"><div class="logo">S</div><div><strong>SIÊU DI ĐỘNG</strong><small>Bảng giá tự động</small></div></a>
