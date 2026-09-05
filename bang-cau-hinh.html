@@ -126,7 +126,7 @@ function cleanScreen(v,size,res,hz){
 function cleanChip(v){
   let s=String(v||'').replace(/\s+/g,' ').trim(); if(!s)return '—';
   s=s.replace(/^(?:qualcomm|mediatek)\s+/i,'').replace(/^(?:chipset|chip|cpu|bộ xử lý|vi xử lý)\s*:?\s*/i,'');
-  const pats=[/Snapdragon\s+8\s+Elite\s+Gen\s*5/i,/Snapdragon\s+8s?\s+Gen\s*\d/i,/Snapdragon\s+8\s+Elite/i,/Snapdragon\s+7s?\s+Gen\s*\d/i,/Snapdragon\s+\d{3,4}(?:\s*\+)?/i,/Dimensity\s+\d{3,4}(?:\s+(?:Ultra|Pro|Max|SUPER|Racing))?/i,/Helio\s+[A-Z]\d+(?:\s+Ultra)?/i,/Kirin\s+\d+[A-Z]*/i,/Tensor\s+G\d/i];
+  const pats=[/Snapdragon\s+8\s+Elite\s+Gen\s*5/i,/Snapdragon\s+8s?\s+Gen\s*\d/i,/Snapdragon\s+8\s+Elite/i,/Snapdragon\s+7s?\s+Gen\s*\d/i,/Snapdragon\s+6s?\s+Gen\s*\d/i,/Snapdragon\s+\d{3,4}(?:\s*\+)?/i,/Dimensity\s+\d{3,4}(?:\s+(?:Ultra|Pro|Max|SUPER|Racing))?/i,/Helio\s+[A-Z]\d+(?:\s+Ultra)?/i,/Kirin\s+\d+[A-Z]*/i,/Tensor\s+G\d/i];
   for(const p of pats){const m=s.match(p);if(m)return m[0].replace(/\s+/g,' ')}
   return compact(s.replace(/\s*\([^)]*\)/g,'').replace(/\bSM\w+\b/ig,'').trim(),28)||'—';
 }
@@ -141,7 +141,7 @@ function extract(rows){
   const rawCharge=findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging']);
   return{screen:cleanScreen(rawScreen,size,res,hz),chip:cleanChip(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly'])),battery:cleanBattery(rawBattery),charge:cleanCharge(rawCharge+' '+rawBattery)}
 }
-async function specFor(name,force=false){const key='sdd_cfg_v718_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
+async function specFor(name,force=false){const key='sdd_cfg_v722_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
 async function pool(items,worker,n=6){let i=0;const jobs=Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const x=items[i++];await worker(x);statusEl.textContent=`Đang đọc cấu hình ${Math.min(i,items.length)}/${items.length} máy...`}});await Promise.all(jobs)}
 function loadAdjust(){try{adjust=Object.assign(adjust,JSON.parse(localStorage.getItem(ADJUST_KEY)||'{}')||{})}catch{};syncAdjustUI();applyAdjust(false)}
 function saveAdjust(){try{localStorage.setItem(ADJUST_KEY,JSON.stringify(adjust))}catch{}}
