@@ -21,7 +21,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   </div>
   <section class="hero">
     <h1>Bảng giá Siêu Di Động</h1>
-    <p>Bảng giá tự động: hiển thị toàn bộ model đang còn hàng. Mỗi model chỉ lấy phiên bản còn hàng có giá thấp nhất và đúng dung lượng của phiên bản đó.</p>
+    <p>Bảng giá tự động: hiển thị toàn bộ model đang bán, kể cả còn hàng hoặc hết hàng. Nếu model còn hàng sẽ ưu tiên phiên bản còn hàng có giá thấp nhất; nếu hết toàn bộ sẽ lấy phiên bản có giá thấp nhất.</p>
     <div class="toolbar"><input id="search" class="search" type="search" placeholder="Tìm tên máy..."><div id="syncStatus" class="status">Đang đồng bộ giá từ website...</div></div>
   </section>
   <section class="sheet">
@@ -31,7 +31,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     </div>
     <div class="foot"><b>SIÊU DI ĐỘNG</b><span id="updatedText">Đang cập nhật...</span><b>Giá có thể thay đổi theo thị trường</b></div>
   </section>
-  <div class="note">Mặc định hiển thị tất cả model đang còn hàng. Có thể ẩn/hiện từng model trong Quản trị → Tùy chỉnh bảng giá.</div>
+  <div class="note">Mặc định hiển thị tất cả model đang bán, kể cả còn hàng hoặc hết hàng. Có thể ẩn/hiện từng model trong Quản trị → Tùy chỉnh bảng giá.</div>
 </div>
 <script>
 (function(){
@@ -130,15 +130,23 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function pickLowestVariants(list){
-    // Mỗi model chỉ hiện 1 dòng: lấy đúng phiên bản CÒN HÀNG có GIÁ THẤP NHẤT.
-    // Bộ nhớ hiển thị luôn đi theo chính phiên bản giá thấp nhất đó.
-    const map=new Map();
-    list.filter(it=>it&&it.stock&&it.price>0).forEach(it=>{
+    // Mỗi model chỉ hiện 1 dòng.
+    // Nếu model có phiên bản còn hàng: ưu tiên giá thấp nhất trong các bản còn hàng.
+    // Nếu model hết toàn bộ: vẫn hiển thị và lấy phiên bản có giá thấp nhất.
+    const grouped=new Map();
+    list.filter(it=>it&&it.price>0).forEach(it=>{
       const key=modelKey(it);
-      const prev=map.get(key);
-      if(!prev || it.price<prev.price || (it.price===prev.price && it.memoryRank<prev.memoryRank)) map.set(key,it);
+      if(!grouped.has(key))grouped.set(key,[]);
+      grouped.get(key).push(it);
     });
-    return [...map.values()];
+    const out=[];
+    grouped.forEach(arr=>{
+      const inStock=arr.filter(it=>it.stock);
+      const pool=inStock.length?inStock:arr;
+      pool.sort((a,b)=>a.price-b.price || a.memoryRank-b.memoryRank);
+      out.push(pool[0]);
+    });
+    return out;
   }
   function panelHtml(g,arr){return '<section class="panel" style="--accent:'+g.accent+'"><div class="panel-title">'+g.title+'</div><table class="tbl"><thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td>'+escapeHtml(baseName(it.name))+'</td><td>'+escapeHtml(it.memory)+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'}
   function render(){
@@ -171,7 +179,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
       const n=nameOf(el), p=priceOf(el);
       return !!n && p>0;
     });
-    return cards.map(card=>{const name=nameOf(card),mem=memoryOf(card,name);const sv=storageValue(mem);return {name,price:priceOf(card),memory:mem,memoryRank:sv?sv.rank:999999,type,stock:inStock(card)}}).filter(x=>x.name&&x.price>0&&x.stock);
+    return cards.map(card=>{const name=nameOf(card),mem=memoryOf(card,name);const sv=storageValue(mem);return {name,price:priceOf(card),memory:mem,memoryRank:sv?sv.rank:999999,type,stock:inStock(card)}}).filter(x=>x.name&&x.price>0);
   }
   async function wait(ms){return new Promise(r=>setTimeout(r,ms))}
   function uniqueElements(list){
@@ -309,9 +317,9 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
       variants.forEach(v=>{
         const price=Number(v?.price??p?.price??0)||0;
         const onHand=Number(v?.onHand??v?.stock??v?.quantity??p?.onHand??p?.stock??p?.quantity??0)||0;
-        if(!model||price<=0||onHand<=0)return;
+        if(!model||price<=0)return;
         const mem=apiMemory(p,v),memory=mem?mem.label:'—',memoryRank=mem?mem.rank:999999;
-        out.push({name:model,price,memory,memoryRank,type,stock:true,onHand});
+        out.push({name:model,price,memory,memoryRank,type,stock:onHand>0,onHand});
       });
     });
     return out;
@@ -321,11 +329,11 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     const d=await r.json();
     if(!r.ok)throw new Error(d?.error||'Không tải được /api/products');
     const rows=productsFromApi(d);
-    if(!rows.length)throw new Error('API không có phiên bản còn hàng');
+    if(!rows.length)throw new Error('API không có sản phẩm đang bán');
     items=rows;
     render();
     const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');
-    status.innerHTML='<b>Đã đồng bộ trực tiếp</b> '+pickLowestVariants(items).length+' model đang còn hàng · lấy từ API sản phẩm';
+    status.innerHTML='<b>Đã đồng bộ trực tiếp</b> '+pickLowestVariants(items).length+' model đang bán · gồm cả còn hàng và hết hàng';
     return true;
   }
   function syncFromDomFallback(){
@@ -333,7 +341,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     sources.forEach(src=>{
       const f=document.createElement('iframe');f.className='loader-frame';f.src=src.path+(src.path.includes('?')?'&':'?')+'_pricelist='+Date.now();document.body.appendChild(f);
       let done=false;const collected=new Map();
-      const finish=()=>{if(done)return;done=true;items.push(...collected.values());try{f.remove()}catch(e){}pending--;if(pending===0){render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');status.innerHTML='<b>Đã đồng bộ dự phòng</b> '+pickLowestVariants(items).length+' model đang còn hàng'}};
+      const finish=()=>{if(done)return;done=true;items.push(...collected.values());try{f.remove()}catch(e){}pending--;if(pending===0){render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');status.innerHTML='<b>Đã đồng bộ dự phòng</b> '+pickLowestVariants(items).length+' model đang bán'}};
       const run=async()=>{
         if(done)return;let d;try{d=f.contentDocument}catch(e){}
         if(!d||!d.body){await wait(700);if(!done)return run();return}
@@ -344,7 +352,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     });
   }
   async function sync(){
-    status.textContent='Đang lấy toàn bộ sản phẩm còn hàng từ API...';
+    status.textContent='Đang lấy toàn bộ sản phẩm đang bán từ API, kể cả hết hàng...';
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
