@@ -132,30 +132,53 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     items=[];pending=sources.length;status.textContent='Đang đồng bộ giá từ website...';document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     sources.forEach(src=>{
       const f=document.createElement('iframe');f.className='loader-frame';f.src=src.path+(src.path.includes('?')?'&':'?')+'_pricelist='+Date.now();document.body.appendChild(f);
-      let tries=0,done=false,lastCount=-1,stableCount=0,bestRows=[];
+      let tries=0,done=false,lastUnionCount=-1,stableCount=0;
+      const collected=new Map();
       const startedAt=Date.now();
+      function rowKey(r){return [r.type,baseName(r.name),r.memory,r.price].join('|').toLocaleLowerCase('vi')}
+      function mergeRows(rows){
+        rows.forEach(r=>{const k=rowKey(r);if(!collected.has(k))collected.set(k,r)});
+      }
+      function wakeLazyContent(d){
+        if(!d)return;
+        try{
+          const w=d.defaultView;
+          // Kéo xuống đáy để kích hoạt lazy-load / infinite-scroll của danh mục.
+          if(w)w.scrollTo(0,Math.max(d.body?.scrollHeight||0,d.documentElement?.scrollHeight||0));
+          // Nếu web có nút "Xem thêm/Tải thêm" thì tự bấm cho tới khi hết.
+          const buttons=[...d.querySelectorAll('button,a,[role="button"]')];
+          for(const b of buttons){
+            if(b.disabled || b.getAttribute('aria-disabled')==='true')continue;
+            const t=text(b).toLowerCase();
+            if(/xem thêm|tải thêm|hiển thị thêm|xem nhiều hơn|load more|show more/.test(t)){
+              try{b.click()}catch(e){}
+            }
+          }
+        }catch(e){}
+      }
       function finish(){
         if(done)return;
         let d;try{d=f.contentDocument}catch(e){}
+        wakeLazyContent(d);
         const rows=d?extract(d,src.type):[];
-        if(rows.length>bestRows.length)bestRows=rows;
+        mergeRows(rows);
 
-        // Danh mục của web nạp sản phẩm bất đồng bộ. Không chốt ngay khi vừa thấy
-        // vài card đầu tiên vì như vậy bảng giá sẽ bị thiếu các model tải sau.
-        if(rows.length>0 && rows.length===lastCount)stableCount++; else stableCount=0;
-        lastCount=rows.length;
+        // Không chỉ nhìn số card của 1 thời điểm: một số trang phân trang/virtualize
+        // có thể thay card cũ bằng card mới. Vì vậy gom UNION tất cả card đã từng thấy.
+        const unionCount=collected.size;
+        if(unionCount>0 && unionCount===lastUnionCount)stableCount++; else stableCount=0;
+        lastUnionCount=unionCount;
         tries++;
         const elapsed=Date.now()-startedAt;
-        const stableEnough=rows.length>0 && stableCount>=5 && elapsed>=2500;
-        const timedOut=elapsed>=20000 || tries>=80;
-        if(!stableEnough && !timedOut){setTimeout(finish,350);return}
+        const stableEnough=unionCount>0 && stableCount>=10 && elapsed>=7000;
+        const timedOut=elapsed>=45000 || tries>=150;
+        if(!stableEnough && !timedOut){setTimeout(finish,300);return}
 
         done=true;
-        const finalRows=rows.length>=bestRows.length?rows:bestRows;
-        items.push(...finalRows);f.remove();pending--;
+        items.push(...collected.values());f.remove();pending--;
         if(pending===0){
           render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');
-          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · đã chờ tải đủ danh sách';
+          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · đã quét toàn bộ danh sách';
         }
       }
       f.addEventListener('load',()=>setTimeout(finish,700));setTimeout(finish,1400);
