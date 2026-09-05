@@ -82,6 +82,26 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   @page{size:A4 landscape;margin:4mm!important;}
 }
 
+
+/* v685: tự giãn nội dung để lấp đầy khổ A4, không để khoảng trắng lớn */
+@media (min-width:761px){
+  .sheet .grid{flex:1 1 auto;min-height:0;align-items:stretch;}
+  .sheet .col{height:100%;align-content:stretch;}
+  .sheet .panel{display:flex;flex-direction:column;}
+  .sheet .tbl{height:auto;}
+  .sheet .tbl tbody tr{height:var(--a4-row-h,auto);}
+  .sheet .tbl thead tr{height:var(--a4-head-h,auto);}
+  .sheet .panel-title{min-height:var(--a4-title-h,auto);display:flex;align-items:center;justify-content:center;}
+}
+@media print{
+  .sheet .grid{flex:1 1 auto!important;min-height:0!important;align-items:stretch!important;}
+  .sheet .col{height:100%!important;align-content:stretch!important;}
+  .sheet .panel{display:flex!important;flex-direction:column!important;}
+  .sheet .tbl tbody tr{height:var(--a4-row-h,auto)!important;}
+  .sheet .tbl thead tr{height:var(--a4-head-h,auto)!important;}
+  .sheet .panel-title{min-height:var(--a4-title-h,auto)!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+}
+
 </style>
 </head>
 <body>
@@ -291,6 +311,30 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     if(!left.children.length)left.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     if(!right.children.length)right.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     fitA4Print();
+    requestAnimationFrame(fitA4Fill);
+  }
+  function fitA4Fill(){
+    const sheet=document.querySelector('.sheet'), grid=sheet&&sheet.querySelector('.grid'), foot=sheet&&sheet.querySelector('.foot');
+    if(!sheet||!grid||!left||!right)return;
+    const sheetStyle=getComputedStyle(sheet);
+    const pad=parseFloat(sheetStyle.paddingTop||0)+parseFloat(sheetStyle.paddingBottom||0);
+    const footH=foot?foot.getBoundingClientRect().height:0;
+    const footMargin=foot?parseFloat(getComputedStyle(foot).marginTop||0):0;
+    const available=Math.max(0,sheet.clientHeight-pad-footH-footMargin-2);
+    grid.style.height=available+'px';
+    [left,right].forEach(col=>{
+      const panels=[...col.querySelectorAll('.panel')];
+      if(!panels.length)return;
+      const rows=panels.reduce((n,p)=>n+p.querySelectorAll('tbody tr').length,0);
+      const gap=parseFloat(getComputedStyle(col).rowGap||getComputedStyle(col).gap||0);
+      const gaps=Math.max(0,panels.length-1)*gap;
+      const titleH=20, headH=18;
+      const fixed=panels.length*(titleH+headH)+gaps;
+      const rowH=rows?Math.max(15,(available-fixed)/rows):18;
+      col.style.setProperty('--a4-row-h',rowH.toFixed(2)+'px');
+      col.style.setProperty('--a4-title-h',titleH+'px');
+      col.style.setProperty('--a4-head-h',headH+'px');
+    });
   }
   function fitA4Print(){
     const sheet=document.querySelector('.sheet');
@@ -512,7 +556,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',fitA4Print);window.addEventListener('resize',fitA4Print);window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{fitA4Print();fitA4Fill()});window.addEventListener('resize',()=>{fitA4Print();fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
