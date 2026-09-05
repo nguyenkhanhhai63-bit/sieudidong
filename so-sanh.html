@@ -504,7 +504,7 @@ body.compare-page, body.compare-page *,
   border-radius:12px!important;
   background:#fff!important;
   color:#ff5a00!important;
-  font-weight:800!important;
+  font-weight:700!important;
   font-size:14px!important;
   line-height:1!important;
   text-decoration:none!important;
@@ -572,7 +572,7 @@ body.compare-page, body.compare-page *,
     background:#fff7f2!important;
     color:#f04b00!important;
     font-size:14px!important;
-    font-weight:800!important;
+    font-weight:700!important;
     text-decoration:none!important;
     box-sizing:border-box!important;
   }
@@ -650,7 +650,7 @@ body.compare-page, body.compare-page *,
   .compare-mobile-change-btn-bottom{
     width:100%!important;min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;
     border:1px solid #ff5a00!important;border-radius:12px!important;background:#fff!important;color:#f04b00!important;
-    font-size:14px!important;font-weight:800!important;text-decoration:none!important;box-sizing:border-box!important;
+    font-size:14px!important;font-weight:700!important;text-decoration:none!important;box-sizing:border-box!important;
   }
 }
 </style>
@@ -780,6 +780,38 @@ body.compare-page-body > .compare-site-header{
 }
 @media(min-width:900px){#compareMobileDrawer{display:none!important}}
 </style>
+
+<style id="v726-compare-font-hard-fix">
+/* v726: normalize comparison typography to basic Arial, only 400/700 weights */
+body.compare-page, body.compare-page *,
+.compare-page-main, .compare-page-main *,
+.compare-page-content, .compare-page-content *,
+.compare-table, .compare-table *,
+#compareTable, #compareTable * {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  font-stretch: normal !important;
+  font-variant: normal !important;
+  font-synthesis: none !important;
+  letter-spacing: 0 !important;
+}
+.compare-table td, #compareTable td,
+.compare-page-spec-value, .compare-page-product-meta {
+  font-weight: 400 !important;
+}
+.compare-table th, #compareTable th,
+.compare-page-spec-name, .compare-page-product-name,
+.compare-page-product-price, .compare-page-stock,
+.compare-page-content strong, .compare-page-content b {
+  font-weight: 700 !important;
+}
+@media (max-width:899px){
+  .compare-table th, .compare-table td, #compareTable th, #compareTable td {
+    line-height: 1.35 !important;
+  }
+}
+</style>
+
 </head>
 <body class="compare-page-body">
 <header class="commerce-header sdd-header-v164">
