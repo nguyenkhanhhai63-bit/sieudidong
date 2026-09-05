@@ -9522,6 +9522,36 @@ function renderWarrantyRecent(items=[]){
     <thead><tr><th>Thời gian</th><th>Số điện thoại</th><th>Tên khách hàng</th><th>Kết quả</th><th>Sản phẩm đã mua</th><th>Ngày khách mua</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
+
+  // V653: Dữ liệu analytics cũ chỉ lưu sản phẩm, chưa lưu ngày mua.
+  // Nếu ngày mua đang trống, đối chiếu lại API bảo hành bằng SĐT và điền trực tiếp vào bảng.
+  const trs=[...host.querySelectorAll("tbody tr")];
+  items.forEach((x,i)=>{
+    if(x.status!=="found") return;
+    const hasDate=(Array.isArray(x.purchaseDates)&&x.purchaseDates.some(Boolean)) ||
+      (Array.isArray(x.items)&&x.items.some(it=>it&&it.purchaseDate)) || !!x.purchaseDate;
+    if(hasDate) return;
+    const phone=String(x.phoneFull||x.phone||"").replace(/\D/g,"");
+    const cell=trs[i]&&trs[i].querySelector(".warranty-purchase-date");
+    if(!phone || phone.length<9 || !cell) return;
+    cell.innerHTML='<span style="color:#94a3b8;font-weight:600">Đang kiểm tra...</span>';
+    fetch("/api/warranty-lookup",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      credentials:"same-origin",
+      body:JSON.stringify({phone})
+    }).then(r=>r.ok?r.json():Promise.reject(new Error("lookup failed")))
+      .then(data=>{
+        const found=Array.isArray(data&&data.items)?data.items:[];
+        const dates=[];
+        found.forEach(it=>{
+          const d=String(it&&it.purchaseDate||"").trim();
+          if(d&&!dates.includes(d)) dates.push(d);
+        });
+        if(!dates.length){ cell.textContent="—"; return; }
+        cell.innerHTML=dates.map(v=>`<div class="warranty-purchase-date-item">${v.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}</div>`).join("");
+      }).catch(()=>{ cell.textContent="—"; });
+  });
 }
 
 
