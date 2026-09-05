@@ -132,7 +132,7 @@ function cleanChip(v){
   return compact(s.replace(/\s*\([^)]*\)/g,'').replace(/\bSM\w+\b/ig,'').trim(),28)||'—';
 }
 function cleanBattery(v){const s=String(v||'').replace(/\s+/g,' ').trim(),m=s.match(/(\d[\d.,]*)\s*mAh/i);return m?(m[1].replace(/[.,](?=\d{3}\b)/g,'')+' mAh'):'—'}
-function cleanCharge(v){const s=String(v||'').replace(/\s+/g,' ').trim();if(!s)return'—';const watts=[...s.matchAll(/\d+(?:[.,]\d+)?\s*W/ig)].map(m=>m[0].replace(/\s+/g,''));if(!watts.length)return'—';const uniq=[...new Set(watts)];const wireless=/không dây|wireless/i.test(s);return uniq.join(' + ')+(wireless?' Không dây':'')}
+function cleanCharge(v){const s=String(v||'').replace(/\s+/g,' ').trim();if(!s)return'—';const watts=[...s.matchAll(/(\d+(?:[.,]\d+)?)\s*W/ig)].map(m=>({n:parseFloat(m[1].replace(',','.')),t:m[1].replace(',','.')+'W'})).filter(x=>Number.isFinite(x.n));if(!watts.length)return'—';watts.sort((a,b)=>b.n-a.n);return watts[0].t}
 function extract(rows){
   const rawScreen=findSpec(rows,['màn hình','công nghệ màn hình','cong nghe man hinh','display']);
   const size=findSpec(rows,['kích thước màn hình','kich thuoc man hinh','screen size']);
@@ -142,7 +142,7 @@ function extract(rows){
   const rawCharge=findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging']);
   return{screen:cleanScreen(rawScreen,size,res,hz),chip:cleanChip(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly'])),battery:cleanBattery(rawBattery),charge:cleanCharge(rawCharge+' '+rawBattery)}
 }
-async function specFor(name,force=false){const key='sdd_cfg_v716_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
+async function specFor(name,force=false){const key='sdd_cfg_v718_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
 async function pool(items,worker,n=6){let i=0;const jobs=Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const x=items[i++];await worker(x);statusEl.textContent=`Đang đọc cấu hình ${Math.min(i,items.length)}/${items.length} máy...`}});await Promise.all(jobs)}
 function loadAdjust(){try{adjust=Object.assign(adjust,JSON.parse(localStorage.getItem(ADJUST_KEY)||'{}')||{})}catch{};syncAdjustUI();applyAdjust(false)}
 function saveAdjust(){try{localStorage.setItem(ADJUST_KEY,JSON.stringify(adjust))}catch{}}
