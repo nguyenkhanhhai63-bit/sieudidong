@@ -58,6 +58,30 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   .sheet .foot{margin-top:auto!important;}
 }
 
+
+/* v684: A4 landscape balanced preview + print */
+@media (min-width:761px){
+  .sheet{width:100%;aspect-ratio:297/210;height:auto;padding:6px;box-sizing:border-box;overflow:hidden;}
+  .grid{gap:4px;}
+  .col{gap:4px;}
+  .panel-title{padding:4.5px 6px;font-size:12.4px;line-height:1.05;}
+  .tbl th{font-size:9.2px;padding:3px 4px;line-height:1.05;}
+  .tbl td{font-size:10.8px;padding:3.4px 4px;line-height:1.06;}
+  .foot{margin-top:auto;padding:4px 8px;}
+}
+@media print{
+  html,body{width:297mm!important;height:210mm!important;overflow:hidden!important;}
+  .wrap{width:100%!important;height:100%!important;margin:0!important;}
+  .sheet{width:289mm!important;height:202mm!important;max-height:202mm!important;overflow:hidden!important;padding:2.5mm!important;box-sizing:border-box!important;}
+  .grid{gap:1.2mm!important;}
+  .col{gap:1.1mm!important;}
+  .panel-title{font-size:8.6pt!important;padding:1.05mm 1.2mm!important;line-height:1!important;}
+  .tbl th{font-size:6.9pt!important;padding:.55mm .7mm!important;line-height:1!important;}
+  .tbl td{font-size:7.7pt!important;padding:.62mm .7mm!important;line-height:1.02!important;}
+  .foot{margin-top:auto!important;padding:.8mm 1.2mm!important;}
+  @page{size:A4 landscape;margin:4mm!important;}
+}
+
 </style>
 </head>
 <body>
@@ -236,8 +260,34 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     const filtered=allModels.filter(it=>!hidden.has(modelKey(it))).filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q));
     const buckets=[];
     groups.forEach(g=>{const arr=filtered.filter(it=>{const c=classify(it);return c&&c.id===g.id});const ord=customOrder(),pos=new Map(ord.map((k,i)=>[k,i]));arr.sort((a,b)=>(pos.has(modelKey(a))?pos.get(modelKey(a)):1e9)-(pos.has(modelKey(b))?pos.get(modelKey(b)):1e9)||baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
+    // Cân A4 theo số dòng thay vì giữ nguyên cả hãng ở một cột.
+    // Nhóm dài (thường Xiaomi/Redmi) được phép tách làm 2 khối để tận dụng phần trống bên phải.
+    const totalRows=buckets.reduce((n,b)=>n+b.arr.length+2,0);
+    const target=Math.ceil(totalRows/2);
     let lw=0,rw=0;
-    buckets.forEach(b=>{const holder=lw<=rw?left:right;holder.insertAdjacentHTML('beforeend',panelHtml(b.g,b.arr));if(holder===left)lw+=b.weight;else rw+=b.weight});
+    buckets.forEach(b=>{
+      let arr=b.arr.slice();
+      // Ưu tiên lấp cột trái gần target; nếu nhóm quá dài thì chia tại ranh giới sản phẩm.
+      if(lw<=rw && lw>0 && lw+arr.length+2>target){
+        const can=Math.max(0,target-lw-2);
+        if(can>=4 && can<arr.length-3){
+          const first=arr.slice(0,can), rest=arr.slice(can);
+          left.insertAdjacentHTML('beforeend',panelHtml(b.g,first)); lw+=first.length+2;
+          right.insertAdjacentHTML('beforeend',panelHtml(b.g,rest)); rw+=rest.length+2;
+          return;
+        }
+      }
+      // Nếu nhóm đầu tiên tự nó gần đầy một cột, chia nhẹ để hai cột cân chiều cao hơn.
+      if(lw===0 && rw===0 && arr.length+2>target){
+        const cut=Math.max(4,Math.min(arr.length-4,target-2));
+        left.insertAdjacentHTML('beforeend',panelHtml(b.g,arr.slice(0,cut))); lw+=cut+2;
+        right.insertAdjacentHTML('beforeend',panelHtml(b.g,arr.slice(cut))); rw+=arr.length-cut+2;
+        return;
+      }
+      const holder=lw<=rw?left:right;
+      holder.insertAdjacentHTML('beforeend',panelHtml(b.g,arr));
+      if(holder===left)lw+=arr.length+2;else rw+=arr.length+2;
+    });
     if(!left.children.length)left.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     if(!right.children.length)right.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     fitA4Print();
@@ -245,16 +295,11 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   function fitA4Print(){
     const sheet=document.querySelector('.sheet');
     if(!sheet)return;
-    const rowLoad=col=>[...col.querySelectorAll('.panel')].reduce((sum,p)=>{
-      const rows=p.querySelectorAll('tbody tr').length;
-      // Mỗi nhóm cộng thêm tiêu đề nhóm + hàng tiêu đề bảng.
-      return sum+rows+2;
-    },0);
+    const rowLoad=col=>[...col.querySelectorAll('.panel')].reduce((sum,p)=>sum+p.querySelectorAll('tbody tr').length+2,0);
     const maxRows=Math.max(rowLoad(left),rowLoad(right),1);
-    // A4 ngang: dùng gần hết chiều cao trang. Danh sách ít máy sẽ tăng nhẹ,
-    // danh sách nhiều máy tự thu nhỏ nhưng vẫn ưu tiên độ dễ đọc.
-    let scale=44/maxRows;
-    scale=Math.max(0.58,Math.min(1.08,scale));
+    // Sau khi đã cân 2 cột, chỉ thu nhẹ khi thật sự nhiều dòng; không phóng quá lớn gây sang trang 2.
+    let scale=maxRows>43?43/maxRows:1;
+    scale=Math.max(.78,Math.min(1,scale));
     sheet.style.setProperty('--a4-fit',scale.toFixed(3));
     sheet.dataset.a4Rows=String(maxRows);
     sheet.dataset.a4Scale=scale.toFixed(3);
