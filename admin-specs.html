@@ -9476,9 +9476,33 @@ function renderWarrantyRecent(items=[]){
   const statusText={found:"Tìm thấy",not_found:"Không tìm thấy",error:"Lỗi tra cứu"};
   const statusClass={found:"found",not_found:"not-found",error:"error"};
   const rows=items.map(x=>{
-    const date=x.ts?new Date(Number(x.ts)):null;
-    const when=date && !Number.isNaN(date.getTime())
-      ? date.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit",year:"numeric"})
+    // V654: ưu tiên đúng thời điểm khách thực hiện tra cứu.
+    // Một số bản API trả ts = thời điểm admin tải thống kê nên nhiều dòng bị cùng một giờ.
+    // Hỗ trợ các tên trường thời gian cũ/mới và cả timestamp giây/mili-giây.
+    const getWarrantyEventTime=(o)=>{
+      const candidates=[
+        o?.lookupTs,o?.lookupAt,o?.lookupTime,o?.searchedAt,o?.searchAt,
+        o?.eventTs,o?.eventTime,o?.createdAt,o?.created_at,o?.timestamp,o?.time,o?.ts
+      ];
+      for(const raw of candidates){
+        if(raw===null || raw===undefined || raw==="") continue;
+        let d=null;
+        if(typeof raw==="number" || /^\d{10,13}$/.test(String(raw).trim())){
+          let n=Number(raw);
+          if(Number.isFinite(n) && n>0){
+            if(n<1e12) n*=1000; // timestamp theo giây
+            d=new Date(n);
+          }
+        }else{
+          d=new Date(raw);
+        }
+        if(d && !Number.isNaN(d.getTime()) && d.getFullYear()>2020) return d;
+      }
+      return null;
+    };
+    const date=getWarrantyEventTime(x);
+    const when=date
+      ? date.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",second:"2-digit",day:"2-digit",month:"2-digit",year:"numeric",hour12:false})
       : "—";
     const count=Number(x.itemCount||0);
     const customerName=String(x.customerName||"").trim();
