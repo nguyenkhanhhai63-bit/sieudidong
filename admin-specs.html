@@ -15985,35 +15985,46 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 }
 </style>
 
-<!-- V601 AI HISTORY FIXED SCROLL AREA -->
-<style id="v601-ai-history-fixed-scroll">
-/* Giữ card gọn như trước; lịch sử dài thì cuộn bên trong. */
+<!-- V651 AI HISTORY TALL SCROLL AREA -->
+<style id="v651-ai-history-tall-scroll">
+/* Tăng chiều cao khung lịch sử để xem được nhiều nội dung hơn, vẫn cuộn dọc độc lập. */
 #analyticsCard .ai-history-box{
   display:block!important;
   min-height:0!important;
 }
 #analyticsCard .ai-question-history{
   display:block!important;
-  height:330px!important;
+  height:560px!important;
   min-height:0!important;
-  max-height:330px!important;
-  overflow-y:auto!important;
+  max-height:560px!important;
+  overflow-y:scroll!important;
   overflow-x:hidden!important;
   padding:5px 14px 10px!important;
   scrollbar-gutter:stable;
+  overscroll-behavior:contain;
 }
 #analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{
-  height:330px!important;
-  max-height:330px!important;
-  overflow-y:auto!important;
+  height:560px!important;
+  max-height:560px!important;
+  overflow-y:scroll!important;
+}
+#analyticsCard .ai-question-history::-webkit-scrollbar{
+  width:12px!important;
+}
+#analyticsCard .ai-question-history::-webkit-scrollbar-thumb{
+  border-radius:999px!important;
+  border:3px solid transparent!important;
+  background-clip:padding-box!important;
 }
 #analyticsCard .ai-history-pager{
   flex:0 0 auto!important;
 }
 @media(max-width:900px){
-  #analyticsCard .ai-question-history{
-    height:330px!important;
-    max-height:330px!important;
+  #analyticsCard .ai-question-history,
+  #analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{
+    height:68vh!important;
+    max-height:68vh!important;
+    min-height:420px!important;
   }
 }
 </style>

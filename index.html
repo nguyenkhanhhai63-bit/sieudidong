@@ -1286,6 +1286,14 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
     return /^(còn|con đó|máy đó|bản đó|loại đó|cái đó|nó|like new|new|fullbox|seal|màu|bản|ram|rom|dung lượng|giá|bao nhiêu|có giảm|hs|học sinh|còn hàng|hết hàng|còn ko|còn k|còn không|có ko|có k|có không|thì sao|sao shop)/i.test(q)
       || /\b(con đó|máy đó|bản đó|còn (ko|k|không)|like new|bản 256|bản 512|màu gì|giá sao|giá bao nhiêu)\b/i.test(q);
   }
+  // V650: câu xã giao / câu quá ngắn không được kéo ngữ cảnh sản phẩm cũ vào.
+  // Ví dụ khách chỉ nhắn "alo", "sao", "ủa", "hả" thì AI phải phản hồi đúng câu hiện tại,
+  // tuyệt đối không tự nhảy sang báo giá một máy đã nói ở các lượt trước.
+  function isCasualMessage(q){
+    q=clean(q).toLowerCase().replace(/[!?.,…]+$/g,'').trim();
+    if(!q)return false;
+    return /^(alo|a lô|hello|hi|hey|chào|chào shop|shop ơi|ơi|sao|ủa|uả|hả|ha|gì|gì vậy|sao vậy|sao á|sao thế|ok|oke|okay|ừ|uh|ờ|vâng|dạ|cảm ơn|thanks|thank you)$/i.test(q);
+  }
   function subjectFromUser(q){
     q=clean(q);
     if(!hasExplicitProduct(q))return '';
@@ -1358,21 +1366,43 @@ body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{fo
           const obj=JSON.parse(init.body),key=pickMessageKey(obj);
           if(key){
             originalUser=clean(obj[key]);
-            obj[key]=resolveMessage(originalUser,state);
-            // Chỉ gửi lịch sử user ở field phụ; không nhét câu trả lời AI vào câu hỏi chính.
+            const casual=isCasualMessage(originalUser);
+            obj[key]=casual
+              ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop đang chat trực tiếp. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ, KHÔNG tự báo giá, KHÔNG tự báo còn/hết hàng nếu khách chưa hỏi.`
+              : resolveMessage(originalUser,state);
+            // Chỉ gửi lịch sử khi thật sự cần nối ngữ cảnh. Câu xã giao/ngắn phải cắt sạch context cũ.
             obj.originalMessage=originalUser;
-            obj.conversationHistory=state.turns.slice(-5).map(t=>({user:t.user}));
+            obj.conversationHistory=casual ? [] : state.turns.slice(-5).map(t=>({user:t.user}));
+            if(casual)obj.ignorePreviousProductContext=true;
             init.body=JSON.stringify(obj);
           }
         }else{
           const sp=new URLSearchParams(init.body),keys=['message','question','text','prompt','query','content'];
           const key=keys.find(k=>clean(sp.get(k)));
-          if(key){originalUser=clean(sp.get(key));sp.set(key,resolveMessage(originalUser,state));sp.set('originalMessage',originalUser);init.body=sp.toString()}
+          if(key){
+            originalUser=clean(sp.get(key));
+            const casual=isCasualMessage(originalUser);
+            sp.set(key,casual
+              ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ và KHÔNG tự báo giá nếu khách chưa hỏi.`
+              : resolveMessage(originalUser,state));
+            sp.set('originalMessage',originalUser);
+            if(casual)sp.set('ignorePreviousProductContext','true');
+            init.body=sp.toString();
+          }
         }
       }else if(init.body instanceof FormData){
         const fd=new FormData();init.body.forEach((v,k)=>fd.append(k,v));
         const keys=['message','question','text','prompt','query','content'],key=keys.find(k=>typeof fd.get(k)==='string'&&clean(fd.get(k)));
-        if(key){originalUser=clean(fd.get(key));fd.set(key,resolveMessage(originalUser,state));fd.set('originalMessage',originalUser);init.body=fd}
+        if(key){
+          originalUser=clean(fd.get(key));
+          const casual=isCasualMessage(originalUser);
+          fd.set(key,casual
+            ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ và KHÔNG tự báo giá nếu khách chưa hỏi.`
+            : resolveMessage(originalUser,state));
+          fd.set('originalMessage',originalUser);
+          if(casual)fd.set('ignorePreviousProductContext','true');
+          init.body=fd;
+        }
       }
     }catch(e){}
 
