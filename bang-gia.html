@@ -148,6 +148,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   function modelKey(it){return (String(it.type||'phone')+'|'+baseName(it.name)).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim()}
   function hiddenModelSet(){try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}}
   function customNames(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}}
+  function customOrder(){try{return JSON.parse(localStorage.getItem('sdd_price_model_order')||'[]')}catch(e){return []}}
   function displayName(it){const m=customNames();return m[modelKey(it)]||baseName(it.name)}
   function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||dynamicBrandGroup(it.name)}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
@@ -185,7 +186,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     const hidden=hiddenModelSet();
     const filtered=allModels.filter(it=>!hidden.has(modelKey(it))).filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q));
     const buckets=[];
-    groups.forEach(g=>{const arr=filtered.filter(it=>{const c=classify(it);return c&&c.id===g.id}).sort((a,b)=>baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
+    groups.forEach(g=>{const arr=filtered.filter(it=>{const c=classify(it);return c&&c.id===g.id});const ord=customOrder(),pos=new Map(ord.map((k,i)=>[k,i]));arr.sort((a,b)=>(pos.has(modelKey(a))?pos.get(modelKey(a)):1e9)-(pos.has(modelKey(b))?pos.get(modelKey(b)):1e9)||baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
     let lw=0,rw=0;
     buckets.forEach(b=>{const holder=lw<=rw?left:right;holder.insertAdjacentHTML('beforeend',panelHtml(b.g,b.arr));if(holder===left)lw+=b.weight;else rw+=b.weight});
     if(!left.children.length)left.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
@@ -399,7 +400,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>window.print());window.addEventListener('storage',e=>{if(e.key==='sdd_price_hidden_models')render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>window.print());window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_model_order'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
