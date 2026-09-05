@@ -151,6 +151,32 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   @page{size:A4 landscape;margin:0!important;}
 }
 
+/* v688: print auto-fill - phóng nội dung vừa chiều cao A4 thay vì dồn nhỏ ở phía trên */
+@media print{
+  .sheet .grid{
+    gap:calc(.8mm * var(--print-density,1))!important;
+  }
+  .sheet .col{gap:calc(.65mm * var(--print-density,1))!important;}
+  .sheet .panel-title{
+    font-size:calc(8.6pt * var(--print-density,1))!important;
+    padding:calc(.62mm * var(--print-density,1)) calc(.82mm * var(--print-density,1))!important;
+    line-height:1!important;
+  }
+  .sheet .tbl th{
+    font-size:calc(6.65pt * var(--print-density,1))!important;
+    padding:calc(.30mm * var(--print-density,1)) calc(.44mm * var(--print-density,1))!important;
+    line-height:1!important;
+  }
+  .sheet .tbl td{
+    font-size:calc(7.45pt * var(--print-density,1))!important;
+    padding:calc(.38mm * var(--print-density,1)) calc(.44mm * var(--print-density,1))!important;
+    line-height:1.02!important;
+  }
+  .sheet .foot{padding:calc(.58mm * var(--print-density,1)) .9mm!important;}
+  .foot b{font-size:calc(6.7pt * var(--print-density,1))!important}
+  .foot span{font-size:calc(6.25pt * var(--print-density,1))!important}
+}
+
 </style>
 </head>
 <body>
@@ -414,18 +440,25 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     const weightedLoad=col=>{
       const panels=[...col.querySelectorAll('.panel')];
       const rows=panels.reduce((sum,p)=>sum+p.querySelectorAll('tbody tr').length,0);
-      // Mỗi panel tốn thêm chiều cao title + header, tương đương ~2.4 dòng.
       return rows + panels.length*2.4;
     };
     const maxLoad=Math.max(weightedLoad(left),weightedLoad(right),1);
-    // Khoảng 40 "dòng quy đổi" là mức vừa A4 với font đậm. Nhiều hơn sẽ tự thu toàn bộ grid,
-    // tuyệt đối không ẩn/cắt sản phẩm.
-    let scale=Math.min(1,40/maxLoad);
-    scale=Math.max(.60,scale);
-    const widthPct=(97.306/scale); // 289mm / 297mm, bù lại phần width bị transform thu nhỏ.
+
+    // Tự chọn mật độ để bảng chiếm gần đầy chiều cao A4.
+    // Ít dòng -> tăng cỡ chữ/chiều cao dòng; nhiều dòng -> giảm vừa đủ, không ẩn sản phẩm.
+    let density=47/maxLoad;
+    density=Math.max(.78,Math.min(1.30,density));
+
+    // Chỉ dùng transform scale như lớp bảo hiểm khi danh sách quá dài.
+    let scale=1;
+    if(maxLoad>50) scale=Math.max(.72,50/maxLoad);
+
+    const widthPct=(97.306/scale);
+    sheet.style.setProperty('--print-density',density.toFixed(4));
     sheet.style.setProperty('--print-scale',scale.toFixed(4));
     sheet.style.setProperty('--print-grid-width',widthPct.toFixed(3)+'%');
     sheet.dataset.a4Rows=maxLoad.toFixed(1);
+    sheet.dataset.a4Density=density.toFixed(4);
     sheet.dataset.a4Scale=scale.toFixed(4);
   }
   function extract(doc,type){
@@ -636,7 +669,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
