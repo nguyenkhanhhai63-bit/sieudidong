@@ -14369,6 +14369,9 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  #aiSettingsCard #aiKnowledgePageSize{height:34px;min-width:88px}
 }
 .price-drag{width:34px;height:34px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;cursor:grab;font-size:18px;color:#667085;display:flex;align-items:center;justify-content:center}.price-drag:active{cursor:grabbing}.price-admin-row.dragging{opacity:.45;background:#fff7f2}.price-admin-row.drag-over{border-top:2px solid #ff5a00}.price-move{display:flex;gap:4px}.price-move button{width:30px;height:30px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;cursor:pointer}.price-name-edit{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;font-weight:750;color:#172033;background:#fff}.price-name-edit:focus{outline:none;border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.10)}.price-name-note{display:block;color:#667085;margin-top:3px;font-size:11px}.price-color-wrap{min-width:0}.price-color-edit{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:8px;padding:0 9px;font-weight:750;color:#172033;background:#fff}.price-color-edit:focus{outline:none;border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.10)}.price-color-note{display:block;color:#667085;margin-top:3px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.price-admin-row{grid-template-columns:34px 42px minmax(220px,1.45fr) minmax(145px,.75fr) 76px 120px 130px!important}@media(max-width:720px){.price-admin-row{grid-template-columns:38px minmax(0,1fr)!important}.price-color-wrap,.price-move,.price-admin-row .mem,.price-admin-row .price{grid-column:2}.price-color-wrap{margin-top:2px}}.price-a4-guide{margin:12px 18px 4px;border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;background:#f8fafc}.price-a4-guide-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.price-a4-guide strong{font-size:14px;color:#101828}.price-a4-count{font-size:24px;font-weight:900;color:#101828;line-height:1}.price-a4-sub{margin-top:6px;font-size:12px;color:#667085;line-height:1.45}.price-a4-state{margin-top:9px;padding:8px 10px;border-radius:9px;font-size:12px;font-weight:800}.price-a4-state.ok{background:#ecfdf3;color:#027a48;border:1px solid #abefc6}.price-a4-state.low{background:#eff8ff;color:#175cd3;border:1px solid #b2ddff}.price-a4-state.warn{background:#fffaeb;color:#b54708;border:1px solid #fedf89}.price-a4-state.danger{background:#fef3f2;color:#b42318;border:1px solid #fecdca}@media(max-width:720px){.price-a4-guide{margin:10px 12px 4px}.price-a4-count{font-size:21px}}
+
+/* v689: căn chỉnh A4 thủ công trong Admin */
+.price-manual-card{margin:10px 18px 8px;border:1px solid #e4e7ec;border-radius:12px;padding:13px 14px;background:#fff}.price-manual-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.price-manual-head strong{font-size:14px;color:#101828}.price-manual-switch{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#344054}.price-manual-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;margin-top:12px}.price-manual-item{border:1px solid #eaecf0;border-radius:10px;padding:9px 10px;background:#f9fafb}.price-manual-item label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:800;color:#344054;margin-bottom:7px}.price-manual-item output{color:#ff5a00;font-weight:900}.price-manual-item input[type=range]{width:100%;accent-color:#ff5a00}.price-manual-actions{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}.price-manual-actions button{height:34px;padding:0 12px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;font-size:11px;font-weight:800;cursor:pointer}.price-manual-actions button.primary{background:#ff5a00;border-color:#ff5a00;color:#fff}.price-manual-note{font-size:11px;color:#667085;line-height:1.45;flex:1;min-width:240px}@media(max-width:860px){.price-manual-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.price-manual-card{margin:10px 12px 8px}.price-manual-grid{grid-template-columns:1fr}.price-manual-note{min-width:0;width:100%}}
 </style>
 
 <button id="sddPriceAdminFab" class="price-admin-fab" type="button">Tùy chỉnh bảng giá</button>
@@ -14380,12 +14383,23 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       <div class="price-a4-guide-top"><div><strong>Gợi ý số lượng cho 1 trang A4 ngang</strong><div class="price-a4-sub">Khuyến nghị hiển thị <b>60–65 máy</b> để bảng cân đối và chữ dễ đọc.</div></div><div><span id="sddPriceA4Count" class="price-a4-count">0</span> <strong>máy</strong></div></div>
       <div id="sddPriceA4State" class="price-a4-state low">Đang kiểm tra số lượng hiển thị...</div>
     </div>
+
+    <div class="price-manual-card">
+      <div class="price-manual-head"><div><strong>Căn chỉnh A4 thủ công</strong><div class="price-a4-sub">Dùng khi muốn tự tinh chỉnh kích thước bảng trên màn hình và khi in.</div></div><label class="price-manual-switch"><input id="sddA4ManualEnabled" type="checkbox"> Bật căn chỉnh thủ công</label></div>
+      <div class="price-manual-grid">
+        <div class="price-manual-item"><label>Cỡ chữ <output id="sddA4FontOut">100%</output></label><input id="sddA4Font" type="range" min="75" max="130" step="1" value="100"></div>
+        <div class="price-manual-item"><label>Chiều cao dòng <output id="sddA4RowOut">100%</output></label><input id="sddA4Row" type="range" min="65" max="145" step="1" value="100"></div>
+        <div class="price-manual-item"><label>Khoảng cách bảng <output id="sddA4GapOut">100%</output></label><input id="sddA4Gap" type="range" min="50" max="160" step="1" value="100"></div>
+        <div class="price-manual-item"><label>Tỷ lệ toàn trang <output id="sddA4ScaleOut">100%</output></label><input id="sddA4Scale" type="range" min="70" max="110" step="1" value="100"></div>
+      </div>
+      <div class="price-manual-actions"><button id="sddA4Reset" type="button">Đặt lại 100%</button><button id="sddA4Auto" class="primary" type="button">Trở về tự động</button><span class="price-manual-note">Cỡ chữ = độ lớn chữ; Chiều cao dòng = độ thoáng từng máy; Khoảng cách bảng = khoảng cách giữa các hãng; Tỷ lệ toàn trang = phóng/thu toàn bộ nội dung khi in.</span></div>
+    </div>
     <div id="sddPriceAdminList" class="price-admin-list"></div>
   </section>
 </div>
 <script id="sddPriceAdminScript">
 (function(){
-  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State');
+  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State'),manualEnabled=$('sddA4ManualEnabled'),fontRange=$('sddA4Font'),rowRange=$('sddA4Row'),gapRange=$('sddA4Gap'),scaleRange=$('sddA4Scale'),fontOut=$('sddA4FontOut'),rowOut=$('sddA4RowOut'),gapOut=$('sddA4GapOut'),scaleOut=$('sddA4ScaleOut'),resetA4=$('sddA4Reset'),autoA4=$('sddA4Auto');
   if(!fab||!modal)return;
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
@@ -14396,6 +14410,13 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const saveColors=o=>localStorage.setItem('sdd_price_custom_colors',JSON.stringify(o));
   const readOrder=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_model_order')||'[]')}catch(e){return []}};
   const saveOrder=a=>localStorage.setItem('sdd_price_model_order',JSON.stringify(a));
+  const A4_KEY='sdd_price_a4_manual';
+  const a4Defaults={enabled:false,font:100,row:100,gap:100,scale:100};
+  function readA4(){try{return Object.assign({},a4Defaults,JSON.parse(localStorage.getItem(A4_KEY)||'{}'))}catch(e){return {...a4Defaults}}}
+  function saveA4(v){const x=Object.assign({},a4Defaults,v||{});localStorage.setItem(A4_KEY,JSON.stringify(x));window.dispatchEvent(new CustomEvent('sdd-price-a4-settings',{detail:x}));return x}
+  function syncA4Controls(){const v=readA4();if(manualEnabled)manualEnabled.checked=!!v.enabled;if(fontRange)fontRange.value=v.font;if(rowRange)rowRange.value=v.row;if(gapRange)gapRange.value=v.gap;if(scaleRange)scaleRange.value=v.scale;if(fontOut)fontOut.value=v.font+'%';if(rowOut)rowOut.value=v.row+'%';if(gapOut)gapOut.value=v.gap+'%';if(scaleOut)scaleOut.value=v.scale+'%'}
+  function collectA4(){return {enabled:!!manualEnabled?.checked,font:+fontRange?.value||100,row:+rowRange?.value||100,gap:+gapRange?.value||100,scale:+scaleRange?.value||100}}
+  function bindA4(){syncA4Controls();[fontRange,rowRange,gapRange,scaleRange].forEach(el=>el&&el.addEventListener('input',()=>{const v=collectA4();saveA4(v);syncA4Controls()}));manualEnabled&&manualEnabled.addEventListener('change',()=>{saveA4(collectA4());syncA4Controls()});resetA4&&resetA4.addEventListener('click',()=>{saveA4({enabled:true,font:100,row:100,gap:100,scale:100});syncA4Controls()});autoA4&&autoA4.addEventListener('click',()=>{saveA4({...a4Defaults,enabled:false});syncA4Controls()})}
   function orderedModels(){const models=readModels(),order=readOrder(),pos=new Map(order.map((k,i)=>[k,i]));return models.slice().sort((a,b)=>(pos.has(a.key)?pos.get(a.key):1e9)-(pos.has(b.key)?pos.get(b.key):1e9)||String(a.group||'').localeCompare(String(b.group||''),'vi')||String(a.name||'').localeCompare(String(b.name||''),'vi'))}
   function moveKey(key,dir){const models=orderedModels(),i=models.findIndex(x=>x.key===key);if(i<0)return;const j=i+dir;if(j<0||j>=models.length)return;[models[i],models[j]]=[models[j],models[i]];saveOrder(models.map(x=>x.key));render()}
   function moveBefore(srcKey,dstKey){if(srcKey===dstKey)return;const models=orderedModels(),from=models.findIndex(x=>x.key===srcKey),to=models.findIndex(x=>x.key===dstKey);if(from<0||to<0)return;const [row]=models.splice(from,1);models.splice(to,0,row);saveOrder(models.map(x=>x.key));render()}
@@ -14415,7 +14436,8 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     a4State.classList.add(cls);a4State.textContent=msg;
   }
   function render(){
-    updateA4Guide();
+    bindA4();
+  updateA4Guide();
     const q=(search.value||'').toLocaleLowerCase('vi').trim(),hidden=readHidden(),names=readNames(),colors=readColors();
     const rows=orderedModels().filter(x=>!q||String(names[x.key]||x.name||'').toLocaleLowerCase('vi').includes(q));
     if(!rows.length){list.innerHTML='<div class="price-admin-empty">Chưa có dữ liệu model. Mở trang Bảng giá và bấm <b>Cập nhật lại</b> một lần để đồng bộ danh sách.</div>';return}
