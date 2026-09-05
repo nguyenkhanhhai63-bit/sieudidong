@@ -15985,46 +15985,30 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 }
 </style>
 
-<!-- V651 AI HISTORY TALL SCROLL AREA -->
-<style id="v651-ai-history-tall-scroll">
-/* Tăng chiều cao khung lịch sử để xem được nhiều nội dung hơn, vẫn cuộn dọc độc lập. */
-#analyticsCard .ai-history-box{
-  display:block!important;
-  min-height:0!important;
-}
-#analyticsCard .ai-question-history{
-  display:block!important;
-  height:560px!important;
-  min-height:0!important;
-  max-height:560px!important;
-  overflow-y:scroll!important;
-  overflow-x:hidden!important;
-  padding:5px 14px 10px!important;
-  scrollbar-gutter:stable;
-  overscroll-behavior:contain;
-}
+<!-- V652 PAGE VERTICAL SCROLL + RESTORE COMPACT AI HISTORY -->
+<style id="v652-page-vertical-scroll">
+/* Giữ khung lịch sử gọn như trước; thanh kéo chính nằm ở toàn trang để xem các nội dung bên dưới. */
+#analyticsCard .ai-question-history,
 #analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{
-  height:560px!important;
-  max-height:560px!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:225px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:6px 13px 10px!important;
+}
+html{
+  height:auto!important;
+  min-height:100%!important;
   overflow-y:scroll!important;
 }
-#analyticsCard .ai-question-history::-webkit-scrollbar{
-  width:12px!important;
+body{
+  height:auto!important;
+  min-height:100vh!important;
+  max-height:none!important;
+  overflow-y:visible!important;
 }
-#analyticsCard .ai-question-history::-webkit-scrollbar-thumb{
-  border-radius:999px!important;
-  border:3px solid transparent!important;
-  background-clip:padding-box!important;
-}
-#analyticsCard .ai-history-pager{
-  flex:0 0 auto!important;
-}
-@media(max-width:900px){
-  #analyticsCard .ai-question-history,
-  #analyticsCard .ai-history-box:has(.ai-history-pager:not([hidden])) .ai-question-history{
-    height:68vh!important;
-    max-height:68vh!important;
-    min-height:420px!important;
-  }
+body > .wrap, .wrap, main{
+  max-height:none!important;
 }
 </style>
