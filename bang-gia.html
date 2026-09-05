@@ -270,6 +270,27 @@ body.admin-a4-preview .sheet .foot{
   z-index:auto!important;
 }
 
+
+/* v694: một layout A4 duy nhất cho Preview + Print; footer có vùng riêng, không che bảng */
+body.admin-a4-preview .sheet, body.a4-print-layout .sheet{
+  position:relative!important; width:297mm!important; height:210mm!important; min-height:210mm!important; max-height:210mm!important;
+  padding:0!important; display:block!important; overflow:hidden!important; box-sizing:border-box!important;
+}
+body.admin-a4-preview .sheet .grid, body.a4-print-layout .sheet .grid{
+  position:absolute!important; left:4mm!important; top:4mm!important; width:var(--print-grid-width,289mm)!important;
+  height:auto!important; display:grid!important; transform:scale(var(--print-scale,1))!important; transform-origin:top left!important;
+  zoom:1!important; overflow:visible!important;
+}
+body.admin-a4-preview .sheet .foot, body.a4-print-layout .sheet .foot{
+  position:absolute!important; left:4mm!important; right:4mm!important; bottom:3mm!important; width:auto!important;
+  margin:0!important; z-index:5!important; box-sizing:border-box!important;
+}
+@media print{
+  body.a4-print-layout .sheet{position:relative!important;width:297mm!important;height:210mm!important;padding:0!important;display:block!important;overflow:hidden!important;}
+  body.a4-print-layout .sheet .grid{position:absolute!important;left:4mm!important;top:4mm!important;height:auto!important;zoom:1!important;transform:scale(var(--print-scale,1))!important;transform-origin:top left!important;}
+  body.a4-print-layout .sheet .foot{position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;margin:0!important;width:auto!important;}
+}
+
 </style>
 </head>
 <body>
@@ -535,34 +556,35 @@ body.admin-a4-preview .sheet .foot{
   }
   function fitA4Print(){
     applyA4Manual();
-    const sheet=document.querySelector('.sheet');
-    if(!sheet||!left||!right)return;
+    const sheet=document.querySelector('.sheet'), grid=document.querySelector('.grid');
+    if(!sheet||!grid||!left||!right)return;
     const weightedLoad=col=>{
       const panels=[...col.querySelectorAll('.panel')];
       const rows=panels.reduce((sum,p)=>sum+p.querySelectorAll('tbody tr').length,0);
       return rows + panels.length*2.4;
     };
     const maxLoad=Math.max(weightedLoad(left),weightedLoad(right),1);
-
-    // Tự chọn mật độ để bảng chiếm gần đầy chiều cao A4.
-    // Ít dòng -> tăng cỡ chữ/chiều cao dòng; nhiều dòng -> giảm vừa đủ, không ẩn sản phẩm.
-    let density=47/maxLoad;
-    density=Math.max(.78,Math.min(1.30,density));
-
-    // Chỉ dùng transform scale như lớp bảo hiểm khi danh sách quá dài.
-    let scale=1;
-    if(maxLoad>50) scale=Math.max(.72,50/maxLoad);
+    let density=Math.max(.72,Math.min(1.18,47/maxLoad));
     const manual=a4Manual();
-    if(manual.enabled) scale*=Math.max(.70,Math.min(1.10,(+manual.scale||100)/100));
-    scale=Math.max(.62,Math.min(1.10,scale));
-
-    const widthPct=(100/scale);
     sheet.style.setProperty('--print-density',density.toFixed(4));
-    sheet.style.setProperty('--print-scale',scale.toFixed(4));
-    sheet.style.setProperty('--print-grid-width',widthPct.toFixed(3)+'%');
-    sheet.dataset.a4Rows=maxLoad.toFixed(1);
-    sheet.dataset.a4Density=density.toFixed(4);
-    sheet.dataset.a4Scale=scale.toFixed(4);
+    sheet.style.setProperty('--print-scale','1');
+    sheet.style.setProperty('--print-grid-width','289mm');
+
+    // Đo đúng chiều cao layout A4. Chừa riêng vùng footer ở đáy nên không thể che bảng.
+    requestAnimationFrame(()=>{
+      const mmPx=sheet.getBoundingClientRect().width/297;
+      const top=4*mmPx, footerReserve=10*mmPx, bottom=3*mmPx;
+      const available=Math.max(1, sheet.getBoundingClientRect().height-top-footerReserve-bottom);
+      const natural=Math.max(grid.scrollHeight, grid.getBoundingClientRect().height);
+      let scale=natural>0?Math.min(1,available/natural):1;
+      if(manual.enabled) scale*=Math.max(.70,Math.min(1.10,(+manual.scale||100)/100));
+      scale=Math.max(.55,Math.min(1.05,scale));
+      sheet.style.setProperty('--print-scale',scale.toFixed(4));
+      sheet.style.setProperty('--print-grid-width',(289/scale).toFixed(3)+'mm');
+      sheet.dataset.a4Rows=maxLoad.toFixed(1);
+      sheet.dataset.a4Density=density.toFixed(4);
+      sheet.dataset.a4Scale=scale.toFixed(4);
+    });
   }
   function extract(doc,type){
     if(!doc)return [];
@@ -772,7 +794,7 @@ body.admin-a4-preview .sheet .foot{
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
