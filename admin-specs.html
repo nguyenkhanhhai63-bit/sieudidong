@@ -14368,7 +14368,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  #aiSettingsCard .ai-k-page-btn{min-width:34px;width:34px;height:34px}
  #aiSettingsCard #aiKnowledgePageSize{height:34px;min-width:88px}
 }
-.price-drag{width:34px;height:34px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;cursor:grab;font-size:18px;color:#667085;display:flex;align-items:center;justify-content:center}.price-drag:active{cursor:grabbing}.price-admin-row.dragging{opacity:.45;background:#fff7f2}.price-admin-row.drag-over{border-top:2px solid #ff5a00}.price-move{display:flex;gap:4px}.price-move button{width:30px;height:30px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;cursor:pointer}.price-name-edit{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;font-weight:750;color:#172033;background:#fff}.price-name-edit:focus{outline:none;border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.10)}.price-name-note{display:block;color:#667085;margin-top:3px;font-size:11px}
+.price-drag{width:34px;height:34px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;cursor:grab;font-size:18px;color:#667085;display:flex;align-items:center;justify-content:center}.price-drag:active{cursor:grabbing}.price-admin-row.dragging{opacity:.45;background:#fff7f2}.price-admin-row.drag-over{border-top:2px solid #ff5a00}.price-move{display:flex;gap:4px}.price-move button{width:30px;height:30px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;cursor:pointer}.price-name-edit{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;font-weight:750;color:#172033;background:#fff}.price-name-edit:focus{outline:none;border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.10)}.price-name-note{display:block;color:#667085;margin-top:3px;font-size:11px}.price-a4-guide{margin:12px 18px 4px;border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;background:#f8fafc}.price-a4-guide-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.price-a4-guide strong{font-size:14px;color:#101828}.price-a4-count{font-size:24px;font-weight:900;color:#101828;line-height:1}.price-a4-sub{margin-top:6px;font-size:12px;color:#667085;line-height:1.45}.price-a4-state{margin-top:9px;padding:8px 10px;border-radius:9px;font-size:12px;font-weight:800}.price-a4-state.ok{background:#ecfdf3;color:#027a48;border:1px solid #abefc6}.price-a4-state.low{background:#eff8ff;color:#175cd3;border:1px solid #b2ddff}.price-a4-state.warn{background:#fffaeb;color:#b54708;border:1px solid #fedf89}.price-a4-state.danger{background:#fef3f2;color:#b42318;border:1px solid #fecdca}@media(max-width:720px){.price-a4-guide{margin:10px 12px 4px}.price-a4-count{font-size:21px}}
 </style>
 
 <button id="sddPriceAdminFab" class="price-admin-fab" type="button">Tùy chỉnh bảng giá</button>
@@ -14376,12 +14376,16 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   <section class="price-admin-box">
     <div class="price-admin-head"><div><h3>Tùy chỉnh bảng giá</h3><p>Mặc định tất cả model đang bán đều hiển thị, kể cả còn hàng hoặc hết hàng. Tắt công tắc nếu muốn ẩn riêng model khỏi bảng giá. Có thể sửa tên và kéo thả để tùy chỉnh thứ tự hiển thị sản phẩm. Nút ↑ ↓ dùng được trên điện thoại.</p></div><button id="sddPriceAdminClose" class="price-admin-close" type="button">×</button></div>
     <div class="price-admin-tools"><input id="sddPriceAdminSearch" type="search" placeholder="Tìm tên máy..."><button id="sddPriceShowAll" class="primary" type="button">Hiện tất cả</button><button id="sddPriceHideAll" type="button">Ẩn tất cả</button></div>
+    <div id="sddPriceA4Guide" class="price-a4-guide">
+      <div class="price-a4-guide-top"><div><strong>Gợi ý số lượng cho 1 trang A4 ngang</strong><div class="price-a4-sub">Khuyến nghị hiển thị <b>60–65 máy</b> để bảng cân đối và chữ dễ đọc.</div></div><div><span id="sddPriceA4Count" class="price-a4-count">0</span> <strong>máy</strong></div></div>
+      <div id="sddPriceA4State" class="price-a4-state low">Đang kiểm tra số lượng hiển thị...</div>
+    </div>
     <div id="sddPriceAdminList" class="price-admin-list"></div>
   </section>
 </div>
 <script id="sddPriceAdminScript">
 (function(){
-  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch');
+  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State');
   if(!fab||!modal)return;
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
@@ -14395,12 +14399,26 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function moveBefore(srcKey,dstKey){if(srcKey===dstKey)return;const models=orderedModels(),from=models.findIndex(x=>x.key===srcKey),to=models.findIndex(x=>x.key===dstKey);if(from<0||to<0)return;const [row]=models.splice(from,1);models.splice(to,0,row);saveOrder(models.map(x=>x.key));render()}
   const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
   const money=n=>(Number(n)||0).toLocaleString('vi-VN')+' đ';
+  function updateA4Guide(){
+    const total=readModels().length, hidden=readHidden().size, visible=Math.max(0,total-hidden);
+    if(a4Count)a4Count.textContent=visible;
+    if(!a4State)return;
+    a4State.className='price-a4-state';
+    let msg='',cls='';
+    if(visible<56){cls='low';msg='Còn khá nhiều khoảng trống. Có thể hiển thị thêm '+Math.max(0,60-visible)+'–'+Math.max(0,65-visible)+' máy để cân đối hơn.'}
+    else if(visible<60){cls='low';msg='Gần đạt mức cân đối. Có thể hiển thị thêm '+(60-visible)+'–'+(65-visible)+' máy.'}
+    else if(visible<=65){cls='ok';msg='Cân đối A4 ✓ Số lượng hiện tại phù hợp để in 1 trang A4 ngang.'}
+    else if(visible<=70){cls='warn';msg='Hơi dày. Nên ẩn bớt '+(visible-65)+'–'+(visible-60)+' máy để bảng dễ đọc hơn.'}
+    else{cls='danger';msg='Quá nhiều cho 1 trang A4. Nên ẩn bớt ít nhất '+(visible-65)+' máy để tránh chữ quá nhỏ hoặc sang trang 2.'}
+    a4State.classList.add(cls);a4State.textContent=msg;
+  }
   function render(){
+    updateA4Guide();
     const q=(search.value||'').toLocaleLowerCase('vi').trim(),hidden=readHidden(),names=readNames();
     const rows=orderedModels().filter(x=>!q||String(names[x.key]||x.name||'').toLocaleLowerCase('vi').includes(q));
     if(!rows.length){list.innerHTML='<div class="price-admin-empty">Chưa có dữ liệu model. Mở trang Bảng giá và bấm <b>Cập nhật lại</b> một lần để đồng bộ danh sách.</div>';return}
     list.innerHTML=rows.map(x=>'<div class="price-admin-row" draggable="'+(!q)+'" data-key="'+esc(x.key)+'"><button class="price-drag" type="button" title="Kéo để đổi vị trí" aria-label="Kéo để đổi vị trí">☰</button><input class="price-switch" type="checkbox" data-key="'+esc(x.key)+'" '+(hidden.has(x.key)?'':'checked')+'><label><input class="price-name-edit" type="text" data-key="'+esc(x.key)+'" data-original="'+esc(x.name)+'" value="'+esc(names[x.key]||x.name)+'" title="Sửa tên hiển thị"><span class="price-name-note">Tên gốc: '+esc(x.name)+' · '+esc(x.group||'')+'</span></label><div class="price-move"><button type="button" class="move-up" data-key="'+esc(x.key)+'" title="Lên">↑</button><button type="button" class="move-down" data-key="'+esc(x.key)+'" title="Xuống">↓</button></div><div class="mem">'+esc(x.memory||'—')+'</div><div class="price">'+money(x.price)+'</div></div>').join('');
-    list.querySelectorAll('.price-switch').forEach(sw=>sw.addEventListener('change',()=>{const set=readHidden(),k=sw.dataset.key;if(sw.checked)set.delete(k);else set.add(k);saveHidden(set)}));
+    list.querySelectorAll('.price-switch').forEach(sw=>sw.addEventListener('change',()=>{const set=readHidden(),k=sw.dataset.key;if(sw.checked)set.delete(k);else set.add(k);saveHidden(set);updateA4Guide()}));
     list.querySelectorAll('.move-up').forEach(b=>b.addEventListener('click',()=>moveKey(b.dataset.key,-1)));
     list.querySelectorAll('.move-down').forEach(b=>b.addEventListener('click',()=>moveKey(b.dataset.key,1)));
     if(!q){let dragged='';list.querySelectorAll('.price-admin-row').forEach(row=>{row.addEventListener('dragstart',e=>{if(e.target.closest('input,button')&&!e.target.closest('.price-drag')){e.preventDefault();return}dragged=row.dataset.key;row.classList.add('dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragged)}catch(_){}});row.addEventListener('dragend',()=>{dragged='';list.querySelectorAll('.price-admin-row').forEach(r=>r.classList.remove('dragging','drag-over'))});row.addEventListener('dragover',e=>{if(!dragged||dragged===row.dataset.key)return;e.preventDefault();row.classList.add('drag-over')});row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');if(dragged)moveBefore(dragged,row.dataset.key)})})}
@@ -14413,6 +14431,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   fab.addEventListener('click',()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');render()});close.addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)close.click()});search.addEventListener('input',render);
   $('sddPriceShowAll').addEventListener('click',()=>{saveHidden(new Set());render()});
   $('sddPriceHideAll').addEventListener('click',()=>{saveHidden(new Set(readModels().map(x=>x.key)));render()});
+  updateA4Guide();
 })();
 </script>
 </body>
