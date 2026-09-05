@@ -9475,32 +9475,41 @@ function renderWarrantyRecent(items=[]){
   }
   const statusText={found:"Tìm thấy",not_found:"Không tìm thấy",error:"Lỗi tra cứu"};
   const statusClass={found:"found",not_found:"not-found",error:"error"};
-  const rows=items.map(x=>{
-    // V654: ưu tiên đúng thời điểm khách thực hiện tra cứu.
-    // Một số bản API trả ts = thời điểm admin tải thống kê nên nhiều dòng bị cùng một giờ.
-    // Hỗ trợ các tên trường thời gian cũ/mới và cả timestamp giây/mili-giây.
-    const getWarrantyEventTime=(o)=>{
-      const candidates=[
-        o?.lookupTs,o?.lookupAt,o?.lookupTime,o?.searchedAt,o?.searchAt,
-        o?.eventTs,o?.eventTime,o?.createdAt,o?.created_at,o?.timestamp,o?.time,o?.ts
-      ];
-      for(const raw of candidates){
-        if(raw===null || raw===undefined || raw==="") continue;
-        let d=null;
-        if(typeof raw==="number" || /^\d{10,13}$/.test(String(raw).trim())){
-          let n=Number(raw);
-          if(Number.isFinite(n) && n>0){
-            if(n<1e12) n*=1000; // timestamp theo giây
-            d=new Date(n);
-          }
-        }else{
-          d=new Date(raw);
-        }
-        if(d && !Number.isNaN(d.getTime()) && d.getFullYear()>2020) return d;
-      }
-      return null;
-    };
-    const date=getWarrantyEventTime(x);
+
+  // V655: v653 từng gọi /api/warranty-lookup từ trang admin để bổ sung ngày mua.
+  // Endpoint đó đồng thời ghi nhận một lượt tra cứu mới, làm 3-5 khách cũ bị gán cùng thời gian admin mở trang.
+  // Không gọi lại endpoint này nữa. Đồng thời bỏ các "burst" giả có >=3 dòng cùng đúng một giây
+  // nếu trong danh sách vẫn còn các mốc thời gian khác, để lộ lại lịch sử thật phía sau.
+  const normalizeTs=(o)=>{
+    const raw=o?.lookupTs ?? o?.lookupAt ?? o?.lookupTime ?? o?.searchedAt ?? o?.searchAt ??
+      o?.eventTs ?? o?.eventTime ?? o?.createdAt ?? o?.created_at ?? o?.timestamp ?? o?.time ?? o?.ts;
+    if(raw===null || raw===undefined || raw==="") return null;
+    let n=null;
+    if(typeof raw==="number" || /^\d{10,13}$/.test(String(raw).trim())){
+      n=Number(raw);
+      if(!Number.isFinite(n) || n<=0) return null;
+      if(n<1e12) n*=1000;
+    }else{
+      const d=new Date(raw);
+      if(Number.isNaN(d.getTime())) return null;
+      n=d.getTime();
+    }
+    return n;
+  };
+  const secCount=new Map();
+  items.forEach(o=>{
+    const n=normalizeTs(o);
+    if(n!==null){ const k=Math.floor(n/1000); secCount.set(k,(secCount.get(k)||0)+1); }
+  });
+  const hasCleanTime=items.some(o=>{ const n=normalizeTs(o); return n!==null && (secCount.get(Math.floor(n/1000))||0)<3; });
+  const displayItems=hasCleanTime ? items.filter(o=>{
+    const n=normalizeTs(o);
+    return n===null || (secCount.get(Math.floor(n/1000))||0)<3;
+  }) : items;
+
+  const rows=displayItems.map(x=>{
+    const n=normalizeTs(x);
+    const date=n!==null?new Date(n):null;
     const when=date
       ? date.toLocaleString("vi-VN",{timeZone:"Asia/Ho_Chi_Minh",hour:"2-digit",minute:"2-digit",second:"2-digit",day:"2-digit",month:"2-digit",year:"numeric",hour12:false})
       : "—";
@@ -9547,35 +9556,7 @@ function renderWarrantyRecent(items=[]){
     <tbody>${rows}</tbody>
   </table></div>`;
 
-  // V653: Dữ liệu analytics cũ chỉ lưu sản phẩm, chưa lưu ngày mua.
-  // Nếu ngày mua đang trống, đối chiếu lại API bảo hành bằng SĐT và điền trực tiếp vào bảng.
-  const trs=[...host.querySelectorAll("tbody tr")];
-  items.forEach((x,i)=>{
-    if(x.status!=="found") return;
-    const hasDate=(Array.isArray(x.purchaseDates)&&x.purchaseDates.some(Boolean)) ||
-      (Array.isArray(x.items)&&x.items.some(it=>it&&it.purchaseDate)) || !!x.purchaseDate;
-    if(hasDate) return;
-    const phone=String(x.phoneFull||x.phone||"").replace(/\D/g,"");
-    const cell=trs[i]&&trs[i].querySelector(".warranty-purchase-date");
-    if(!phone || phone.length<9 || !cell) return;
-    cell.innerHTML='<span style="color:#94a3b8;font-weight:600">Đang kiểm tra...</span>';
-    fetch("/api/warranty-lookup",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      credentials:"same-origin",
-      body:JSON.stringify({phone})
-    }).then(r=>r.ok?r.json():Promise.reject(new Error("lookup failed")))
-      .then(data=>{
-        const found=Array.isArray(data&&data.items)?data.items:[];
-        const dates=[];
-        found.forEach(it=>{
-          const d=String(it&&it.purchaseDate||"").trim();
-          if(d&&!dates.includes(d)) dates.push(d);
-        });
-        if(!dates.length){ cell.textContent="—"; return; }
-        cell.innerHTML=dates.map(v=>`<div class="warranty-purchase-date-item">${v.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]))}</div>`).join("");
-      }).catch(()=>{ cell.textContent="—"; });
-  });
+
 }
 
 
