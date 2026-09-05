@@ -373,6 +373,32 @@ body.a4-print-layout .foot{
   @page{size:A4 landscape;margin:0!important}
 }
 </style>
+
+/* v699: footer không cắt chữ khi in/preview */
+.sheet .foot,
+body.admin-a4-preview.a4-print-layout .sheet .foot,
+body.a4-print-layout .sheet .foot{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:2mm!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+}
+.sheet .foot > *{min-width:0!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;}
+.sheet .foot > b:first-child{justify-self:start!important;text-align:left!important;}
+.sheet .foot > span{justify-self:center!important;text-align:center!important;}
+.sheet .foot > b:last-child{justify-self:end!important;text-align:right!important;}
+@media print{
+  body.a4-print-layout .sheet .foot, body.admin-a4-preview.a4-print-layout .sheet .foot{
+    left:4mm!important;right:4mm!important;width:auto!important;
+    padding:.48mm 1.15mm!important;
+    column-gap:1.5mm!important;
+  }
+  body.a4-print-layout .sheet .foot b, body.admin-a4-preview.a4-print-layout .sheet .foot b{font-size:6pt!important;}
+  body.a4-print-layout .sheet .foot span, body.admin-a4-preview.a4-print-layout .sheet .foot span{font-size:5.8pt!important;}
+}
+
 </head>
 <body>
 <script>
