@@ -880,8 +880,72 @@ body.a4-print-layout .foot{
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); /* v697: iframe preview đã fit trước khi w.print(); không đo lại khi print media bật vì sẽ làm lệch preview. */ if(!document.body.classList.contains('admin-a4-preview')) fitA4Print();}); window.addEventListener('afterprint',()=>{if(!document.body.classList.contains('admin-a4-preview'))document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); /* v697: iframe preview đã fit trước khi w.print(); không đo lại khi print media bật vì sẽ làm lệch preview. */ if(!document.body.classList.contains('admin-a4-preview') && !document.body.classList.contains('v698-frozen-print')) fitA4Print();}); window.addEventListener('afterprint',()=>{if(!document.body.classList.contains('admin-a4-preview'))document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
 })();
 </script>
+
+<!-- v698: FREEZE EXACT PREVIEW STYLES FOR TRUE WYSIWYG PRINT -->
+<style id="v698-wysiwyg-print">
+@media print{
+  html,body{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important;}
+  body.admin-a4-preview.a4-print-layout .wrap{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;max-width:none!important;}
+  body.admin-a4-preview.a4-print-layout .sheet{margin:0!important;}
+  @page{size:A4 landscape;margin:0!important;}
+}
+</style>
+<script id="v698-freeze-print-script">
+(()=>{
+  const STORE=new WeakMap();
+  const PROPS=[
+    'display','position','left','right','top','bottom','width','height','min-width','max-width','min-height','max-height',
+    'box-sizing','overflow','overflow-x','overflow-y','float','clear',
+    'grid-template-columns','grid-template-rows','grid-column','grid-row','gap','column-gap','row-gap','align-items','align-content','justify-items','justify-content',
+    'flex','flex-basis','flex-grow','flex-shrink','flex-direction','flex-wrap','align-self','justify-self',
+    'margin-top','margin-right','margin-bottom','margin-left','padding-top','padding-right','padding-bottom','padding-left',
+    'border-top-width','border-right-width','border-bottom-width','border-left-width','border-top-style','border-right-style','border-bottom-style','border-left-style',
+    'border-top-color','border-right-color','border-bottom-color','border-left-color','border-radius',
+    'background-color','background-image','color','opacity','visibility',
+    'font-family','font-size','font-weight','font-style','line-height','letter-spacing','text-align','text-transform','white-space','word-break','overflow-wrap','vertical-align',
+    'transform','transform-origin','zoom','z-index'
+  ];
+  let frozen=[];
+  function freezeElement(el){
+    const cs=getComputedStyle(el), old=[];
+    for(const prop of PROPS){
+      const prev=el.style.getPropertyValue(prop), pri=el.style.getPropertyPriority(prop);
+      old.push([prop,prev,pri]);
+      let val=cs.getPropertyValue(prop);
+      if(val) el.style.setProperty(prop,val,'important');
+    }
+    STORE.set(el,old); frozen.push(el);
+  }
+  window.sddFreezePreviewForPrint=function(){
+    const sheet=document.querySelector('.sheet'); if(!sheet)return false;
+    window.sddRestorePreviewAfterPrint();
+    // Ensure preview state is fully laid out before freezing.
+    try{ if(typeof window.fitA4Print==='function') window.fitA4Print(); }catch(e){}
+    void sheet.offsetHeight;
+    [sheet,...sheet.querySelectorAll('*')].forEach(freezeElement);
+    // Freeze page/container dimensions too, but do not freeze body transform from host.
+    [document.documentElement,document.body,document.querySelector('.wrap')].filter(Boolean).forEach(freezeElement);
+    document.body.classList.add('a4-print-layout','v698-frozen-print');
+    void document.body.offsetHeight;
+    return true;
+  };
+  window.sddRestorePreviewAfterPrint=function(){
+    if(!frozen.length)return;
+    for(const el of frozen){
+      const old=STORE.get(el)||[];
+      for(const [prop,val,pri] of old){
+        if(val) el.style.setProperty(prop,val,pri||''); else el.style.removeProperty(prop);
+      }
+      STORE.delete(el);
+    }
+    frozen=[]; document.body.classList.remove('v698-frozen-print');
+  };
+  window.addEventListener('afterprint',()=>setTimeout(()=>window.sddRestorePreviewAfterPrint(),0));
+})();
+</script>
+
 </body>
 </html>
