@@ -45,8 +45,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     {id:'realme',title:'REALME',accent:'#e5b900',match:n=>/\brealme\b/i.test(n)},
     {id:'samsung',title:'SAMSUNG',accent:'#3568d4',match:n=>/\bsamsung\b/i.test(n)},
     {id:'apple',title:'APPLE',accent:'#555',match:n=>/\b(iphone|apple)\b/i.test(n)},
-    {id:'other',title:'KHÁC',accent:'#667085',match:n=>true},
-    {id:'tablet',title:'TABLET',accent:'#ff5a00',match:n=>true}
+    {id:'tablet',title:'MÁY TÍNH BẢNG',accent:'#ff5a00',match:n=>true}
   ];
   let items=[]; let pending=0;
   const left=document.getElementById('leftCol'),right=document.getElementById('rightCol'),status=document.getElementById('syncStatus'),search=document.getElementById('search');
@@ -101,7 +100,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
        .replace(/\s+/g,' ').trim();
     return s;
   }
-  function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.id!=='other'&&g.match(it.name))||groups.find(g=>g.id==='other')}
+  function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||null}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function pickLowestVariants(list){
@@ -118,7 +117,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
     const filtered=pickLowestVariants(items.filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q)));
     const buckets=[];
-    groups.forEach(g=>{const arr=filtered.filter(it=>classify(it).id===g.id).sort((a,b)=>baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
+    groups.forEach(g=>{const arr=filtered.filter(it=>{const c=classify(it);return c&&c.id===g.id}).sort((a,b)=>baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
     let lw=0,rw=0;
     buckets.forEach(b=>{const holder=lw<=rw?left:right;holder.insertAdjacentHTML('beforeend',panelHtml(b.g,b.arr));if(holder===left)lw+=b.weight;else rw+=b.weight});
     if(!left.children.length)left.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
