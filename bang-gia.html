@@ -35,7 +35,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
 </div>
 <script>
 (function(){
-  const sources=[{path:'/dien-thoai',type:'phone'},{path:'/may-tinh-bang',type:'tablet'}];
+  const sources=[{path:'/',type:'phone'},{path:'/dien-thoai',type:'phone'},{path:'/may-tinh-bang',type:'tablet'}];
   const groups=[
     {id:'xiaomi',title:'XIAOMI/REDMI',accent:'#ff7423',match:n=>/\b(xiaomi|redmi|poco|mi\s)/i.test(n)},
     {id:'vivo',title:'VIVO/IQOO',accent:'#2b56bd',match:n=>/\b(vivo|iqoo)\b/i.test(n)},
@@ -47,6 +47,29 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     {id:'apple',title:'APPLE',accent:'#555',match:n=>/\b(iphone|apple)\b/i.test(n)},
     {id:'tablet',title:'MÁY TÍNH BẢNG',accent:'#ff5a00',match:n=>true}
   ];
+  const knownGroupIds=new Set(groups.map(g=>g.id));
+  function dynamicBrandGroup(name){
+    const n=String(name||'').trim();
+    if(!n)return null;
+    const first=(n.match(/^([A-Za-z0-9+.-]+)/)||[])[1]||'';
+    const key=first.toLowerCase();
+    if(!key)return null;
+    const aliases={
+      'iphone':'apple','ipad':'apple','apple':'apple',
+      'redmi':'xiaomi','xiaomi':'xiaomi','poco':'xiaomi','mi':'xiaomi',
+      'iqoo':'vivo','vivo':'vivo','oppo':'oppo','oneplus':'oneplus','honor':'honor',
+      'realme':'realme','samsung':'samsung'
+    };
+    if(aliases[key])return groups.find(g=>g.id===aliases[key])||null;
+    // Không gom vào "KHÁC": hãng lạ sẽ có đúng tên hãng riêng.
+    const id='brand-'+key.replace(/[^a-z0-9]+/g,'-');
+    let g=groups.find(x=>x.id===id);
+    if(!g){
+      g={id,title:first.toUpperCase(),accent:'#64748b',match:()=>false,dynamic:true};
+      groups.splice(groups.length-1,0,g);
+    }
+    return g;
+  }
   let items=[]; let pending=0;
   const left=document.getElementById('leftCol'),right=document.getElementById('rightCol'),status=document.getElementById('syncStatus'),search=document.getElementById('search');
   function text(el){return (el&&el.textContent||'').replace(/\s+/g,' ').trim()}
@@ -100,7 +123,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
        .replace(/\s+/g,' ').trim();
     return s;
   }
-  function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||null}
+  function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||dynamicBrandGroup(it.name)}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function pickLowestVariants(list){
@@ -124,8 +147,21 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     if(!right.children.length)right.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
   }
   function extract(doc,type){
-    const grid=doc.querySelector('#productGrid,.product-grid,.products-grid');if(!grid)return [];
-    const cards=[...grid.children].filter(el=>!el.matches('.loading,.empty,.acc-public-empty')&&nameOf(el));
+    if(!doc)return [];
+    const roots=[...doc.querySelectorAll('#productGrid,.product-grid,.products-grid,.catalog-grid,[class*="product-grid"],[class*="products-grid"]')];
+    const set=new Set();
+    roots.forEach(root=>{
+      [...root.children].forEach(el=>set.add(el));
+      root.querySelectorAll('article,.product-card,[class*="product-card"],[data-product-id],[data-product-name]').forEach(el=>set.add(el));
+    });
+    // Fallback: quét toàn trang để không bỏ sản phẩm do grid/virtual list đổi class.
+    doc.querySelectorAll('article,.product-card,[class*="product-card"],[data-product-id],[data-product-name]').forEach(el=>set.add(el));
+    const cards=[...set].filter(el=>{
+      if(!el || !el.querySelector)return false;
+      if(el.matches('.loading,.empty,.acc-public-empty'))return false;
+      const n=nameOf(el), p=priceOf(el);
+      return !!n && p>0;
+    });
     return cards.map(card=>{const name=nameOf(card),mem=memoryOf(card,name);const sv=storageValue(mem);return {name,price:priceOf(card),memory:mem,memoryRank:sv?sv.rank:999999,type,stock:inStock(card)}}).filter(x=>x.name&&x.price>0&&x.stock);
   }
   function sync(){
@@ -143,16 +179,28 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
         if(!d)return;
         try{
           const w=d.defaultView;
-          // Kéo xuống đáy để kích hoạt lazy-load / infinite-scroll của danh mục.
-          if(w)w.scrollTo(0,Math.max(d.body?.scrollHeight||0,d.documentElement?.scrollHeight||0));
-          // Nếu web có nút "Xem thêm/Tải thêm" thì tự bấm cho tới khi hết.
+          const h=Math.max(d.body?.scrollHeight||0,d.documentElement?.scrollHeight||0);
+          // Quét nhiều vị trí thay vì chỉ nhảy thẳng xuống đáy; một số lazy-load chỉ kích hoạt khi đi qua viewport.
+          if(w){
+            const step=Math.max(500,Math.floor((w.innerHeight||800)*0.85));
+            const pos=Math.min(h,Math.max(0,(tries%Math.max(1,Math.ceil(h/step)))*step));
+            w.scrollTo(0,pos);
+            if(tries%6===5)w.scrollTo(0,h);
+          }
+          // Bấm tất cả nút mở rộng danh sách nếu có.
           const buttons=[...d.querySelectorAll('button,a,[role="button"]')];
           for(const b of buttons){
             if(b.disabled || b.getAttribute('aria-disabled')==='true')continue;
             const t=text(b).toLowerCase();
-            if(/xem thêm|tải thêm|hiển thị thêm|xem nhiều hơn|load more|show more/.test(t)){
+            if(/xem thêm|tải thêm|hiển thị thêm|xem nhiều hơn|load more|show more|xem tất cả|tất cả sản phẩm/.test(t)){
               try{b.click()}catch(e){}
             }
+          }
+          // Nếu có tab hãng/danh mục, lần lượt bấm để các sản phẩm ẩn theo tab cũng được render và gom vào union.
+          const filters=[...d.querySelectorAll('[data-brand],[data-category],.brand-card,.brand-item,.brand-chip,.category-tab,.cat-tab')];
+          if(filters.length){
+            const b=filters[tries%filters.length];
+            try{b.click()}catch(e){}
           }
         }catch(e){}
       }
@@ -170,15 +218,15 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
         lastUnionCount=unionCount;
         tries++;
         const elapsed=Date.now()-startedAt;
-        const stableEnough=unionCount>0 && stableCount>=10 && elapsed>=7000;
-        const timedOut=elapsed>=45000 || tries>=150;
+        const stableEnough=unionCount>0 && stableCount>=20 && elapsed>=15000;
+        const timedOut=elapsed>=90000 || tries>=300;
         if(!stableEnough && !timedOut){setTimeout(finish,300);return}
 
         done=true;
         items.push(...collected.values());f.remove();pending--;
         if(pending===0){
           render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');
-          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · đã quét toàn bộ danh sách';
+          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · lấy tất cả sản phẩm đang còn hàng đã tìm thấy';
         }
       }
       f.addEventListener('load',()=>setTimeout(finish,700));setTimeout(finish,1400);
