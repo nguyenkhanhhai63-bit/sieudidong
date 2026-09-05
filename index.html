@@ -361,6 +361,29 @@ html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-se
 body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image{display:grid!important;place-items:center!important;background:#f7f8fa!important;color:#667085!important;}
 body.v615-used-page #productGrid > .v639-iphone-used-card .v639-no-image span{font-size:12px!important;font-weight:500!important;color:#667085!important;}
 </style>
+
+<style id="v724-public-font-fix">
+/* v724: public/mobile font normalization */
+html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!important;}
+.sdd-catalog-section-title,
+.sdd-brand-card, .sdd-brand-card *,
+.sdd-price-chip, .sdd-price-chip *,
+.sdd-benefit-item, .sdd-benefit-item *,
+.sdd-catalog-sheet, .sdd-catalog-sheet *,
+.mobile-header, .mobile-header *,
+.sdd-home-mobile, .sdd-home-mobile *{
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-style:normal!important;
+  letter-spacing:normal!important;
+}
+.sdd-catalog-section-title{font-weight:700!important;}
+.sdd-benefit-item strong{font-weight:700!important;}
+.sdd-benefit-item small{font-weight:400!important;}
+.sdd-price-chip{font-weight:700!important;}
+.sdd-brand-card b,.sdd-brand-card strong{font-weight:700!important;}
+/* map unsupported synthetic weights to common weights */
+[style*="font-weight:850"],[style*="font-weight:900"],[style*="font-weight:950"]{font-weight:700!important;}
+</style>
 </head>
 <body>
 
