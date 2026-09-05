@@ -308,8 +308,11 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   }
   function apiTypeOf(p){
     const c=apiCategoryText(p), n=String(p?.name||'').toLocaleLowerCase('vi');
-    if(/máy\s*tính\s*bảng|may\s*tinh\s*bang|tablet|ipad/.test(c))return 'tablet';
-    if(/máy\s*tính\s*bảng|tablet|ipad|pad/.test(n))return 'tablet';
+    // Ưu tiên metadata danh mục từ API.
+    if(/máy\s*tính\s*bảng|may\s*tinh\s*bang|tablet|ipad|\bpad\b|\btab\b/.test(c))return 'tablet';
+    // Một số sản phẩm API không trả category, nên nhận diện trực tiếp theo tên model.
+    // Dùng \b thật (bản cũ bị ký tự backspace nên Redmi/Xiaomi Pad bị xếp nhầm vào điện thoại).
+    if(/máy\s*tính\s*bảng|tablet|ipad|\bpad\b|\btab\b|matepad|legion\s*y700/.test(n))return 'tablet';
     return 'phone';
   }
   function attrValue(attrs,keys){
