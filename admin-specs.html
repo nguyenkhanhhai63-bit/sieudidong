@@ -2717,6 +2717,11 @@ button,.primary,.secondary{font-size:13.5px!important}
 
 /* v675: basic readable font */
 html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-serif!important;}
+
+/* v676: font rendering fix */
+html,body,button,input,select,textarea,table,th,td,*{font-family:Arial,Helvetica,sans-serif!important;font-synthesis:none;}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
+
 </style>
 
 <style id="login-success-toast-style">
