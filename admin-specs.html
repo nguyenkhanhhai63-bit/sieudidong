@@ -14521,6 +14521,21 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     else{cls='danger';msg='Quá nhiều cho 1 trang A4. Nên ẩn bớt ít nhất '+(visible-65)+' máy để tránh chữ quá nhỏ hoặc sang trang 2.'}
     a4State.classList.add(cls);a4State.textContent=msg;
   }
+  function renderBrandFilter(){
+    if(!brandFilter)return;
+    const models=readModels();
+    const counts={};
+    models.forEach(x=>{const g=brandLabel(x.group);counts[g]=(counts[g]||0)+1});
+    const groups=Object.keys(counts).sort((a,b)=>{
+      const ia=brandOrder.indexOf(a), ib=brandOrder.indexOf(b);
+      if(ia<0&&ib<0)return a.localeCompare(b,'vi');
+      if(ia<0)return 1; if(ib<0)return -1; return ia-ib;
+    });
+    if(currentBrand!=='ALL'&&!counts[currentBrand])currentBrand='ALL';
+    const total=models.length;
+    brandFilter.innerHTML='<span class="price-brand-filter-label">Thương hiệu:</span>'+['ALL',...groups].map(g=>'<button type="button" class="price-brand-chip '+(currentBrand===g?'active':'')+'" data-brand="'+esc(g)+'">'+(g==='ALL'?'Tất cả':esc(g))+' <span class="price-brand-count">'+(g==='ALL'?total:counts[g])+'</span></button>').join('');
+    brandFilter.querySelectorAll('.price-brand-chip').forEach(btn=>btn.addEventListener('click',()=>{currentBrand=btn.dataset.brand||'ALL';render()}));
+  }
   function render(){
     bindA4();
     renderBrandFilter();
