@@ -8092,6 +8092,36 @@ body.sidebar-collapsed .sidebar-logout .sidebar-logout-icon{width:22px!important
 <style id="sddPriceAdminStyle">
 .price-admin-fab{position:fixed;right:22px;bottom:22px;z-index:12000;border:0;border-radius:999px;background:#ff5a00;color:#fff;font-weight:850;padding:12px 16px;box-shadow:0 10px 28px rgba(255,90,0,.28);cursor:pointer}.price-admin-modal{position:fixed;inset:0;z-index:12050;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:18px}.price-admin-modal.open{display:flex}.price-admin-box{width:min(980px,96vw);max-height:88vh;background:#fff;border-radius:16px;border:1px solid #e4e7ec;box-shadow:0 24px 70px rgba(16,24,40,.22);display:flex;flex-direction:column;overflow:hidden}.price-admin-head{padding:16px 18px;border-bottom:1px solid #eaecf0;display:flex;justify-content:space-between;align-items:center;gap:12px}.price-admin-head h3{margin:0;font-size:18px}.price-admin-head p{margin:4px 0 0;color:#667085;font-size:12px}.price-admin-close{width:36px;height:36px;border-radius:9px;border:1px solid #d0d5dd;background:#fff;cursor:pointer;font-size:20px}.price-admin-tools{padding:12px 18px;border-bottom:1px solid #eaecf0;display:grid;grid-template-columns:1fr auto auto;gap:8px}.price-admin-tools input{height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 12px}.price-admin-tools button{height:40px;border:1px solid #d0d5dd;border-radius:9px;background:#fff;font-weight:750;padding:0 12px;cursor:pointer}.price-admin-tools .primary{background:#ff5a00;border-color:#ff5a00;color:#fff}.price-admin-list{padding:12px 18px 18px;overflow:auto}.price-admin-row{display:grid;grid-template-columns:34px 42px minmax(0,1fr) 76px 120px 130px;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid #f0f2f5}.price-admin-row label{font-weight:750;color:#172033}.price-admin-row small{display:block;color:#667085;margin-top:3px}.price-admin-row .mem,.price-admin-row .price{text-align:right;font-weight:750}.price-admin-empty{padding:35px;text-align:center;color:#667085}.price-switch{width:38px;height:22px;appearance:none;background:#d0d5dd;border-radius:999px;position:relative;cursor:pointer;transition:.2s}.price-switch:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.2s}.price-switch:checked{background:#12b76a}.price-switch:checked:after{left:18px}@media(max-width:720px){.price-admin-fab{right:12px;bottom:78px}.price-admin-tools{grid-template-columns:1fr 1fr}.price-admin-tools input{grid-column:1/-1}.price-admin-row{grid-template-columns:38px minmax(0,1fr);}.price-admin-row .mem,.price-admin-row .price{grid-column:2;text-align:left;font-size:12px}.price-admin-box{max-height:92vh}}
 </style>
+
+<style id="v706-basic-admin-font-fix">
+/* v706 - Font quản trị cơ bản, ổn định */
+html, body {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-synthesis: weight style;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: normal !important;
+}
+body, button, input, select, textarea, table, th, td, label, small, p, span, a, div {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-stretch: normal !important;
+}
+body, input, select, textarea, table, td, p, small { font-weight: 400; }
+button, th, strong, b, h1, h2, h3, h4, h5, h6,
+.admin-tab, .sidebar-brand strong, .sidebar-section-title, .sidebar-shortcut,
+.primary, .secondary, .metric strong, .abox h2 {
+  font-weight: 700 !important;
+}
+/* Tránh các mức 650/750/800/900/950 gây nét chữ không đồng đều */
+.admin-sidebar, .admin-main, .admin-modal, .modal, .panel, .card {
+  font-variation-settings: normal !important;
+}
+/* Giữ ký hiệu/icon dùng font riêng nếu có */
+.nav-icon, .shortcut-icon, .material-icons, .fa, .fas, .far, .fab {
+  font-family: inherit;
+}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
