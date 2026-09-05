@@ -29,6 +29,35 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   .tbl th,.panel-title{font-weight:700!important;}
 }
 
+/* v683: màn hình xem trước đúng tỷ lệ A4 ngang để chỉnh danh sách trực quan */
+@media (min-width:761px){
+  .sheet{
+    width:100%;
+    aspect-ratio:297 / 210;
+    height:auto;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    border-radius:2px;
+  }
+  .sheet .grid{flex:0 0 auto;}
+  .sheet .foot{margin-top:auto;}
+}
+@media print{
+  .sheet{
+    width:289mm!important;
+    height:202mm!important;
+    aspect-ratio:auto!important;
+    overflow:hidden!important;
+    display:flex!important;
+    flex-direction:column!important;
+    margin:0 auto!important;
+    box-sizing:border-box!important;
+  }
+  .sheet .grid{flex:0 0 auto!important;}
+  .sheet .foot{margin-top:auto!important;}
+}
+
 </style>
 </head>
 <body>
