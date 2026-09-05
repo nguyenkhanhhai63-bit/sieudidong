@@ -325,6 +325,18 @@ body > main p{
 
 /* v675: basic readable font */
 html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-serif!important;}
+/* v725: force basic font for every comparison-page element, including table cells/labels */
+body.compare-page, body.compare-page *,
+.compare-page-main, .compare-page-main *,
+.compare-table, .compare-table *,
+#compareTable, #compareTable *{
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-style:normal!important;
+}
+.compare-table th, .compare-table td, #compareTable th, #compareTable td{
+  letter-spacing:normal!important;
+  font-variant:normal!important;
+}
 </style>
 
 
