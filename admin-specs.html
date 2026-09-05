@@ -14478,6 +14478,29 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   updateA4Guide();
 })();
 </script>
+
+<style id="v691-price-admin-scroll-fix">
+/* v691: popup cuộn toàn bộ, không cắt khung xem trước A4 */
+#sddPriceAdminModal{align-items:flex-start!important;overflow-y:auto!important;padding:24px 18px!important;}
+#sddPriceAdminModal .price-admin-box{
+  width:min(1080px,96vw)!important;
+  max-height:none!important;
+  height:auto!important;
+  margin:auto!important;
+  overflow:visible!important;
+}
+#sddPriceAdminModal .price-admin-head{position:sticky;top:0;z-index:20;background:#fff;border-radius:16px 16px 0 0;}
+#sddPriceAdminModal .price-admin-tools{position:sticky;top:72px;z-index:19;background:#fff;}
+#sddPriceAdminModal .price-admin-list{overflow:visible!important;max-height:none!important;}
+#sddPriceAdminModal .price-a4-preview-card{overflow:visible!important;}
+#sddPriceAdminModal .price-a4-preview-stage{width:100%!important;height:auto!important;aspect-ratio:297/210!important;overflow:hidden!important;flex:none!important;}
+@media(max-width:720px){
+ #sddPriceAdminModal{padding:8px!important;}
+ #sddPriceAdminModal .price-admin-box{width:100%!important;margin:0 auto!important;}
+ #sddPriceAdminModal .price-admin-head{top:0;}
+ #sddPriceAdminModal .price-admin-tools{position:relative;top:auto;}
+}
+</style>
 </body>
 </html>
 
