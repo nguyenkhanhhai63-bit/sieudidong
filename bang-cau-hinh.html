@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bảng cấu hình | Siêu Di Động</title>
+<style>
+:root{--orange:#ff5a00;--blue:#2f5ac2;--red:#ed1b24;--green:#2f9347;--honor:#e9a400;--ink:#111827;--muted:#667085;--line:#d7dce2;--bg:#f2f4f7}
+*{box-sizing:border-box}html,body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+.toolbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.toolbar h1{font-size:18px;margin:0 12px 0 0}.toolbar .status{font-size:12px;color:var(--muted);margin-right:auto}.btn{height:38px;border:1px solid #d0d5dd;border-radius:9px;background:#fff;padding:0 14px;font-weight:700;cursor:pointer}.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}.search{height:38px;min-width:260px;border:1px solid #d0d5dd;border-radius:9px;padding:0 12px;font:inherit}
+.filters{width:100%;display:flex;gap:6px;overflow:auto;padding-top:2px}.chip{border:1px solid #d0d5dd;background:#fff;border-radius:999px;padding:7px 12px;white-space:nowrap;font-weight:700;font-size:12px;cursor:pointer}.chip.active{background:#fff1e8;border-color:#ffb786;color:#d94800}
+.page-wrap{padding:18px;display:flex;justify-content:center}.sheet{width:210mm;height:297mm;background:#fff;box-shadow:0 2px 16px rgba(15,23,42,.18);padding:4.5mm 4.5mm 5mm;position:relative;overflow:hidden}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,#ef4917,#ff5a00);color:#fff;padding:2.2mm 3mm;margin-bottom:1.8mm}.brand{display:flex;align-items:center;gap:2.5mm}.logo{width:11mm;height:11mm;border-radius:3mm;background:#fff;color:#ff5a00;display:grid;place-items:center;font-size:24px;font-weight:700}.brand strong{font-size:18pt;letter-spacing:.3px}.brand span{font-size:8pt;display:block;margin-top:1px}.sheet-title{font-size:17pt;font-weight:700;text-transform:uppercase}.updated{font-size:7.5pt;white-space:nowrap}
+.groups{display:flex;flex-direction:column;gap:1.8mm;transform-origin:top left}.group{break-inside:avoid}.group-title{height:7mm;display:flex;align-items:center;color:#fff;font-size:11.5pt;font-weight:700;padding:0 3mm;position:relative;overflow:hidden}.group-title:after{content:"";position:absolute;right:0;top:0;border-top:7mm solid rgba(255,255,255,.96);border-left:25mm solid transparent;width:0}.group.xiaomi .group-title{background:var(--orange)}.group.vivo .group-title{background:var(--blue)}.group.oneplus .group-title{background:var(--red)}.group.oppo .group-title{background:#61952e}.group.honor .group-title{background:var(--honor)}.group.tablet .group-title{background:#6b7280}.group.apple .group-title{background:#3f3f46}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.1pt}th,td{border:1px solid #cfd4da;padding:.7mm 1.1mm;line-height:1.1;vertical-align:middle}th{font-size:6.8pt;font-weight:700;text-align:center;background:#fafafa}td:first-child{font-weight:700;text-align:center}td:not(:first-child){text-align:center}.c-name{width:26%}.c-screen{width:25%}.c-chip{width:22%}.c-battery{width:13%}.c-charge{width:14%}.missing{color:#9ca3af}.sheet-foot{position:absolute;left:4.5mm;right:4.5mm;bottom:3mm;display:flex;justify-content:space-between;color:#777;font-size:6.7pt;border-top:1px solid #e5e7eb;padding-top:1.4mm}.loading-mask{position:absolute;inset:0;background:rgba(255,255,255,.88);display:grid;place-items:center;font-weight:700;z-index:10}.loading-mask[hidden]{display:none}
+@media(max-width:900px){.page-wrap{padding:8px;overflow:auto;justify-content:flex-start}.sheet{transform-origin:top left}.search{min-width:180px;flex:1}}
+@media print{@page{size:A4 portrait;margin:0}html,body{width:210mm;height:297mm;background:#fff;overflow:hidden}.toolbar{display:none!important}.page-wrap{padding:0!important;display:block}.sheet{width:210mm!important;height:297mm!important;margin:0!important;box-shadow:none!important}.sheet{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <h1>Bảng cấu hình</h1>
+  <span class="status" id="status">Đang tải danh sách máy...</span>
+  <input class="search" id="search" placeholder="Tìm tên máy...">
+  <button class="btn" id="refresh">Cập nhật cấu hình</button>
+  <button class="btn primary" id="print">In / Lưu PDF</button>
+  <div class="filters" id="filters"></div>
+</div>
+<div class="page-wrap">
+  <section class="sheet" id="sheet">
+    <div class="sheet-head">
+      <div class="brand"><div class="logo">S</div><div><strong>SIÊU DI ĐỘNG</strong><span>Chuyên Android giá tốt</span></div></div>
+      <div class="sheet-title">Danh sách cấu hình điện thoại</div>
+      <div class="updated" id="updated"></div>
+    </div>
+    <div class="groups" id="groups"></div>
+    <div class="sheet-foot"><span>SIÊU DI ĐỘNG</span><span>Thông số được tổng hợp tự động từ dữ liệu sản phẩm trên website</span></div>
+    <div class="loading-mask" id="loading">Đang lấy cấu hình sản phẩm...</div>
+  </section>
+</div>
+<script>
+const $=s=>document.querySelector(s), groupsEl=$('#groups'), loading=$('#loading'), statusEl=$('#status');
+let all=[], activeBrand='all', query='';
+const BRAND_ORDER=['xiaomi','vivo','oneplus','oppo','honor','tablet','apple'];
+const BRAND_LABEL={xiaomi:'XIAOMI / REDMI',vivo:'VIVO / IQOO',oneplus:'ONEPLUS',oppo:'OPPO',honor:'HONOR',tablet:'MÁY TÍNH BẢNG',apple:'APPLE'};
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function attr(attrs,keys){for(const a of (Array.isArray(attrs)?attrs:[])){const n=String(a?.name||'').toLowerCase(),v=String(a?.value||'').trim();if(v&&keys.some(k=>n.includes(k)))return v}return ''}
+function memory(attrs,name){return attr(attrs,['dung lượng','dung luong','bộ nhớ','bo nho','rom','storage'])||((String(name).match(/\b\d+\s*\/\s*(?:\d+|1t|2t)\b/i)||[])[0]||'')}
+function color(attrs,name){return attr(attrs,['màu','mau','color','colour'])}
+function normalizeBase(name,mem,col){let s=String(name||'').trim();[mem,col].filter(Boolean).forEach(v=>{const x=String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');s=s.replace(new RegExp('\\s*-\\s*'+x+'\\s*$','i'),'').replace(new RegExp('\\s+'+x+'\\s*$','i'),'')});return s.replace(/\s+-\s*$/,'').replace(/\s{2,}/g,' ').trim()}
+function brandOf(name,category=''){const n=(name+' '+category).toLowerCase();if(/ipad|tablet|máy tính bảng|may tinh bang|\bpad\b|\btab\b|matepad|y700/.test(n))return'tablet';if(/iphone|apple/.test(n))return'apple';if(/oneplus/.test(n))return'oneplus';if(/oppo/.test(n))return'oppo';if(/honor/.test(n))return'honor';if(/vivo|iqoo/.test(n))return'vivo';return'xiaomi'}
+function catText(p){return [p?.category,p?.categoryName,p?.group,p?.type].filter(Boolean).map(x=>typeof x==='string'?x:(x?.name||'')).join(' ')}
+function modelsFromProducts(raw){const m=new Map();(raw||[]).forEach(p=>{const vars=Array.isArray(p?.variants)&&p.variants.length?p.variants:[p];vars.forEach(v=>{const attrs=Array.isArray(v?.attributes)&&v.attributes.length?v.attributes:(p?.attributes||[]);const name=v?.name||p?.name||'';const mem=memory(attrs,name),col=color(attrs,name);const base=normalizeBase(name,mem,col);if(!base)return;const key=base.toLowerCase();if(!m.has(key))m.set(key,{name:base,brand:brandOf(base,catText(p)),specs:[]})})});return [...m.values()]}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').trim()}
+function findSpec(rows,keys){const arr=Array.isArray(rows)?rows:[];for(const k of keys){const kk=norm(k);const exact=arr.find(x=>norm(x?.label)===kk&&String(x?.value||'').trim());if(exact)return String(exact.value).trim()}for(const x of arr){const l=norm(x?.label);if(keys.some(k=>l.includes(norm(k)))&&String(x?.value||'').trim())return String(x.value).trim()}return''}
+function compact(v,max=46){v=String(v||'').replace(/\s+/g,' ').trim();return v.length>max?v.slice(0,max-1)+'…':v}
+function extract(rows){let screen=findSpec(rows,['màn hình','cong nghệ màn hình','công nghệ màn hình','display','kích thước màn hình']);let res=findSpec(rows,['độ phân giải','resolution']);let hz=findSpec(rows,['tần số quét','refresh rate']);if(screen){const bits=[screen,res,hz].filter(Boolean).map(x=>compact(x,28));screen=[...new Set(bits)].join(' · ')}else screen=[res,hz].filter(Boolean).join(' · ');return{screen:compact(screen,62)||'—',chip:compact(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly']),45)||'—',battery:compact(findSpec(rows,['dung lượng pin','dung luong pin','pin','battery']),24)||'—',charge:compact(findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging']),32)||'—'}}
+async function specFor(name,force=false){const key='sdd_cfg_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
+async function pool(items,worker,n=6){let i=0;const jobs=Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const x=items[i++];await worker(x);statusEl.textContent=`Đang đọc cấu hình ${Math.min(i,items.length)}/${items.length} máy...`}});await Promise.all(jobs)}
+function renderFilters(){const counts={all:all.length};BRAND_ORDER.forEach(b=>counts[b]=all.filter(x=>x.brand===b).length);$('#filters').innerHTML=[['all','Tất cả'],...BRAND_ORDER.map(b=>[b,BRAND_LABEL[b]])].filter(([k])=>counts[k]).map(([k,l])=>`<button class="chip ${activeBrand===k?'active':''}" data-brand="${k}">${esc(l)} (${counts[k]})</button>`).join('');document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{activeBrand=b.dataset.brand;renderFilters();render()})}
+function visible(){return all.filter(x=>(activeBrand==='all'||x.brand===activeBrand)&&(!query||norm(x.name).includes(norm(query))))}
+function render(){const v=visible(), by={};for(const x of v)(by[x.brand]||(by[x.brand]=[])).push(x);groupsEl.innerHTML=BRAND_ORDER.filter(b=>by[b]?.length).map(b=>`<section class="group ${b}"><div class="group-title">${esc(BRAND_LABEL[b])}</div><table><thead><tr><th class="c-name">TÊN MÁY</th><th class="c-screen">MÀN HÌNH</th><th class="c-chip">CHIP</th><th class="c-battery">PIN</th><th class="c-charge">SẠC</th></tr></thead><tbody>${by[b].map(x=>`<tr><td>${esc(x.name)}</td><td class="${x.screen==='—'?'missing':''}">${esc(x.screen)}</td><td class="${x.chip==='—'?'missing':''}">${esc(x.chip)}</td><td class="${x.battery==='—'?'missing':''}">${esc(x.battery)}</td><td class="${x.charge==='—'?'missing':''}">${esc(x.charge)}</td></tr>`).join('')}</tbody></table></section>`).join('');fit();statusEl.textContent=`${v.length} model đang hiển thị · ${all.filter(x=>x.screen!=='—'||x.chip!=='—').length}/${all.length} model đã đọc được cấu hình`}
+function fit(){requestAnimationFrame(()=>{groupsEl.style.transform='none';groupsEl.style.width='100%';const sheet=$('#sheet'),max=sheet.clientHeight-$('.sheet-head').offsetHeight-$('.sheet-foot').offsetHeight-26;const h=groupsEl.scrollHeight;if(h>max){const s=Math.max(.72,max/h);groupsEl.style.transform=`scale(${s})`;groupsEl.style.width=(100/s)+'%'}})}
+async function load(force=false){loading.hidden=false;statusEl.textContent='Đang tải danh sách sản phẩm...';try{const r=await fetch('/api/products?ts='+Date.now(),{cache:'no-store'});const d=await r.json();all=modelsFromProducts(d?.products||d||[]);renderFilters();render();await pool(all,async x=>Object.assign(x,await specFor(x.name,force)),6);render();$('#updated').textContent='CẬP NHẬT: '+new Date().toLocaleDateString('vi-VN')}catch(e){statusEl.textContent='Lỗi: '+(e.message||e);groupsEl.innerHTML='<div style="padding:20px;color:#b42318">Không tải được dữ liệu.</div>'}finally{loading.hidden=true}}
+$('#search').addEventListener('input',e=>{query=e.target.value;render()});$('#refresh').onclick=()=>load(true);$('#print').onclick=()=>window.print();window.addEventListener('resize',fit);load(false);
+</script>
+</body>
+</html>
