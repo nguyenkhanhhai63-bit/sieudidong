@@ -102,6 +102,27 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   .sheet .panel-title{min-height:var(--a4-title-h,auto)!important;display:flex!important;align-items:center!important;justify-content:center!important;}
 }
 
+/* v686: print fix - không dùng chiều cao dòng tính theo preview màn hình khi in */
+@media print{
+  html,body{width:auto!important;height:auto!important;overflow:visible!important;}
+  .wrap{width:100%!important;height:auto!important;margin:0!important;}
+  .sheet{width:289mm!important;height:202mm!important;max-height:202mm!important;min-height:0!important;overflow:hidden!important;padding:2mm!important;display:flex!important;flex-direction:column!important;}
+  .sheet .grid{height:auto!important;flex:0 0 auto!important;min-height:0!important;align-items:start!important;}
+  .sheet .col{height:auto!important;align-content:start!important;}
+  .sheet .panel{display:block!important;}
+  .sheet .tbl{height:auto!important;}
+  .sheet .tbl tbody tr,.sheet .tbl thead tr{height:auto!important;min-height:0!important;}
+  .sheet .panel-title{min-height:0!important;height:auto!important;display:block!important;}
+  .panel-title{font-size:7.7pt!important;padding:.55mm .8mm!important;line-height:1!important;}
+  .tbl th{font-size:6.15pt!important;padding:.28mm .45mm!important;line-height:1!important;}
+  .tbl td{font-size:6.85pt!important;padding:.32mm .45mm!important;line-height:1.02!important;}
+  .grid{gap:.8mm!important;}
+  .col{gap:.65mm!important;}
+  .foot{margin-top:auto!important;padding:.55mm .9mm!important;flex:0 0 auto!important;}
+  .foot b{font-size:6.5pt!important}.foot span{font-size:6.1pt!important}
+  @page{size:A4 landscape;margin:4mm!important;}
+}
+
 </style>
 </head>
 <body>
@@ -556,7 +577,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{fitA4Print();fitA4Fill()});window.addEventListener('resize',()=>{fitA4Print();fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{fitA4Print(); document.querySelector('.grid')?.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');});}); window.addEventListener('afterprint',()=>{requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Print();fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
