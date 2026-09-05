@@ -77,6 +77,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   function firstPriceText(raw){const m=String(raw||'').match(/([0-9][0-9.]{2,})\s*(?:đ|₫)/i);return m?m.index:-1}
   function cleanName(raw){
     let s=String(raw||'').replace(/\s+/g,' ').trim();
+    s=s.replace(/^Chưa có ảnh\s*/i,'').trim();
     const pi=firstPriceText(s); if(pi>0)s=s.slice(0,pi).trim();
     s=s.replace(/\s*(?:\/\s*)?(?:Còn hàng|Hết hàng|Tạm hết|Ngừng bán).*$/i,'').trim();
     s=s.replace(/\s*(?:\+\s*)?So sánh.*$/i,'').replace(/\s*Chi tiết.*$/i,'').trim();
@@ -164,72 +165,137 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     });
     return cards.map(card=>{const name=nameOf(card),mem=memoryOf(card,name);const sv=storageValue(mem);return {name,price:priceOf(card),memory:mem,memoryRank:sv?sv.rank:999999,type,stock:inStock(card)}}).filter(x=>x.name&&x.price>0&&x.stock);
   }
+  async function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+  function uniqueElements(list){
+    const out=[]; const seen=new Set();
+    for(const el of list){if(!el||seen.has(el))continue;seen.add(el);out.push(el)}
+    return out;
+  }
+  function collectNow(doc,type,collected){
+    if(!doc)return 0;
+    const rows=extract(doc,type);
+    rows.forEach(r=>{
+      const k=[r.type,baseName(r.name),r.memory,r.price].join('|').toLocaleLowerCase('vi');
+      if(!collected.has(k))collected.set(k,r);
+    });
+    return rows.length;
+  }
+  async function scrollAndCollect(doc,type,collected,rounds=2){
+    if(!doc)return;
+    let w;try{w=doc.defaultView}catch(e){return}
+    for(let round=0;round<rounds;round++){
+      let h=Math.max(doc.body?.scrollHeight||0,doc.documentElement?.scrollHeight||0);
+      const vh=Math.max(600,w?.innerHeight||800);
+      const steps=Math.max(1,Math.ceil(h/(vh*.8)));
+      for(let i=0;i<=steps;i++){
+        try{w.scrollTo(0,Math.min(h,Math.floor(i*vh*.8)))}catch(e){}
+        await wait(180);
+        collectNow(doc,type,collected);
+        h=Math.max(h,doc.body?.scrollHeight||0,doc.documentElement?.scrollHeight||0);
+      }
+      try{w.scrollTo(0,h)}catch(e){}
+      await wait(450);
+      collectNow(doc,type,collected);
+    }
+  }
+  async function clickLoadMore(doc,type,collected){
+    for(let pass=0;pass<12;pass++){
+      const btns=[...doc.querySelectorAll('button,a,[role="button"]')].filter(b=>{
+        if(!b||b.disabled||b.getAttribute('aria-disabled')==='true')return false;
+        const t=text(b).toLowerCase();
+        return /xem thêm|tải thêm|hiển thị thêm|xem nhiều hơn|load more|show more|xem tất cả|tất cả sản phẩm/.test(t);
+      });
+      if(!btns.length)break;
+      let clicked=false;
+      for(const b of btns){
+        try{b.click();clicked=true}catch(e){}
+        await wait(650);
+        collectNow(doc,type,collected);
+      }
+      if(!clicked)break;
+      await scrollAndCollect(doc,type,collected,1);
+    }
+  }
+  async function scanFilters(doc,type,collected){
+    // Lọc theo hãng/danh mục thường thay cả danh sách sau một khoảng trễ.
+    // Quét tuần tự và CHỜ render xong rồi mới thu dữ liệu, tránh bỏ sót các hãng nằm ngoài tab mặc định.
+    const sels='[data-brand],[data-category],.brand-card,.brand-item,.brand-chip,.category-tab,.cat-tab,.sdd-brand-card,.brand-filter,[class*="brand-card"],[class*="brand-chip"]';
+    let filters=uniqueElements([...doc.querySelectorAll(sels)]).filter(el=>{
+      const t=text(el).trim();
+      return t && t.length<80 && !/mức giá|dưới|triệu|sắp xếp/i.test(t);
+    });
+    // Giới hạn tránh bấm nhầm hàng trăm phần tử không phải filter, nhưng đủ cho toàn bộ hãng thực tế.
+    filters=filters.slice(0,40);
+    for(const el of filters){
+      try{el.scrollIntoView({block:'center'})}catch(e){}
+      await wait(120);
+      try{el.click()}catch(e){continue}
+      await wait(950);
+      collectNow(doc,type,collected);
+      await scrollAndCollect(doc,type,collected,1);
+      await clickLoadMore(doc,type,collected);
+      collectNow(doc,type,collected);
+    }
+  }
+  async function scanHomeCategoryHosts(doc,collected){
+    // Trang chủ có các khối được clone từ từng danh mục. Theo dõi trực tiếp các host này
+    // vì chúng có thể chứa sản phẩm mà productGrid của route hiện tại không còn giữ trong DOM.
+    const hosts=[...doc.querySelectorAll('#sddHomeAllProducts [data-home-cat]')];
+    if(!hosts.length)return;
+    const started=Date.now(); let last=-1,stable=0;
+    while(Date.now()-started<45000){
+      for(const host of hosts){
+        const path=host.getAttribute('data-home-cat')||'';
+        const type=path.includes('may-tinh-bang')?'tablet':'phone';
+        collectNow({querySelectorAll:(sel)=>host.querySelectorAll(sel)},type,collected);
+      }
+      const n=collected.size;
+      if(n===last)stable++;else stable=0;
+      last=n;
+      if(stable>=8)break;
+      await wait(500);
+    }
+  }
   function sync(){
-    items=[];pending=sources.length;status.textContent='Đang đồng bộ giá từ website...';document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
+    items=[];pending=sources.length;status.textContent='Đang quét toàn bộ sản phẩm còn hàng...';document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     sources.forEach(src=>{
       const f=document.createElement('iframe');f.className='loader-frame';f.src=src.path+(src.path.includes('?')?'&':'?')+'_pricelist='+Date.now();document.body.appendChild(f);
-      let tries=0,done=false,lastUnionCount=-1,stableCount=0;
+      let done=false;
       const collected=new Map();
-      const startedAt=Date.now();
-      function rowKey(r){return [r.type,baseName(r.name),r.memory,r.price].join('|').toLocaleLowerCase('vi')}
-      function mergeRows(rows){
-        rows.forEach(r=>{const k=rowKey(r);if(!collected.has(k))collected.set(k,r)});
-      }
-      function wakeLazyContent(d){
-        if(!d)return;
-        try{
-          const w=d.defaultView;
-          const h=Math.max(d.body?.scrollHeight||0,d.documentElement?.scrollHeight||0);
-          // Quét nhiều vị trí thay vì chỉ nhảy thẳng xuống đáy; một số lazy-load chỉ kích hoạt khi đi qua viewport.
-          if(w){
-            const step=Math.max(500,Math.floor((w.innerHeight||800)*0.85));
-            const pos=Math.min(h,Math.max(0,(tries%Math.max(1,Math.ceil(h/step)))*step));
-            w.scrollTo(0,pos);
-            if(tries%6===5)w.scrollTo(0,h);
-          }
-          // Bấm tất cả nút mở rộng danh sách nếu có.
-          const buttons=[...d.querySelectorAll('button,a,[role="button"]')];
-          for(const b of buttons){
-            if(b.disabled || b.getAttribute('aria-disabled')==='true')continue;
-            const t=text(b).toLowerCase();
-            if(/xem thêm|tải thêm|hiển thị thêm|xem nhiều hơn|load more|show more|xem tất cả|tất cả sản phẩm/.test(t)){
-              try{b.click()}catch(e){}
-            }
-          }
-          // Nếu có tab hãng/danh mục, lần lượt bấm để các sản phẩm ẩn theo tab cũng được render và gom vào union.
-          const filters=[...d.querySelectorAll('[data-brand],[data-category],.brand-card,.brand-item,.brand-chip,.category-tab,.cat-tab')];
-          if(filters.length){
-            const b=filters[tries%filters.length];
-            try{b.click()}catch(e){}
-          }
-        }catch(e){}
-      }
-      function finish(){
+      const run=async()=>{
         if(done)return;
         let d;try{d=f.contentDocument}catch(e){}
-        wakeLazyContent(d);
-        const rows=d?extract(d,src.type):[];
-        mergeRows(rows);
+        if(!d||!d.body){await wait(800);return run()}
+        // Cho app.js/API của trang con có thời gian nạp dữ liệu ban đầu.
+        await wait(1200);
+        collectNow(d,src.type,collected);
+        await scrollAndCollect(d,src.type,collected,3);
+        await clickLoadMore(d,src.type,collected);
+        await scanFilters(d,src.type,collected);
+        await scrollAndCollect(d,src.type,collected,2);
+        if(src.path==='/')await scanHomeCategoryHosts(d,collected);
 
-        // Không chỉ nhìn số card của 1 thời điểm: một số trang phân trang/virtualize
-        // có thể thay card cũ bằng card mới. Vì vậy gom UNION tất cả card đã từng thấy.
-        const unionCount=collected.size;
-        if(unionCount>0 && unionCount===lastUnionCount)stableCount++; else stableCount=0;
-        lastUnionCount=unionCount;
-        tries++;
-        const elapsed=Date.now()-startedAt;
-        const stableEnough=unionCount>0 && stableCount>=20 && elapsed>=15000;
-        const timedOut=elapsed>=90000 || tries>=300;
-        if(!stableEnough && !timedOut){setTimeout(finish,300);return}
-
+        // Chờ thêm các request/lazy-render muộn; chỉ chốt sau khi union thực sự ổn định.
+        let last=-1,stable=0; const tailStart=Date.now();
+        while(Date.now()-tailStart<30000 && stable<10){
+          collectNow(d,src.type,collected);
+          const n=collected.size;
+          if(n===last)stable++;else stable=0;
+          last=n;
+          await wait(500);
+        }
         done=true;
-        items.push(...collected.values());f.remove();pending--;
+        items.push(...collected.values());
+        try{f.remove()}catch(e){}
+        pending--;
         if(pending===0){
           render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');
-          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · lấy tất cả sản phẩm đang còn hàng đã tìm thấy';
+          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · đã quét từng hãng và toàn bộ danh mục';
         }
-      }
-      f.addEventListener('load',()=>setTimeout(finish,700));setTimeout(finish,1400);
+      };
+      f.addEventListener('load',()=>{run().catch(()=>{if(!done){done=true;try{f.remove()}catch(e){};pending--;if(pending===0){render();status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng';}}})},{once:true});
+      // Fallback nếu load event bị cache/router nuốt.
+      setTimeout(()=>{if(!done)run().catch(()=>{})},1800);
     });
   }
   search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>window.print());sync();
