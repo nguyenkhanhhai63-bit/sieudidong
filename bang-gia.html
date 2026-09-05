@@ -133,12 +133,14 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   }
   function baseName(name){
     let s=String(name||'').trim();
-    const color='(?:Đen|Trắng|Bạc|Xám|Đỏ|Vàng(?:\s+Cát|\s+Moca)?|Cam|Hồng|Tím|Titan(?:\s+Xám|\s+Đen|\s+Trắng)?|Xanh(?:\s+Dương|\s+Lá|\s+Biển|\s+Ngọc|\s+Mint)?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple)';
+    // Danh sách màu có thể xuất hiện ở cuối tên sản phẩm. Dùng \\s trong chuỗi regex
+    // để các màu nhiều từ (Xanh Dương, Vàng Cát, Vàng Mocha...) được xóa đúng.
+    const color='(?:Đen|Trắng|Bạc|Xám|Đỏ|Cam|Hồng|Tím|Nâu|Be|Vàng(?:\\s+(?:Cát|Moca|Mocha|Gold))?|Titan(?:\\s+(?:Xám|Đen|Trắng))?|Xanh(?:\\s+(?:Dương|Lá|Biển|Ngọc|Mint|Rêu|Đen))?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple|Yellow|Brown|Beige)';
     s=s.replace(new RegExp('\\b\\d{1,3}\\s*\\/\\s*\\d{2,4}\\s*(?:GB)?\\b','ig'),' ')
        .replace(new RegExp('\\b(?:64|128|256|512|1024)\\s*(?:GB|G)\\b','ig'),' ')
        .replace(new RegExp('\\b(?:1|2)\\s*TB\\b','ig'),' ')
-       // Màu đã có cột riêng: xóa màu ở cuối tên máy, kể cả dạng " - Đen -".
-       .replace(new RegExp('\\s*-\\s*'+color+'\\s*-?\\s*$','i'),' ')
+       // Màu đã có cột riêng: xóa màu ở cuối tên, có hoặc không có dấu gạch nối.
+       .replace(new RegExp('(?:\\s*-\\s*|\\s+)'+color+'\\s*-?\\s*$','i'),' ')
        .replace(/\s+-\s*$/g,' ')
        .replace(/\s+/g,' ').trim();
     return s;
@@ -334,12 +336,13 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   }
   function apiModelName(p){
     let s=String(p?.name||'').replace(/\s+/g,' ').trim();
-    // Tên sản phẩm cha là model chuẩn; chỉ bỏ phần dung lượng/màu cuối tên nếu API đang tách từng phiên bản thành sản phẩm riêng.
+    const color='(?:Đen|Trắng|Bạc|Xám|Đỏ|Cam|Hồng|Tím|Nâu|Be|Vàng(?:\\s+(?:Cát|Moca|Mocha|Gold))?|Titan(?:\\s+(?:Xám|Đen|Trắng))?|Xanh(?:\\s+(?:Dương|Lá|Biển|Ngọc|Mint|Rêu|Đen))?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple|Yellow|Brown|Beige)';
+    // Tên sản phẩm cha là model chuẩn; chỉ bỏ dung lượng và màu ở phần cuối nếu API tách biến thể thành sản phẩm riêng.
     s=s.replace(/\s*\([^)]*\)\s*/g,' ')
-      .replace(/(?:^|\s*-\s*)\d+\s*\/\s*(?:\d+|1\s*T|2\s*T)(?:\s*GB|\s*TB)?/ig,' ')
-      .replace(/(?:64|128|256|512|1024)\s*(?:GB|G)/ig,' ')
-      .replace(/(?:1|2)\s*TB/ig,' ')
-      .replace(/\s*-\s*(?:Đen|Trắng|Bạc|Xám|Đỏ|Vàng|Cam|Hồng|Tím|Titan(?:\s+Xám|\s+Đen|\s+Trắng)?|Xanh(?:\s+Dương|\s+Lá|\s+Biển|\s+Ngọc|\s+Mint)?)/ig,' ')
+      .replace(/(?:^|\s*-\s*)\d+\s*\/\s*(?:\d+|1\s*T|2\s*T)(?:\s*GB|\s*TB)?\b/ig,' ')
+      .replace(/\b(?:64|128|256|512|1024)\s*(?:GB|G)\b/ig,' ')
+      .replace(/\b(?:1|2)\s*TB\b/ig,' ')
+      .replace(new RegExp('(?:\\s*-\\s*|\\s+)'+color+'\\s*-?\\s*$','i'),' ')
       .replace(/\s+/g,' ').replace(/^\s*-\s*|\s*-\s*$/g,'').trim();
     return s||String(p?.name||'').trim();
   }
