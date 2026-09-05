@@ -12172,6 +12172,18 @@ document.addEventListener("DOMContentLoaded",function(){
   });
   document.addEventListener('click',e=>{if(els.nameSuggest&&!e.target.closest('.used-name-field'))els.nameSuggest.classList.remove('show')});
 
+  function renderBrandFilter(){
+    if(!brandFilter)return;
+    const models=readModels();
+    const counts={};
+    models.forEach(x=>{const g=brandLabel(x.group);counts[g]=(counts[g]||0)+1});
+    const groups=Object.keys(counts).sort((a,b)=>{const ia=brandOrder.indexOf(a),ib=brandOrder.indexOf(b);if(ia<0&&ib<0)return a.localeCompare(b,'vi');if(ia<0)return 1;if(ib<0)return -1;return ia-ib});
+    if(currentBrand!=='ALL'&&!counts[currentBrand])currentBrand='ALL';
+    const total=models.length;
+    brandFilter.innerHTML='<span class="price-brand-filter-label">Thương hiệu:</span>'+
+      ['ALL',...groups].map(g=>'<button type="button" class="price-brand-chip '+(currentBrand===g?'active':'')+'" data-brand="'+esc(g)+'">'+(g==='ALL'?'Tất cả':esc(g))+' <span class="price-brand-count">'+(g==='ALL'?total:counts[g])+'</span></button>').join('');
+    brandFilter.querySelectorAll('.price-brand-chip').forEach(btn=>btn.addEventListener('click',()=>{currentBrand=btn.dataset.brand||'ALL';render()}));
+  }
   function render(){
     if(!els.list)return;
     const f=els.filter?.value||'all',q=norm(els.search?.value||'');
@@ -14417,6 +14429,15 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </style>
 
 
+<style id="v710-price-brand-filter">
+#sddPriceAdminModal .price-brand-filter{padding:10px 18px 4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;border-bottom:1px solid #eaecf0;background:#fff}
+#sddPriceAdminModal .price-brand-filter-label{font-size:12px;font-weight:700;color:#667085;margin-right:2px}
+#sddPriceAdminModal .price-brand-chip{height:32px;padding:0 12px;border:1px solid #d0d5dd;border-radius:999px;background:#fff;color:#344054;font:700 12px Arial,Helvetica,sans-serif;cursor:pointer;white-space:nowrap}
+#sddPriceAdminModal .price-brand-chip:hover{background:#f9fafb}
+#sddPriceAdminModal .price-brand-chip.active{background:#ff5a00;border-color:#ff5a00;color:#fff}
+#sddPriceAdminModal .price-brand-count{margin-left:4px;opacity:.72;font-weight:400}
+@media(max-width:720px){#sddPriceAdminModal .price-brand-filter{padding:9px 12px 3px;gap:6px;overflow-x:auto;flex-wrap:nowrap}#sddPriceAdminModal .price-brand-filter-label{flex:none}#sddPriceAdminModal .price-brand-chip{flex:none;height:30px;padding:0 10px;font-size:11px}}
+</style>
 <style id="v695-admin-print-button">
 #sddPriceAdminModal .price-a4-admin-print{height:34px;padding:0 14px;border:1px solid #ff5a00;border-radius:9px;background:#ff5a00;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
 #sddPriceAdminModal .price-a4-admin-print:hover{filter:brightness(.97)}
@@ -14427,6 +14448,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   <section class="price-admin-box">
     <div class="price-admin-head"><div><h3>Tùy chỉnh bảng giá</h3><p>Mặc định tất cả model đang bán đều hiển thị, kể cả còn hàng hoặc hết hàng. Tắt công tắc nếu muốn ẩn riêng model khỏi bảng giá. Có thể sửa tên, tùy chỉnh màu hiển thị và kéo thả để đổi thứ tự sản phẩm. Để trống ô màu sẽ tự dùng màu lấy từ dữ liệu sản phẩm. Nút ↑ ↓ dùng được trên điện thoại.</p></div><button id="sddPriceAdminClose" class="price-admin-close" type="button">×</button></div>
     <div class="price-admin-tools"><input id="sddPriceAdminSearch" type="search" placeholder="Tìm tên máy..."><button id="sddPriceShowAll" class="primary" type="button">Hiện tất cả</button><button id="sddPriceHideAll" type="button">Ẩn tất cả</button></div>
+    <div id="sddPriceBrandFilter" class="price-brand-filter"><span class="price-brand-filter-label">Thương hiệu:</span></div>
     <div id="sddPriceA4Guide" class="price-a4-guide">
       <div class="price-a4-guide-top"><div><strong>Gợi ý số lượng cho 1 trang A4 ngang</strong><div class="price-a4-sub">Khuyến nghị hiển thị <b>60–65 máy</b> để bảng cân đối và chữ dễ đọc.</div></div><div><span id="sddPriceA4Count" class="price-a4-count">0</span> <strong>máy</strong></div></div>
       <div id="sddPriceA4State" class="price-a4-state low">Đang kiểm tra số lượng hiển thị...</div>
@@ -14458,8 +14480,11 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </div>
 <script id="sddPriceAdminScript">
 (function(){
-  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State'),manualEnabled=$('sddA4ManualEnabled'),fontRange=$('sddA4Font'),rowRange=$('sddA4Row'),gapRange=$('sddA4Gap'),scaleRange=$('sddA4Scale'),fontOut=$('sddA4FontOut'),rowOut=$('sddA4RowOut'),gapOut=$('sddA4GapOut'),scaleOut=$('sddA4ScaleOut'),resetA4=$('sddA4Reset'),autoA4=$('sddA4Auto'),previewStage=$('sddA4PreviewStage'),previewFrame=$('sddA4PreviewFrame'),previewRefresh=$('sddA4PreviewRefresh'),adminPrint=$('sddA4AdminPrint');
+  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State'),manualEnabled=$('sddA4ManualEnabled'),fontRange=$('sddA4Font'),rowRange=$('sddA4Row'),gapRange=$('sddA4Gap'),scaleRange=$('sddA4Scale'),fontOut=$('sddA4FontOut'),rowOut=$('sddA4RowOut'),gapOut=$('sddA4GapOut'),scaleOut=$('sddA4ScaleOut'),resetA4=$('sddA4Reset'),autoA4=$('sddA4Auto'),previewStage=$('sddA4PreviewStage'),previewFrame=$('sddA4PreviewFrame'),previewRefresh=$('sddA4PreviewRefresh'),adminPrint=$('sddA4AdminPrint'),brandFilter=$('sddPriceBrandFilter');
   if(!fab||!modal)return;
+  let currentBrand='ALL';
+  const brandOrder=['XIAOMI/REDMI','VIVO/IQOO','ONEPLUS','OPPO','HONOR','APPLE','MÁY TÍNH BẢNG'];
+  const brandLabel=g=>String(g||'KHÁC').trim()||'KHÁC';
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
   const saveHidden=set=>localStorage.setItem('sdd_price_hidden_models',JSON.stringify([...set]));
@@ -14498,10 +14523,11 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   }
   function render(){
     bindA4();
+    renderBrandFilter();
   updateA4Guide();
     const q=(search.value||'').toLocaleLowerCase('vi').trim(),hidden=readHidden(),names=readNames(),colors=readColors();
-    const rows=orderedModels().filter(x=>!q||String(names[x.key]||x.name||'').toLocaleLowerCase('vi').includes(q));
-    if(!rows.length){list.innerHTML='<div class="price-admin-empty">Chưa có dữ liệu model. Mở trang Bảng giá và bấm <b>Cập nhật lại</b> một lần để đồng bộ danh sách.</div>';return}
+    const rows=orderedModels().filter(x=>(currentBrand==='ALL'||brandLabel(x.group)===currentBrand)&&(!q||String(names[x.key]||x.name||'').toLocaleLowerCase('vi').includes(q)));
+    if(!rows.length){list.innerHTML='<div class="price-admin-empty">Không có sản phẩm phù hợp với thương hiệu hoặc từ khóa đang chọn.</div>';return}
     list.innerHTML=rows.map(x=>'<div class="price-admin-row" draggable="'+(!q)+'" data-key="'+esc(x.key)+'"><button class="price-drag" type="button" title="Kéo để đổi vị trí" aria-label="Kéo để đổi vị trí">☰</button><input class="price-switch" type="checkbox" data-key="'+esc(x.key)+'" '+(hidden.has(x.key)?'':'checked')+'><label><input class="price-name-edit" type="text" data-key="'+esc(x.key)+'" data-original="'+esc(x.name)+'" value="'+esc(names[x.key]||x.name)+'" title="Sửa tên hiển thị"><span class="price-name-note">Tên gốc: '+esc(x.name)+' · '+esc(x.group||'')+'</span></label><div class="price-color-wrap"><input class="price-color-edit" type="text" data-key="'+esc(x.key)+'" data-original="'+esc(x.color||'—')+'" value="'+esc(colors[x.key]||x.color||'')+'" placeholder="VD: Đen|Trắng" title="Tùy chỉnh màu hiển thị"><span class="price-color-note">Màu gốc: '+esc(x.color||'—')+'</span></div><div class="price-move"><button type="button" class="move-up" data-key="'+esc(x.key)+'" title="Lên">↑</button><button type="button" class="move-down" data-key="'+esc(x.key)+'" title="Xuống">↓</button></div><div class="mem">'+esc(x.memory||'—')+'</div><div class="price">'+money(x.price)+'</div></div>').join('');
     list.querySelectorAll('.price-switch').forEach(sw=>sw.addEventListener('change',()=>{const set=readHidden(),k=sw.dataset.key;if(sw.checked)set.delete(k);else set.add(k);saveHidden(set);updateA4Guide()}));
     list.querySelectorAll('.move-up').forEach(b=>b.addEventListener('click',()=>moveKey(b.dataset.key,-1)));
