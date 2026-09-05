@@ -8175,9 +8175,9 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     <button class="sidebar-shortcut" type="button" data-go-tab="accessories">
       <span class="shortcut-icon">▣</span><span>Quản lý Phụ kiện</span><b>Mới</b>
     </button>
-    <a class="sidebar-shortcut" href="/bang-cau-hinh.html" target="_blank" rel="noopener" style="text-decoration:none">
+    <button class="sidebar-shortcut" id="sddConfigTableOpen" type="button">
       <span class="shortcut-icon">▤</span><span>Bảng cấu hình</span><b>Mới</b>
-    </a>
+    </button>
   </div>
 
   <div class="sidebar-section-title sidebar-ai-title">AI & TỐI ƯU</div>
@@ -14635,6 +14635,51 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  modal.addEventListener('input',e=>{if(e.target.matches('#sddA4Font,#sddA4Row,#sddA4Gap,#sddA4Scale')){clearTimeout(timer);timer=setTimeout(refresh,180)}});
  window.addEventListener('storage',e=>{if((e.key||'').startsWith('sdd_price_')){clearTimeout(timer);timer=setTimeout(refresh,120)}});
  setTimeout(fit,100);
+})();
+</script>
+
+<style id="v713-config-admin-only-style">
+#sddConfigTableModal{position:fixed;inset:0;z-index:14050;background:rgba(15,23,42,.48);display:none;align-items:center;justify-content:center;padding:18px}
+#sddConfigTableModal.open{display:flex}
+#sddConfigTableBox{width:min(1280px,97vw);height:min(900px,94vh);background:#fff;border:1px solid #e4e7ec;border-radius:16px;box-shadow:0 24px 70px rgba(16,24,40,.24);display:flex;flex-direction:column;overflow:hidden}
+#sddConfigTableHead{height:58px;flex:none;padding:0 16px 0 18px;border-bottom:1px solid #eaecf0;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff}
+#sddConfigTableHead h3{margin:0;font:700 18px Arial,Helvetica,sans-serif;color:#101828}
+#sddConfigTableHead p{margin:3px 0 0;font:400 11px Arial,Helvetica,sans-serif;color:#667085}
+#sddConfigTableClose{width:36px;height:36px;border:1px solid #d0d5dd;border-radius:9px;background:#fff;cursor:pointer;font-size:20px;line-height:1}
+#sddConfigTableFrame{width:100%;height:100%;border:0;background:#f2f4f7}
+@media(max-width:720px){#sddConfigTableModal{padding:0}#sddConfigTableBox{width:100vw;height:100%;max-height:none;border-radius:0;border:0}#sddConfigTableHead{height:54px;padding:0 12px}#sddConfigTableHead h3{font-size:16px}}
+</style>
+<div id="sddConfigTableModal" aria-hidden="true">
+  <div id="sddConfigTableBox" role="dialog" aria-modal="true" aria-labelledby="sddConfigTableTitle">
+    <div id="sddConfigTableHead">
+      <div><h3 id="sddConfigTableTitle">Bảng cấu hình</h3><p>Chỉ dùng trong quản trị · tự lấy danh sách máy và thông số từ website</p></div>
+      <button id="sddConfigTableClose" type="button" aria-label="Đóng">×</button>
+    </div>
+    <iframe id="sddConfigTableFrame" title="Bảng cấu hình trong quản trị" loading="lazy"></iframe>
+  </div>
+</div>
+<script id="v713-config-admin-only-script">
+(function(){
+  const openBtn=document.getElementById('sddConfigTableOpen');
+  const modal=document.getElementById('sddConfigTableModal');
+  const closeBtn=document.getElementById('sddConfigTableClose');
+  const frame=document.getElementById('sddConfigTableFrame');
+  if(!openBtn||!modal||!frame)return;
+  function open(){
+    if(!frame.src) frame.src='/bang-cau-hinh.html?admin=1&embed=1';
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.documentElement.style.overflow='hidden';
+  }
+  function close(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.documentElement.style.overflow='';
+  }
+  openBtn.addEventListener('click',open);
+  closeBtn&&closeBtn.addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
 })();
 </script>
 </body>

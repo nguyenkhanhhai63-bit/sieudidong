@@ -15,10 +15,19 @@
 .groups{display:flex;flex-direction:column;gap:1.8mm;transform-origin:top left}.group{break-inside:avoid}.group-title{height:7mm;display:flex;align-items:center;color:#fff;font-size:11.5pt;font-weight:700;padding:0 3mm;position:relative;overflow:hidden}.group-title:after{content:"";position:absolute;right:0;top:0;border-top:7mm solid rgba(255,255,255,.96);border-left:25mm solid transparent;width:0}.group.xiaomi .group-title{background:var(--orange)}.group.vivo .group-title{background:var(--blue)}.group.oneplus .group-title{background:var(--red)}.group.oppo .group-title{background:#61952e}.group.honor .group-title{background:var(--honor)}.group.tablet .group-title{background:#6b7280}.group.apple .group-title{background:#3f3f46}
 table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7.1pt}th,td{border:1px solid #cfd4da;padding:.7mm 1.1mm;line-height:1.1;vertical-align:middle}th{font-size:6.8pt;font-weight:700;text-align:center;background:#fafafa}td:first-child{font-weight:700;text-align:center}td:not(:first-child){text-align:center}.c-name{width:26%}.c-screen{width:25%}.c-chip{width:22%}.c-battery{width:13%}.c-charge{width:14%}.missing{color:#9ca3af}.sheet-foot{position:absolute;left:4.5mm;right:4.5mm;bottom:3mm;display:flex;justify-content:space-between;color:#777;font-size:6.7pt;border-top:1px solid #e5e7eb;padding-top:1.4mm}.loading-mask{position:absolute;inset:0;background:rgba(255,255,255,.88);display:grid;place-items:center;font-weight:700;z-index:10}.loading-mask[hidden]{display:none}
 @media(max-width:900px){.page-wrap{padding:8px;overflow:auto;justify-content:flex-start}.sheet{transform-origin:top left}.search{min-width:180px;flex:1}}
+.admin-embed .toolbar{position:sticky;top:0;box-shadow:none}.admin-embed .page-wrap{padding:12px}.admin-embed .sheet{box-shadow:0 1px 8px rgba(15,23,42,.12)}
 @media print{@page{size:A4 portrait;margin:0}html,body{width:210mm;height:297mm;background:#fff;overflow:hidden}.toolbar{display:none!important}.page-wrap{padding:0!important;display:block}.sheet{width:210mm!important;height:297mm!important;margin:0!important;box-shadow:none!important}.sheet{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search);
+  const inAdmin=q.get('admin')==='1';
+  if(!inAdmin){ location.replace('/admin'); return; }
+  if(q.get('embed')==='1') document.documentElement.classList.add('admin-embed');
+})();
+</script>
 <div class="toolbar">
   <h1>Bảng cấu hình</h1>
   <span class="status" id="status">Đang tải danh sách máy...</span>
