@@ -147,6 +147,8 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   }
   function modelKey(it){return (String(it.type||'phone')+'|'+baseName(it.name)).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim()}
   function hiddenModelSet(){try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}}
+  function customNames(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}}
+  function displayName(it){const m=customNames();return m[modelKey(it)]||baseName(it.name)}
   function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||dynamicBrandGroup(it.name)}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -174,7 +176,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     });
     return out;
   }
-  function panelHtml(g,arr){return '<section class="panel" style="--accent:'+g.accent+'"><div class="panel-title">'+g.title+'</div><table class="tbl"><thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td>'+escapeHtml(baseName(it.name))+'</td><td>'+escapeHtml(it.memory)+'</td><td>'+escapeHtml(it.color||'—')+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'}
+  function panelHtml(g,arr){return '<section class="panel" style="--accent:'+g.accent+'"><div class="panel-title">'+g.title+'</div><table class="tbl"><thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td>'+escapeHtml(displayName(it))+'</td><td>'+escapeHtml(it.memory)+'</td><td>'+escapeHtml(it.color||'—')+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'}
   function render(){
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
     const allModels=pickLowestVariants(items);

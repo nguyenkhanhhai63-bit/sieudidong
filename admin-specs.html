@@ -14360,12 +14360,13 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  #aiSettingsCard .ai-k-page-btn{min-width:34px;width:34px;height:34px}
  #aiSettingsCard #aiKnowledgePageSize{height:34px;min-width:88px}
 }
+.price-name-edit{width:100%;height:36px;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;font-weight:750;color:#172033;background:#fff}.price-name-edit:focus{outline:none;border-color:#ff5a00;box-shadow:0 0 0 3px rgba(255,90,0,.10)}.price-name-note{display:block;color:#667085;margin-top:3px;font-size:11px}
 </style>
 
 <button id="sddPriceAdminFab" class="price-admin-fab" type="button">Tùy chỉnh bảng giá</button>
 <div id="sddPriceAdminModal" class="price-admin-modal" aria-hidden="true">
   <section class="price-admin-box">
-    <div class="price-admin-head"><div><h3>Tùy chỉnh bảng giá</h3><p>Mặc định tất cả model đang bán đều hiển thị, kể cả còn hàng hoặc hết hàng. Tắt công tắc nếu muốn ẩn riêng model khỏi bảng giá.</p></div><button id="sddPriceAdminClose" class="price-admin-close" type="button">×</button></div>
+    <div class="price-admin-head"><div><h3>Tùy chỉnh bảng giá</h3><p>Mặc định tất cả model đang bán đều hiển thị, kể cả còn hàng hoặc hết hàng. Tắt công tắc nếu muốn ẩn riêng model khỏi bảng giá. Có thể sửa trực tiếp tên sản phẩm bên dưới.</p></div><button id="sddPriceAdminClose" class="price-admin-close" type="button">×</button></div>
     <div class="price-admin-tools"><input id="sddPriceAdminSearch" type="search" placeholder="Tìm tên máy..."><button id="sddPriceShowAll" class="primary" type="button">Hiện tất cả</button><button id="sddPriceHideAll" type="button">Ẩn tất cả</button></div>
     <div id="sddPriceAdminList" class="price-admin-list"></div>
   </section>
@@ -14377,8 +14378,22 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
   const saveHidden=set=>localStorage.setItem('sdd_price_hidden_models',JSON.stringify([...set]));
+  const readNames=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}};
+  const saveNames=o=>localStorage.setItem('sdd_price_custom_names',JSON.stringify(o));
+  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
   const money=n=>(Number(n)||0).toLocaleString('vi-VN')+' đ';
-  function render(){const q=(search.value||'').toLocaleLowerCase('vi').trim(),hidden=readHidden(),rows=readModels().filter(x=>!q||String(x.name||'').toLocaleLowerCase('vi').includes(q));if(!rows.length){list.innerHTML='<div class="price-admin-empty">Chưa có dữ liệu model. Mở trang Bảng giá và bấm <b>Cập nhật lại</b> một lần để đồng bộ danh sách.</div>';return}list.innerHTML=rows.map(x=>'<div class="price-admin-row"><input class="price-switch" type="checkbox" data-key="'+String(x.key).replace(/"/g,'&quot;')+'" '+(hidden.has(x.key)?'':'checked')+'><label>'+String(x.name||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))+'<small>'+(x.group||'')+'</small></label><div class="mem">'+(x.memory||'—')+'</div><div class="price">'+money(x.price)+'</div></div>').join('');list.querySelectorAll('.price-switch').forEach(sw=>sw.addEventListener('change',()=>{const set=readHidden(),k=sw.dataset.key;if(sw.checked)set.delete(k);else set.add(k);saveHidden(set)}))}
+  function render(){
+    const q=(search.value||'').toLocaleLowerCase('vi').trim(),hidden=readHidden(),names=readNames();
+    const rows=readModels().filter(x=>!q||String(names[x.key]||x.name||'').toLocaleLowerCase('vi').includes(q));
+    if(!rows.length){list.innerHTML='<div class="price-admin-empty">Chưa có dữ liệu model. Mở trang Bảng giá và bấm <b>Cập nhật lại</b> một lần để đồng bộ danh sách.</div>';return}
+    list.innerHTML=rows.map(x=>'<div class="price-admin-row"><input class="price-switch" type="checkbox" data-key="'+esc(x.key)+'" '+(hidden.has(x.key)?'':'checked')+'><label><input class="price-name-edit" type="text" data-key="'+esc(x.key)+'" data-original="'+esc(x.name)+'" value="'+esc(names[x.key]||x.name)+'" title="Sửa tên hiển thị"><span class="price-name-note">Tên gốc: '+esc(x.name)+' · '+esc(x.group||'')+'</span></label><div class="mem">'+esc(x.memory||'—')+'</div><div class="price">'+money(x.price)+'</div></div>').join('');
+    list.querySelectorAll('.price-switch').forEach(sw=>sw.addEventListener('change',()=>{const set=readHidden(),k=sw.dataset.key;if(sw.checked)set.delete(k);else set.add(k);saveHidden(set)}));
+    list.querySelectorAll('.price-name-edit').forEach(inp=>{
+      const commit=()=>{const names=readNames(),k=inp.dataset.key,v=inp.value.trim(),orig=inp.dataset.original;if(!v||v===orig)delete names[k];else names[k]=v;saveNames(names);inp.value=v||orig};
+      inp.addEventListener('change',commit); inp.addEventListener('blur',commit);
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();inp.blur()}});
+    });
+  }
   fab.addEventListener('click',()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');render()});close.addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)close.click()});search.addEventListener('input',render);
   $('sddPriceShowAll').addEventListener('click',()=>{saveHidden(new Set());render()});
   $('sddPriceHideAll').addEventListener('click',()=>{saveHidden(new Set(readModels().map(x=>x.key)));render()});
