@@ -195,13 +195,22 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
 }
 
 
-/* v690: chế độ xem trước A4 nhúng trong Admin */
-body.admin-a4-preview{margin:0!important;padding:0!important;background:#dde2e8!important;overflow:hidden!important;}
+/* v692: Admin preview dùng CHÍNH layout in A4 thật (297 x 210mm) */
+html.admin-a4-preview-html,body.admin-a4-preview{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important;}
 body.admin-a4-preview .top,body.admin-a4-preview .hero,body.admin-a4-preview .note{display:none!important;}
-body.admin-a4-preview .wrap{width:1440px!important;max-width:none!important;margin:0!important;padding:0!important;}
-body.admin-a4-preview .sheet{width:1400px!important;height:990px!important;min-height:990px!important;max-height:990px!important;margin:8px auto!important;padding:8px!important;box-sizing:border-box!important;border:1px solid #aeb6c2!important;border-radius:4px!important;box-shadow:none!important;background:#fff!important;}
-body.admin-a4-preview .sheet .grid{min-height:0!important;}
-body.admin-a4-preview .foot{margin-top:auto!important;}
+body.admin-a4-preview .wrap{width:297mm!important;height:210mm!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;}
+body.admin-a4-preview .sheet{position:relative!important;width:297mm!important;height:210mm!important;min-height:210mm!important;max-height:210mm!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;overflow:hidden!important;display:block!important;aspect-ratio:auto!important;}
+body.admin-a4-preview .sheet .grid{position:absolute!important;left:4mm!important;top:4mm!important;width:var(--print-grid-width,289mm)!important;height:auto!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:calc(.8mm * var(--print-density,1) * var(--manual-gap,1))!important;align-items:start!important;transform:scale(var(--print-scale,1))!important;transform-origin:top left!important;overflow:visible!important;}
+body.admin-a4-preview .sheet .col{height:auto!important;gap:calc(.65mm * var(--print-density,1) * var(--manual-gap,1))!important;align-content:start!important;overflow:visible!important;}
+body.admin-a4-preview .sheet .panel{display:block!important;overflow:hidden!important;}
+body.admin-a4-preview .sheet .tbl{height:auto!important;}
+body.admin-a4-preview .sheet .tbl tbody tr,body.admin-a4-preview .sheet .tbl thead tr{height:auto!important;min-height:0!important;}
+body.admin-a4-preview .sheet .panel-title{display:block!important;min-height:0!important;height:auto!important;font-size:calc(8.6pt * var(--print-density,1) * var(--manual-font,1))!important;padding:calc(.62mm * var(--print-density,1) * var(--manual-row,1)) calc(.82mm * var(--print-density,1))!important;line-height:1!important;}
+body.admin-a4-preview .sheet .tbl th{font-size:calc(6.65pt * var(--print-density,1) * var(--manual-font,1))!important;padding:calc(.30mm * var(--print-density,1) * var(--manual-row,1)) calc(.44mm * var(--print-density,1))!important;line-height:1!important;}
+body.admin-a4-preview .sheet .tbl td{font-size:calc(7.45pt * var(--print-density,1) * var(--manual-font,1))!important;padding:calc(.38mm * var(--print-density,1) * var(--manual-row,1)) calc(.44mm * var(--print-density,1))!important;line-height:1.02!important;}
+body.admin-a4-preview .sheet .foot{position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;margin:0!important;padding:calc(.58mm * var(--print-density,1)) .9mm!important;z-index:3!important;}
+body.admin-a4-preview .sheet .foot b{font-size:calc(6.7pt * var(--print-density,1))!important;}
+body.admin-a4-preview .sheet .foot span{font-size:calc(6.25pt * var(--print-density,1))!important;}
 </style>
 </head>
 <body>
@@ -416,12 +425,12 @@ body.admin-a4-preview .foot{margin-top:auto!important;}
     if(!right.children.length)right.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     applyA4Manual();
     fitA4Print();
-    requestAnimationFrame(fitA4Fill);
+    if(!document.body.classList.contains('admin-a4-preview')) requestAnimationFrame(fitA4Fill);
   }
   function fitA4Fill(){
     applyA4Manual();
     const sheet=document.querySelector('.sheet'), grid=sheet&&sheet.querySelector('.grid'), foot=sheet&&sheet.querySelector('.foot');
-    if(!sheet||!grid||!left||!right||window.matchMedia('print').matches)return;
+    if(!sheet||!grid||!left||!right||window.matchMedia('print').matches||document.body.classList.contains('admin-a4-preview'))return;
     const sheetStyle=getComputedStyle(sheet);
     const pad=parseFloat(sheetStyle.paddingTop||0)+parseFloat(sheetStyle.paddingBottom||0);
     const footH=foot?foot.getBoundingClientRect().height:0;
@@ -704,7 +713,7 @@ body.admin-a4-preview .foot{margin-top:auto!important;}
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
