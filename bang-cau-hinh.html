@@ -83,27 +83,41 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function attr(attrs,keys){for(const a of (Array.isArray(attrs)?attrs:[])){const n=String(a?.name||'').toLowerCase(),v=String(a?.value||'').trim();if(v&&keys.some(k=>n.includes(k)))return v}return ''}
 function memory(attrs,name){return attr(attrs,['dung lượng','dung luong','bộ nhớ','bo nho','rom','storage'])||((String(name).match(/\b\d+\s*\/\s*(?:\d+|1t|2t)\b/i)||[])[0]||'')}
 function color(attrs,name){return attr(attrs,['màu','mau','color','colour'])}
-function normalizeBase(name,mem,col){let s=String(name||'').trim();[mem,col].filter(Boolean).forEach(v=>{const x=String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');s=s.replace(new RegExp('\\s*-\\s*'+x+'\\s*$','i'),'').replace(new RegExp('\\s+'+x+'\\s*$','i'),'')});return s.replace(/\s+-\s*$/,'').replace(/\s{2,}/g,' ').trim()}
+function normalizeBase(name,mem,col){let s=String(name||'').trim();[mem,col].filter(Boolean).forEach(v=>{const x=String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');s=s.replace(new RegExp('\\s*-\\s*'+x+'\\s*$','i'),'').replace(new RegExp('\\s+'+x+'\\s*$','i'),'')});s=s.replace(/\s*\((?=[^)]*(?:snapdragon|dimensity|helio|kirin|tensor|mAh|pin\b|chip\b))[^)]*\)/ig,'');s=s.replace(/\s*-\s*(?:pin\s*)?\d{4,5}\s*mAh\b[^-]*$/i,'');s=s.replace(/\s*-\s*\d+\s*\/\s*(?:\d+|1t|2t)\s*$/i,'');return s.replace(/\s+-\s*$/,'').replace(/\s{2,}/g,' ').trim()}
 function brandOf(name,category=''){const n=(name+' '+category).toLowerCase();if(/ipad|tablet|máy tính bảng|may tinh bang|\bpad\b|\btab\b|matepad|y700/.test(n))return'tablet';if(/iphone|apple/.test(n))return'apple';if(/oneplus/.test(n))return'oneplus';if(/oppo/.test(n))return'oppo';if(/honor/.test(n))return'honor';if(/vivo|iqoo/.test(n))return'vivo';return'xiaomi'}
 function catText(p){return [p?.category,p?.categoryName,p?.group,p?.type].filter(Boolean).map(x=>typeof x==='string'?x:(x?.name||'')).join(' ')}
 function modelsFromProducts(raw){const m=new Map();(raw||[]).forEach(p=>{const vars=Array.isArray(p?.variants)&&p.variants.length?p.variants:[p];vars.forEach(v=>{const attrs=Array.isArray(v?.attributes)&&v.attributes.length?v.attributes:(p?.attributes||[]);const name=v?.name||p?.name||'';const mem=memory(attrs,name),col=color(attrs,name);const base=normalizeBase(name,mem,col);if(!base)return;const key=base.toLowerCase();if(!m.has(key))m.set(key,{name:base,originalName:base,displayName:base,hidden:false,brand:brandOf(base,catText(p)),specs:[]})})});return [...m.values()]}
 function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').trim()}
 function findSpec(rows,keys){const arr=Array.isArray(rows)?rows:[];for(const k of keys){const kk=norm(k);const exact=arr.find(x=>norm(x?.label)===kk&&String(x?.value||'').trim());if(exact)return String(exact.value).trim()}for(const x of arr){const l=norm(x?.label);if(keys.some(k=>l.includes(norm(k)))&&String(x?.value||'').trim())return String(x.value).trim()}return''}
 function compact(v,max=46){v=String(v||'').replace(/\s+/g,' ').trim();return v.length>max?v.slice(0,max-1)+'…':v}
-function cleanScreen(v){v=String(v||'').replace(/\s+/g,' ').trim();v=v.replace(/công nghệ màn hình:?/ig,'').replace(/display:?/ig,'').replace(/kích thước màn hình:?/ig,'').trim();return v}
-function cleanChip(v){return String(v||'').replace(/\s+/g,' ').replace(/^(chipset|chip|cpu|bộ xử lý|vi xử lý)\s*:?\s*/i,'').trim()}
-function cleanBattery(v){const s=String(v||'').replace(/\s+/g,' ').trim(),m=s.match(/(\d[\d.,]*)\s*mAh/i);return m?(m[1].replace(/[.,](?=\d{3}\b)/g,'')+' mAh'):s}
-function cleanCharge(v){let s=String(v||'').replace(/\s+/g,' ').trim();const watts=[...s.matchAll(/\d+(?:[.,]\d+)?\s*W/ig)].map(m=>m[0].replace(/\s+/g,''));const wireless=/không dây|wireless/i.test(s);if(watts.length)return [...new Set(watts)].join(' + ')+(wireless?' Không dây':'');return s}
+function cleanScreen(v,size,res,hz){
+  const all=[v,size,res,hz].filter(Boolean).join(' '), out=[];
+  let tech=(all.match(/\bLTPO\s*(?:AMOLED|OLED)?\b/i)||all.match(/\bAMOLED\b/i)||all.match(/\bOLED\b/i)||all.match(/\bIPS\s*LCD\b/i)||all.match(/\bLCD\b/i)||[])[0];
+  if(tech) out.push(tech.replace(/\s+/g,' ').toUpperCase().replace('LTPO AMOLED','LTPO AMOLED').replace('IPS LCD','IPS LCD'));
+  let inch=(all.match(/\b\d(?:[.,]\d{1,2})?\s*(?:inch|inches|\")/i)||[])[0]; if(inch) out.push(inch.replace(/\s*(?:inch|inches)/i,'\"').replace(',','.').replace(/\s+/g,''));
+  let rr=(all.match(/\b(?:HD\+|FHD\+|QHD\+|[123](?:[.,]\d)?K)\b/i)||[])[0]; if(rr) out.push(rr.toUpperCase().replace(',','.'));
+  let rate=(all.match(/\b(?:60|90|120|144|165|180|185)\s*Hz\b/i)||[])[0]; if(rate) out.push(rate.replace(/\s+/g,''));
+  return out.join(' ') || '—';
+}
+function cleanChip(v){
+  let s=String(v||'').replace(/\s+/g,' ').trim(); if(!s)return '—';
+  s=s.replace(/^(?:qualcomm|mediatek)\s+/i,'').replace(/^(?:chipset|chip|cpu|bộ xử lý|vi xử lý)\s*:?\s*/i,'');
+  const pats=[/Snapdragon\s+8\s+Elite\s+Gen\s*5/i,/Snapdragon\s+8s?\s+Gen\s*\d/i,/Snapdragon\s+8\s+Elite/i,/Snapdragon\s+7s?\s+Gen\s*\d/i,/Snapdragon\s+\d{3,4}(?:\s*\+)?/i,/Dimensity\s+\d{3,4}(?:\s+(?:Ultra|Pro|Max|SUPER|Racing))?/i,/Helio\s+[A-Z]\d+(?:\s+Ultra)?/i,/Kirin\s+\d+[A-Z]*/i,/Tensor\s+G\d/i];
+  for(const p of pats){const m=s.match(p);if(m)return m[0].replace(/\s+/g,' ')}
+  return compact(s.replace(/\s*\([^)]*\)/g,'').replace(/\bSM\w+\b/ig,'').trim(),28)||'—';
+}
+function cleanBattery(v){const s=String(v||'').replace(/\s+/g,' ').trim(),m=s.match(/(\d[\d.,]*)\s*mAh/i);return m?(m[1].replace(/[.,](?=\d{3}\b)/g,'')+' mAh'):'—'}
+function cleanCharge(v){const s=String(v||'').replace(/\s+/g,' ').trim();if(!s)return'—';const watts=[...s.matchAll(/\d+(?:[.,]\d+)?\s*W/ig)].map(m=>m[0].replace(/\s+/g,''));if(!watts.length)return'—';const uniq=[...new Set(watts)];const wireless=/không dây|wireless/i.test(s);return uniq.join(' + ')+(wireless?' Không dây':'')}
 function extract(rows){
-  let screen=cleanScreen(findSpec(rows,['màn hình','công nghệ màn hình','cong nghe man hinh','display']));
+  const rawScreen=findSpec(rows,['màn hình','công nghệ màn hình','cong nghe man hinh','display']);
   const size=findSpec(rows,['kích thước màn hình','kich thuoc man hinh','screen size']);
   const res=findSpec(rows,['độ phân giải','do phan giai','resolution']);
   const hz=findSpec(rows,['tần số quét','tan so quet','refresh rate']);
-  const parts=[];[screen,size,res,hz].filter(Boolean).forEach(v=>{v=cleanScreen(v);if(v&&!parts.some(x=>norm(x)===norm(v)))parts.push(v)});
-  screen=parts.join(' · ').replace(/\s*·\s*/g,' · ');
-  return{screen:compact(screen,52)||'—',chip:compact(cleanChip(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly'])),34)||'—',battery:compact(cleanBattery(findSpec(rows,['dung lượng pin','dung luong pin','pin','battery'])),18)||'—',charge:compact(cleanCharge(findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging'])),28)||'—'}
+  const rawBattery=findSpec(rows,['dung lượng pin','dung luong pin','pin','battery']);
+  const rawCharge=findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging']);
+  return{screen:cleanScreen(rawScreen,size,res,hz),chip:cleanChip(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly'])),battery:cleanBattery(rawBattery),charge:cleanCharge(rawCharge+' '+rawBattery)}
 }
-async function specFor(name,force=false){const key='sdd_cfg_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
+async function specFor(name,force=false){const key='sdd_cfg_v716_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
 async function pool(items,worker,n=6){let i=0;const jobs=Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const x=items[i++];await worker(x);statusEl.textContent=`Đang đọc cấu hình ${Math.min(i,items.length)}/${items.length} máy...`}});await Promise.all(jobs)}
 function renderFilters(){const counts={all:all.length};BRAND_ORDER.forEach(b=>counts[b]=all.filter(x=>x.brand===b).length);$('#filters').innerHTML=[['all','Tất cả'],...BRAND_ORDER.map(b=>[b,BRAND_LABEL[b]])].filter(([k])=>counts[k]).map(([k,l])=>`<button class="chip ${activeBrand===k?'active':''}" data-brand="${k}">${esc(l)} (${counts[k]})</button>`).join('');document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{activeBrand=b.dataset.brand;renderFilters();render()})}
 function visible(){return all.filter(x=>!x.hidden&&(activeBrand==='all'||x.brand===activeBrand)&&(!query||norm(x.displayName).includes(norm(query))||norm(x.originalName).includes(norm(query))))}
