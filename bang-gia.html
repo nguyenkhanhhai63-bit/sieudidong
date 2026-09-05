@@ -393,8 +393,8 @@ body.a4-print-layout .sheet .foot{
     padding:.48mm 1.15mm!important;
     column-gap:1.5mm!important;
   }
-  body.a4-print-layout .sheet .foot b, body.admin-a4-preview.a4-print-layout .sheet .foot b{font-size:6pt!important;}
-  body.a4-print-layout .sheet .foot span, body.admin-a4-preview.a4-print-layout .sheet .foot span{font-size:5.8pt!important;}
+  body.a4-print-layout .sheet .foot b, body.admin-a4-preview.a4-print-layout .sheet .foot b{font-size:7.2pt!important;}
+  body.a4-print-layout .sheet .foot span, body.admin-a4-preview.a4-print-layout .sheet .foot span{font-size:6.8pt!important;}
 }
 </style>
 
@@ -508,7 +508,13 @@ body.a4-print-layout .sheet .foot{
   function normalizeColor(s){
     s=String(s||'').replace(/\s+/g,' ').trim();
     if(!s)return '—';
-    return s.split(/[|,;/]+/).map(x=>x.trim()).filter(Boolean).filter((x,i,a)=>a.findIndex(y=>y.toLocaleLowerCase('vi')===x.toLocaleLowerCase('vi'))===i).join('|')||'—';
+    const parts=s.split(/[|,;/]+/).map(x=>x.trim()).filter(Boolean)
+      // Không bao giờ cho dung lượng/RAM-ROM lọt sang cột MÀU.
+      .filter(x=>!storageValue(x))
+      .filter(x=>!/^\d{1,3}\s*\/\s*\d{2,4}(?:\s*GB)?$/i.test(x))
+      .filter(x=>!/^(?:64|128|256|512|1024)\s*(?:GB|G)$/i.test(x))
+      .filter(x=>!/^(?:1|2)\s*TB$/i.test(x));
+    return parts.filter((x,i,a)=>a.findIndex(y=>y.toLocaleLowerCase('vi')===x.toLocaleLowerCase('vi'))===i).join('|')||'—';
   }
   function colorOf(card){
     const candidates=[];
@@ -543,7 +549,7 @@ body.a4-print-layout .sheet .foot{
   function a4Manual(){try{return Object.assign({enabled:false,font:100,row:100,gap:100,scale:100},JSON.parse(localStorage.getItem(A4_MANUAL_KEY)||'{}'))}catch(e){return {enabled:false,font:100,row:100,gap:100,scale:100}}}
   function applyA4Manual(){const sh=document.querySelector('.sheet');if(!sh)return;const v=a4Manual(),on=!!v.enabled;sh.style.setProperty('--manual-font',on?Math.max(.75,Math.min(1.3,(+v.font||100)/100)):1);sh.style.setProperty('--manual-row',on?Math.max(.65,Math.min(1.45,(+v.row||100)/100)):1);sh.style.setProperty('--manual-gap',on?Math.max(.5,Math.min(1.6,(+v.gap||100)/100)):1);sh.dataset.manualA4=on?'1':'0'}
   function displayName(it){const m=customNames();return m[modelKey(it)]||baseName(it.name)}
-  function displayColor(it){const m=customColors(),v=String(m[modelKey(it)]||'').trim();return v||it.color||'—'}
+  function displayColor(it){const m=customColors(),v=normalizeColor(String(m[modelKey(it)]||'').trim());return v!=='—'?v:normalizeColor(it.color||'—')}
   function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||dynamicBrandGroup(it.name)}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -905,7 +911,23 @@ body.a4-print-layout .sheet .foot{
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); /* v697: iframe preview đã fit trước khi w.print(); không đo lại khi print media bật vì sẽ làm lệch preview. */ if(!document.body.classList.contains('admin-a4-preview') && !document.body.classList.contains('v698-frozen-print')) fitA4Print();}); window.addEventListener('afterprint',()=>{if(!document.body.classList.contains('admin-a4-preview'))document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); /* v697: iframe preview đã fit trước khi w.print(); không đo lại khi print media bật vì sẽ làm lệch preview. */ if(!document.body.classList.contains('admin-a4-preview') && !document.body.classList.contains('v698-frozen-print')) fitA4Print();}); window.addEventListener('afterprint',()=>{
+  const isAdminPreview=document.body.classList.contains('admin-a4-preview');
+  if(!isAdminPreview){
+    document.body.classList.remove('a4-print-layout');
+    const sh=document.querySelector('.sheet');
+    if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');}
+    requestAnimationFrame(fitA4Fill);
+  }else{
+    // v701: quay lại đúng trạng thái preview thủ công sau khi đóng hộp thoại in.
+    // Không xóa các biến --print-* vì chính chúng tạo ra layout đang thấy trong Admin.
+    setTimeout(()=>{
+      try{ if(typeof window.sddRestorePreviewAfterPrint==='function') window.sddRestorePreviewAfterPrint(); }catch(_){}
+      try{ applyA4Manual(); }catch(_){}
+      try{ fitA4Print(); }catch(_){}
+    },0);
+  }
+});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
 })();
 </script>
 
@@ -969,6 +991,26 @@ body.a4-print-layout .sheet .foot{
     frozen=[]; document.body.classList.remove('v698-frozen-print');
   };
   window.addEventListener('afterprint',()=>setTimeout(()=>window.sddRestorePreviewAfterPrint(),0));
+})();
+</script>
+
+
+<!-- v701: KEEP ADMIN A4 SETTINGS AFTER PRINT -->
+<script id="v701-keep-admin-preview-after-print">
+(()=>{
+  const KEY='sdd_price_a4_manual';
+  let snapshot=null;
+  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(_){return {}}}
+  function restore(){
+    if(!document.body.classList.contains('admin-a4-preview'))return;
+    if(snapshot){try{localStorage.setItem(KEY,JSON.stringify(snapshot))}catch(_){}}
+    setTimeout(()=>{
+      try{ if(typeof window.applyA4Manual==='function') window.applyA4Manual(); }catch(_){}
+      try{ if(typeof window.fitA4Print==='function') window.fitA4Print(); }catch(_){}
+    },30);
+  }
+  window.addEventListener('beforeprint',()=>{if(document.body.classList.contains('admin-a4-preview'))snapshot=read();});
+  window.addEventListener('afterprint',restore);
 })();
 </script>
 
