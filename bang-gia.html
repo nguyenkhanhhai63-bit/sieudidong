@@ -291,10 +291,51 @@ body.admin-a4-preview .sheet .foot, body.a4-print-layout .sheet .foot{
   body.a4-print-layout .sheet .foot{position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;margin:0!important;width:auto!important;}
 }
 
+
+/* v696: EXACT PREVIEW = PRINT. Cùng class a4-print-layout được giữ cả trong iframe preview. */
+body.admin-a4-preview.a4-print-layout .sheet, body.a4-print-layout .sheet{
+  width:297mm!important;height:210mm!important;min-height:210mm!important;max-height:210mm!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  position:relative!important;display:block!important;overflow:hidden!important;background:#fff!important;box-sizing:border-box!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .grid, body.a4-print-layout .sheet .grid{
+  position:absolute!important;left:4mm!important;top:4mm!important;width:var(--print-grid-width,289mm)!important;height:auto!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:start!important;
+  gap:calc(.8mm * var(--print-density,1) * var(--manual-gap,1))!important;
+  transform:scale(var(--print-scale,1))!important;transform-origin:top left!important;zoom:1!important;overflow:visible!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .col, body.a4-print-layout .sheet .col{
+  height:auto!important;align-content:start!important;gap:calc(.65mm * var(--print-density,1) * var(--manual-gap,1))!important;overflow:visible!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .panel-title, body.a4-print-layout .sheet .panel-title{
+  font-size:calc(8.6pt * var(--print-density,1) * var(--manual-font,1))!important;
+  padding:calc(.62mm * var(--print-density,1) * var(--manual-row,1)) calc(.82mm * var(--print-density,1))!important;line-height:1!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .tbl th, body.a4-print-layout .sheet .tbl th{
+  font-size:calc(6.65pt * var(--print-density,1) * var(--manual-font,1))!important;
+  padding:calc(.30mm * var(--print-density,1) * var(--manual-row,1)) calc(.44mm * var(--print-density,1))!important;line-height:1!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .tbl td, body.a4-print-layout .sheet .tbl td{
+  font-size:calc(7.45pt * var(--print-density,1) * var(--manual-font,1))!important;
+  padding:calc(.38mm * var(--print-density,1) * var(--manual-row,1)) calc(.44mm * var(--print-density,1))!important;line-height:1.02!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .foot, body.a4-print-layout .sheet .foot{
+  position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;width:auto!important;margin:0!important;
+  padding:calc(.58mm * var(--print-density,1)) .9mm!important;z-index:5!important;box-sizing:border-box!important;
+}
+body.admin-a4-preview.a4-print-layout .sheet .foot b, body.a4-print-layout .sheet .foot b{font-size:calc(6.7pt * var(--print-density,1))!important}
+body.admin-a4-preview.a4-print-layout .sheet .foot span, body.a4-print-layout .sheet .foot span{font-size:calc(6.25pt * var(--print-density,1))!important}
+@media print{
+  html,body{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important}
+  body.a4-print-layout .wrap{width:297mm!important;height:210mm!important;max-width:none!important;margin:0!important;padding:0!important}
+  @page{size:A4 landscape;margin:0!important}
+}
 </style>
 </head>
 <body>
-<script>if(new URLSearchParams(location.search).get('adminPreview')==='1'){document.body.classList.add('admin-a4-preview');document.documentElement.classList.add('admin-a4-preview-html');}</script>
+<script>
+(()=>{const q=new URLSearchParams(location.search);if(q.get('adminPreview')==='1'){document.body.classList.add('admin-a4-preview','a4-print-layout');document.documentElement.classList.add('admin-a4-preview-html');}})();
+</script>
 <div class="wrap">
   <div class="top">
     <a class="brand" href="./index.html"><div class="logo">S</div><div><strong>SIÊU DI ĐỘNG</strong><small>Bảng giá tự động</small></div></a>
@@ -570,21 +611,24 @@ body.admin-a4-preview .sheet .foot, body.a4-print-layout .sheet .foot{
     sheet.style.setProperty('--print-scale','1');
     sheet.style.setProperty('--print-grid-width','289mm');
 
-    // Đo đúng chiều cao layout A4. Chừa riêng vùng footer ở đáy nên không thể che bảng.
-    requestAnimationFrame(()=>{
-      const mmPx=sheet.getBoundingClientRect().width/297;
-      const top=4*mmPx, footerReserve=10*mmPx, bottom=3*mmPx;
-      const available=Math.max(1, sheet.getBoundingClientRect().height-top-footerReserve-bottom);
-      const natural=Math.max(grid.scrollHeight, grid.getBoundingClientRect().height);
-      let scale=natural>0?Math.min(1,available/natural):1;
-      if(manual.enabled) scale*=Math.max(.70,Math.min(1.10,(+manual.scale||100)/100));
-      scale=Math.max(.55,Math.min(1.05,scale));
-      sheet.style.setProperty('--print-scale',scale.toFixed(4));
-      sheet.style.setProperty('--print-grid-width',(289/scale).toFixed(3)+'mm');
-      sheet.dataset.a4Rows=maxLoad.toFixed(1);
-      sheet.dataset.a4Density=density.toFixed(4);
-      sheet.dataset.a4Scale=scale.toFixed(4);
-    });
+    // v696: đo và áp dụng scale ĐỒNG BỘ, không chờ requestAnimationFrame.
+    // Nhờ vậy preview Admin và beforeprint dùng chính xác cùng một phép tính.
+    void sheet.offsetHeight;
+    const rect=sheet.getBoundingClientRect();
+    const mmPx=rect.width/297;
+    const top=4*mmPx, footerReserve=10*mmPx, bottom=3*mmPx;
+    const available=Math.max(1,rect.height-top-footerReserve-bottom);
+    const natural=Math.max(grid.scrollHeight,grid.getBoundingClientRect().height);
+    let scale=natural>0?Math.min(1,available/natural):1;
+    if(manual.enabled) scale*=Math.max(.70,Math.min(1.10,(+manual.scale||100)/100));
+    scale=Math.max(.55,Math.min(1.05,scale));
+    sheet.style.setProperty('--print-scale',scale.toFixed(4));
+    sheet.style.setProperty('--print-grid-width',(289/scale).toFixed(3)+'mm');
+    sheet.dataset.a4Rows=maxLoad.toFixed(1);
+    sheet.dataset.a4Density=density.toFixed(4);
+    sheet.dataset.a4Scale=scale.toFixed(4);
+    // ép browser hoàn tất layout ngay để lệnh print kế tiếp lấy đúng trạng thái này
+    void grid.offsetHeight;
   }
   function extract(doc,type){
     if(!doc)return [];
@@ -794,7 +838,7 @@ body.admin-a4-preview .sheet .foot, body.a4-print-layout .sheet .foot{
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);const printBtn=document.getElementById('printBtn');if(printBtn)printBtn.addEventListener('click',()=>{document.body.classList.add('a4-print-layout');fitA4Print();requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()))});window.addEventListener('beforeprint',()=>{document.body.classList.add('a4-print-layout');const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{if(!document.body.classList.contains('admin-a4-preview'))document.body.classList.remove('a4-print-layout');const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');sh.style.removeProperty('--print-density');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
 })();
 </script>
 </body>
