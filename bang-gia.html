@@ -123,6 +123,34 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   @page{size:A4 landscape;margin:4mm!important;}
 }
 
+
+/* v687: auto-fit A4 thật sự - không cắt/mất sản phẩm */
+@media (min-width:761px){
+  .sheet{--a4-screen-scale:1;}
+  .grid{gap:calc(4px * var(--a4-screen-scale))!important;}
+  .col{gap:calc(4px * var(--a4-screen-scale))!important;}
+  .panel-title{font-size:calc(12.4px * var(--a4-screen-scale))!important;padding:calc(4.5px * var(--a4-screen-scale)) calc(6px * var(--a4-screen-scale))!important;line-height:1.05!important;}
+  .tbl th{font-size:calc(9.2px * var(--a4-screen-scale))!important;padding:calc(3px * var(--a4-screen-scale)) calc(4px * var(--a4-screen-scale))!important;line-height:1.05!important;}
+  .tbl td{font-size:calc(10.8px * var(--a4-screen-scale))!important;padding:calc(3.4px * var(--a4-screen-scale)) calc(4px * var(--a4-screen-scale))!important;line-height:1.06!important;}
+  .foot{padding:calc(4px * var(--a4-screen-scale)) calc(8px * var(--a4-screen-scale))!important;}
+}
+@media print{
+  html,body{width:297mm!important;height:210mm!important;overflow:hidden!important;background:#fff!important;}
+  .wrap{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;overflow:hidden!important;}
+  .sheet{position:relative!important;width:297mm!important;height:210mm!important;max-height:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important;box-shadow:none!important;}
+  .sheet .grid{position:absolute!important;left:4mm!important;top:4mm!important;width:var(--print-grid-width,289mm)!important;height:auto!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.8mm!important;align-items:start!important;transform:scale(var(--print-scale,1))!important;transform-origin:top left!important;overflow:visible!important;}
+  .sheet .col{height:auto!important;gap:.65mm!important;align-content:start!important;overflow:visible!important;}
+  .sheet .panel{display:block!important;overflow:hidden!important;break-inside:avoid!important;}
+  .sheet .tbl{height:auto!important;}
+  .sheet .tbl tbody tr,.sheet .tbl thead tr{height:auto!important;min-height:0!important;}
+  .sheet .panel-title{display:block!important;min-height:0!important;height:auto!important;font-size:7.5pt!important;padding:.48mm .7mm!important;line-height:1!important;}
+  .sheet .tbl th{font-size:5.95pt!important;padding:.22mm .38mm!important;line-height:1!important;}
+  .sheet .tbl td{font-size:6.55pt!important;padding:.27mm .38mm!important;line-height:1.02!important;}
+  .sheet .foot{position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;margin:0!important;padding:.5mm .9mm!important;z-index:3!important;}
+  .foot b{font-size:6.2pt!important}.foot span{font-size:5.9pt!important}
+  @page{size:A4 landscape;margin:0!important;}
+}
+
 </style>
 </head>
 <body>
@@ -336,38 +364,69 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
   }
   function fitA4Fill(){
     const sheet=document.querySelector('.sheet'), grid=sheet&&sheet.querySelector('.grid'), foot=sheet&&sheet.querySelector('.foot');
-    if(!sheet||!grid||!left||!right)return;
+    if(!sheet||!grid||!left||!right||window.matchMedia('print').matches)return;
     const sheetStyle=getComputedStyle(sheet);
     const pad=parseFloat(sheetStyle.paddingTop||0)+parseFloat(sheetStyle.paddingBottom||0);
     const footH=foot?foot.getBoundingClientRect().height:0;
     const footMargin=foot?parseFloat(getComputedStyle(foot).marginTop||0):0;
-    const available=Math.max(0,sheet.clientHeight-pad-footH-footMargin-2);
+    const available=Math.max(0,sheet.clientHeight-pad-footH-footMargin-3);
     grid.style.height=available+'px';
-    [left,right].forEach(col=>{
-      const panels=[...col.querySelectorAll('.panel')];
-      if(!panels.length)return;
-      const rows=panels.reduce((n,p)=>n+p.querySelectorAll('tbody tr').length,0);
-      const gap=parseFloat(getComputedStyle(col).rowGap||getComputedStyle(col).gap||0);
-      const gaps=Math.max(0,panels.length-1)*gap;
-      const titleH=20, headH=18;
-      const fixed=panels.length*(titleH+headH)+gaps;
-      const rowH=rows?Math.max(15,(available-fixed)/rows):18;
-      col.style.setProperty('--a4-row-h',rowH.toFixed(2)+'px');
-      col.style.setProperty('--a4-title-h',titleH+'px');
-      col.style.setProperty('--a4-head-h',headH+'px');
-    });
+
+    const applyLayout=(scale)=>{
+      sheet.style.setProperty('--a4-screen-scale',scale.toFixed(3));
+      // Buộc browser cập nhật kích thước sau khi đổi scale.
+      void sheet.offsetHeight;
+      [left,right].forEach(col=>{
+        const panels=[...col.querySelectorAll('.panel')];
+        if(!panels.length)return;
+        const rows=panels.reduce((n,p)=>n+p.querySelectorAll('tbody tr').length,0);
+        const gap=parseFloat(getComputedStyle(col).rowGap||getComputedStyle(col).gap||0);
+        const gaps=Math.max(0,panels.length-1)*gap;
+        let fixed=gaps;
+        panels.forEach(p=>{
+          const title=p.querySelector('.panel-title');
+          const head=p.querySelector('thead');
+          fixed+=(title?title.getBoundingClientRect().height:0)+(head?head.getBoundingClientRect().height:0);
+        });
+        const rowH=rows?Math.max(0,(available-fixed)/rows):0;
+        col.style.setProperty('--a4-row-h',rowH.toFixed(2)+'px');
+        col.style.removeProperty('--a4-title-h');
+        col.style.removeProperty('--a4-head-h');
+      });
+      void grid.offsetHeight;
+    };
+
+    let scale=1;
+    applyLayout(scale);
+    // Nếu nội dung thật vẫn cao hơn khung A4 (do tên/màu xuống dòng), tự giảm font + padding.
+    for(let i=0;i<5;i++){
+      const overflow=Math.max(left.scrollHeight,right.scrollHeight);
+      if(overflow<=available+1)break;
+      const ratio=(available/overflow)*0.992;
+      scale=Math.max(.60,scale*ratio);
+      applyLayout(scale);
+    }
+    sheet.dataset.a4ScreenScale=scale.toFixed(3);
   }
   function fitA4Print(){
     const sheet=document.querySelector('.sheet');
-    if(!sheet)return;
-    const rowLoad=col=>[...col.querySelectorAll('.panel')].reduce((sum,p)=>sum+p.querySelectorAll('tbody tr').length+2,0);
-    const maxRows=Math.max(rowLoad(left),rowLoad(right),1);
-    // Sau khi đã cân 2 cột, chỉ thu nhẹ khi thật sự nhiều dòng; không phóng quá lớn gây sang trang 2.
-    let scale=maxRows>43?43/maxRows:1;
-    scale=Math.max(.78,Math.min(1,scale));
-    sheet.style.setProperty('--a4-fit',scale.toFixed(3));
-    sheet.dataset.a4Rows=String(maxRows);
-    sheet.dataset.a4Scale=scale.toFixed(3);
+    if(!sheet||!left||!right)return;
+    const weightedLoad=col=>{
+      const panels=[...col.querySelectorAll('.panel')];
+      const rows=panels.reduce((sum,p)=>sum+p.querySelectorAll('tbody tr').length,0);
+      // Mỗi panel tốn thêm chiều cao title + header, tương đương ~2.4 dòng.
+      return rows + panels.length*2.4;
+    };
+    const maxLoad=Math.max(weightedLoad(left),weightedLoad(right),1);
+    // Khoảng 40 "dòng quy đổi" là mức vừa A4 với font đậm. Nhiều hơn sẽ tự thu toàn bộ grid,
+    // tuyệt đối không ẩn/cắt sản phẩm.
+    let scale=Math.min(1,40/maxLoad);
+    scale=Math.max(.60,scale);
+    const widthPct=(97.306/scale); // 289mm / 297mm, bù lại phần width bị transform thu nhỏ.
+    sheet.style.setProperty('--print-scale',scale.toFixed(4));
+    sheet.style.setProperty('--print-grid-width',widthPct.toFixed(3)+'%');
+    sheet.dataset.a4Rows=maxLoad.toFixed(1);
+    sheet.dataset.a4Scale=scale.toFixed(4);
   }
   function extract(doc,type){
     if(!doc)return [];
@@ -577,7 +636,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     document.querySelectorAll('.loader-frame').forEach(x=>x.remove());
     try{await syncFromApi()}catch(e){console.warn('[Bảng giá] API lỗi, dùng DOM fallback:',e);syncFromDomFallback()}
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{fitA4Print(); document.querySelector('.grid')?.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');});}); window.addEventListener('afterprint',()=>{requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Print();fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>{fitA4Print();window.print()});window.addEventListener('beforeprint',()=>{const g=document.querySelector('.grid'); if(g)g.style.removeProperty('height'); [left,right].forEach(c=>{c.style.removeProperty('--a4-row-h');c.style.removeProperty('--a4-title-h');c.style.removeProperty('--a4-head-h');}); fitA4Print();}); window.addEventListener('afterprint',()=>{const sh=document.querySelector('.sheet'); if(sh){sh.style.removeProperty('--print-scale');sh.style.removeProperty('--print-grid-width');} requestAnimationFrame(fitA4Fill)});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order'].includes(e.key))render()});sync();
 })();
 </script>
 </body>
