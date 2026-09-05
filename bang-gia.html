@@ -396,7 +396,7 @@ body.a4-print-layout .sheet .foot{
   body.a4-print-layout .sheet .foot b, body.admin-a4-preview.a4-print-layout .sheet .foot b{font-size:7.2pt!important;}
   body.a4-print-layout .sheet .foot span, body.admin-a4-preview.a4-print-layout .sheet .foot span{font-size:6.8pt!important;}
 }
-</style>
+\n\n/* v707: PRINT HARD LOCK - luôn chỉ đúng 1 trang A4 ngang */\n@media print{\n  @page{size:A4 landscape!important;margin:0!important;}\n  html,body{\n    width:297mm!important;height:210mm!important;min-width:297mm!important;min-height:210mm!important;\n    max-width:297mm!important;max-height:210mm!important;margin:0!important;padding:0!important;\n    overflow:hidden!important;background:#fff!important;\n  }\n  body.a4-print-layout>.wrap{\n    position:absolute!important;left:0!important;top:0!important;width:297mm!important;height:210mm!important;\n    min-width:297mm!important;min-height:210mm!important;max-width:297mm!important;max-height:210mm!important;\n    margin:0!important;padding:0!important;overflow:hidden!important;\n  }\n  body.a4-print-layout .top,body.a4-print-layout .hero,body.a4-print-layout .note,body.a4-print-layout .loader-frame{display:none!important;}\n  body.a4-print-layout .sheet{\n    position:absolute!important;left:0!important;top:0!important;width:297mm!important;height:210mm!important;\n    min-width:297mm!important;min-height:210mm!important;max-width:297mm!important;max-height:210mm!important;\n    margin:0!important;padding:0!important;overflow:hidden!important;break-after:avoid!important;page-break-after:avoid!important;\n  }\n}\n</style>
 
 </head>
 <body>
@@ -973,8 +973,8 @@ body.a4-print-layout .sheet .foot{
     try{ if(typeof window.fitA4Print==='function') window.fitA4Print(); }catch(e){}
     void sheet.offsetHeight;
     [sheet,...sheet.querySelectorAll('*')].forEach(freezeElement);
-    // Freeze page/container dimensions too, but do not freeze body transform from host.
-    [document.documentElement,document.body,document.querySelector('.wrap')].filter(Boolean).forEach(freezeElement);
+    // v707: chỉ khóa chính tờ A4. KHÔNG freeze html/body/.wrap vì chiều cao preview
+    // dạng pixel sẽ trở thành inline !important khi in và có thể làm Chrome tách thành nhiều trang.
     document.body.classList.add('a4-print-layout','v698-frozen-print');
     void document.body.offsetHeight;
     return true;
