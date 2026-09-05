@@ -8175,6 +8175,9 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
     <button class="sidebar-shortcut" type="button" data-go-tab="accessories">
       <span class="shortcut-icon">▣</span><span>Quản lý Phụ kiện</span><b>Mới</b>
     </button>
+    <button class="sidebar-shortcut" id="sddPriceAdminMenuOpen" type="button">
+      <span class="shortcut-icon">▦</span><span>Tùy chỉnh bảng giá</span><b>A4</b>
+    </button>
     <button class="sidebar-shortcut" id="sddConfigTableOpen" type="button">
       <span class="shortcut-icon">▤</span><span>Bảng cấu hình</span><b>Mới</b>
     </button>
@@ -14441,6 +14444,10 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 #sddPriceAdminModal .price-brand-count{margin-left:4px;opacity:.72;font-weight:400}
 @media(max-width:720px){#sddPriceAdminModal .price-brand-filter{padding:9px 12px 3px;gap:6px;overflow-x:auto;flex-wrap:nowrap}#sddPriceAdminModal .price-brand-filter-label{flex:none}#sddPriceAdminModal .price-brand-chip{flex:none;height:30px;padding:0 10px;font-size:11px}}
 </style>
+<style id="v723-price-menu-only">
+/* v723: đưa Tùy chỉnh bảng giá vào menu Admin, bỏ nút nổi */
+#sddPriceAdminFab{display:none!important}
+</style>
 <style id="v695-admin-print-button">
 #sddPriceAdminModal .price-a4-admin-print{height:34px;padding:0 14px;border:1px solid #ff5a00;border-radius:9px;background:#ff5a00;color:#fff;font-weight:700;cursor:pointer;white-space:nowrap}
 #sddPriceAdminModal .price-a4-admin-print:hover{filter:brightness(.97)}
@@ -14562,6 +14569,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();inp.blur()}});
     });
   }
+  const menuOpen=$('sddPriceAdminMenuOpen'); if(menuOpen)menuOpen.addEventListener('click',()=>fab.click());
   fab.addEventListener('click',()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');render()});close.addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)close.click()});search.addEventListener('input',render);
   $('sddPriceShowAll').addEventListener('click',()=>{saveHidden(new Set());render()});
   $('sddPriceHideAll').addEventListener('click',()=>{saveHidden(new Set(readModels().map(x=>x.key)));render()});
