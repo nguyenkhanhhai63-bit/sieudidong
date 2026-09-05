@@ -211,6 +211,65 @@ body.admin-a4-preview .sheet .tbl td{font-size:calc(7.45pt * var(--print-density
 body.admin-a4-preview .sheet .foot{position:absolute!important;left:4mm!important;right:4mm!important;bottom:3mm!important;margin:0!important;padding:calc(.58mm * var(--print-density,1)) .9mm!important;z-index:3!important;}
 body.admin-a4-preview .sheet .foot b{font-size:calc(6.7pt * var(--print-density,1))!important;}
 body.admin-a4-preview .sheet .foot span{font-size:calc(6.25pt * var(--print-density,1))!important;}
+
+
+/* v693: footer luôn nằm dưới cùng và tuyệt đối không đè bảng giá.
+   Dùng zoom (Chromium/Edge) để scale cả layout thật thay vì transform phủ lên footer. */
+@media print{
+  .sheet{
+    width:297mm!important;
+    height:210mm!important;
+    padding:4mm 4mm 3mm!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  .sheet .grid{
+    position:static!important;
+    left:auto!important;top:auto!important;bottom:auto!important;
+    width:var(--print-grid-width,100%)!important;
+    height:auto!important;
+    zoom:var(--print-scale,1)!important;
+    transform:none!important;
+    transform-origin:initial!important;
+    flex:0 0 auto!important;
+    overflow:visible!important;
+  }
+  .sheet .foot{
+    position:static!important;
+    left:auto!important;right:auto!important;bottom:auto!important;
+    width:100%!important;
+    flex:0 0 auto!important;
+    margin-top:auto!important;
+    z-index:auto!important;
+  }
+}
+
+body.admin-a4-preview .sheet{
+  padding:4mm 4mm 3mm!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+body.admin-a4-preview .sheet .grid{
+  position:static!important;
+  left:auto!important;top:auto!important;bottom:auto!important;
+  width:var(--print-grid-width,100%)!important;
+  height:auto!important;
+  zoom:var(--print-scale,1)!important;
+  transform:none!important;
+  transform-origin:initial!important;
+  flex:0 0 auto!important;
+  overflow:visible!important;
+}
+body.admin-a4-preview .sheet .foot{
+  position:static!important;
+  left:auto!important;right:auto!important;bottom:auto!important;
+  width:100%!important;
+  flex:0 0 auto!important;
+  margin-top:auto!important;
+  z-index:auto!important;
+}
+
 </style>
 </head>
 <body>
@@ -497,7 +556,7 @@ body.admin-a4-preview .sheet .foot span{font-size:calc(6.25pt * var(--print-dens
     if(manual.enabled) scale*=Math.max(.70,Math.min(1.10,(+manual.scale||100)/100));
     scale=Math.max(.62,Math.min(1.10,scale));
 
-    const widthPct=(97.306/scale);
+    const widthPct=(100/scale);
     sheet.style.setProperty('--print-density',density.toFixed(4));
     sheet.style.setProperty('--print-scale',scale.toFixed(4));
     sheet.style.setProperty('--print-grid-width',widthPct.toFixed(3)+'%');
