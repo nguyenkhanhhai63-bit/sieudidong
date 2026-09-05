@@ -21,7 +21,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   </div>
   <section class="hero">
     <h1>Bảng giá Siêu Di Động</h1>
-    <p>Bảng giá tự động: mỗi máy chỉ hiện 1 dòng, lấy phiên bản còn hàng có giá thấp nhất và hiển thị đúng dung lượng của phiên bản đó.</p>
+    <p>Bảng giá tự động: hiển thị toàn bộ model đang còn hàng. Mỗi model chỉ lấy phiên bản còn hàng có giá thấp nhất và đúng dung lượng của phiên bản đó.</p>
     <div class="toolbar"><input id="search" class="search" type="search" placeholder="Tìm tên máy..."><div id="syncStatus" class="status">Đang đồng bộ giá từ website...</div></div>
   </section>
   <section class="sheet">
@@ -31,7 +31,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     </div>
     <div class="foot"><b>SIÊU DI ĐỘNG</b><span id="updatedText">Đang cập nhật...</span><b>Giá có thể thay đổi theo thị trường</b></div>
   </section>
-  <div class="note">Mỗi máy chỉ hiển thị 1 dòng: chọn đúng phiên bản còn hàng có giá thấp nhất; cột Bộ nhớ đi theo chính phiên bản đó.</div>
+  <div class="note">Mặc định hiển thị tất cả model đang còn hàng. Có thể ẩn/hiện từng model trong Quản trị → Tùy chỉnh bảng giá.</div>
 </div>
 <script>
 (function(){
@@ -124,6 +124,8 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
        .replace(/\s+/g,' ').trim();
     return s;
   }
+  function modelKey(it){return (String(it.type||'phone')+'|'+baseName(it.name)).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim()}
+  function hiddenModelSet(){try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}}
   function classify(it){if(it.type==='tablet')return groups.find(g=>g.id==='tablet');return groups.find(g=>g.id!=='tablet'&&g.match(it.name))||dynamicBrandGroup(it.name)}
   function formatPrice(n){return n?n.toLocaleString('vi-VN'):'Liên hệ'}
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -132,7 +134,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
     // Bộ nhớ hiển thị luôn đi theo chính phiên bản giá thấp nhất đó.
     const map=new Map();
     list.filter(it=>it&&it.stock&&it.price>0).forEach(it=>{
-      const key=(it.type+'|'+baseName(it.name)).toLocaleLowerCase('vi');
+      const key=modelKey(it);
       const prev=map.get(key);
       if(!prev || it.price<prev.price || (it.price===prev.price && it.memoryRank<prev.memoryRank)) map.set(key,it);
     });
@@ -141,7 +143,11 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
   function panelHtml(g,arr){return '<section class="panel" style="--accent:'+g.accent+'"><div class="panel-title">'+g.title+'</div><table class="tbl"><thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td>'+escapeHtml(baseName(it.name))+'</td><td>'+escapeHtml(it.memory)+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'}
   function render(){
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
-    const filtered=pickLowestVariants(items.filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q)));
+    const allModels=pickLowestVariants(items);
+    // Lưu toàn bộ model tìm được để trang quản trị có thể ẩn/hiện từng máy.
+    try{localStorage.setItem('sdd_price_models_cache',JSON.stringify(allModels.map(it=>({key:modelKey(it),name:baseName(it.name),memory:it.memory||'—',price:it.price||0,type:it.type||'phone',group:(classify(it)||{}).title||''}))))}catch(e){}
+    const hidden=hiddenModelSet();
+    const filtered=allModels.filter(it=>!hidden.has(modelKey(it))).filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q));
     const buckets=[];
     groups.forEach(g=>{const arr=filtered.filter(it=>{const c=classify(it);return c&&c.id===g.id}).sort((a,b)=>baseName(a.name).localeCompare(baseName(b.name),'vi'));if(arr.length)buckets.push({g,arr,weight:arr.length+1})});
     let lw=0,rw=0;
@@ -292,7 +298,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
         pending--;
         if(pending===0){
           render();const now=new Date();document.getElementById('updatedText').textContent='Cập nhật: '+now.toLocaleString('vi-VN');
-          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · đã quét từng hãng và toàn bộ danh mục';
+          status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng · mặc định hiển thị tất cả';
         }
       };
       f.addEventListener('load',()=>{run().catch(()=>{if(!done){done=true;try{f.remove()}catch(e){};pending--;if(pending===0){render();status.innerHTML='<b>Đã đồng bộ</b> '+pickLowestVariants(items).length+' model đang còn hàng';}}})},{once:true});
@@ -300,7 +306,7 @@ a{color:inherit}.wrap{width:min(1380px,calc(100% - 20px));margin:12px auto 28px}
       setTimeout(()=>{if(!done)run().catch(()=>{})},1800);
     });
   }
-  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>window.print());sync();
+  search.addEventListener('input',render);document.getElementById('refreshBtn').addEventListener('click',sync);document.getElementById('printBtn').addEventListener('click',()=>window.print());window.addEventListener('storage',e=>{if(e.key==='sdd_price_hidden_models')render()});sync();
 })();
 </script>
 </body>
