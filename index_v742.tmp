@@ -2818,7 +2818,7 @@ document.addEventListener('click', function(e){
   window.location.href='./bang-gia.html';
 }, true);
 </script>
-\n<!-- v742: keep original category loading order, move Used Phones only after home data has finished rendering -->\n<script id="v742-home-used-last-safe">\n(function(){\n  if(location.pathname!=='/' && location.pathname!=='/index.html') return;\n  var moved=false, ready={};\n  function moveUsedLast(){\n    if(moved) return;\n    var home=document.getElementById('sddHomeAllProducts');\n    if(!home) return;\n    var usedGrid=home.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');\n    var usedSection=usedGrid && usedGrid.closest('.sdd-all-section');\n    if(!usedSection) return;\n    home.appendChild(usedSection);\n    moved=true;\n  }\n  document.addEventListener('sdd-home-grid-ready',function(e){\n    var path=e && e.detail && e.detail.path;\n    if(path) ready[path]=1;\n    if(ready['/dien-thoai'] && ready['/may-tinh-bang'] && ready['/phu-kien'] && ready['/may-cu']){\n      requestAnimationFrame(moveUsedLast);\n    }\n  });\n  // Fallback: data may already be rendered from cache before listener sees every event.\n  window.addEventListener('load',function(){\n    setTimeout(function(){\n      var home=document.getElementById('sddHomeAllProducts');\n      if(!home || moved) return;\n      var grids=[...home.querySelectorAll('.sdd-all-grid[data-home-cat]')];\n      var finished=grids.length && grids.every(function(g){\n        return !g.querySelector('.loading');\n      });\n      if(finished) moveUsedLast();\n    },1800);\n  });\n})();\n</script>\n</body>
+</body>
 </html>
 
 <!-- v613: desktop search fallback for home all-products mode -->
