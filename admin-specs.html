@@ -14556,24 +14556,32 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       await ensurePdfLibraries();
       const w=previewFrame&&previewFrame.contentWindow,doc=previewFrame&&previewFrame.contentDocument;
       if(!w||!doc)throw new Error('Khung A4 chưa sẵn sàng');
-      // Chỉ áp dụng layout A4, KHÔNG freeze như lúc in. Freeze toàn bộ computed-style
-      // làm html2canvas có thể chỉ chụp được footer và để trắng phần bảng.
-      try{if(typeof w.fitA4Print==='function')w.fitA4Print()}catch(_){}
-      await new Promise(r=>setTimeout(r,80));
+      // v734: Xuất đúng CHÍNH XÁC trạng thái preview hiện tại.
+      // Không gọi fitA4Print() lại ở đây vì sẽ tính lại scale và làm PDF lệch với thông số
+      // người dùng vừa chỉnh trong Admin.
       const sheet=doc.querySelector('.sheet');if(!sheet)throw new Error('Không tìm thấy bảng A4');
+      try{if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready}catch(_){}
+      await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
       const frameH2C=await ensureFrameHtml2Canvas(w);
-      const prevTransform=sheet.style.transform,prevOrigin=sheet.style.transformOrigin;
-      sheet.style.transform='none';sheet.style.transformOrigin='top left';
-      // Đo bằng getBoundingClientRect trong chính iframe để lấy đầy đủ bảng đang hiển thị.
-      const rect=sheet.getBoundingClientRect();
-      const cw=Math.max(1,Math.ceil(rect.width));
-      const ch=Math.max(1,Math.ceil(rect.height));
-      const canvas=await frameH2C(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,
-        width:cw,height:ch,windowWidth:Math.max(doc.documentElement.clientWidth,cw),windowHeight:Math.max(doc.documentElement.clientHeight,ch),
-        scrollX:0,scrollY:0,x:0,y:0});
-      sheet.style.transform=prevTransform;sheet.style.transformOrigin=prevOrigin;
+
+      // Không gỡ transform / không đặt x,y=0. html2canvas sẽ chụp element theo hệ tọa độ
+      // của chính iframe, nhờ đó giữ nguyên --print-scale, --manual-* và phần grid đã căn A4.
+      const cw=Math.max(1,Math.ceil(sheet.offsetWidth));
+      const ch=Math.max(1,Math.ceil(sheet.offsetHeight));
+      const canvas=await frameH2C(sheet,{
+        backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,
+        width:cw,height:ch,
+        windowWidth:Math.max(doc.documentElement.clientWidth,doc.documentElement.scrollWidth,cw),
+        windowHeight:Math.max(doc.documentElement.clientHeight,doc.documentElement.scrollHeight,ch),
+        scrollX:0,scrollY:0
+      });
       const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
-      const img=canvas.toDataURL('image/jpeg',0.98);pdf.addImage(img,'JPEG',0,0,297,210,undefined,'FAST');pdf.save(pdfFileName());
+      // Giữ nguyên tỷ lệ canvas, canh giữa trong đúng A4 297x210 để không méo/cắt bảng.
+      const pageW=297,pageH=210,ratio=Math.min(pageW/canvas.width,pageH/canvas.height);
+      const drawW=canvas.width*ratio,drawH=canvas.height*ratio;
+      const dx=(pageW-drawW)/2,dy=(pageH-drawH)/2;
+      const img=canvas.toDataURL('image/jpeg',0.98);
+      pdf.addImage(img,'JPEG',dx,dy,drawW,drawH,undefined,'FAST');pdf.save(pdfFileName());
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
