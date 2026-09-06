@@ -571,26 +571,84 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
  <section class="sdd-all-section"><div class="sdd-all-title"><h2>Máy cũ</h2></div><div class="sdd-all-grid" data-home-cat="/may-cu"><div class="loading">Đang tải máy cũ...</div></div></section>
  <section class="sdd-all-section"><div class="sdd-all-title"><h2>Phụ kiện</h2></div><div class="sdd-all-grid" data-home-cat="/phu-kien"><div class="loading">Đang tải phụ kiện...</div></div></section>
 </section>
-<script id="v574-home-all-products-js">
+<script id="v740-home-all-products-retry-fix">
 (function(){
  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
  document.body.classList.add('sdd-home-all-mode');
  const jobs=[...document.querySelectorAll('[data-home-cat]')];
+
  function pickGrid(doc,path){
    if(path==='/phu-kien') return doc.querySelector('#accPublicGrid');
    return doc.querySelector('#productGrid,.product-grid,.products-grid');
  }
- function readyGrid(g){return g&&g.children.length&&!(g.children.length===1&&/Đang tải/i.test(g.textContent||''));}
- jobs.forEach(host=>{
+ function realCards(g){
+   if(!g)return [];
+   return [...g.children].filter(function(el){
+     return !el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty') &&
+            !/^(Đang tải|Hiện chưa có sản phẩm|Chưa có sản phẩm|Không có sản phẩm)/i.test((el.textContent||'').trim());
+   });
+ }
+ function srcFor(path,round){
+   const sep=path.includes('?')?'&':'?';
+   return path+sep+'_homeall=1&_retry='+round+'&_ts='+Date.now();
+ }
+
+ jobs.forEach(function(host){
    const path=host.getAttribute('data-home-cat');
-   const f=document.createElement('iframe');f.className='sdd-home-loader-frame';f.src=path+(path.includes('?')?'&':'?')+'_homeall=1';f.setAttribute('aria-hidden','true');document.body.appendChild(f);
-   let done=false,tries=0;
-   const finish=()=>{if(done)return;let d;try{d=f.contentDocument}catch(e){};const g=d&&pickGrid(d,path);if(!readyGrid(g)){if(++tries<80)return setTimeout(finish,250);host.innerHTML='<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Mở danh mục</a></div>';done=true;f.remove();return}
-     done=true;host.innerHTML='';[...g.children].forEach(el=>{if(el.matches('.loading,.empty,.acc-public-empty'))return;const c=el.cloneNode(true);host.appendChild(c)});if(!host.children.length)host.innerHTML='<div class="loading">Hiện chưa có sản phẩm trong danh mục này.</div>';
-     document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
+   const f=document.createElement('iframe');
+   f.className='sdd-home-loader-frame';
+   f.setAttribute('aria-hidden','true');
+   document.body.appendChild(f);
+
+   let done=false, tries=0, round=0;
+   const MAX_TRIES=120;      // 30 giây mỗi lượt
+   const MAX_ROUNDS=3;       // tự tải lại iframe tối đa 3 lượt
+
+   function reloadFrame(){
+     if(done)return;
+     tries=0;
+     round++;
+     host.innerHTML='<div class="loading">Đang tải lại sản phẩm...</div>';
+     f.src=srcFor(path,round);
+     setTimeout(check,800);
+   }
+
+   function check(){
+     if(done)return;
+     let d=null,g=null,cards=[];
+     try{d=f.contentDocument;g=d&&pickGrid(d,path);cards=realCards(g)}catch(e){}
+
+     // Chỉ coi là tải xong khi thật sự có card sản phẩm.
+     // Trạng thái “chưa có sản phẩm” tạm thời của app.js không còn bị hiểu nhầm là kết quả cuối.
+     if(cards.length){
+       done=true;
+       host.innerHTML='';
+       cards.forEach(function(el){host.appendChild(el.cloneNode(true))});
+       document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
+       f.remove();
+       return;
+     }
+
+     tries++;
+     if(tries<MAX_TRIES){
+       setTimeout(check,250);
+       return;
+     }
+
+     // API đôi lúc fail khi mở từ Facebook/Zalo/in-app browser: nạp lại trang danh mục
+     // với cache-buster để tạo request mới thay vì chốt danh mục rỗng.
+     if(round<MAX_ROUNDS){
+       reloadFrame();
+       return;
+     }
+
+     done=true;
+     host.innerHTML='<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Bấm để tải lại</a></div>';
      f.remove();
-   };
-   f.addEventListener('load',()=>setTimeout(finish,250));setTimeout(finish,1200);
+   }
+
+   f.addEventListener('load',function(){setTimeout(check,300)});
+   reloadFrame();
  });
 })();
 </script>
