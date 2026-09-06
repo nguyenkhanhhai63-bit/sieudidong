@@ -32,6 +32,17 @@ table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:var(--cfg
 @media print{@page{size:A4 portrait;margin:0}html,body{width:210mm;height:297mm;background:#fff;overflow:hidden}.toolbar{display:none!important}.page-wrap{padding:0!important;display:block}.sheet{width:210mm!important;height:297mm!important;margin:0!important;box-shadow:none!important}.sheet{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 
 /* v728: rút ngắn toàn bộ thanh màu tiêu đề thương hiệu, không chỉ phần tam giác */
+
+/* v739: gom toàn bộ điều khiển Bảng cấu hình trên một hàng */
+.toolbar{display:block;padding:10px 18px}
+.toolbar-main{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;width:100%;min-width:0}
+.toolbar-main h1{font-size:18px;margin:0 10px 0 0;white-space:nowrap;flex:0 0 auto}
+.toolbar-main .status{font-size:12px;color:var(--muted);margin:0 8px 0 0;white-space:nowrap;flex:0 1 auto;min-width:150px;overflow:hidden;text-overflow:ellipsis}
+.toolbar-main .search{min-width:180px;flex:1 1 260px;width:auto}
+.toolbar-main .btn{height:38px;padding:0 12px;white-space:nowrap;flex:0 0 auto}
+.filters{width:100%;display:flex;gap:6px;overflow:auto;padding-top:8px}
+@media(max-width:1050px){.toolbar{overflow-x:auto}.toolbar-main{min-width:980px}.toolbar-main .search{flex:1 1 220px}}
+
 </style>
 </head>
 <body>
@@ -44,14 +55,16 @@ table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:var(--cfg
 })();
 </script>
 <div class="toolbar">
-  <h1>Bảng cấu hình</h1>
-  <span class="status" id="status">Đang tải danh sách máy...</span>
-  <input class="search" id="search" placeholder="Tìm tên máy...">
-  <button class="btn" id="refresh">Cập nhật cấu hình</button>
-  <button class="btn" id="customize">Tùy chỉnh sản phẩm</button>
-  <button class="btn" id="adjustA4">Căn chỉnh A4</button>
-  <button class="btn primary" id="print">In</button>
-  <button class="btn primary" id="exportPdf">Xuất PDF</button>
+  <div class="toolbar-main">
+    <h1>Bảng cấu hình</h1>
+    <span class="status" id="status">Đang tải danh sách máy...</span>
+    <input class="search" id="search" placeholder="Tìm tên máy...">
+    <button class="btn" id="refresh">Cập nhật cấu hình</button>
+    <button class="btn" id="customize">Tùy chỉnh sản phẩm</button>
+    <button class="btn" id="adjustA4">Căn chỉnh A4</button>
+    <button class="btn primary" id="print">In</button>
+    <button class="btn primary" id="exportPdf">Xuất PDF</button>
+  </div>
   <div class="filters" id="filters"></div>
 </div>
 
