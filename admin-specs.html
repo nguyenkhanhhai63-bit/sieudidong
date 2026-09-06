@@ -14524,9 +14524,29 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     })
   }
   async function ensurePdfLibraries(){
-    await loadExternalScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js','html2canvas');
+    // jsPDF chạy ở trang Admin. html2canvas sẽ được nạp trực tiếp trong iframe preview
+    // để tránh lỗi canvas trắng khi truyền DOM node của iframe sang window cha.
     if(!(window.jspdf&&window.jspdf.jsPDF))await loadExternalScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js');
-    if(!window.html2canvas||!(window.jspdf&&window.jspdf.jsPDF))throw new Error('Không tải được thư viện xuất PDF')
+    if(!(window.jspdf&&window.jspdf.jsPDF))throw new Error('Không tải được thư viện xuất PDF')
+  }
+  async function ensureFrameHtml2Canvas(w){
+    if(w&&w.html2canvas)return w.html2canvas;
+    if(!w||!w.document)throw new Error('Khung A4 chưa sẵn sàng');
+    await new Promise((resolve,reject)=>{
+      const src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+      const existed=[...w.document.scripts].find(x=>x.src===src);
+      if(existed){
+        if(w.html2canvas)return resolve();
+        existed.addEventListener('load',resolve,{once:true});
+        existed.addEventListener('error',()=>reject(new Error('Không tải được html2canvas')), {once:true});
+        return;
+      }
+      const sc=w.document.createElement('script');sc.src=src;sc.async=true;
+      sc.onload=resolve;sc.onerror=()=>reject(new Error('Không tải được html2canvas'));
+      w.document.head.appendChild(sc)
+    });
+    if(!w.html2canvas)throw new Error('Không tải được html2canvas');
+    return w.html2canvas;
   }
   function pdfFileName(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return 'bang-gia-sieu-di-dong-'+pad(d.getDate())+'-'+pad(d.getMonth()+1)+'-'+d.getFullYear()+'.pdf'}
   async function exportA4Pdf(){
@@ -14536,16 +14556,24 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       await ensurePdfLibraries();
       const w=previewFrame&&previewFrame.contentWindow,doc=previewFrame&&previewFrame.contentDocument;
       if(!w||!doc)throw new Error('Khung A4 chưa sẵn sàng');
-      try{if(typeof w.sddFreezePreviewForPrint==='function')w.sddFreezePreviewForPrint();else if(typeof w.fitA4Print==='function')w.fitA4Print()}catch(_){}
-      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      // Chỉ áp dụng layout A4, KHÔNG freeze như lúc in. Freeze toàn bộ computed-style
+      // làm html2canvas có thể chỉ chụp được footer và để trắng phần bảng.
+      try{if(typeof w.fitA4Print==='function')w.fitA4Print()}catch(_){}
+      await new Promise(r=>setTimeout(r,80));
       const sheet=doc.querySelector('.sheet');if(!sheet)throw new Error('Không tìm thấy bảng A4');
+      const frameH2C=await ensureFrameHtml2Canvas(w);
       const prevTransform=sheet.style.transform,prevOrigin=sheet.style.transformOrigin;
       sheet.style.transform='none';sheet.style.transformOrigin='top left';
-      const canvas=await window.html2canvas(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,width:sheet.scrollWidth,height:sheet.scrollHeight,windowWidth:sheet.scrollWidth,windowHeight:sheet.scrollHeight});
+      // Đo bằng getBoundingClientRect trong chính iframe để lấy đầy đủ bảng đang hiển thị.
+      const rect=sheet.getBoundingClientRect();
+      const cw=Math.max(1,Math.ceil(rect.width));
+      const ch=Math.max(1,Math.ceil(rect.height));
+      const canvas=await frameH2C(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,
+        width:cw,height:ch,windowWidth:Math.max(doc.documentElement.clientWidth,cw),windowHeight:Math.max(doc.documentElement.clientHeight,ch),
+        scrollX:0,scrollY:0,x:0,y:0});
       sheet.style.transform=prevTransform;sheet.style.transformOrigin=prevOrigin;
       const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
-      const img=canvas.toDataURL('image/jpeg',0.96);pdf.addImage(img,'JPEG',0,0,297,210,undefined,'FAST');pdf.save(pdfFileName());
-      try{if(typeof w.sddRestorePreviewAfterPrint==='function')w.sddRestorePreviewAfterPrint()}catch(_){}
+      const img=canvas.toDataURL('image/jpeg',0.98);pdf.addImage(img,'JPEG',0,0,297,210,undefined,'FAST');pdf.save(pdfFileName());
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
