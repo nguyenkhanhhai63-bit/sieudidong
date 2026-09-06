@@ -1393,13 +1393,15 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
           if(key){
             originalUser=clean(obj[key]);
             const casual=isCasualMessage(originalUser);
-            obj[key]=casual
-              ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop đang chat trực tiếp. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ, KHÔNG tự báo giá, KHÔNG tự báo còn/hết hàng nếu khách chưa hỏi.`
-              : resolveMessage(originalUser,state);
-            // Chỉ gửi lịch sử khi thật sự cần nối ngữ cảnh. Câu xã giao/ngắn phải cắt sạch context cũ.
+            // v730: TUYỆT ĐỐI không biến prompt nội bộ thành tin nhắn khách.
+            // Backend/admin phải luôn nhận đúng nguyên văn khách vừa nhập.
+            obj[key]=originalUser;
             obj.originalMessage=originalUser;
-            obj.conversationHistory=casual ? [] : state.turns.slice(-5).map(t=>({user:t.user}));
-            if(casual)obj.ignorePreviousProductContext=true;
+            // Giữ ngữ cảnh hội thoại ở trường riêng, gồm cả câu khách + câu AI trước đó.
+            // Nhờ vậy các câu ngắn như “Dạ/Ok/Vâng” vẫn nối đúng cuộc trò chuyện nhưng
+            // không thể bị lưu/hiển thị thành “Khách vừa nhắn đúng câu này: ...”.
+            obj.conversationHistory=state.turns.slice(-5).map(t=>({user:t.user,assistant:t.assistant||''}));
+            if(casual)obj.currentMessageIsAcknowledgement=true;
             init.body=JSON.stringify(obj);
           }
         }else{
@@ -1408,11 +1410,10 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
           if(key){
             originalUser=clean(sp.get(key));
             const casual=isCasualMessage(originalUser);
-            sp.set(key,casual
-              ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ và KHÔNG tự báo giá nếu khách chưa hỏi.`
-              : resolveMessage(originalUser,state));
+            sp.set(key,originalUser);
             sp.set('originalMessage',originalUser);
-            if(casual)sp.set('ignorePreviousProductContext','true');
+            sp.set('conversationHistory',JSON.stringify(state.turns.slice(-5).map(t=>({user:t.user,assistant:t.assistant||''}))));
+            if(casual)sp.set('currentMessageIsAcknowledgement','true');
             init.body=sp.toString();
           }
         }
@@ -1422,11 +1423,10 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
         if(key){
           originalUser=clean(fd.get(key));
           const casual=isCasualMessage(originalUser);
-          fd.set(key,casual
-            ? `Khách vừa nhắn đúng câu này: "${originalUser}". Hãy trả lời tự nhiên như nhân viên shop. Chỉ phản hồi câu hiện tại, KHÔNG tự nhắc sản phẩm cũ và KHÔNG tự báo giá nếu khách chưa hỏi.`
-            : resolveMessage(originalUser,state));
+          fd.set(key,originalUser);
           fd.set('originalMessage',originalUser);
-          if(casual)fd.set('ignorePreviousProductContext','true');
+          fd.set('conversationHistory',JSON.stringify(state.turns.slice(-5).map(t=>({user:t.user,assistant:t.assistant||''}))));
+          if(casual)fd.set('currentMessageIsAcknowledgement','true');
           init.body=fd;
         }
       }
