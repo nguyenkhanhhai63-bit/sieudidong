@@ -14556,36 +14556,50 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       await ensurePdfLibraries();
       const w=previewFrame&&previewFrame.contentWindow,doc=previewFrame&&previewFrame.contentDocument;
       if(!w||!doc)throw new Error('Khung A4 chưa sẵn sàng');
-      // v734: Xuất đúng CHÍNH XÁC trạng thái preview hiện tại.
-      // Không gọi fitA4Print() lại ở đây vì sẽ tính lại scale và làm PDF lệch với thông số
-      // người dùng vừa chỉnh trong Admin.
       const sheet=doc.querySelector('.sheet');if(!sheet)throw new Error('Không tìm thấy bảng A4');
       try{if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready}catch(_){}
       await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
       const frameH2C=await ensureFrameHtml2Canvas(w);
 
-      // v735: chụp NGUYÊN viewport A4 của iframe (297 x 210mm), không chụp riêng .sheet.
-      // Đây là cách duy nhất để PDF giữ đúng 1:1 những gì người dùng đang thấy trong preview,
-      // kể cả transform/scale, vị trí footer và phần overflow đã bị khung A4 cắt.
-      const root=doc.documentElement;
-      const body=doc.body;
-      const vw=Math.max(1,root.clientWidth||body.clientWidth||sheet.offsetWidth);
-      const vh=Math.max(1,root.clientHeight||body.clientHeight||sheet.offsetHeight);
-      // Ép tọa độ về đúng góc trái A4 trước khi rasterize; không thay đổi các biến căn chỉnh.
-      const prevScrollX=w.scrollX||0,prevScrollY=w.scrollY||0;
-      try{w.scrollTo(0,0)}catch(_){}
-      await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
-      const canvas=await frameH2C(body,{
-        backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,
-        x:0,y:0,width:vw,height:vh,
-        windowWidth:vw,windowHeight:vh,
-        scrollX:0,scrollY:0
+      // v736: chụp CHÍNH phần tử .sheet bằng renderer native của Chrome.
+      // foreignObjectRendering giữ transform/scale/grid giống preview hơn renderer canvas cũ,
+      // đồng thời khóa vùng chụp theo đúng kích thước A4 297x210 của sheet.
+      const rect=sheet.getBoundingClientRect();
+      const sw=Math.max(1,Math.round(rect.width));
+      const sh=Math.max(1,Math.round(rect.height));
+      const canvas=await frameH2C(sheet,{
+        backgroundColor:'#ffffff',
+        scale:2,
+        useCORS:true,
+        allowTaint:false,
+        logging:false,
+        foreignObjectRendering:true,
+        width:sw,
+        height:sh,
+        windowWidth:Math.max(sw,doc.documentElement.clientWidth||sw),
+        windowHeight:Math.max(sh,doc.documentElement.clientHeight||sh),
+        scrollX:0,
+        scrollY:0,
+        onclone:(clonedDoc)=>{
+          const cs=clonedDoc.querySelector('.sheet');
+          if(!cs)return;
+          cs.style.setProperty('width',sw+'px','important');
+          cs.style.setProperty('height',sh+'px','important');
+          cs.style.setProperty('min-width',sw+'px','important');
+          cs.style.setProperty('max-width',sw+'px','important');
+          cs.style.setProperty('min-height',sh+'px','important');
+          cs.style.setProperty('max-height',sh+'px','important');
+          cs.style.setProperty('margin','0','important');
+          cs.style.setProperty('overflow','hidden','important');
+          cs.style.setProperty('box-sizing','border-box','important');
+        }
       });
-      try{w.scrollTo(prevScrollX,prevScrollY)}catch(_){}
+
       const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
-      // Canvas chính là tờ A4 preview, nên đưa thẳng 0,0 -> 297x210, tuyệt đối không fit/canh giữa lại.
-      const img=canvas.toDataURL('image/jpeg',0.98);
-      pdf.addImage(img,'JPEG',0,0,297,210,undefined,'FAST');pdf.save(pdfFileName());
+      const img=canvas.toDataURL('image/png');
+      // Đặt đúng toàn trang A4, không đo/fit lại lần hai.
+      pdf.addImage(img,'PNG',0,0,297,210,undefined,'FAST');
+      pdf.save(pdfFileName());
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
