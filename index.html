@@ -571,7 +571,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
  <section class="sdd-all-section"><div class="sdd-all-title"><h2>Máy cũ</h2></div><div class="sdd-all-grid" data-home-cat="/may-cu"><div class="loading">Đang tải máy cũ...</div></div></section>
  <section class="sdd-all-section"><div class="sdd-all-title"><h2>Phụ kiện</h2></div><div class="sdd-all-grid" data-home-cat="/phu-kien"><div class="loading">Đang tải phụ kiện...</div></div></section>
 </section>
-<script id="v740-home-all-products-retry-fix">
+<script id="v743-home-all-products-stable-category-load">
 (function(){
  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
  document.body.classList.add('sdd-home-all-mode');
@@ -585,8 +585,14 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
    if(!g)return [];
    return [...g.children].filter(function(el){
      return !el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty') &&
-            !/^(Đang tải|Hiện chưa có sản phẩm|Chưa có sản phẩm|Không có sản phẩm)/i.test((el.textContent||'').trim());
+            !/^(Đang tải|Đang tải lại|Hiện chưa có sản phẩm|Chưa có sản phẩm|Không có sản phẩm|Chưa tải được)/i.test((el.textContent||'').trim());
    });
+ }
+ function signature(cards){
+   return cards.map(function(el){
+     var n=el.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
+     return ((n&&n.textContent)||el.textContent||'').replace(/\s+/g,' ').trim().slice(0,120);
+   }).join('||');
  }
  function srcFor(path,round){
    const sep=path.includes('?')?'&':'?';
@@ -600,54 +606,73 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
    f.setAttribute('aria-hidden','true');
    document.body.appendChild(f);
 
-   let done=false, tries=0, round=0;
-   const MAX_TRIES=120;      // 30 giây mỗi lượt
-   const MAX_ROUNDS=3;       // tự tải lại iframe tối đa 3 lượt
+   let done=false, round=0, startedAt=0, lastSig='', stableSince=0, checks=0;
+   const MAX_ROUNDS=3;
+   const ROUND_TIMEOUT=35000;
+   const MIN_WAIT=2200;       // không chụp productGrid mặc định quá sớm
+   const STABLE_FOR=1400;     // danh sách phải ổn định liên tục trước khi clone
 
    function reloadFrame(){
      if(done)return;
-     tries=0;
      round++;
-     host.innerHTML='<div class="loading">Đang tải lại sản phẩm...</div>';
+     startedAt=Date.now();
+     lastSig=''; stableSince=0; checks=0;
+     host.innerHTML='<div class="loading">Đang tải sản phẩm...</div>';
      f.src=srcFor(path,round);
-     setTimeout(check,800);
+   }
+
+   function finishWith(cards){
+     done=true;
+     host.innerHTML='';
+     cards.forEach(function(el){host.appendChild(el.cloneNode(true))});
+     document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
+     f.remove();
    }
 
    function check(){
      if(done)return;
+     checks++;
      let d=null,g=null,cards=[];
-     try{d=f.contentDocument;g=d&&pickGrid(d,path);cards=realCards(g)}catch(e){}
+     try{
+       d=f.contentDocument;
+       // Bắt buộc iframe thật sự đang ở đúng route, tránh lấy nhầm productGrid của route trước/default.
+       var current=(f.contentWindow.location.pathname||'').replace(/\/+$/,'')||'/';
+       var wanted=(path||'/').replace(/\/+$/,'')||'/';
+       if(current!==wanted){ setTimeout(check,250); return; }
+       g=d&&pickGrid(d,path);
+       cards=realCards(g);
+     }catch(e){}
 
-     // Chỉ coi là tải xong khi thật sự có card sản phẩm.
-     // Trạng thái “chưa có sản phẩm” tạm thời của app.js không còn bị hiểu nhầm là kết quả cuối.
+     var now=Date.now();
      if(cards.length){
-       done=true;
-       host.innerHTML='';
-       cards.forEach(function(el){host.appendChild(el.cloneNode(true))});
-       document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
-       f.remove();
-       return;
+       var sig=signature(cards);
+       if(sig!==lastSig){
+         lastSig=sig;
+         stableSince=now;
+       }
+       // Chỉ clone sau khi route đã sống đủ lâu VÀ danh sách không còn thay đổi.
+       if((now-startedAt)>=MIN_WAIT && stableSince && (now-stableSince)>=STABLE_FOR){
+         finishWith(cards);
+         return;
+       }
+     }else{
+       lastSig=''; stableSince=0;
      }
 
-     tries++;
-     if(tries<MAX_TRIES){
+     if(now-startedAt<ROUND_TIMEOUT){
        setTimeout(check,250);
        return;
      }
-
-     // API đôi lúc fail khi mở từ Facebook/Zalo/in-app browser: nạp lại trang danh mục
-     // với cache-buster để tạo request mới thay vì chốt danh mục rỗng.
-     if(round<MAX_ROUNDS){
-       reloadFrame();
-       return;
-     }
-
+     if(round<MAX_ROUNDS){ reloadFrame(); setTimeout(check,700); return; }
      done=true;
      host.innerHTML='<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Bấm để tải lại</a></div>';
      f.remove();
    }
 
-   f.addEventListener('load',function(){setTimeout(check,300)});
+   f.addEventListener('load',function(){
+     // load có thể bắn trước khi app.js render xong; chỉ bắt đầu quan sát, không clone ngay.
+     setTimeout(check,500);
+   });
    reloadFrame();
  });
 })();
@@ -2818,7 +2843,15 @@ document.addEventListener('click', function(e){
   window.location.href='./bang-gia.html';
 }, true);
 </script>
-\n<!-- v742: keep original category loading order, move Used Phones only after home data has finished rendering -->\n<script id="v742-home-used-last-safe">\n(function(){\n  if(location.pathname!=='/' && location.pathname!=='/index.html') return;\n  var moved=false, ready={};\n  function moveUsedLast(){\n    if(moved) return;\n    var home=document.getElementById('sddHomeAllProducts');\n    if(!home) return;\n    var usedGrid=home.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');\n    var usedSection=usedGrid && usedGrid.closest('.sdd-all-section');\n    if(!usedSection) return;\n    home.appendChild(usedSection);\n    moved=true;\n  }\n  document.addEventListener('sdd-home-grid-ready',function(e){\n    var path=e && e.detail && e.detail.path;\n    if(path) ready[path]=1;\n    if(ready['/dien-thoai'] && ready['/may-tinh-bang'] && ready['/phu-kien'] && ready['/may-cu']){\n      requestAnimationFrame(moveUsedLast);\n    }\n  });\n  // Fallback: data may already be rendered from cache before listener sees every event.\n  window.addEventListener('load',function(){\n    setTimeout(function(){\n      var home=document.getElementById('sddHomeAllProducts');\n      if(!home || moved) return;\n      var grids=[...home.querySelectorAll('.sdd-all-grid[data-home-cat]')];\n      var finished=grids.length && grids.every(function(g){\n        return !g.querySelector('.loading');\n      });\n      if(finished) moveUsedLast();\n    },1800);\n  });\n})();\n</script>\n</body>
+\n<!-- v742: keep original category loading order, move Used Phones only after home data has finished rendering -->\n<style id="v743-home-section-order-safe">
+/* Chỉ đổi thứ tự hiển thị, không di chuyển node nên không ảnh hưởng loader từng danh mục. */
+body.sdd-home-all-mode #sddHomeAllProducts{display:flex!important;flex-direction:column!important}
+body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-head{order:0}
+body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/dien-thoai"]){order:10}
+body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-tinh-bang"]){order:20}
+body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/phu-kien"]){order:30}
+body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-cu"]){order:40}
+</style>\n</body>
 </html>
 
 <!-- v613: desktop search fallback for home all-products mode -->
