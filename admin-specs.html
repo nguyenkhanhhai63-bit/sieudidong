@@ -14564,24 +14564,28 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
       const frameH2C=await ensureFrameHtml2Canvas(w);
 
-      // Không gỡ transform / không đặt x,y=0. html2canvas sẽ chụp element theo hệ tọa độ
-      // của chính iframe, nhờ đó giữ nguyên --print-scale, --manual-* và phần grid đã căn A4.
-      const cw=Math.max(1,Math.ceil(sheet.offsetWidth));
-      const ch=Math.max(1,Math.ceil(sheet.offsetHeight));
-      const canvas=await frameH2C(sheet,{
+      // v735: chụp NGUYÊN viewport A4 của iframe (297 x 210mm), không chụp riêng .sheet.
+      // Đây là cách duy nhất để PDF giữ đúng 1:1 những gì người dùng đang thấy trong preview,
+      // kể cả transform/scale, vị trí footer và phần overflow đã bị khung A4 cắt.
+      const root=doc.documentElement;
+      const body=doc.body;
+      const vw=Math.max(1,root.clientWidth||body.clientWidth||sheet.offsetWidth);
+      const vh=Math.max(1,root.clientHeight||body.clientHeight||sheet.offsetHeight);
+      // Ép tọa độ về đúng góc trái A4 trước khi rasterize; không thay đổi các biến căn chỉnh.
+      const prevScrollX=w.scrollX||0,prevScrollY=w.scrollY||0;
+      try{w.scrollTo(0,0)}catch(_){}
+      await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
+      const canvas=await frameH2C(body,{
         backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,
-        width:cw,height:ch,
-        windowWidth:Math.max(doc.documentElement.clientWidth,doc.documentElement.scrollWidth,cw),
-        windowHeight:Math.max(doc.documentElement.clientHeight,doc.documentElement.scrollHeight,ch),
+        x:0,y:0,width:vw,height:vh,
+        windowWidth:vw,windowHeight:vh,
         scrollX:0,scrollY:0
       });
+      try{w.scrollTo(prevScrollX,prevScrollY)}catch(_){}
       const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
-      // Giữ nguyên tỷ lệ canvas, canh giữa trong đúng A4 297x210 để không méo/cắt bảng.
-      const pageW=297,pageH=210,ratio=Math.min(pageW/canvas.width,pageH/canvas.height);
-      const drawW=canvas.width*ratio,drawH=canvas.height*ratio;
-      const dx=(pageW-drawW)/2,dy=(pageH-drawH)/2;
+      // Canvas chính là tờ A4 preview, nên đưa thẳng 0,0 -> 297x210, tuyệt đối không fit/canh giữa lại.
       const img=canvas.toDataURL('image/jpeg',0.98);
-      pdf.addImage(img,'JPEG',dx,dy,drawW,drawH,undefined,'FAST');pdf.save(pdfFileName());
+      pdf.addImage(img,'JPEG',0,0,297,210,undefined,'FAST');pdf.save(pdfFileName());
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
