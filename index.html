@@ -3117,6 +3117,75 @@ body.sdd-home-all-mode .sdd-iphone-version-count{display:none!important}
   [300,700,1200,2200,4000,7000,12000,20000].forEach(function(ms){setTimeout(groupNow,ms)});
 })();
 </script>
+
+<!-- v760: group KiotViet iPhone by model in homepage Máy cũ as well -->
+<script id="v760-group-home-used-iphone-by-model">
+(function(){
+  function norm(s){return String(s||'').replace(/\s+/g,' ').trim()}
+  function getNameEl(card){
+    return card && card.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title');
+  }
+  function getName(card){return norm((getNameEl(card)||card).textContent)}
+  function isIphone(card){return /\biphone\b/i.test(getName(card))}
+  function baseName(name){
+    name=norm(name);
+    var m=name.match(/^(iphone\s+(?:se(?:\s*\d+)?|x(?:r|s|max)?|\d+)(?:\s+(?:pro\s*max|pro|max|plus|mini))?)/i);
+    if(m) return m[1].replace(/^iphone/i,'iPhone');
+    return (name.split(/\s+-\s+/)[0]||name).replace(/^iphone/i,'iPhone').trim();
+  }
+  function getPrice(card){
+    var el=card.querySelector('.price,.product-price,.v615-used-price,.sdd-iphone-price,[class*="price"]');
+    var n=Number(norm(el&&el.textContent).replace(/[^0-9]/g,''));
+    return n||Number.MAX_SAFE_INTEGER;
+  }
+  function groupGrid(grid){
+    if(!grid) return;
+    var cards=Array.from(grid.children).filter(function(c){
+      return c.nodeType===1 && isIphone(c) && !c.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty');
+    });
+    if(!cards.length) return;
+    var groups=new Map();
+    cards.forEach(function(card){
+      var base=baseName(getName(card));
+      var key=base.toLowerCase();
+      if(!groups.has(key)) groups.set(key,{base:base,cards:[]});
+      groups.get(key).cards.push(card);
+    });
+    groups.forEach(function(g){
+      g.cards.sort(function(a,b){return getPrice(a)-getPrice(b)});
+      var primary=g.cards[0];
+      var ne=getNameEl(primary); if(ne) ne.textContent=g.base;
+      primary.setAttribute('data-sdd-iphone-group-primary','1');
+      primary.setAttribute('data-sdd-iphone-variant-count',String(g.cards.length));
+      g.cards.forEach(function(card,i){
+        if(i===0){
+          card.style.removeProperty('display');
+          card.removeAttribute('data-sdd-iphone-variant-hidden');
+        }else{
+          card.style.setProperty('display','none','important');
+          card.setAttribute('data-sdd-iphone-variant-hidden','1');
+        }
+      });
+    });
+  }
+  var busy=false, timer=0;
+  function run(){
+    if(busy) return; busy=true;
+    try{
+      document.querySelectorAll('.sdd-all-grid[data-home-cat="/may-cu"], #sddHomeAllProducts [data-home-cat="/may-cu"] .sdd-all-grid').forEach(groupGrid);
+      if(((location.pathname||'/').replace(/\/+$/,'')||'/')==='/may-cu'){
+        groupGrid(document.querySelector('#productGrid,.product-grid,.products-grid'));
+      }
+    } finally {busy=false}
+  }
+  function schedule(){clearTimeout(timer);timer=setTimeout(run,60)}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule); else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('sdd-home-grid-ready',schedule);
+  window.addEventListener('pageshow',schedule);
+  [200,500,900,1500,2500,4000,7000,12000].forEach(function(ms){setTimeout(run,ms)});
+})();
+</script>
 </body>
 </html>
 
