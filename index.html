@@ -589,6 +589,9 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      var k=iphoneKey(el);
      if(k&&!homeIphoneKeys.has(k)){homeIphoneKeys.add(k);homeIphoneStash.push(el.cloneNode(true));}
    });
+   // v751: iPhone lấy từ KiotViet qua iframe /dien-thoai. Nếu Máy cũ đã render xong
+   // thì đưa iPhone xuống ngay, không chờ /may-cu chạy lại.
+   appendStashedIphones();
  }
  function appendStashedIphones(){
    var used=document.querySelector('[data-home-cat="/may-cu"]');
@@ -664,6 +667,8 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
        if(current!==wanted){ setTimeout(check,250); return; }
        g=d&&pickGrid(d,path);
        cards=realCards(g);
+       // v751: iPhone máy cũ lấy trực tiếp từ dữ liệu KiotViet của /dien-thoai.
+       // Không chờ nguồn Google Sheet cũ nữa.
        // v746: iPhone của shop là máy cũ trên trang chủ.
        // Loại TOÀN BỘ card iPhone khỏi Điện thoại/Máy tính bảng ngay trước khi clone,
        // tránh trường hợp tên có dạng 98% / Pin 8X làm lọt do regex tình trạng.
@@ -1663,7 +1668,9 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
     }
 
     // Trang Điện thoại / Máy tính bảng: chặn tuyệt đối iPhone, kể cả app.js render lại sau đó.
-    if(path==='/dien-thoai' || path==='/may-tinh-bang'){
+    var qs=new URLSearchParams(location.search||'');
+    var sourceFrame=qs.get('_homeall')==='1' || qs.get('_sdd_used_source')==='1';
+    if((path==='/dien-thoai' || path==='/may-tinh-bang') && !sourceFrame){
       document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(function(grid){
         Array.from(grid.children).forEach(function(card){
           if(isRealCard(card) && isIphone(card)) card.remove();
@@ -1690,140 +1697,64 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 })();
 </script>
 
-<script id="v608-iphone-used-merge-public-fix">
+<script id="v751-iphone-used-from-kiotviet">
 (function(){
   var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
   if(path!=='/may-cu') return;
-  var SHEET_ID='1XXVLikPffW1E_Wd6Rbg5qZCeL3neBEXXQqZg4vK6Sjw', GID='1876632092';
-  var CSV='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&gid='+GID;
-  var items=[], merging=false, imageMap=new Map();
-  function norm(s){return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d')}
-  function canon(s){return norm(s).replace(/[^a-z0-9]+/g,'')}
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function priceNum(v){var n=Number(String(v==null?'':v).replace(/[^0-9.-]/g,''))||0;return n>0&&n<100000?n*1000:n}
-  function money(n){return new Intl.NumberFormat('vi-VN').format(Number(n||0))+' đ'}
-  function parseCSV(text){
-    var rows=[],row=[],cell='',q=false;
-    for(var i=0;i<text.length;i++){var ch=text[i];if(q){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++}else if(ch==='"')q=false;else cell+=ch}else{if(ch==='"')q=true;else if(ch===','){row.push(cell);cell=''}else if(ch==='\n'){row.push(cell.replace(/\r$/,''));rows.push(row);row=[];cell=''}else cell+=ch}}
-    if(cell||row.length){row.push(cell);rows.push(row)} return rows;
-  }
-  function consume(rows){
-    if(!rows||rows.length<2)return false;
-    var headers={}; rows[0].forEach(function(h,i){headers[canon(h)]=i});
-    function col(){for(var i=0;i<arguments.length;i++){var k=canon(arguments[i]);if(k in headers)return headers[k]}return -1}
-    var C={name:col('TÊN MÁY','TEN MAY'),brand:col('HÃNG','HANG'),condition:col('TÌNH TRẠNG','TINH TRANG'),color:col('MÀU','MAU'),capacity:col('DUNG LƯỢNG','DUNG LUONG'),imei:col('IMEI'),price:col('GIÁ BÁN','GIA BAN'),status:col('TRẠNG THÁI','TRANG THAI'),acc:col('PHỤ KIỆN','PHU KIEN'),note:col('GHI CHÚ','GHI CHU')};
-    if(C.name<0||C.price<0)return false;
-    items=[];
-    for(var r=1;r<rows.length;r++){var a=rows[r]||[],name=String(a[C.name]||'').trim();if(!name)continue;var brand=String(a[C.brand]||'').trim(),st=String(a[C.status]||'').trim(),ns=norm(st);if(brand&&!/iphone|apple/i.test(brand+' '+name))continue;if(st&&!ns.includes('chua ban')&&!ns.includes('con hang'))continue;var imei=String(C.imei>=0?a[C.imei]||'':'').trim(), key=imei||name+'|'+String(a[C.capacity]||'')+'|'+String(a[C.color]||'');var imgs=imageMap.get(imei)||imageMap.get('iphone-sheet-'+imei)||[];items.push({name:name,imei:imei,condition:String(a[C.condition]||'').trim(),color:String(a[C.color]||'').trim(),capacity:String(a[C.capacity]||'').trim(),price:priceNum(a[C.price]),acc:String(a[C.acc]||'').trim(),note:String(a[C.note]||'').trim(),images:imgs})}
-    merge(); return true;
-  }
-  function card(x){
-    var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'';
-    var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
-    /* v639: iPhone dùng CHÍNH XÁC cấu trúc card Android, chỉ thay dữ liệu bên trong. */
-    var visual=first
-      ? '<div class="v615-used-img-wrap"><img src="'+esc(first)+'" alt="'+esc(x.name)+'" loading="lazy"></div>'
-      : '<div class="v615-used-img-wrap v639-no-image"><span>Chưa có ảnh</span></div>';
-    return '<article class="v615-used-card v639-iphone-used-card" data-v615-done="1" data-sdd-iphone-sheet="1" data-imei="'+esc(x.imei||'')+'" data-price="'+x.price+'">'+visual+'<h3 class="v615-used-name">'+esc(x.name)+'</h3><div class="v615-used-price">'+money(x.price)+'</div><span class="v615-used-stock">✓ Còn hàng</span><div class="v615-used-actions"><button type="button" class="v615-compare v639-iphone-compare">+ So sánh</button><button type="button" class="v615-detail" data-sdd-iphone-detail="1">Chi tiết</button></div></article>'
-  }
-  function normalizeImages(x){
-    var a=Array.isArray(x&&x.imageAssets)?x.imageAssets:[], im=Array.isArray(x&&x.images)?x.images:[];
-    var out=a.map(function(v){return typeof v==='string'?v:(v&&v.url)||(v&&v.secure_url)||''}).concat(im).filter(Boolean);
-    return Array.from(new Set(out));
-  }
-  function applyPublicImageRows(rows){
-    (Array.isArray(rows)?rows:[]).forEach(function(x){
-      var imgs=normalizeImages(x); if(!imgs.length)return;
-      var id=String(x&&x.id||''), imei=String(x&&x.imei||'').trim();
-      if(id.indexOf('iphone-sheet-')===0||x&&x.source==='iphone_sheet'||imei){if(id)imageMap.set(id,imgs);if(imei)imageMap.set(imei,imgs)}
-    });
-    items.forEach(function(x){var imgs=imageMap.get(String(x.imei||''))||imageMap.get('iphone-sheet-'+String(x.imei||''));if(imgs&&imgs.length)x.images=imgs});
-    merge();
-  }
-  async function loadPublicImageMap(){
-    var urls=['/api/used-products?ts='+Date.now(),'/api/public/used-products?ts='+Date.now()];
-    for(var i=0;i<urls.length;i++){
-      try{var r=await fetch(urls[i],{cache:'no-store',credentials:'same-origin'});if(!r.ok)continue;var d=await r.json();var arr=Array.isArray(d)?d:(Array.isArray(d.items)?d.items:[]);if(arr.length){applyPublicImageRows(arr);return}}catch(e){}
-    }
-  }
-  var lastMergeSignature='';
-  function merge(){
-    if(merging||!items.length)return;var grid=document.getElementById('productGrid');if(!grid)return;
-    if(/Đang tải/i.test(grid.textContent||''))return;
-    // v627: chỉ render lại khi dữ liệu iPhone thực sự thay đổi.
-    // Trước đây chính MutationObserver + setInterval gọi merge liên tục,
-    // mỗi lần lại xóa/thêm toàn bộ card iPhone nên màn hình bị nháy.
-    var sig=items.map(function(x){
-      var first=Array.isArray(x.images)&&x.images.length?String(x.images[0]||''):'';
-      return [x.imei,x.name,x.capacity,x.color,x.condition,x.price,x.acc,x.note,first].join('|');
-    }).join('||');
-    var current=grid.querySelectorAll('[data-sdd-iphone-sheet="1"]');
-    if(sig===lastMergeSignature && current.length===items.length)return;
-    merging=true;
-    current.forEach(function(e){e.remove()});
-    var box=document.createElement('div');box.innerHTML=items.map(card).join('');
-    while(box.firstElementChild)grid.appendChild(box.firstElementChild);
-    lastMergeSignature=sig;
-    merging=false;
-  }
-  function loadViaCharts(){
-    function go(){try{var q=new google.visualization.Query('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+GID+'&headers=1');q.setQuery('select *');q.send(function(res){if(res.isError())return;var t=res.getDataTable(),rows=[[]];for(var c=0;c<t.getNumberOfColumns();c++)rows[0].push(t.getColumnLabel(c));for(var r=0;r<t.getNumberOfRows();r++){var a=[];for(c=0;c<t.getNumberOfColumns();c++)a.push(t.getFormattedValue(r,c)||t.getValue(r,c)||'');rows.push(a)}consume(rows)})}catch(e){}}
-    if(window.google&&google.visualization&&google.visualization.Query)return go();
-    var sc=document.createElement('script');sc.src='https://www.gstatic.com/charts/loader.js';sc.onload=function(){google.charts.load('current',{packages:['table']});google.charts.setOnLoadCallback(go)};document.head.appendChild(sc);
-  }
-  function findItemByCard(card){
-    var imei=String(card&&card.getAttribute('data-imei')||'');
-    return items.find(function(x){return String(x.imei||'')===imei})||null;
-  }
-  function openIphoneDetail(x){
-    if(!x)return;
-    var root=document.getElementById('inlineProductDetail'); if(!root)return;
-    var page=document.querySelector('main.page');
-    var imgs=Array.isArray(x.images)?x.images.filter(Boolean):[];
-    var img=imgs[0]||'';
-    var visual=img?'<img src="'+esc(img)+'" alt="'+esc(x.name)+'">':'<div class="sdd-iphone-detail-no-image">Chưa có ảnh</div>';
-    var cap=x.capacity?String(x.capacity).replace(/\s*GB$/i,'')+'GB':'—';
-    root.innerHTML='<div class="sdd-iphone-detail-shell"><div class="sdd-iphone-detail-head"><h1>'+esc(x.name)+'</h1><button type="button" class="sdd-iphone-detail-close" aria-label="Đóng">×</button></div><div class="sdd-iphone-detail-main"><div class="sdd-iphone-detail-gallery">'+visual+'</div><div class="sdd-iphone-detail-info"><div class="price">'+money(x.price)+'</div><div class="sdd-iphone-detail-stock">✓ Còn hàng</div><div class="sdd-iphone-detail-specs"><div class="k">Dung lượng</div><div>'+esc(cap)+'</div><div class="k">Màu sắc</div><div>'+(esc(x.color)||'—')+'</div><div class="k">Tình trạng pin</div><div>'+(esc(x.condition)||'—')+(x.condition?'%':'')+'</div><div class="k">Phụ kiện</div><div>'+(esc(x.acc)||'—')+'</div></div>'+(x.note?'<div class="sdd-iphone-detail-note">'+esc(x.note)+'</div>':'')+'<button type="button" class="sdd-iphone-detail-contact">Liên hệ mua hàng</button></div></div></div>';
-    root.hidden=false; root.classList.add('sdd-iphone-detail-open','v322-aligned','v340-header-aligned');
-    if(page)page.style.display='none';
-    window.scrollTo({top:0,behavior:'auto'});
-    var close=root.querySelector('.sdd-iphone-detail-close'); if(close)close.onclick=closeIphoneDetail;
-    var contact=root.querySelector('.sdd-iphone-detail-contact'); if(contact)contact.onclick=function(){var z=document.querySelector('[data-zalo-link],a[href*="zalo.me"]');if(z){z.click()}else{location.href='tel:0353105423'}};
-  }
-  function closeIphoneDetail(){
-    var root=document.getElementById('inlineProductDetail'); var page=document.querySelector('main.page');
-    if(root){root.hidden=true;root.innerHTML='';root.classList.remove('sdd-iphone-detail-open')}
-    if(page)page.style.display='';
-  }
-  document.addEventListener('click',function(e){
-    if(((location.pathname||'/').replace(/\/+$/,'')||'/')!=='/may-cu')return;
-    var btn=e.target&&e.target.closest?e.target.closest('[data-sdd-iphone-detail="1"]'):null;
-    var card=e.target&&e.target.closest?e.target.closest('[data-sdd-iphone-sheet="1"]'):null;
-    if(!card)return;
-    if(!btn && e.target.closest('button,a,input,select,textarea'))return;
-    e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-    openIphoneDetail(findItemByCard(card));
-  },true);
 
-  loadPublicImageMap();
-  fetch(CSV,{cache:'no-store'}).then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){if(!consume(parseCSV(t)))loadViaCharts()}).catch(loadViaCharts);
-  var grid=document.getElementById('productGrid');
-  if(grid){
-    new MutationObserver(function(muts){
-      // Chỉ cần gắn lại iPhone nếu renderer chính vừa thay đổi danh sách.
-      // merge() đã có signature guard nên observer không tự tạo vòng lặp.
-      var need=false;
-      for(var i=0;i<muts.length;i++){
-        if(muts[i].addedNodes.length||muts[i].removedNodes.length){need=true;break;}
-      }
-      if(need)setTimeout(merge,0);
-    }).observe(grid,{childList:true});
+  function text(el){return String((el&&el.textContent)||'').replace(/\s+/g,' ').trim()}
+  function isIphone(el){return /\biphone\b/i.test(text(el))}
+  function key(el){
+    var n=el&&el.querySelector&&el.querySelector('h1,h2,h3,h4,.product-name,.name,.title,[class*="name"]');
+    return text(n||el).toLowerCase();
   }
-  // Retry ngắn lúc tải trang, không chạy 60 giây và không rebuild liên tục.
-  [250,700,1400,2500].forEach(function(ms){setTimeout(merge,ms)});
-  window.SDD_RELOAD_IPHONE_USED_PUBLIC=function(){loadPublicImageMap();fetch(CSV+'&_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){consume(parseCSV(t))}).catch(loadViaCharts)};
+  function realCards(g){
+    if(!g)return [];
+    return Array.from(g.children).filter(function(el){
+      if(!el||el.nodeType!==1||el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty'))return false;
+      var t=text(el); return t && !/^(Đang tải|Hiện chưa có sản phẩm|Chưa có sản phẩm|Không có sản phẩm|Chưa tải được)/i.test(t);
+    });
+  }
+  function append(cards){
+    var grid=document.getElementById('productGrid'); if(!grid)return 0;
+    var existing=new Set(Array.from(grid.children).map(key));
+    var count=0;
+    cards.forEach(function(card){
+      if(!isIphone(card))return;
+      var k=key(card); if(!k||existing.has(k))return;
+      var c=card.cloneNode(true);
+      c.setAttribute('data-sdd-iphone-kiotviet','1');
+      grid.appendChild(c); existing.add(k); count++;
+    });
+    return count;
+  }
+
+  var f=document.createElement('iframe');
+  f.setAttribute('aria-hidden','true');
+  f.style.cssText='position:fixed!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;left:-9999px!important;top:-9999px!important;border:0!important';
+  f.src='/dien-thoai?_sdd_used_source=1&_ts='+Date.now();
+  document.body.appendChild(f);
+  var start=Date.now(), last='', stable=0;
+  function check(){
+    if(!f.isConnected)return;
+    try{
+      var d=f.contentDocument, g=d&&d.querySelector('#productGrid,.product-grid,.products-grid');
+      var cards=realCards(g), iph=cards.filter(isIphone);
+      var sig=iph.map(key).join('||');
+      if(sig && sig!==last){last=sig;stable=Date.now()}
+      if(iph.length && stable && Date.now()-stable>1200){
+        append(iph);
+        try{document.dispatchEvent(new CustomEvent('sdd-kiotviet-iphone-used-ready',{detail:{count:iph.length}}))}catch(e){}
+        f.remove(); return;
+      }
+    }catch(e){}
+    if(Date.now()-start<30000)setTimeout(check,250); else f.remove();
+  }
+  f.addEventListener('load',function(){setTimeout(check,400)});
+  setTimeout(check,800);
 })();
 </script>
+
 <script id="v596-home-native-compare-dock-computed-exact">
 (function(){
   const KEY='sieudidong-compare-v1', HOST_ID='sddHomeNativeCompareHost';
