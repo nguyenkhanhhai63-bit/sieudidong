@@ -1724,10 +1724,24 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
     if(syncing)return; syncing=true;
     try{
       var grid=document.querySelector('#productGrid,.product-grid,.products-grid'); if(!grid)return;
-      var existing=new Set();
-      Array.from(grid.children).forEach(function(c){var k=key(c);if(k)existing.add(k)});
+      var existing=new Set(), groupedModels=new Set();
+      function iphoneModelKey(el){
+        var n=el&&el.querySelector&&el.querySelector('h1,h2,h3,h4,.product-name,.name,.title,[class*="name"]');
+        var raw=text(n||el);
+        var m=raw.match(/\biphone\s*(?:se\s*\d*|\d{1,2})(?:\s*(?:pro\s*max|pro|max|plus|mini|air|e))?/i);
+        return m?text(m[0]).toLowerCase():'';
+      }
+      Array.from(grid.children).forEach(function(c){
+        var k=key(c);if(k)existing.add(k);
+        if(c.hasAttribute('data-sdd-iphone-grouped-native')){
+          var mk=iphoneModelKey(c); if(mk)groupedModels.add(mk);
+        }
+      });
       templates.forEach(function(t,k){
-        if(existing.has(k))return;
+        // Khi v764 đã gom một model iPhone thành 1 card, tuyệt đối không được
+        // đồng bộ nền thêm từng biến thể trở lại thành nhiều card riêng.
+        var mk=iphoneModelKey(t);
+        if((mk&&groupedModels.has(mk))||existing.has(k))return;
         var c=t.cloneNode(true); c.setAttribute('data-sdd-iphone-kiotviet','1'); grid.appendChild(c); existing.add(k);
       });
     } finally {syncing=false}
@@ -3110,7 +3124,7 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
     if(p==='/may-cu')document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(groupGrid);
     if(p==='/'||p==='/index.html'){var g=document.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');if(g)groupGrid(g)}
   }
-  var timer=0;function schedule(){clearTimeout(timer);timer=setTimeout(run,80)}
+  var timer=0;function schedule(){clearTimeout(timer);timer=setTimeout(run,30)}
   new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
   document.addEventListener('sdd-home-grid-ready',schedule);document.addEventListener('DOMContentLoaded',schedule);window.addEventListener('pageshow',schedule);
   run();[400,900,1800,3500,6500,11000].forEach(function(ms){setTimeout(run,ms)});
