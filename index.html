@@ -1600,41 +1600,93 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 </style>
 <section id="sddIphoneInsideUsed" hidden aria-hidden="true"></section>
 <script src="/app.js?v=493"></script>
-<script id="v748-route-iphone-used-only">
+<script id="v749-iphone-hard-category-guard">
 (function(){
-  var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
-  if(path!=='/dien-thoai' && path!=='/may-tinh-bang') return;
-
-  function isIphoneCard(el){
+  function normText(el){
+    return String((el && el.textContent) || '').replace(/\s+/g,' ').trim().toLowerCase();
+  }
+  function isIphone(card){
+    if(!card || card.nodeType!==1) return false;
+    var name=card.querySelector('h1,h2,h3,h4,.product-name,.name,[class*="name"],[data-name]');
+    var txt=(name ? normText(name) : '')+' '+normText(card);
+    return txt.indexOf('iphone')!==-1;
+  }
+  function isRealCard(el){
     if(!el || el.nodeType!==1) return false;
-    var nameEl=el.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
-    var txt=((nameEl&&nameEl.textContent)||el.textContent||'').replace(/\s+/g,' ').trim();
-    return /\biphone\b/i.test(txt);
+    if(el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty')) return false;
+    return true;
   }
+  function homeGrids(){
+    var home=document.getElementById('sddHomeAllProducts');
+    if(!home) return null;
+    return {
+      home:home,
+      used:home.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]'),
+      others:Array.from(home.querySelectorAll('.sdd-all-grid')).filter(function(g){
+        return g.getAttribute('data-home-cat')!=='/may-cu';
+      })
+    };
+  }
+  function cardKey(card){
+    var n=card.querySelector('h1,h2,h3,h4,.product-name,.name,[class*="name"],[data-name]');
+    return normText(n||card);
+  }
+  function dedupeUsed(used){
+    if(!used) return;
+    var seen=new Set();
+    Array.from(used.children).forEach(function(c){
+      if(!isRealCard(c)) return;
+      var k=cardKey(c);
+      if(!k) return;
+      if(seen.has(k) && isIphone(c)) c.remove();
+      else seen.add(k);
+    });
+  }
+  function enforce(){
+    var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+    var hg=homeGrids();
 
-  function stripIphones(){
-    var grids=document.querySelectorAll('#productGrid,.product-grid,.products-grid');
-    grids.forEach(function(grid){
-      Array.from(grid.children).forEach(function(card){
-        if(isIphoneCard(card)) card.remove();
+    // Trang chủ: iPhone chỉ được phép nằm trong lưới Máy cũ.
+    if(hg && (path==='/' || path==='/index.html')){
+      hg.others.forEach(function(grid){
+        Array.from(grid.children).forEach(function(card){
+          if(!isRealCard(card) || !isIphone(card)) return;
+          if(hg.used){
+            var key=cardKey(card);
+            var exists=Array.from(hg.used.children).some(function(x){return isRealCard(x)&&cardKey(x)===key;});
+            if(!exists) hg.used.appendChild(card.cloneNode(true));
+          }
+          card.remove();
+        });
       });
-    });
+      dedupeUsed(hg.used);
+    }
+
+    // Trang Điện thoại / Máy tính bảng: chặn tuyệt đối iPhone, kể cả app.js render lại sau đó.
+    if(path==='/dien-thoai' || path==='/may-tinh-bang'){
+      document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(function(grid){
+        Array.from(grid.children).forEach(function(card){
+          if(isRealCard(card) && isIphone(card)) card.remove();
+        });
+      });
+    }
   }
 
-  // Xóa ngay sau mỗi lần renderer chính cập nhật danh sách để iPhone không thể
-  // xuất hiện lại trong Điện thoại/Máy tính bảng do load lại, lọc, sort hoặc cache.
-  function observe(){
-    stripIphones();
-    document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(function(grid){
-      if(grid.dataset.v748IphoneGuard==='1') return;
-      grid.dataset.v748IphoneGuard='1';
-      new MutationObserver(function(){ stripIphones(); }).observe(grid,{childList:true,subtree:false});
-    });
+  var queued=false;
+  function queue(){
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(function(){queued=false;enforce();});
   }
 
-  new MutationObserver(function(){ observe(); }).observe(document.documentElement,{childList:true,subtree:true});
-  observe();
-  [0,100,250,500,1000,2000,4000,8000].forEach(function(ms){setTimeout(observe,ms)});
+  // Theo dõi toàn trang để bắt mọi lần app.js/API/filter/sort render lại sản phẩm.
+  var mo=new MutationObserver(queue);
+  mo.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('sdd-home-grid-ready',queue);
+  window.addEventListener('pageshow',queue);
+  document.addEventListener('DOMContentLoaded',queue);
+  enforce();
+  [50,150,300,600,1000,1800,3000,5000,8000,12000].forEach(function(ms){setTimeout(enforce,ms);});
 })();
 </script>
 
