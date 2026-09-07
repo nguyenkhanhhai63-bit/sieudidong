@@ -641,14 +641,13 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
        if(current!==wanted){ setTimeout(check,250); return; }
        g=d&&pickGrid(d,path);
        cards=realCards(g);
-       // v744: iPhone cũ không được lọt vào Điện thoại/Máy tính bảng trên trang chủ.
-       // Dấu hiệu máy cũ: tên iPhone kèm % pin/tình trạng pin, Like New, 9x%, 8x%...
+       // v746: iPhone của shop là máy cũ trên trang chủ.
+       // Loại TOÀN BỘ card iPhone khỏi Điện thoại/Máy tính bảng ngay trước khi clone,
+       // tránh trường hợp tên có dạng 98% / Pin 8X làm lọt do regex tình trạng.
        if(path==='/dien-thoai' || path==='/may-tinh-bang'){
          cards=cards.filter(function(el){
            var t=(el.textContent||'').replace(/\s+/g,' ').trim();
-           var isIphone=/\biphone\b/i.test(t);
-           var isUsed=/(?:\bpin\s*[:\-]?\s*\d{2,3}%?\b|\b\d{2,3}%\b|like\s*new|máy\s*cũ|may\s*cu)/i.test(t);
-           return !(isIphone && isUsed);
+           return !/\biphone\b/i.test(t);
          });
        }
      }catch(e){}
@@ -688,36 +687,30 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 })();
 </script>
 
-<script id="v745-home-force-used-iphone-category">
+<script id="v746-home-force-iphone-used-only">
 (function(){
   if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
 
   function norm(s){return (s||'').replace(/\s+/g,' ').trim().toLowerCase();}
+  function isIphone(card){
+    if(!card || card.nodeType!==1) return false;
+    if(card.matches('[data-sdd-iphone-sheet="1"],.v639-iphone-used-card,.sdd-iphone-used-public-card')) return true;
+    return /\biphone\b/i.test(norm(card.textContent||''));
+  }
   function cardName(card){
     var n=card.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
     return norm((n&&n.textContent)||card.textContent||'');
   }
-  function isUsedIphone(card){
-    if(!card || card.nodeType!==1) return false;
-    if(card.matches('[data-sdd-iphone-sheet="1"],.v639-iphone-used-card,.sdd-iphone-used-public-card')) return true;
-    var t=norm(card.textContent||'');
-    if(!/\biphone\b/.test(t)) return false;
-    // Các tên máy cũ thực tế của shop: 98%, Pin 8X/7X, pin 8x%, Like New...
-    return /(\b\d{2,3}\s*%\b|\bpin\s*[:\-]?\s*\d{1,3}\s*%?\b|\bpin\s*[:\-]?\s*\d\s*x\b|\blike\s*new\b|\bmáy\s*cũ\b|\bmay\s*cu\b)/i.test(t);
-  }
   function key(card){
     return (card.getAttribute('data-imei')||card.getAttribute('data-id')||cardName(card)).toLowerCase();
   }
-  function getUsedGrid(){return document.querySelector('[data-home-cat="/may-cu"]');}
-
   function fix(){
-    var used=getUsedGrid();
+    var used=document.querySelector('[data-home-cat="/may-cu"]');
     if(!used) return;
-    var sources=document.querySelectorAll('[data-home-cat="/dien-thoai"],[data-home-cat="/may-tinh-bang"]');
-    var existing=new Set(Array.from(used.children).filter(isUsedIphone).map(key));
-    sources.forEach(function(grid){
+    var existing=new Set(Array.from(used.children).filter(isIphone).map(key));
+    document.querySelectorAll('[data-home-cat="/dien-thoai"],[data-home-cat="/may-tinh-bang"]').forEach(function(grid){
       Array.from(grid.children).forEach(function(card){
-        if(!isUsedIphone(card)) return;
+        if(!isIphone(card)) return;
         var k=key(card);
         if(k && existing.has(k)) card.remove();
         else { used.appendChild(card); if(k) existing.add(k); }
@@ -725,13 +718,16 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
     });
   }
 
-  document.addEventListener('sdd-home-grid-ready',function(){setTimeout(fix,0);setTimeout(fix,600);});
+  document.addEventListener('sdd-home-grid-ready',function(){fix();setTimeout(fix,300);setTimeout(fix,1200);});
   var root=document.getElementById('sddHomeAllProducts');
   if(root){
-    var mo=new MutationObserver(function(){fix();});
-    mo.observe(root,{childList:true,subtree:true});
+    var busy=false;
+    new MutationObserver(function(){
+      if(busy)return; busy=true;
+      requestAnimationFrame(function(){fix();busy=false;});
+    }).observe(root,{childList:true,subtree:true});
   }
-  setTimeout(fix,1200); setTimeout(fix,3000); setTimeout(fix,6000);
+  setTimeout(fix,800); setTimeout(fix,2500); setTimeout(fix,5000); setTimeout(fix,9000);
 })();
 </script>
 
