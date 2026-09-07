@@ -576,6 +576,26 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
  document.body.classList.add('sdd-home-all-mode');
  const jobs=[...document.querySelectorAll('[data-home-cat]')];
+ const homeIphoneStash=[];
+ const homeIphoneKeys=new Set();
+ function iphoneKey(el){
+   var n=el.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
+   return ((n&&n.textContent)||el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+ }
+ function stashIphones(cards){
+   cards.forEach(function(el){
+     var t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(!/\biphone\b/i.test(t)) return;
+     var k=iphoneKey(el);
+     if(k&&!homeIphoneKeys.has(k)){homeIphoneKeys.add(k);homeIphoneStash.push(el.cloneNode(true));}
+   });
+ }
+ function appendStashedIphones(){
+   var used=document.querySelector('[data-home-cat="/may-cu"]');
+   if(!used)return;
+   var existing=new Set(Array.from(used.children).map(iphoneKey));
+   homeIphoneStash.forEach(function(el){var k=iphoneKey(el);if(k&&!existing.has(k)){used.appendChild(el.cloneNode(true));existing.add(k);}});
+ }
 
  function pickGrid(doc,path){
    if(path==='/phu-kien') return doc.querySelector('#accPublicGrid');
@@ -626,6 +646,9 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      host.innerHTML='';
      cards.forEach(function(el){host.appendChild(el.cloneNode(true))});
      document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
+     // Quan trọng: /may-cu có thể hoàn tất sau /dien-thoai. Chỉ append iPhone sau khi
+     // chính lưới Máy cũ render xong để không bị finishWith() xóa ngược trở lại.
+     if(path==='/may-cu'){appendStashedIphones();setTimeout(appendStashedIphones,400);setTimeout(appendStashedIphones,1600);}
      f.remove();
    }
 
@@ -645,6 +668,8 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
        // Loại TOÀN BỘ card iPhone khỏi Điện thoại/Máy tính bảng ngay trước khi clone,
        // tránh trường hợp tên có dạng 98% / Pin 8X làm lọt do regex tình trạng.
        if(path==='/dien-thoai' || path==='/may-tinh-bang'){
+         // iPhone là máy cũ: giữ một bản sao để đưa vào Máy cũ, rồi loại tuyệt đối khỏi danh mục mới.
+         stashIphones(cards);
          cards=cards.filter(function(el){
            var t=(el.textContent||'').replace(/\s+/g,' ').trim();
            return !/\biphone\b/i.test(t);
@@ -687,47 +712,18 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 })();
 </script>
 
-<script id="v746-home-force-iphone-used-only">
+<script id="v747-home-iphone-strict-used-only">
 (function(){
-  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
-
-  function norm(s){return (s||'').replace(/\s+/g,' ').trim().toLowerCase();}
-  function isIphone(card){
-    if(!card || card.nodeType!==1) return false;
-    if(card.matches('[data-sdd-iphone-sheet="1"],.v639-iphone-used-card,.sdd-iphone-used-public-card')) return true;
-    return /\biphone\b/i.test(norm(card.textContent||''));
-  }
-  function cardName(card){
-    var n=card.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
-    return norm((n&&n.textContent)||card.textContent||'');
-  }
-  function key(card){
-    return (card.getAttribute('data-imei')||card.getAttribute('data-id')||cardName(card)).toLowerCase();
-  }
-  function fix(){
-    var used=document.querySelector('[data-home-cat="/may-cu"]');
-    if(!used) return;
-    var existing=new Set(Array.from(used.children).filter(isIphone).map(key));
-    document.querySelectorAll('[data-home-cat="/dien-thoai"],[data-home-cat="/may-tinh-bang"]').forEach(function(grid){
-      Array.from(grid.children).forEach(function(card){
-        if(!isIphone(card)) return;
-        var k=key(card);
-        if(k && existing.has(k)) card.remove();
-        else { used.appendChild(card); if(k) existing.add(k); }
-      });
-    });
-  }
-
-  document.addEventListener('sdd-home-grid-ready',function(){fix();setTimeout(fix,300);setTimeout(fix,1200);});
-  var root=document.getElementById('sddHomeAllProducts');
-  if(root){
-    var busy=false;
-    new MutationObserver(function(){
-      if(busy)return; busy=true;
-      requestAnimationFrame(function(){fix();busy=false;});
-    }).observe(root,{childList:true,subtree:true});
-  }
-  setTimeout(fix,800); setTimeout(fix,2500); setTimeout(fix,5000); setTimeout(fix,9000);
+ if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
+ function strip(){
+   document.querySelectorAll('[data-home-cat="/dien-thoai"],[data-home-cat="/may-tinh-bang"]').forEach(function(g){
+     Array.from(g.children).forEach(function(c){if(/\biphone\b/i.test(c.textContent||''))c.remove();});
+   });
+ }
+ document.addEventListener('sdd-home-grid-ready',function(e){strip();});
+ var root=document.getElementById('sddHomeAllProducts');
+ if(root)new MutationObserver(strip).observe(root,{childList:true,subtree:true});
+ strip(); setTimeout(strip,1000); setTimeout(strip,3000); setTimeout(strip,7000);
 })();
 </script>
 
