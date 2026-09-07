@@ -3130,6 +3130,35 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
   run();[400,900,1800,3500,6500,11000].forEach(function(ms){setTimeout(run,ms)});
 })();
 </script>
+
+
+<!-- v766: click anywhere on iPhone used card to open product detail -->
+<style id="v766-iphone-card-clickable">
+.sdd-iphone-used-public-card{cursor:pointer}
+.sdd-iphone-used-public-card button,
+.sdd-iphone-used-public-card a,
+.sdd-iphone-used-public-card input,
+.sdd-iphone-used-public-card select,
+.sdd-iphone-used-public-card label{cursor:pointer}
+</style>
+<script id="v766-iphone-card-click-detail">
+(function(){
+  function isInteractive(el){
+    return !!(el && el.closest && el.closest('button,a,input,select,textarea,label,[role="button"],.sdd-iphone-native-variants'));
+  }
+  document.addEventListener('click',function(e){
+    var card=e.target && e.target.closest ? e.target.closest('.sdd-iphone-used-public-card') : null;
+    if(!card) return;
+    if(isInteractive(e.target)) return;
+
+    var detail=card.querySelector('.sdd-iphone-detail-btn');
+    if(detail){
+      e.preventDefault();
+      detail.click();
+    }
+  },false);
+})();
+</script>
 </body>
 </html>
 
