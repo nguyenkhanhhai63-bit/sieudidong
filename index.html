@@ -3079,6 +3079,20 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 })();
 </script>
 
+
+<!-- v758: home loader /may-cu keeps original normal product-card layout -->
+<script id="v758-home-used-source-normal-layout">
+(function(){
+  var q=new URLSearchParams(location.search||'');
+  var p=(location.pathname||'').replace(/\/+$/,'');
+  if(q.get('_homeall')==='1' && (p==='/may-cu'||p==='/may-cu/index.html')){
+    document.documentElement.classList.add('v758-home-used-source');
+    function clean(){ document.body && document.body.classList.remove('v615-used-page'); }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',clean,{once:true}); else clean();
+  }
+})();
+</script>
+
 <!-- v615: redesign public used-product cards -->
 <style id="v615-used-card-redesign">
 /* Chỉ áp dụng cho trang Máy cũ */
@@ -3215,6 +3229,11 @@ body.v615-used-page #productGrid > .sdd-iphone-used-public-card .sdd-iphone-deta
 <script id="v615-used-card-redesign-js">
 (function(){
   function isUsed(){
+    // Khi /may-cu được mở trong iframe của trang chủ (_homeall=1), KHÔNG biến đổi
+    // card sang layout riêng của trang Máy cũ. Giữ nguyên card gốc để trang chủ clone
+    // đúng cùng DOM/CSS với Điện thoại và Máy tính bảng.
+    var qs=new URLSearchParams(location.search||'');
+    if(qs.get('_homeall')==='1') return false;
     var p=(location.pathname||'').replace(/\/+$/,'');
     return p==='/may-cu' || p==='/may-cu/index.html';
   }
