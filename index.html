@@ -2994,6 +2994,129 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
+
+<!-- v759: group KiotViet iPhone variants into one used-phone card -->
+<style id="v759-iphone-grouped-variants-css">
+.sdd-iphone-variant-panel{margin:8px 0 10px;padding-top:8px;border-top:1px solid #eef1f4;display:grid;gap:7px}
+.sdd-iphone-variant-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:7px;align-items:start}
+.sdd-iphone-variant-label{font-size:11px;font-weight:800;color:#667085;line-height:28px}
+.sdd-iphone-variant-options{display:flex;flex-wrap:wrap;gap:5px}
+.sdd-iphone-variant-btn{min-height:28px;padding:4px 8px;border:1px solid #d7dee7;border-radius:8px;background:#fff;color:#344054;font-size:11px;font-weight:700;cursor:pointer}
+.sdd-iphone-variant-btn.active{border-color:#ff5a00;background:#fff7f2;color:#e84d00}
+.sdd-iphone-version-count{font-size:11px;color:#667085;font-weight:700;margin:-2px 0 6px}
+body.sdd-home-all-mode .sdd-iphone-variant-panel{display:none!important}
+body.sdd-home-all-mode .sdd-iphone-version-count{display:none!important}
+</style>
+<script id="v759-group-iphone-kiotviet-variants">
+(function(){
+  var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+  if(path!=='/may-cu') return;
+
+  function txt(el){return String((el&&el.textContent)||'').replace(/\s+/g,' ').trim()}
+  function nameNode(card){return card&&card.querySelector('h1,h2,h3,h4,.product-name,.name,.title,[class*="name"]')}
+  function cardName(card){return txt(nameNode(card)||card)}
+  function isIphone(card){return /\biphone\b/i.test(cardName(card))}
+  function baseName(name){
+    name=String(name||'').replace(/\s+/g,' ').trim();
+    var first=name.split(/\s+-\s+/)[0].trim();
+    if(/^iphone\b/i.test(first)) return first.replace(/^iphone/i,'iPhone');
+    var m=name.match(/^(iphone\s+(?:se\s*\d*|x(?:r|s|max)?|\d+)(?:\s+(?:pro\s*max|pro|max|plus|mini))?)/i);
+    return m?m[1].replace(/^iphone/i,'iPhone'):first;
+  }
+  function parseVariant(card){
+    var name=cardName(card), parts=name.split(/\s+-\s+/).map(function(s){return s.trim()}).filter(Boolean);
+    var base=baseName(name), rest=parts.slice(1);
+    var out={card:card,name:name,base:base,color:'',storage:'',condition:'',battery:''};
+    rest.forEach(function(p){
+      if(/^pin\b/i.test(p)) out.battery=p.replace(/^pin\s*/i,'').trim();
+      else if(/%/.test(p)) out.condition=p;
+      else if(/^\d+\s*(?:gb|tb)?$/i.test(p)) out.storage=/gb|tb/i.test(p)?p:p+'GB';
+      else if(!out.color) out.color=p;
+    });
+    if(!out.storage){var sm=name.match(/\b(64|128|256|512|1024)\s*(GB)?\b/i);if(sm)out.storage=sm[1]+'GB'}
+    if(!out.condition){var cm=name.match(/\b(\d{2,3})%\b/);if(cm)out.condition=cm[1]+'%'}
+    if(!out.battery){var bm=name.match(/\bPin\s*([^\-]+)/i);if(bm)out.battery=bm[1].trim()}
+    return out;
+  }
+  function uniq(arr,key){var s=new Set(),o=[];arr.forEach(function(v){var x=v[key];if(x&&!s.has(x.toLowerCase())){s.add(x.toLowerCase());o.push(x)}});return o}
+  function priceNode(card){return card&&card.querySelector('.price,.product-price,.sdd-iphone-price,[class*="price"]')}
+  function stockNode(card){return card&&card.querySelector('.stock,.product-stock,.sdd-iphone-stock,[class*="stock"]')}
+  function imageNode(card){return card&&card.querySelector('img')}
+  function moneyNum(card){var t=txt(priceNode(card)||'').replace(/[^0-9]/g,'');return Number(t)||0}
+  function copyDataAttrs(from,to){
+    Array.from(to.attributes||[]).forEach(function(a){if(/^data-/.test(a.name))to.removeAttribute(a.name)});
+    Array.from(from.attributes||[]).forEach(function(a){if(/^data-/.test(a.name))to.setAttribute(a.name,a.value)});
+  }
+  function setDisplayFrom(primary,selected,group){
+    var pName=nameNode(primary), sName=nameNode(selected);
+    if(pName) pName.textContent=group.base;
+    var pp=priceNode(primary), sp=priceNode(selected); if(pp&&sp) pp.textContent=sp.textContent;
+    var ps=stockNode(primary), ss=stockNode(selected); if(ps&&ss){ps.textContent=ss.textContent;ps.className=ss.className}
+    var pi=imageNode(primary), si=imageNode(selected);
+    if(pi&&si){pi.src=si.currentSrc||si.src||pi.src; if(si.getAttribute('alt'))pi.setAttribute('alt',si.getAttribute('alt'))}
+    copyDataAttrs(selected,primary);
+    primary.setAttribute('data-sdd-iphone-group-primary','1');
+    primary.setAttribute('data-sdd-selected-variant',cardName(selected));
+    var count=primary.querySelector('.sdd-iphone-version-count');
+    if(count) count.textContent=group.variants.length+' phiên bản';
+    primary.querySelectorAll('.sdd-iphone-variant-btn').forEach(function(b){
+      var k=b.getAttribute('data-attr'), v=b.getAttribute('data-value');
+      var sv=group.selected[k]||''; b.classList.toggle('active',sv.toLowerCase()===String(v||'').toLowerCase());
+    });
+  }
+  function chooseVariant(group,key,val){
+    var current=group.selected;
+    var preferred=group.variants.filter(function(v){return String(v[key]||'').toLowerCase()===String(val||'').toLowerCase()});
+    if(!preferred.length)return;
+    var scored=preferred.map(function(v){var score=0;['color','storage','condition','battery'].forEach(function(k){if(k!==key&&current[k]&&String(v[k]||'').toLowerCase()===String(current[k]).toLowerCase())score++});return {v:v,score:score}}).sort(function(a,b){return b.score-a.score});
+    var next=scored[0].v; group.selected={color:next.color,storage:next.storage,condition:next.condition,battery:next.battery}; group.selectedCard=next.card;
+    setDisplayFrom(group.primary,next.card,group);
+  }
+  function buildPanel(group){
+    var old=group.primary.querySelector('.sdd-iphone-variant-panel');if(old)old.remove();
+    var oldc=group.primary.querySelector('.sdd-iphone-version-count');if(oldc)oldc.remove();
+    var count=document.createElement('div');count.className='sdd-iphone-version-count';count.textContent=group.variants.length+' phiên bản';
+    var anchor=priceNode(group.primary); if(anchor&&anchor.parentNode) anchor.parentNode.insertBefore(count,anchor); else group.primary.appendChild(count);
+    var panel=document.createElement('div');panel.className='sdd-iphone-variant-panel';
+    [['storage','Dung lượng'],['color','Màu'],['condition','Tình trạng'],['battery','Pin']].forEach(function(pair){
+      var vals=uniq(group.variants,pair[0]); if(vals.length<2)return;
+      var row=document.createElement('div');row.className='sdd-iphone-variant-row';
+      var lab=document.createElement('div');lab.className='sdd-iphone-variant-label';lab.textContent=pair[1];row.appendChild(lab);
+      var opts=document.createElement('div');opts.className='sdd-iphone-variant-options';
+      vals.forEach(function(v){var b=document.createElement('button');b.type='button';b.className='sdd-iphone-variant-btn';b.setAttribute('data-attr',pair[0]);b.setAttribute('data-value',v);b.textContent=v;b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();chooseVariant(group,pair[0],v)});opts.appendChild(b)});
+      row.appendChild(opts);panel.appendChild(row);
+    });
+    if(panel.children.length){var actions=group.primary.querySelector('.v615-used-actions,.product-actions,.actions'); if(actions&&actions.parentNode)actions.parentNode.insertBefore(panel,actions); else group.primary.appendChild(panel)}
+  }
+  var running=false;
+  function groupNow(){
+    if(running)return;running=true;
+    try{
+      var grid=document.querySelector('#productGrid,.product-grid,.products-grid'); if(!grid)return;
+      var iph=Array.from(grid.children).filter(function(c){return c.nodeType===1&&isIphone(c)&&!c.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty')});
+      if(!iph.length)return;
+      var map=new Map();
+      iph.forEach(function(c){var v=parseVariant(c),k=v.base.toLowerCase();if(!map.has(k))map.set(k,[]);map.get(k).push(v)});
+      map.forEach(function(vars){
+        vars.sort(function(a,b){var pa=moneyNum(a.card),pb=moneyNum(b.card);return (pa||Infinity)-(pb||Infinity)});
+        var primary=vars[0].card;
+        vars.forEach(function(v,i){v.card.style.display=i===0?'':'none';v.card.setAttribute('data-sdd-iphone-group-base',vars[0].base);if(i>0)v.card.setAttribute('data-sdd-iphone-variant-hidden','1');else v.card.removeAttribute('data-sdd-iphone-variant-hidden')});
+        var group={base:vars[0].base,variants:vars,primary:primary,selectedCard:primary,selected:{color:vars[0].color,storage:vars[0].storage,condition:vars[0].condition,battery:vars[0].battery}};
+        primary.__sddIphoneGroup=group;
+        buildPanel(group);setDisplayFrom(primary,primary,group);
+        var detail=primary.querySelector('.sdd-iphone-detail-btn,[data-detail],.detail-btn,button');
+        var buttons=Array.from(primary.querySelectorAll('button,a')).filter(function(x){return /chi\s*tiết/i.test(txt(x))});
+        detail=buttons[0]||detail;
+        if(detail&&!detail.dataset.v759Bound){detail.dataset.v759Bound='1';detail.addEventListener('click',function(e){var g=primary.__sddIphoneGroup;if(!g||g.selectedCard===primary)return;var target=Array.from(g.selectedCard.querySelectorAll('button,a')).find(function(x){return /chi\s*tiết/i.test(txt(x))});if(target){e.preventDefault();e.stopImmediatePropagation();target.click()}},true)}
+      });
+    }finally{running=false}
+  }
+  var timer=0;function schedule(){clearTimeout(timer);timer=setTimeout(groupNow,80)}
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',schedule);window.addEventListener('pageshow',schedule);
+  [300,700,1200,2200,4000,7000,12000,20000].forEach(function(ms){setTimeout(groupNow,ms)});
+})();
+</script>
 </body>
 </html>
 
