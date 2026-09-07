@@ -2917,41 +2917,83 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/phu-kien"]){order:30}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-cu"]){order:40}
 </style>\n
-<!-- v756: home used cards keep original card geometry; only normalize actions to match normal product cards -->
-<style id="v756-home-used-card-actions-match-normal">
-body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card,
-body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card{
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  align-self:start!important;
-}
-body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions{
-  width:100%!important;
-  display:flex!important;
-  flex-direction:column!important;
-  gap:8px!important;
-  margin-top:8px!important;
-  padding-top:0!important;
-}
-body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions > *,
-body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-detail-btn{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:100%!important;
-  min-width:100%!important;
-  max-width:100%!important;
-  height:36px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-}
-@media(max-width:700px){
-  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions{gap:8px!important;margin-top:8px!important}
-  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions > *,
-  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-detail-btn{height:36px!important}
-}
-</style>
+
+
+
+<!-- v757: Trang chủ Máy cũ dùng lại NGUYÊN card chuẩn của Điện thoại -->
+<script id="v757-home-used-restore-normal-card-dom">
+(function(){
+  if(location.pathname!=='/' && location.pathname!=='/index.html') return;
+
+  function restoreNormalCard(card){
+    if(!card || card.nodeType!==1 || card.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty')) return;
+
+    // v615 chỉ là lớp trang trí riêng của /may-cu. Gỡ nó để card dùng lại
+    // 100% CSS card sản phẩm chuẩn từ styles.css giống Điện thoại.
+    card.classList.remove('v615-used-card','v639-iphone-used-card');
+    delete card.dataset.v615Done;
+
+    // Gỡ wrapper ảnh do v615 tạo, trả IMG về đúng vị trí DOM ban đầu.
+    var wraps=[].slice.call(card.querySelectorAll('.v615-used-img-wrap'));
+    wraps.forEach(function(w){
+      // Placeholder iPhone riêng thì chỉ gỡ class, không phá cấu trúc gốc của nó.
+      if(w.classList.contains('sdd-iphone-placeholder') || w.classList.contains('sdd-iphone-no-image-wrap')){
+        w.classList.remove('v615-used-img-wrap');
+        return;
+      }
+      var img=w.querySelector(':scope > img');
+      if(img && w.parentNode){
+        w.parentNode.insertBefore(img,w);
+        w.remove();
+      }else{
+        w.classList.remove('v615-used-img-wrap');
+      }
+    });
+
+    // Nút So sánh + Chi tiết vốn là 2 phần tử trực tiếp của card Điện thoại.
+    // v615 đã gom chúng vào một div, nên đưa chúng ra lại đúng DOM gốc.
+    [].slice.call(card.querySelectorAll(':scope > .v615-used-actions')).forEach(function(actions){
+      var parent=actions.parentNode;
+      [].slice.call(actions.children).forEach(function(btn){
+        btn.classList.remove('v615-compare','v615-detail');
+        parent.insertBefore(btn,actions);
+      });
+      actions.remove();
+    });
+
+    // Chỉ bỏ class phụ của Máy cũ; giữ nguyên class gốc để styles.css xử lý.
+    card.querySelectorAll('.v615-used-name,.v615-used-price,.v615-used-stock,.v615-used-meta,.v615-out,.v615-photo-count').forEach(function(el){
+      el.classList.remove('v615-used-name','v615-used-price','v615-used-stock','v615-used-meta','v615-out','v615-photo-count');
+      if(el.classList.length===0 && /v615-photo-count/.test(el.className||'')) el.remove();
+    });
+    card.querySelectorAll('.v615-photo-count').forEach(function(el){el.remove()});
+
+    // Xóa mọi style inline do các bản vá Máy cũ trước đó có thể để lại.
+    card.style.removeProperty('height');
+    card.style.removeProperty('min-height');
+    card.style.removeProperty('max-height');
+    card.style.removeProperty('align-self');
+  }
+
+  function run(){
+    var grid=document.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');
+    if(!grid) return;
+    [].slice.call(grid.children).forEach(restoreNormalCard);
+  }
+
+  function boot(){
+    var grid=document.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');
+    if(!grid) return;
+    run();
+    new MutationObserver(function(){requestAnimationFrame(run)}).observe(grid,{childList:true,subtree:false});
+    document.addEventListener('sdd-home-grid-ready',function(e){
+      if(e && e.detail && e.detail.path==='/may-cu') requestAnimationFrame(run);
+    });
+    [300,800,1600,3000,6000].forEach(function(ms){setTimeout(run,ms)});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
 </body>
 </html>
 
