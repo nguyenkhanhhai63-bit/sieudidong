@@ -1600,6 +1600,44 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 </style>
 <section id="sddIphoneInsideUsed" hidden aria-hidden="true"></section>
 <script src="/app.js?v=493"></script>
+<script id="v748-route-iphone-used-only">
+(function(){
+  var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+  if(path!=='/dien-thoai' && path!=='/may-tinh-bang') return;
+
+  function isIphoneCard(el){
+    if(!el || el.nodeType!==1) return false;
+    var nameEl=el.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
+    var txt=((nameEl&&nameEl.textContent)||el.textContent||'').replace(/\s+/g,' ').trim();
+    return /\biphone\b/i.test(txt);
+  }
+
+  function stripIphones(){
+    var grids=document.querySelectorAll('#productGrid,.product-grid,.products-grid');
+    grids.forEach(function(grid){
+      Array.from(grid.children).forEach(function(card){
+        if(isIphoneCard(card)) card.remove();
+      });
+    });
+  }
+
+  // Xóa ngay sau mỗi lần renderer chính cập nhật danh sách để iPhone không thể
+  // xuất hiện lại trong Điện thoại/Máy tính bảng do load lại, lọc, sort hoặc cache.
+  function observe(){
+    stripIphones();
+    document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(function(grid){
+      if(grid.dataset.v748IphoneGuard==='1') return;
+      grid.dataset.v748IphoneGuard='1';
+      new MutationObserver(function(){ stripIphones(); }).observe(grid,{childList:true,subtree:false});
+    });
+  }
+
+  new MutationObserver(function(){ observe(); }).observe(document.documentElement,{childList:true,subtree:true});
+  observe();
+  [0,100,250,500,1000,2000,4000,8000].forEach(function(ms){setTimeout(observe,ms)});
+})();
+</script>
+
 <script id="v608-iphone-used-merge-public-fix">
 (function(){
   var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
