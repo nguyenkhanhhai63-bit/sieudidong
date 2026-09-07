@@ -1697,61 +1697,55 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 })();
 </script>
 
-<script id="v751-iphone-used-from-kiotviet">
+<script id="v754-iphone-kiotviet-persistent-used-sync">
 (function(){
   var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
   if(path!=='/may-cu') return;
-
   function text(el){return String((el&&el.textContent)||'').replace(/\s+/g,' ').trim()}
-  function isIphone(el){return /\biphone\b/i.test(text(el))}
-  function key(el){
-    var n=el&&el.querySelector&&el.querySelector('h1,h2,h3,h4,.product-name,.name,.title,[class*="name"]');
-    return text(n||el).toLowerCase();
-  }
-  function realCards(g){
-    if(!g)return [];
-    return Array.from(g.children).filter(function(el){
-      if(!el||el.nodeType!==1||el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty'))return false;
-      var t=text(el); return t && !/^(Đang tải|Hiện chưa có sản phẩm|Chưa có sản phẩm|Không có sản phẩm|Chưa tải được)/i.test(t);
+  function isIphone(el){return /iphone/i.test(text(el))}
+  function key(el){var n=el&&el.querySelector&&el.querySelector('h1,h2,h3,h4,.product-name,.name,.title,[class*="name"]');return text(n||el).toLowerCase()}
+  function sourceCards(doc){
+    if(!doc)return [];
+    var grid=doc.querySelector('#productGrid,.product-grid,.products-grid');
+    if(!grid)return [];
+    var direct=Array.from(grid.children||[]);
+    var nested=Array.from(grid.querySelectorAll('.product-card,.card,[data-product-id],[data-id],article'));
+    var all=direct.concat(nested), seen=new Set(), out=[];
+    all.forEach(function(el){
+      if(!el||el.nodeType!==1||el.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty'))return;
+      if(!isIphone(el))return;
+      var k=key(el); if(!k||seen.has(k))return; seen.add(k); out.push(el);
     });
+    return out;
   }
-  function append(cards){
-    var grid=document.getElementById('productGrid'); if(!grid)return 0;
-    var existing=new Set(Array.from(grid.children).map(key));
-    var count=0;
-    cards.forEach(function(card){
-      if(!isIphone(card))return;
-      var k=key(card); if(!k||existing.has(k))return;
-      var c=card.cloneNode(true);
-      c.setAttribute('data-sdd-iphone-kiotviet','1');
-      grid.appendChild(c); existing.add(k); count++;
-    });
-    return count;
-  }
-
-  var f=document.createElement('iframe');
-  f.setAttribute('aria-hidden','true');
-  f.style.cssText='position:fixed!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;left:-9999px!important;top:-9999px!important;border:0!important';
-  f.src='/dien-thoai?_sdd_used_source=1&_ts='+Date.now();
-  document.body.appendChild(f);
-  var start=Date.now(), last='', stable=0;
-  function check(){
-    if(!f.isConnected)return;
+  var templates=new Map(), syncing=false;
+  function capture(doc){sourceCards(doc).forEach(function(c){var k=key(c);if(k&&!templates.has(k))templates.set(k,c.cloneNode(true))}); syncToUsed()}
+  function syncToUsed(){
+    if(syncing)return; syncing=true;
     try{
-      var d=f.contentDocument, g=d&&d.querySelector('#productGrid,.product-grid,.products-grid');
-      var cards=realCards(g), iph=cards.filter(isIphone);
-      var sig=iph.map(key).join('||');
-      if(sig && sig!==last){last=sig;stable=Date.now()}
-      if(iph.length && stable && Date.now()-stable>1200){
-        append(iph);
-        try{document.dispatchEvent(new CustomEvent('sdd-kiotviet-iphone-used-ready',{detail:{count:iph.length}}))}catch(e){}
-        f.remove(); return;
-      }
-    }catch(e){}
-    if(Date.now()-start<30000)setTimeout(check,250); else f.remove();
+      var grid=document.querySelector('#productGrid,.product-grid,.products-grid'); if(!grid)return;
+      var existing=new Set();
+      Array.from(grid.children).forEach(function(c){var k=key(c);if(k)existing.add(k)});
+      templates.forEach(function(t,k){
+        if(existing.has(k))return;
+        var c=t.cloneNode(true); c.setAttribute('data-sdd-iphone-kiotviet','1'); grid.appendChild(c); existing.add(k);
+      });
+    } finally {syncing=false}
   }
-  f.addEventListener('load',function(){setTimeout(check,400)});
-  setTimeout(check,800);
+  function bootSource(){
+    var old=document.getElementById('v754KiotIphoneSource'); if(old)old.remove();
+    var f=document.createElement('iframe'); f.id='v754KiotIphoneSource'; f.setAttribute('aria-hidden','true');
+    f.style.cssText='position:fixed!important;left:-10000px!important;top:-10000px!important;width:1280px!important;height:1000px!important;opacity:0!important;pointer-events:none!important;border:0!important';
+    f.src='/dien-thoai?_sdd_used_source=1&_kiot_iphone_source=1&_ts='+Date.now(); document.body.appendChild(f);
+    function scan(){try{capture(f.contentDocument)}catch(e){}}
+    f.addEventListener('load',function(){scan();setTimeout(scan,400);setTimeout(scan,1200);setTimeout(scan,2500);setTimeout(scan,5000)});
+    var n=0, timer=setInterval(function(){scan(); if(++n>60)clearInterval(timer)},500);
+  }
+  var mo=new MutationObserver(function(){syncToUsed()});
+  mo.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',bootSource); if(document.readyState!=='loading')bootSource();
+  window.addEventListener('pageshow',function(){syncToUsed(); if(!templates.size)bootSource()});
+  [800,1600,3000,6000,10000,15000,25000].forEach(function(ms){setTimeout(function(){syncToUsed();if(!templates.size&&ms===6000)bootSource()},ms)});
 })();
 </script>
 
