@@ -2916,7 +2916,130 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-tinh-bang"]){order:20}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/phu-kien"]){order:30}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-cu"]){order:40}
-</style>\n</body>
+</style>\n
+<!-- v755: home Máy cũ cards use the same compact geometry as the other home categories -->
+<style id="v755-home-used-card-match-normal">
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"]{
+  align-items:stretch!important;
+  grid-auto-rows:auto!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card{
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:12px!important;
+  border:1px solid #e6eaf0!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  overflow:hidden!important;
+  box-shadow:0 4px 16px rgba(16,24,40,.035)!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card .v615-used-img-wrap,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card .sdd-iphone-placeholder,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap{
+  width:100%!important;
+  height:230px!important;
+  min-height:230px!important;
+  max-height:230px!important;
+  margin:0 0 12px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:#f7f8fa!important;
+  overflow:hidden!important;
+  display:grid!important;
+  place-items:center!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card .v615-used-img-wrap img,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card .sdd-iphone-real-img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-name,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-used-public-card h3{
+  margin:0 0 8px!important;
+  min-height:42px!important;
+  max-height:none!important;
+  color:#101828!important;
+  font-size:15px!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-tags,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-tags,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-meta,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-extra,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-source{display:none!important}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-price,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-price{
+  margin:4px 0 9px!important;
+  padding-bottom:9px!important;
+  border-bottom:1px solid #edf0f3!important;
+  color:#e11900!important;
+  font-size:19px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-stock,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-stock{
+  display:inline-flex!important;
+  align-self:flex-start!important;
+  margin:0 0 10px!important;
+  padding:6px 9px!important;
+  border-radius:999px!important;
+  background:#ecfdf3!important;
+  color:#067647!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-stock.v615-out{background:#f2f4f7!important;color:#667085!important}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions{
+  width:100%!important;
+  margin-top:auto!important;
+  padding-top:0!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions > *,
+body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-detail-btn{
+  width:100%!important;
+  min-width:0!important;
+  height:36px!important;
+  margin:0!important;
+  padding:0 8px!important;
+  border-radius:9px!important;
+  box-sizing:border-box!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+@media(max-width:700px){
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card{padding:10px!important;border-radius:15px!important}
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .v615-used-card .v615-used-img-wrap,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card .sdd-iphone-placeholder,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] > .sdd-iphone-used-public-card .sdd-iphone-no-image-wrap{
+    height:190px!important;min-height:190px!important;max-height:190px!important;margin-bottom:10px!important
+  }
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-name,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-used-public-card h3{font-size:14px!important;min-height:39px!important}
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-price,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-price{font-size:18px!important}
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .v615-used-actions > *,
+  body.sdd-home-all-mode .sdd-all-grid[data-home-cat="/may-cu"] .sdd-iphone-detail-btn{height:34px!important}
+}
+</style>
+</body>
 </html>
 
 <!-- v613: desktop search fallback for home all-products mode -->
