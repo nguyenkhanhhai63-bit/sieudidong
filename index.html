@@ -593,11 +593,63 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
    // thì đưa iPhone xuống ngay, không chờ /may-cu chạy lại.
    appendStashedIphones();
  }
+ function iphoneBaseNameFromEl(el){
+   var n=el.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]');
+   var name=((n&&n.textContent)||el.textContent||'').replace(/\s+/g,' ').trim();
+   var m=name.match(/^(iphone\s+(?:se(?:\s*\d+)?|x(?:r|s|max)?|\d+)(?:\s+(?:pro\s*max|pro|max|plus|mini))?)/i);
+   if(m)return m[1].replace(/^iphone/i,'iPhone');
+   return (name.split(/\s+-\s+/)[0]||name).replace(/^iphone/i,'iPhone').trim();
+ }
+ function groupIphonesIntoUsed(used){
+   if(!used)return;
+   var all=Array.from(used.children).filter(function(el){return /\biphone\b/i.test(el.textContent||'');});
+   var groups=new Map();
+   all.forEach(function(el){
+     var base=iphoneBaseNameFromEl(el), key=base.toLowerCase();
+     if(!groups.has(key))groups.set(key,[]);
+     groups.get(key).push(el);
+   });
+   groups.forEach(function(list,key){
+     if(!list.length)return;
+     var primary=list[0];
+     var variants=list.map(function(x){
+       var n=x.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]');
+       return ((n&&n.textContent)||x.textContent||'').replace(/\s+/g,' ').trim();
+     });
+     var base=iphoneBaseNameFromEl(primary);
+     var nameEl=primary.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]');
+     if(nameEl)nameEl.textContent=base;
+     primary.setAttribute('data-sdd-iphone-group-primary','1');
+     primary.setAttribute('data-sdd-iphone-variant-count',String(list.length));
+     try{primary.setAttribute('data-sdd-iphone-variants',JSON.stringify(variants));}catch(e){}
+     list.slice(1).forEach(function(x){x.remove();});
+   });
+ }
  function appendStashedIphones(){
    var used=document.querySelector('[data-home-cat="/may-cu"]');
    if(!used)return;
-   var existing=new Set(Array.from(used.children).map(iphoneKey));
-   homeIphoneStash.forEach(function(el){var k=iphoneKey(el);if(k&&!existing.has(k)){used.appendChild(el.cloneNode(true));existing.add(k);}});
+   // Xóa toàn bộ iPhone thô đã được iframe /may-cu chèn để tránh mỗi màu/dung lượng thành 1 card.
+   Array.from(used.children).forEach(function(el){if(/\biphone\b/i.test(el.textContent||''))el.remove();});
+   // Gom iPhone KiotViet từ /dien-thoai theo model rồi chỉ chèn 1 card/model.
+   var groups=new Map();
+   homeIphoneStash.forEach(function(el){
+     var base=iphoneBaseNameFromEl(el), key=base.toLowerCase();
+     if(!groups.has(key))groups.set(key,[]);
+     groups.get(key).push(el);
+   });
+   groups.forEach(function(list){
+     if(!list.length)return;
+     var primary=list[0].cloneNode(true);
+     var base=iphoneBaseNameFromEl(primary);
+     var nameEl=primary.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]');
+     if(nameEl)nameEl.textContent=base;
+     var variants=list.map(function(x){var n=x.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]');return ((n&&n.textContent)||x.textContent||'').replace(/\s+/g,' ').trim();});
+     primary.setAttribute('data-sdd-iphone-group-primary','1');
+     primary.setAttribute('data-sdd-iphone-variant-count',String(list.length));
+     try{primary.setAttribute('data-sdd-iphone-variants',JSON.stringify(variants));}catch(e){}
+     used.appendChild(primary);
+   });
+   groupIphonesIntoUsed(used);
  }
 
  function pickGrid(doc,path){
@@ -3184,6 +3236,45 @@ body.sdd-home-all-mode .sdd-iphone-version-count{display:none!important}
   document.addEventListener('sdd-home-grid-ready',schedule);
   window.addEventListener('pageshow',schedule);
   [200,500,900,1500,2500,4000,7000,12000].forEach(function(ms){setTimeout(run,ms)});
+})();
+</script>
+
+<!-- v761: hard group iPhone KiotViet into one card per model in Máy cũ -->
+<script id="v761-hard-group-iphone-used">
+(function(){
+  function norm(s){return String(s||'').replace(/\s+/g,' ').trim()}
+  function nameEl(c){return c&&c.querySelector('h1,h2,h3,h4,.product-name,.v615-used-name,.name,.title,[class*="name"]')}
+  function cardName(c){return norm((nameEl(c)||c).textContent)}
+  function base(name){
+    var m=norm(name).match(/^(iphone\s+(?:se(?:\s*\d+)?|x(?:r|s|max)?|\d+)(?:\s+(?:pro\s*max|pro|max|plus|mini))?)/i);
+    return m?m[1].replace(/^iphone/i,'iPhone'):(norm(name).split(/\s+-\s+/)[0]||norm(name)).replace(/^iphone/i,'iPhone').trim();
+  }
+  function enforceGrid(grid){
+    if(!grid)return;
+    var cards=Array.from(grid.children).filter(function(c){return c.nodeType===1&&/\biphone\b/i.test(cardName(c));});
+    var groups=new Map();
+    cards.forEach(function(c){var b=base(cardName(c)),k=b.toLowerCase();if(!groups.has(k))groups.set(k,[]);groups.get(k).push(c)});
+    groups.forEach(function(list){
+      if(!list.length)return;
+      var p=list[0], b=base(cardName(p)), n=nameEl(p);
+      var variants=list.map(cardName);
+      if(n)n.textContent=b;
+      p.setAttribute('data-sdd-iphone-group-primary','1');
+      p.setAttribute('data-sdd-iphone-variant-count',String(list.length));
+      try{p.setAttribute('data-sdd-iphone-variants',JSON.stringify(variants));}catch(e){}
+      list.slice(1).forEach(function(c){c.remove()});
+    });
+  }
+  function run(){
+    var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+    if(path==='/'||path==='/index.html')enforceGrid(document.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]'));
+    if(path==='/may-cu')enforceGrid(document.querySelector('#productGrid,.product-grid,.products-grid'));
+  }
+  var t=0;function schedule(){clearTimeout(t);t=setTimeout(run,40)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('sdd-home-grid-ready',schedule);
+  [250,600,1200,2500,5000,9000,15000].forEach(function(ms){setTimeout(run,ms)});
 })();
 </script>
 </body>
