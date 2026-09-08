@@ -1047,7 +1047,17 @@ function groupItems(items){
     group.items.push(item);
   });
 
-  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  const groups=[...map.values()];
+  // V781: ảnh card/chi tiết iPhone lấy trực tiếp từ đúng biến thể KiotViet đang được chọn làm mặc định.
+  // Không dùng ảnh tĩnh/ảnh của biến thể đầu tiên trong nhóm nữa.
+  for(const group of groups){
+    if(group.sourceType==="kiot-iphone-used"){
+      const def=getDefaultVariantForGroup(group);
+      if(def?.image) group.image=def.image;
+      if(Array.isArray(def?.images) && def.images.length) group.images=def.images;
+    }
+  }
+  return groups.sort((a,b)=>a.name.localeCompare(b.name,"vi"));
 }
 
 function imageHTML(group){
