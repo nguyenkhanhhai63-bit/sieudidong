@@ -16143,3 +16143,7 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 
 /* V773 iPhone KiotViet native attributes */
 .detail-quality-options{display:flex;flex-wrap:wrap;gap:10px}
+
+/* v788 - Apple brand logo: SVG instead of unsupported Apple font glyph */
+.sdd-brand-card[data-brand="Apple"] .sdd-brand-mark{font-size:0!important;line-height:1!important;}
+.sdd-brand-card[data-brand="Apple"] .sdd-apple-logo{display:block!important;width:28px!important;height:36px!important;fill:#111827!important;}
