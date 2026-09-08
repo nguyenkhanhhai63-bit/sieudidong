@@ -636,7 +636,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      round++;
      startedAt=Date.now();
      lastSig=''; stableSince=0; checks=0;
-     host.innerHTML='<div class="loading">Đang tải sản phẩm...</div>';
+     host.innerHTML='<div class="loading">'+(path==='/phu-kien'?'Đang tải phụ kiện...':'Đang tải sản phẩm...')+'</div>';
      f.src=srcFor(path,round);
    }
 
@@ -679,6 +679,19 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      }catch(e){}
 
      var now=Date.now();
+     // v789: route Phụ kiện đã tải xong nhưng không có dữ liệu thì kết thúc ngay,
+     // không để trang chủ treo mãi ở trạng thái "Đang tải sản phẩm...".
+     if(path==='/phu-kien' && g && !cards.length && (now-startedAt)>=MIN_WAIT){
+       var emptyEl=g.querySelector('.acc-public-empty,.empty');
+       var emptyText=((emptyEl&&emptyEl.textContent)||'').replace(/\s+/g,' ').trim();
+       if(/^(Hiện chưa có phụ kiện|Không có phụ kiện|Chưa có phụ kiện)/i.test(emptyText)){
+         done=true;
+         host.innerHTML='<div class="loading">Hiện không có phụ kiện</div>';
+         document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
+         f.remove();
+         return;
+       }
+     }
      if(cards.length){
        var sig=signature(cards);
        if(sig!==lastSig){
@@ -700,7 +713,9 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      }
      if(round<MAX_ROUNDS){ reloadFrame(); setTimeout(check,700); return; }
      done=true;
-     host.innerHTML='<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Bấm để tải lại</a></div>';
+     host.innerHTML=path==='/phu-kien'
+       ? '<div class="loading">Hiện không có phụ kiện</div>'
+       : '<div class="loading">Chưa tải được danh mục này. <a href="'+path+'">Bấm để tải lại</a></div>';
      f.remove();
    }
 
