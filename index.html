@@ -4549,3 +4549,135 @@ body.v615-used-page #productGrid > .v615-used-card > .v615-used-actions > *{
   }
 }
 </style>
+
+<!-- v772: persistent iPhone KiotViet model grouping. Absorbs every re-rendered variant into one card. -->
+<style id="v772-iphone-persistent-model-group-css">
+body.v615-used-page #productGrid > [data-v772-iphone-model-card="1"] .sdd-iphone-native-variants{display:none!important}
+body.v615-used-page #productGrid > [data-v772-iphone-model-card="1"] .v772-iphone-multi{
+  margin:0 0 7px;color:#667085;font-size:11px;font-weight:600;line-height:1.3
+}
+@media(max-width:700px){body.v615-used-page #productGrid > [data-v772-iphone-model-card="1"] .v772-iphone-multi{font-size:10px}}
+</style>
+<script id="v772-iphone-persistent-model-group-js">
+(function(){
+  if(window.__SDD_V772_IPHONE_GROUP__) return;
+  window.__SDD_V772_IPHONE_GROUP__=1;
+
+  var CACHE=new Map(); // modelKey -> Map(rawTitle -> variant)
+  var busy=false, timer=0;
+  function txt(v){return String(v||'').replace(/\s+/g,' ').trim()}
+  function titleNode(card){return card&&card.querySelector('h1,h2,h3,h4,.v615-used-name,.product-name,.name,.title,[class*="product-name"],[data-name]')}
+  function fullTitle(card){var n=titleNode(card);return txt((n&&n.textContent)||card&&card.getAttribute&&card.getAttribute('data-name')||'')}
+  function modelFromName(name){
+    var m=txt(name).match(/\biphone\s*(?:se\s*\d*|\d{1,2})(?:\s*(?:pro\s*max|pro|max|plus|mini|air|e))?/i);
+    return m?txt(m[0]).replace(/^iphone/i,'iPhone'):'';
+  }
+  function isVariantTitle(raw,model){
+    raw=txt(raw);model=txt(model);if(!raw||!model)return false;
+    return raw.toLowerCase()!==model.toLowerCase();
+  }
+  function parse(card){
+    var raw=fullTitle(card),model=modelFromName(raw);if(!model)return null;
+    // A grouped model card itself is not a new KiotViet variant.
+    if(card.getAttribute('data-v772-iphone-model-card')==='1' && !isVariantTitle(raw,model)) return null;
+    if(!isVariantTitle(raw,model)) return null;
+    var rest=txt(raw.replace(new RegExp(model.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'),'')).replace(/^[-–—|]+|[-–—|]+$/g,'').trim();
+    var parts=rest.split(/\s*[-–—|]\s*/).map(txt).filter(Boolean);
+    var storage='',color='',condition='',battery='';
+    parts.forEach(function(x){
+      if(!storage&&/^\d{2,4}(?:\s*(?:gb|tb))?$/i.test(x)){storage=x.replace(/\s*(?:gb|tb)$/i,'').trim();return}
+      if(!condition&&/^\d{2,3}%$/.test(x)){condition=x;return}
+      if(!battery&&/^pin\s*.+/i.test(x)){battery=x.replace(/^pin\s*/i,'Pin ');return}
+      if(!color)color=x;
+    });
+    var all=txt(card.textContent);
+    if(!storage){var sm=all.match(/\b(64|128|256|512|1024)\s*(?:GB|G|TB)?\b/i);if(sm)storage=sm[1]}
+    if(!condition){var cm=all.match(/\b(\d{2,3}%)\b/);if(cm)condition=cm[1]}
+    if(!battery){var bm=all.match(/\bPin\s*([0-9xX]{1,4}%?)\b/i);if(bm)battery='Pin '+bm[1].toUpperCase()}
+    return {card:card.cloneNode(true),raw:raw,model:model,color:color,storage:storage,condition:condition,battery:battery,quality:[condition,battery].filter(Boolean).join(' - ')};
+  }
+  function remember(v){
+    if(!v||!v.model||!v.raw)return;
+    var mk=v.model.toLowerCase();if(!CACHE.has(mk))CACHE.set(mk,new Map());
+    var map=CACHE.get(mk),rk=v.raw.toLowerCase();
+    // Always refresh clone so latest KiotViet price / stock / image wins.
+    map.set(rk,v);
+  }
+  function priceNum(card){
+    var nodes=[].slice.call(card.querySelectorAll('.price,[class*="price"],strong,b'));
+    var n=nodes.find(function(x){return /\d[\d.]*\s*đ/i.test(txt(x.textContent))});
+    var m=n&&txt(n.textContent).match(/[0-9.]+/);return m?parseInt(m[0].replace(/\./g,''),10)||0:0;
+  }
+  function priceNode(card){
+    var nodes=[].slice.call(card.querySelectorAll('.price,[class*="price"],strong,b'));
+    return nodes.find(function(x){return /\d[\d.]*\s*đ/i.test(txt(x.textContent))})||null;
+  }
+  function stockNode(card){
+    var nodes=[].slice.call(card.querySelectorAll('[class*="stock"],[class*="status"],span,div'));
+    return nodes.find(function(x){return /(?:còn|hết)\s*hàng/i.test(txt(x.textContent))})||null;
+  }
+  function imageNode(card){return card.querySelector('img')}
+  function actionBy(card,re){return [].slice.call(card.querySelectorAll('a,button,[role="button"]')).find(function(x){return re.test(txt(x.textContent)+' '+txt(x.getAttribute('aria-label')))})||null}
+  function copyAttrs(dst,src){if(!dst||!src)return;[].slice.call(dst.attributes).forEach(function(a){if(a.name!=='class'&&a.name!=='style')dst.removeAttribute(a.name)});[].slice.call(src.attributes).forEach(function(a){if(a.name!=='class'&&a.name!=='style')dst.setAttribute(a.name,a.value)})}
+  function applyVariantVisual(card,v){
+    var pn=priceNode(card),sp=priceNode(v.card);if(pn&&sp)pn.textContent=sp.textContent;
+    var sn=stockNode(card),ss=stockNode(v.card);if(sn&&ss){sn.textContent=ss.textContent;sn.className=ss.className}
+    var im=imageNode(card),si=imageNode(v.card);if(im&&si){['src','srcset','sizes','alt','loading'].forEach(function(a){var val=si.getAttribute(a);if(val!=null)im.setAttribute(a,val);else im.removeAttribute(a)})}
+    copyAttrs(actionBy(card,/chi\s*tiết/i),actionBy(v.card,/chi\s*tiết/i));
+    copyAttrs(actionBy(card,/so\s*sánh/i),actionBy(v.card,/so\s*sánh/i));
+    card.setAttribute('data-sdd-iphone-current-variant',v.raw);
+  }
+  function grids(){
+    var out=[];
+    var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+    if(path==='/may-cu') document.querySelectorAll('#productGrid,.product-grid,.products-grid').forEach(function(g){out.push(g)});
+    if(path==='/'||path==='/index.html'){
+      var g=document.querySelector('.sdd-all-grid[data-home-cat="/may-cu"]');if(g)out.push(g);
+    }
+    return out.filter(function(g,i,a){return a.indexOf(g)===i});
+  }
+  function directCards(grid){return [].slice.call(grid.children).filter(function(c){return c&&c.nodeType===1&&!c.matches('.loading,.empty,.acc-public-empty,.sdd-price-empty')})}
+  function reconcileGrid(grid){
+    var cards=directCards(grid),iph=cards.filter(function(c){return /\biphone\b/i.test(fullTitle(c)||txt(c.textContent))});
+    if(!iph.length)return;
+
+    // First absorb every raw KiotViet variant currently present.
+    iph.forEach(function(c){var v=parse(c);if(v)remember(v)});
+
+    var models=new Set();
+    iph.forEach(function(c){var m=modelFromName(fullTitle(c));if(m)models.add(m.toLowerCase())});
+    models.forEach(function(mk){
+      var map=CACHE.get(mk);if(!map||!map.size)return;
+      var vars=[].slice.call(map.values());
+      // Prefer lowest-price available variant for the public card preview.
+      vars.sort(function(a,b){var ap=priceNum(a.card)||Number.MAX_SAFE_INTEGER,bp=priceNum(b.card)||Number.MAX_SAFE_INTEGER;return ap-bp});
+      var model=vars[0].model;
+      var same=directCards(grid).filter(function(c){var m=modelFromName(fullTitle(c));return m&&m.toLowerCase()===mk});
+      var keep=same.find(function(c){return c.getAttribute('data-v772-iphone-model-card')==='1'}) || same[0];
+      if(!keep){keep=vars[0].card.cloneNode(true);grid.appendChild(keep)}
+
+      // Remove every sibling variant card. v754 may add them back later; observer absorbs again.
+      same.forEach(function(c){if(c!==keep&&c.parentNode===grid)c.remove()});
+      var n=titleNode(keep);if(n)n.textContent=model;
+      keep.setAttribute('data-v772-iphone-model-card','1');
+      keep.setAttribute('data-sdd-iphone-grouped-native','1');
+      keep.setAttribute('data-sdd-kiot-variant-count',String(vars.length));
+      keep.__sddIphoneVariants=vars;
+      // Remove old list-page dropdowns. Variants are selected inside the detail panel.
+      keep.querySelectorAll('.sdd-iphone-native-variants,.v772-iphone-multi').forEach(function(x){x.remove()});
+      var p=priceNode(keep);if(p&&vars.length>1){
+        var note=document.createElement('div');note.className='v772-iphone-multi';note.textContent='Nhiều phiên bản';
+        p.parentNode.insertBefore(note,p);
+      }
+      applyVariantVisual(keep,vars[0]);
+    });
+  }
+  function run(){if(busy)return;busy=true;try{grids().forEach(reconcileGrid)}finally{busy=false}}
+  function schedule(){clearTimeout(timer);timer=setTimeout(run,25)}
+  new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('sdd-home-grid-ready',schedule);
+  document.addEventListener('DOMContentLoaded',schedule);
+  window.addEventListener('pageshow',schedule);
+  run();[100,300,700,1200,2200,4000,7000,11000,16000,24000].forEach(function(ms){setTimeout(run,ms)});
+})();
+</script>
