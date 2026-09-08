@@ -2982,6 +2982,45 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 /* V773: disabled - native app.js now groups KiotViet iPhone variants correctly. */
 </script>
 
+
+<!-- v777: iPhone card media visual size matched to Android cards -->
+<style id="v777-iphone-image-visual-match-android">
+/* Khung ngoài giữ nguyên 100% geometry Android; chỉ thu ảnh thật vào trong để không bị phóng sát mép. */
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap{
+  background:#f5f6f8!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+}
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap img{
+  width:auto!important;
+  height:auto!important;
+  max-width:88%!important;
+  max-height:88%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  display:block!important;
+  background:#fff!important;
+  transform:none!important;
+}
+@media (max-width:700px){
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap{
+    padding:10px!important;
+  }
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img,
+  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap img{
+    max-width:84%!important;
+    max-height:84%!important;
+  }
+}
+</style>
+
 </body>
 </html>
 
