@@ -2309,32 +2309,38 @@ if(!inlineProductDetail) return;
     })[0] || null;
   }
 
+  // v775: Trạng thái của từng thuộc tính phải dựa trên tồn kho THỰC của chính thuộc tính đó,
+  // không được làm mờ chỉ vì tổ hợp đang chọn không tồn tại. Ví dụ đang chọn Trắng + Pin 7X
+  // thì Pin 8X vẫn phải bấm được nếu KiotViet còn Đen/Tím + Pin 8X; khi bấm sẽ tự chuyển
+  // sang biến thể còn hàng tương ứng.
+  function attrHasStock(type,value){
+    return variants.some(v=>Number(v.onHand||0)>0 && v[type]===value);
+  }
+
+  function bestVariant(list){
+    return [...list].sort((a,b)=>{
+      const stockDiff=(Number(b.onHand||0)>0)-(Number(a.onHand||0)>0);
+      if(stockDiff!==0) return stockDiff;
+      return Number(a.price||0)-Number(b.price||0);
+    })[0] || null;
+  }
+
+  function applyVariant(v){
+    if(!v) return;
+    selectedColor=v.color || "";
+    selectedMemory=v.memory || "";
+    selectedQuality=v.quality || "";
+  }
+
   function updateAvailability(){
     colorButtons.forEach((btn,color)=>{
-      const exists=variants.some(v=>{
-        const mOk=!selectedMemory || v.memory===selectedMemory;
-        const qOk=!selectedQuality || v.quality===selectedQuality;
-        return mOk && qOk && v.color===color;
-      });
-      btn.classList.toggle("disabled",!exists);
+      btn.classList.toggle("disabled",!attrHasStock("color",color));
     });
-
     memoryButtons.forEach((btn,mem)=>{
-      const exists=variants.some(v=>{
-        const cOk=!selectedColor || v.color===selectedColor;
-        const qOk=!selectedQuality || v.quality===selectedQuality;
-        return cOk && qOk && v.memory===mem;
-      });
-      btn.classList.toggle("disabled",!exists);
+      btn.classList.toggle("disabled",!attrHasStock("memory",mem));
     });
-
     qualityButtons.forEach((btn,q)=>{
-      const exists=variants.some(v=>{
-        const cOk=!selectedColor || v.color===selectedColor;
-        const mOk=!selectedMemory || v.memory===selectedMemory;
-        return cOk && mOk && v.quality===q;
-      });
-      btn.classList.toggle("disabled",!exists);
+      btn.classList.toggle("disabled",!attrHasStock("quality",q));
     });
   }
   function updateUI(){
@@ -2406,16 +2412,9 @@ if(!inlineProductDetail) return;
 
     btn.addEventListener("click",()=>{
       if(btn.classList.contains("disabled")) return;
-
-      selectedColor=color;
-      const compatible=variants.filter(v=>v.color===selectedColor);
-
-      if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
-        selectedMemory=compatible.find(v=>v.memory)?.memory || "";
-      }
-      if(selectedQuality && !compatible.some(v=>v.quality===selectedQuality)){
-        selectedQuality=compatible.find(v=>v.quality)?.quality || "";
-      }
+      const compatible=variants.filter(v=>v.color===color && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
       updateUI();
     });
 
@@ -2435,16 +2434,9 @@ if(!inlineProductDetail) return;
 
     btn.addEventListener("click",()=>{
       if(btn.classList.contains("disabled")) return;
-
-      selectedMemory=mem;
-      const compatible=variants.filter(v=>v.memory===selectedMemory);
-
-      if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
-        selectedColor=compatible.find(v=>v.color)?.color || "";
-      }
-      if(selectedQuality && !compatible.some(v=>v.quality===selectedQuality)){
-        selectedQuality=compatible.find(v=>v.quality)?.quality || "";
-      }
+      const compatible=variants.filter(v=>v.memory===mem && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedQuality||v.quality===selectedQuality));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
       updateUI();
     });
 
@@ -2459,14 +2451,9 @@ if(!inlineProductDetail) return;
     btn.textContent=q;
     btn.addEventListener("click",()=>{
       if(btn.classList.contains("disabled")) return;
-      selectedQuality=q;
-      const compatible=variants.filter(v=>v.quality===selectedQuality);
-      if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
-        selectedColor=compatible.find(v=>v.color)?.color || "";
-      }
-      if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
-        selectedMemory=compatible.find(v=>v.memory)?.memory || "";
-      }
+      const compatible=variants.filter(v=>v.quality===q && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
       updateUI();
     });
     qualityButtons.set(q,btn);
