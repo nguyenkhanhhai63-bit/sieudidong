@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-specs.html
+Disallow: /api/admin/
+
+Sitemap: https://sieudidong.vn/sitemap.xml
