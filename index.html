@@ -3242,6 +3242,9 @@ body.v768-iphone-detail-view #productGrid>.sdd-iphone-used-public-card.v768-acti
     }
     render();return true;
   }
+  // v770: expose detail opener so a window-capture guard can run before older document listeners.
+  window.__sddOpenIphoneGroupedDetail=openDetail;
+  window.__sddCloseIphoneGroupedDetail=closeDetail;
   document.addEventListener('click',function(e){
     if(!e.target||!e.target.closest)return;
     var card=e.target.closest('.sdd-iphone-used-public-card,.v639-iphone-used-card,.v615-used-card');
@@ -3258,6 +3261,65 @@ body.v768-iphone-detail-view #productGrid>.sdd-iphone-used-public-card.v768-acti
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.body.classList.contains('v768-iphone-detail-view'))closeDetail()});
 })();
 </script>
+
+
+<!-- v770: hard-fix iPhone detail click. Window capture runs before all old document capture handlers. -->
+<style id="v770-iphone-detail-click-hard-css">
+body.v615-used-page #productGrid > *:has(.v615-used-name),
+body.v615-used-page #productGrid > .v615-used-card,
+body.v615-used-page #productGrid > .sdd-iphone-used-public-card{cursor:pointer!important}
+</style>
+<script id="v770-iphone-detail-click-hard-js">
+(function(){
+  function txt(v){return String(v||'').replace(/\s+/g,' ').trim()}
+  function isIphone(card){
+    if(!card) return false;
+    var n=card.querySelector && card.querySelector('h1,h2,h3,h4,.v615-used-name,.product-name,.name,.title,[class*="product-name"],[data-name]');
+    var t=txt((n&&n.textContent)||'')+' '+txt(card.getAttribute&&card.getAttribute('data-name'))+' '+txt(card.textContent);
+    return /iphone/i.test(t);
+  }
+  function findCard(target){
+    if(!target || !target.closest) return null;
+    var grid=target.closest('#productGrid,.product-grid,.products-grid,.sdd-all-grid');
+    if(!grid) return null;
+    var n=target;
+    while(n && n!==grid){
+      if(n.parentElement===grid) return n;
+      n=n.parentElement;
+    }
+    return null;
+  }
+  function blocked(target){
+    if(!target || !target.closest) return false;
+    if(target.closest('select,option,input,textarea,label,.sdd-iphone-native-variants')) return true;
+    var ctl=target.closest('button,a,[role="button"]');
+    if(!ctl) return false;
+    var t=txt(ctl.textContent)+' '+txt(ctl.getAttribute('aria-label'));
+    return /so\s*sánh/i.test(t) && !/chi\s*tiết/i.test(t);
+  }
+  function shouldOpen(target){
+    if(!target || !target.closest) return false;
+    var ctl=target.closest('button,a,[role="button"]');
+    if(!ctl) return true; // clicking anywhere on card
+    var t=txt(ctl.textContent)+' '+txt(ctl.getAttribute('aria-label'));
+    return /chi\s*tiết/i.test(t);
+  }
+  window.addEventListener('click',function(e){
+    var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+    if(path!=='/may-cu' && path!=='/' && path!=='/index.html') return;
+    var card=findCard(e.target);
+    if(!card || !isIphone(card) || blocked(e.target) || !shouldOpen(e.target)) return;
+    var open=window.__sddOpenIphoneGroupedDetail;
+    if(typeof open!=='function') return;
+    // Stop old handlers before the event reaches document. This fixes the dead Chi tiết button.
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    try{ open(card); }catch(err){ console.error('v770 iPhone detail open failed',err); }
+  },true);
+})();
+</script>
+
 </body>
 </html>
 
