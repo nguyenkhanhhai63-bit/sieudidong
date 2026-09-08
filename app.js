@@ -1777,7 +1777,9 @@ function render(){
     const defaultVariant=getDefaultVariantForGroup(group);
 
     const card=document.createElement("article");
-    card.className="compact-product-card";
+    // v779: vẫn dùng CHÍNH card Android; chỉ gắn cờ để chuẩn hóa kích thước ảnh nguồn iPhone.
+    const isKiotIphone = group.items.some(x=>x.sourceType==="kiot-iphone-used" || /\biphone\b/i.test(String(x.baseName||x.fullName||"")));
+    card.className="compact-product-card" + (isKiotIphone ? " sdd-kiot-iphone-card" : "");
     card.tabIndex=0;
 
     const media=document.createElement("div");

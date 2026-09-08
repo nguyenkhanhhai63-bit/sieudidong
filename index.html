@@ -384,6 +384,20 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 /* map unsupported synthetic weights to common weights */
 [style*="font-weight:850"],[style*="font-weight:900"],[style*="font-weight:950"]{font-weight:700!important;}
 </style>
+
+<style id="v779-iphone-native-card-match-android">
+/* iPhone dùng đúng compact-product-card của Android. Chỉ chuẩn hóa ảnh nguồn iPhone vốn crop sát máy. */
+.compact-product-card.sdd-kiot-iphone-card .compact-product-media{
+  display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:#fff!important;
+}
+.compact-product-card.sdd-kiot-iphone-card .compact-product-media .product-image{
+  width:74%!important;height:74%!important;max-width:74%!important;max-height:74%!important;
+  object-fit:contain!important;object-position:center!important;padding:0!important;margin:auto!important;display:block!important;
+}
+@media(max-width:720px){
+ .compact-product-card.sdd-kiot-iphone-card .compact-product-media .product-image{width:72%!important;height:72%!important;max-width:72%!important;max-height:72%!important;}
+}
+</style>
 </head>
 <body>
 
@@ -1604,7 +1618,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 @media(max-width:700px){.sdd-iphone-used-public-card{padding:10px}.sdd-iphone-used-public-card .sdd-iphone-placeholder{height:175px}.sdd-iphone-used-public-card .sdd-iphone-phone{width:84px;height:138px}.sdd-iphone-used-public-card h3{font-size:14px}.sdd-iphone-used-public-card .sdd-iphone-price{font-size:18px}}
 </style>
 <section id="sddIphoneInsideUsed" hidden aria-hidden="true"></section>
-<script src="/app.js?v=776"></script>
+<script src="/app.js?v=779"></script>
 <script id="v749-iphone-hard-category-guard">
 (function(){
   function normText(el){
@@ -2983,43 +2997,6 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 </script>
 
 
-<!-- v778: iPhone card media visual size matched to Android cards -->
-<style id="v778-iphone-image-visual-match-android">
-/* Khung ngoài giữ nguyên 100% geometry Android; chỉ thu ảnh thật vào trong để không bị phóng sát mép. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap{
-  background:#f5f6f8!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow:hidden!important;
-  padding:12px!important;
-  box-sizing:border-box!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap img{
-  width:auto!important;
-  height:auto!important;
-  max-width:88%!important;
-  max-height:88%!important;
-  object-fit:contain!important;
-  object-position:center!important;
-  display:block!important;
-  background:#fff!important;
-  transform:none!important;
-}
-@media (max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap{
-    padding:10px!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap img{
-    max-width:84%!important;
-    max-height:84%!important;
-  }
-}
-</style>
 
 </body>
 </html>
@@ -4366,111 +4343,4 @@ body.v615-used-page #productGrid > [data-v772-iphone-model-card="1"] .v772-iphon
 })();
 </script>
 
-<!-- v776: iPhone Máy cũ dùng đúng khung ảnh Android, ảnh không bị crop/zoom -->
-<style id="v776-iphone-media-match-android-final">
-/* Chỉ chỉnh cách ảnh iPhone nằm trong media box. Toàn bộ kích thước card vẫn dùng .v615-used-card chung với Android. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-no-image-wrap.v615-used-img-wrap{
-  width:100%!important;
-  box-sizing:border-box!important;
-  background:#fff!important;
-  overflow:hidden!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  padding:0!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap img,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img{
-  width:100%!important;
-  height:100%!important;
-  max-width:100%!important;
-  max-height:100%!important;
-  object-fit:contain!important;
-  object-position:center!important;
-  display:block!important;
-  background:#fff!important;
-  transform:none!important;
-}
-/* Desktop: dùng đúng media box chung của Android */
-@media (min-width:1100px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
-    height:440px!important;
-    min-height:440px!important;
-    max-height:440px!important;
-    align-self:stretch!important;
-  }
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-no-image-wrap.v615-used-img-wrap{
-    height:255px!important;
-    min-height:255px!important;
-    max-height:255px!important;
-    flex:0 0 255px!important;
-    margin:0 0 11px!important;
-    border-radius:11px!important;
-  }
-}
-/* Tablet */
-@media (min-width:701px) and (max-width:1099px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-no-image-wrap.v615-used-img-wrap{
-    height:210px!important;
-    min-height:210px!important;
-    max-height:210px!important;
-  }
-}
-/* Mobile: giữ đúng chiều cao media hiện tại nhưng ảnh phải nằm trọn khung */
-@media (max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-no-image-wrap.v615-used-img-wrap{
-    height:190px!important;
-    min-height:190px!important;
-    max-height:190px!important;
-    margin:0 0 8px!important;
-  }
-}
-</style>
 
-<!-- v778: FINAL iPhone media scale visually identical to Android card -->
-<style id="v778-iphone-media-exact-android-visual">
-/* Không đổi layout/card. Chỉ thu PHẦN ẢNH THẬT iPhone vào giữa khung media như ảnh Android. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .sdd-iphone-placeholder.v615-used-img-wrap{
-  background:#fff!important;
-  padding:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow:hidden!important;
-}
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap > img,
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img{
-  width:72%!important;
-  height:72%!important;
-  max-width:72%!important;
-  max-height:72%!important;
-  object-fit:contain!important;
-  object-position:center!important;
-  padding:0!important;
-  margin:auto!important;
-  background:#fff!important;
-  transform:none!important;
-}
-/* Card iPhone dùng đúng viền/card như Android, không có viền cam riêng. */
-body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card{
-  border-color:#e4e7ec!important;
-}
-@media(max-width:700px){
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card > .v615-used-img-wrap > img,
-  body.v615-used-page #productGrid > .sdd-iphone-used-public-card.v615-used-card .sdd-iphone-real-img{
-    width:74%!important;
-    height:74%!important;
-    max-width:74%!important;
-    max-height:74%!important;
-  }
-}
-</style>
