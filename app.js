@@ -1,3 +1,4 @@
+/* V782: iPhone uses the exact same native compact-product-card renderer as Android; legacy clone layers disabled. */
 window.__SDD_IPHONE_NATIVE_V774__=true;
 let sddWarrantyPending=false;
 
