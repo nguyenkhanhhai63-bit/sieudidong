@@ -1,4 +1,4 @@
-/* V782: iPhone uses the exact same native compact-product-card renderer as Android; legacy clone layers disabled. */
+/* V784: Android + KiotViet iPhone use one native compact-product-card renderer; legacy iPhone DOM/CSS layers removed from index.html. */
 window.__SDD_IPHONE_NATIVE_V774__=true;
 let sddWarrantyPending=false;
 
