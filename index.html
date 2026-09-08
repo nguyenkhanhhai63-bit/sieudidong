@@ -3192,7 +3192,33 @@ body.v768-iphone-detail-view #productGrid>.sdd-iphone-used-public-card.v768-acti
   function stockOf(card){var nodes=[].slice.call(card.querySelectorAll('[class*="stock"],[class*="status"],span,div'));var n=nodes.find(function(x){return /(?:còn|hết)\s*hàng/i.test(text(x.textContent))});return n?text(n.textContent):'Còn hàng'}
   function imageOf(card){var i=card&&card.querySelector('img');return i?(i.currentSrc||i.src||i.getAttribute('src')||''):''}
   function variantRaw(v){return text(v&&v.raw)}
-  function variantsOf(card){var arr=card&&card.__sddIphoneVariants;if(Array.isArray(arr)&&arr.length)return arr;return []}
+  function parseVariantFallback(card){
+    if(!card)return null;
+    var tn=titleNode(card),raw=text((tn&&tn.textContent)||'');
+    if(!raw)raw=text(card.getAttribute('data-name')||'');
+    var model=modelFromName(raw);if(!model||!/iphone/i.test(model))return null;
+    var rest=text(raw.replace(new RegExp(model.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i'),'')).replace(/^[-–—|]+|[-–—|]+$/g,'').trim();
+    var parts=rest.split(/\s*[-–—|]\s*/).map(text).filter(Boolean);
+    var storage='',color='',condition='',battery='';
+    parts.forEach(function(x){
+      if(!storage&&/^\d+\s*(?:gb|tb)?$/i.test(x)){storage=x.replace(/\s+/g,'').toUpperCase().replace(/^(\d+)$/,'$1GB');return}
+      if(!condition&&/^\d{2,3}%$/.test(x)){condition=x;return}
+      if(!battery&&/^pin\s*.+/i.test(x)){battery=x.replace(/^pin\s*/i,'Pin ');return}
+      if(!color)color=x;
+    });
+    var all=text(card.textContent);
+    if(!storage){var sm=all.match(/\b(\d{2,4})\s*(GB|TB)\b/i);if(sm)storage=(sm[1]+sm[2]).toUpperCase()}
+    if(!condition){var cm=all.match(/\b(\d{2,3}%)\b/);if(cm)condition=cm[1]}
+    if(!battery){var bm=all.match(/\bPin\s*([0-9xX]{1,4}%?)\b/i);if(bm)battery='Pin '+bm[1].toUpperCase()}
+    return {card:card,raw:raw,model:model,color:color,storage:storage,condition:condition,battery:battery};
+  }
+  function variantsOf(card){
+    var arr=card&&card.__sddIphoneVariants;if(Array.isArray(arr)&&arr.length)return arr;
+    var base=parseVariantFallback(card);if(!base)return [];
+    var grid=card.parentElement,items=grid?[].slice.call(grid.children):[card],out=[];
+    items.forEach(function(c){var v=parseVariantFallback(c);if(v&&text(v.model).toLowerCase()===text(base.model).toLowerCase())out.push(v)});
+    return out.length?out:[base];
+  }
   function chosenIndex(card,vars){var raw=text(card&&card.getAttribute('data-sdd-iphone-current-variant'));var i=vars.findIndex(function(v){return variantRaw(v)===raw});return i>=0?i:0}
   function colorCss(name){var s=text(name).toLowerCase();if(/đen|black/.test(s))return '#242424';if(/trắng|white/.test(s))return '#f7f7f7';if(/xanh dương|blue/.test(s))return '#6f8fe8';if(/xanh lá|green/.test(s))return '#6fa58b';if(/tím|purple|violet/.test(s))return '#a78bca';if(/vàng|gold|yellow/.test(s))return '#e8cf8f';if(/hồng|pink/.test(s))return '#e8b7c8';if(/đỏ|red/.test(s))return '#c95a55';if(/xám|gray|grey|titan/.test(s))return '#9297a1';if(/bạc|silver/.test(s))return '#d9dce1';return '#e7e9ee'}
   function unique(vars,key){var out=[],seen={};vars.forEach(function(v){var x=text(v[key]);var k=x.toLowerCase();if(x&&!seen[k]){seen[k]=1;out.push(x)}});return out}
@@ -3216,7 +3242,19 @@ body.v768-iphone-detail-view #productGrid>.sdd-iphone-used-public-card.v768-acti
     }
     render();return true;
   }
-  document.addEventListener('click',function(e){var card=e.target&&e.target.closest?e.target.closest('.sdd-iphone-used-public-card[data-sdd-iphone-grouped-native="1"]'):null;if(!card)return;if(e.target.closest('.sdd-iphone-native-variants select,.sdd-iphone-native-variants option,.v624-iphone-compare,[data-sdd-compare-control="1"]'))return;var detail=e.target.closest('.sdd-iphone-detail-btn');var nonInteractive=!e.target.closest('button,a,input,select,textarea,label,[role="button"]');if(detail||nonInteractive){if(openDetail(card)){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation()} }},true);
+  document.addEventListener('click',function(e){
+    if(!e.target||!e.target.closest)return;
+    var card=e.target.closest('.sdd-iphone-used-public-card,.v639-iphone-used-card,.v615-used-card');
+    if(!card||!/\biphone\b/i.test(text(card.textContent)))return;
+    if(e.target.closest('.sdd-iphone-native-variants select,.sdd-iphone-native-variants option,.v624-iphone-compare,[data-sdd-compare-control="1"]'))return;
+    var control=e.target.closest('button,a,[role="button"]');
+    if(control&&/so\s*sánh/i.test(text(control.textContent)))return;
+    var detail=control&&/chi\s*tiết/i.test(text(control.textContent)||text(control.getAttribute('aria-label')));
+    var nonInteractive=!e.target.closest('button,a,input,select,textarea,label,[role="button"]');
+    if(detail||nonInteractive){
+      if(openDetail(card)){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation()}
+    }
+  },true);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.body.classList.contains('v768-iphone-detail-view'))closeDetail()});
 })();
 </script>
