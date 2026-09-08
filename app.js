@@ -273,7 +273,7 @@ function updateSeoForProduct(group,variant){
 
 
 let PRODUCTS = [];
-const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
+const PRODUCT_CACHE_KEY = "sieudidong-products-v25-live-kiot-name";
 const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 
 function saveProductCache(products){
@@ -994,6 +994,9 @@ function flattenProducts(raw){
       items.push({
         id:v.id || p.id,
         fullName,
+        // Giữ tên cha hiện tại từ KiotViet để tiêu đề card luôn bám theo tên đang đặt trên KiotViet.
+        // groupKey iPhone vẫn dùng model để gom biến thể, nhưng tên hiển thị không còn bị ép thành tên model cũ.
+        parentName:String(p.name || "").trim(),
         // Với iPhone KiotViet, mọi mã hàng iPhone 12 - Đen - 64 - 98% - Pin 8X...
         // đều dùng cùng key "iPhone 12". Vì vậy danh sách chỉ còn 1 card/model.
         baseName:iphoneModel || normalizeProductBaseName(fullName, color, memory),
@@ -1025,8 +1028,11 @@ function groupItems(items){
 
     if(!map.has(key)){
       map.set(key,{
-        // Mã key chỉ dùng để gom nhóm. Máy cũ phải hiển thị tên thật đã nhập trong quản trị.
-        name:(item.sourceType==="used" ? (item.fullName || item.baseName || "Máy cũ") : key),
+        // Mã key chỉ dùng để gom nhóm. Tên iPhone KiotViet lấy trực tiếp từ tên sản phẩm cha hiện tại.
+        // Nhờ vậy đổi tên trên KiotViet sẽ đổi theo ở web, nhưng các biến thể vẫn gom thành 1 card/model.
+        name:(item.sourceType==="used"
+          ? (item.fullName || item.baseName || "Máy cũ")
+          : (item.sourceType==="kiot-iphone-used" ? (item.parentName || item.fullName || key) : key)),
         groupKey:key,
         image:item.image || "",
         categoryName:item.categoryName || "Khác",
@@ -2607,6 +2613,7 @@ loadSearchPopularityCache();
 // Nạp danh sách bán chạy gần nhất trước để tab mặc định hiển thị ngay.
 loadBestSellerCache();
 
+// V785: tên/giá/tồn iPhone bám KiotViet theo dữ liệu sống, không giữ tên cũ trong cache 24h.
 // Hiện cache sản phẩm ngay nếu có, rồi cập nhật nền.
 if(loadProductCache()){
   updatedAt.textContent="Đang cập nhật...";
@@ -2622,6 +2629,20 @@ if(loadProductCache()){
 }
 
 load();
+
+// Tự đồng bộ lại KiotViet mỗi 60 giây và khi người dùng quay lại tab.
+// fetch /api/products có no-store + ts nên tên iPhone đổi trên KiotViet không bị trình duyệt giữ bản cũ.
+let __sddLiveKiotSyncBusy=false;
+async function __sddLiveKiotSync(){
+  if(__sddLiveKiotSyncBusy) return;
+  __sddLiveKiotSyncBusy=true;
+  try{ await load(); }finally{ __sddLiveKiotSyncBusy=false; }
+}
+setInterval(()=>{ if(!document.hidden) __sddLiveKiotSync(); },60000);
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden) __sddLiveKiotSync();
+});
+
 loadBestSellers();
 loadSearchPopularity();
 setInterval(load,60000);
