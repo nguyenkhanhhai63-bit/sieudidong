@@ -1,4 +1,4 @@
-/* V784: Android + KiotViet iPhone use one native compact-product-card renderer; legacy iPhone DOM/CSS layers removed from index.html. */
+/* V786: iPhone card uses native Android renderer; live KiotViet name is cleaned to remove variant attributes from product title. */
 window.__SDD_IPHONE_NATIVE_V774__=true;
 let sddWarrantyPending=false;
 
@@ -716,6 +716,27 @@ function iphoneModelName(name){
   return m[0].replace(/^iphone/i,"iPhone").replace(/\s+/g," ").trim();
 }
 
+// V786: Tên iPhone trên card chỉ giữ tên sản phẩm, bỏ các thuộc tính KiotViet
+// như Màu, dung lượng, tình trạng, Pin... vốn được nối vào sau dấu " - ".
+function cleanIphoneDisplayName(name){
+  const text=String(name||"").replace(/\s+/g," ").trim();
+  if(!iphoneModelName(text)) return text;
+
+  const parts=text.split(/\s+-\s+/).map(x=>x.trim()).filter(Boolean);
+  if(parts.length<=1) return text;
+
+  const colorRe=/^(?:đen|trắng|xanh(?:\s+(?:dương|lá|biển|ngọc|mint))?|đỏ|hồng|tím|bạc|titan(?:\s+(?:xám|đen|trắng))?|cam|vàng|black|white|blue|green|silver|gold|gray|grey|purple|pink|red)$/i;
+  const storageRe=/^(?:\d{1,4}(?:\s*(?:gb|tb|g|t))?|\d+\s*\/\s*(?:\d+|1t|2t))$/i;
+  const conditionRe=/^(?:\d{2,3}%|pin\s*[0-9xX]{1,5}%?|battery\b.*|like\s*new.*|newseal.*|fullbox.*|seal.*|máy\s*(?:đẹp|zin|cũ).*|tình\s*trạng.*)$/i;
+
+  const kept=[];
+  for(const part of parts){
+    if(colorRe.test(part) || storageRe.test(part) || conditionRe.test(part)) break;
+    kept.push(part);
+  }
+  return (kept.length ? kept.join(" - ") : parts[0]).trim();
+}
+
 function getIphoneQuality(attrs,name){
   // KiotViet có thể lưu chung một thuộc tính kiểu "Tình trạng / Pin = 98% - Pin 8X".
   // Không dùng name.includes("pin") để lấy battery vì sẽ đọc trùng cùng một thuộc tính.
@@ -1032,7 +1053,7 @@ function groupItems(items){
         // Nhờ vậy đổi tên trên KiotViet sẽ đổi theo ở web, nhưng các biến thể vẫn gom thành 1 card/model.
         name:(item.sourceType==="used"
           ? (item.fullName || item.baseName || "Máy cũ")
-          : (item.sourceType==="kiot-iphone-used" ? (item.parentName || item.fullName || key) : key)),
+          : (item.sourceType==="kiot-iphone-used" ? cleanIphoneDisplayName(item.parentName || item.fullName || key) : key)),
         groupKey:key,
         image:item.image || "",
         categoryName:item.categoryName || "Khác",
