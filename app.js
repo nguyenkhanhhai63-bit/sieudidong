@@ -1,4 +1,4 @@
-window.__SDD_IPHONE_NATIVE_V773__=true;
+window.__SDD_IPHONE_NATIVE_V774__=true;
 let sddWarrantyPending=false;
 
 /* V71 - Link Zalo tư vấn.
@@ -716,11 +716,24 @@ function iphoneModelName(name){
 }
 
 function getIphoneQuality(attrs,name){
-  const condition=attributeValue(attrs,["tình trạng","tinh trang","ngoại hình","ngoai hinh","condition"]);
-  const battery=attributeValue(attrs,["pin","battery"]);
+  // KiotViet có thể lưu chung một thuộc tính kiểu "Tình trạng / Pin = 98% - Pin 8X".
+  // Không dùng name.includes("pin") để lấy battery vì sẽ đọc trùng cùng một thuộc tính.
+  const list=Array.isArray(attrs)?attrs:[];
+  let condition="", battery="";
+  for(const a of list){
+    const n=String(a?.name||"").trim().toLowerCase();
+    const v=String(a?.value||"").trim();
+    if(!v) continue;
+    if(!condition && (/tình trạng|tinh trang|ngoại hình|ngoai hinh|condition/.test(n))) condition=v;
+    if(!battery && (/^pin$|^battery$|dung lượng pin|dung luong pin/.test(n))) battery=v;
+  }
+  const text=String(name||"");
   let c=String(condition||"").trim();
   let b=String(battery||"").trim();
-  const text=String(name||"");
+
+  // Nếu tình trạng đã chứa cả Pin (vd "98% - Pin 8X") thì dùng nguyên giá trị, không nối Pin lần hai.
+  if(c && /\bpin\b/i.test(c)) return c.replace(/\s+-\s+/g," - ").trim();
+
   if(!c){ const m=text.match(/\b(\d{2,3}%)\b/); if(m) c=m[1]; }
   if(!b){ const m=text.match(/\bPin\s*([0-9xX]{1,4}%?)\b/i); if(m) b="Pin "+m[1].toUpperCase(); }
   if(b && !/^pin\b/i.test(b)) b="Pin "+b;
