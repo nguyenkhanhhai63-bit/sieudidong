@@ -9529,10 +9529,7 @@ function renderWarrantyRecent(items=[]){
   const statusText={found:"Tìm thấy",not_found:"Không tìm thấy",error:"Lỗi tra cứu"};
   const statusClass={found:"found",not_found:"not-found",error:"error"};
 
-  // V655: v653 từng gọi /api/warranty-lookup từ trang admin để bổ sung ngày mua.
-  // Endpoint đó đồng thời ghi nhận một lượt tra cứu mới, làm 3-5 khách cũ bị gán cùng thời gian admin mở trang.
-  // Không gọi lại endpoint này nữa. Đồng thời bỏ các "burst" giả có >=3 dòng cùng đúng một giây
-  // nếu trong danh sách vẫn còn các mốc thời gian khác, để lộ lại lịch sử thật phía sau.
+  // Lịch sử quản trị chỉ đọc dữ liệu đã ghi khi khách thực sự tra cứu; không gọi lại API tra cứu từ admin.
   const normalizeTs=(o)=>{
     const raw=o?.lookupTs ?? o?.lookupAt ?? o?.lookupTime ?? o?.searchedAt ?? o?.searchAt ??
       o?.eventTs ?? o?.eventTime ?? o?.createdAt ?? o?.created_at ?? o?.timestamp ?? o?.time ?? o?.ts;
