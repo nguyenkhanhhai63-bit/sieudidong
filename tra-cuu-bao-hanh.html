@@ -502,7 +502,29 @@ html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-se
       let data={}; try{data=await r.json();}catch{}
       if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
 
-      // V799: lịch sử đã được lưu trực tiếp trong /api/warranty-lookup.
+      // V800: gửi CHÍNH dữ liệu vừa nhận/hiển thị sang endpoint analytics đang hoạt động ổn định.
+      // Admin sẽ đọc đúng object này, không tự tra lại và không phụ thuộc luồng lưu cũ.
+      try{
+        await fetch("/api/analytics",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          cache:"no-store",
+          body:JSON.stringify({
+            type:"warranty_lookup_result",
+            phone:p,
+            customerName:String(data.customerName||""),
+            status:data.found?"found":"not_found",
+            items:Array.isArray(data.items)?data.items.map(x=>({
+              productName:x.productName||"",
+              productCode:x.productCode||"",
+              purchaseDate:x.purchaseDate||"",
+              warrantyEnd:x.warrantyEnd||"",
+              exchangeEnd:x.exchangeEnd||"",
+              invoiceCode:x.invoiceCode||""
+            })):[]
+          })
+        });
+      }catch(_){ }
 
       if(!data.found){
         result.innerHTML='<div class="warranty-alert">'+esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")+'</div>';
