@@ -502,29 +502,21 @@ html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-se
       let data={}; try{data=await r.json();}catch{}
       if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
 
-      // V800: gửi CHÍNH dữ liệu vừa nhận/hiển thị sang endpoint analytics đang hoạt động ổn định.
-      // Admin sẽ đọc đúng object này, không tự tra lại và không phụ thuộc luồng lưu cũ.
+      // V801 CLEAN: lưu nguyên kết quả vừa nhận từ /api/warranty-lookup sang lịch sử admin.
+      // Đây là cùng object data.items đang dùng để hiển thị Ngày mua trên trang khách.
       try{
-        await fetch("/api/analytics",{
+        const historyRes=await fetch("/api/warranty-history",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
           cache:"no-store",
-          body:JSON.stringify({
-            type:"warranty_lookup_result",
-            phone:p,
-            customerName:String(data.customerName||""),
-            status:data.found?"found":"not_found",
-            items:Array.isArray(data.items)?data.items.map(x=>({
-              productName:x.productName||"",
-              productCode:x.productCode||"",
-              purchaseDate:x.purchaseDate||"",
-              warrantyEnd:x.warrantyEnd||"",
-              exchangeEnd:x.exchangeEnd||"",
-              invoiceCode:x.invoiceCode||""
-            })):[]
-          })
+          body:JSON.stringify({phone:p,result:data})
         });
-      }catch(_){ }
+        if(!historyRes.ok){
+          console.error("Không lưu được lịch sử bảo hành v801",historyRes.status);
+        }
+      }catch(err){
+        console.error("Lỗi lưu lịch sử bảo hành v801",err);
+      }
 
       if(!data.found){
         result.innerHTML='<div class="warranty-alert">'+esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")+'</div>';
