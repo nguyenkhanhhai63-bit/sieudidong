@@ -16453,3 +16453,59 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     border-radius:15px!important;
   }
 }
+
+/* V830 - Emoji picker: standard Unicode emoji, no legacy send-arrow pseudo icon */
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker button{
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:initial!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  transform:none!important;
+  font-size:22px!important;
+  line-height:1!important;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Android Emoji",sans-serif!important;
+  font-variant-emoji:emoji;
+  text-indent:0!important;
+  overflow:visible!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker button::before,
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker button::after{
+  content:none!important;
+  display:none!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker button:hover{
+  background:#f3f5f8!important;
+  transform:scale(1.10)!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker button:active{
+  transform:scale(.92)!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-picker{
+  grid-template-columns:repeat(8,32px)!important;
+  gap:4px!important;
+  width:max-content!important;
+  max-width:calc(100vw - 36px)!important;
+}
+@media(max-width:640px){
+  #aiChatPanel .ai-chat-form .ai-chat-emoji-picker{
+    grid-template-columns:repeat(8,30px)!important;
+    gap:3px!important;
+    width:max-content!important;
+  }
+  #aiChatPanel .ai-chat-form .ai-chat-emoji-picker button{
+    width:30px!important;
+    height:30px!important;
+    min-width:30px!important;
+    font-size:21px!important;
+  }
+}
