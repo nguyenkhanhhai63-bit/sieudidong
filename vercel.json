@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/tra-cuu-bao-hanh",
+      "destination": "/tra-cuu-bao-hanh.html"
+    },
+    {
       "source": "/products/(.*)",
       "destination": "/api/legacy-product?path=$1"
     },
@@ -110,6 +114,54 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/api/warranty-lookup",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/api/admin/analytics",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosn"
+        }
+      ]
+    },
+    {
+      "source": "/tra-cuu-bao-hanh(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/admin/warranty-history",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
         },
         {
           "key": "X-Content-Type-Options",
