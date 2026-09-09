@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta name="sdd-build" content="v792-warranty-date-v4">
+<meta name="sdd-build" content="v793-warranty-clean-v5">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Quản trị thông số | Siêu Di Động</title>
@@ -10000,7 +10000,7 @@ async function fetchAnalyticsPeriodForCache(period){
     const timer=setTimeout(()=>controller.abort(),15000);
     try{
       const r=await fetch(
-        "/api/admin/analytics?ts="+Date.now()+"&client=v355&period="+encodeURIComponent(period),
+        "/api/admin/analytics?ts="+Date.now()+"&client=v793&period="+encodeURIComponent(period),
         {
           cache:"no-store",
           credentials:"same-origin",
@@ -10252,7 +10252,7 @@ async function loadAnalytics(){
     const timeout=setTimeout(()=>controller.abort(),15000);
     let r;
     try{
-      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v355&period="+encodeURIComponent(analyticsPeriod),{
+      r=await fetch("/api/admin/analytics?ts="+Date.now()+"&client=v793&period="+encodeURIComponent(analyticsPeriod),{
         cache:"no-store",
         credentials:"same-origin",
         signal:controller.signal
