@@ -4301,3 +4301,64 @@ window.addEventListener("load",()=>{
   document.querySelectorAll('[data-sdd-main-nav]').forEach(el=>el.addEventListener('click',()=>setTimeout(sync,0)));
   window.addEventListener('popstate',sync);
 })();
+
+/* V817 - AI chat: nhấn giữ tin nhắn để sao chép */
+(function sddAiChatLongPressCopy(){
+  let timer=null, activeBubble=null, menu=null;
+  const HOLD_MS=520;
+
+  function removeMenu(){
+    if(menu){ menu.remove(); menu=null; }
+    activeBubble=null;
+  }
+  async function copyText(text){
+    const value=String(text||"").trim();
+    if(!value) return false;
+    try{ await navigator.clipboard.writeText(value); return true; }catch(_){
+      try{
+        const ta=document.createElement("textarea");
+        ta.value=value; ta.setAttribute("readonly","");
+        ta.style.cssText="position:fixed;opacity:0;pointer-events:none;left:-9999px;top:0";
+        document.body.appendChild(ta); ta.select();
+        const ok=document.execCommand("copy"); ta.remove(); return ok;
+      }catch(__){ return false; }
+    }
+  }
+  function showMenu(bubble){
+    removeMenu();
+    activeBubble=bubble;
+    menu=document.createElement("button");
+    menu.type="button";
+    menu.className="ai-chat-copy-action";
+    menu.textContent="Sao chép";
+    menu.setAttribute("aria-label","Sao chép tin nhắn");
+    const row=bubble.closest(".ai-chat-message");
+    (row||bubble.parentElement).appendChild(menu);
+    menu.addEventListener("click",async e=>{
+      e.preventDefault(); e.stopPropagation();
+      const ok=await copyText(bubble.textContent);
+      if(ok){ menu.textContent="Đã sao chép"; setTimeout(removeMenu,650); }
+    });
+  }
+  function cancelHold(){ if(timer){ clearTimeout(timer); timer=null; } }
+  document.addEventListener("pointerdown",e=>{
+    const bubble=e.target.closest?.("#aiChatMessages .ai-chat-bubble");
+    if(!bubble) return;
+    cancelHold();
+    timer=setTimeout(()=>{ timer=null; showMenu(bubble); },HOLD_MS);
+  },{passive:true});
+  document.addEventListener("pointerup",cancelHold,{passive:true});
+  document.addEventListener("pointercancel",cancelHold,{passive:true});
+  document.addEventListener("pointermove",e=>{
+    if(timer && (Math.abs(e.movementX||0)>5 || Math.abs(e.movementY||0)>5)) cancelHold();
+  },{passive:true});
+  document.addEventListener("contextmenu",e=>{
+    const bubble=e.target.closest?.("#aiChatMessages .ai-chat-bubble");
+    if(!bubble) return;
+    e.preventDefault(); showMenu(bubble);
+  });
+  document.addEventListener("click",e=>{
+    if(menu && !e.target.closest?.(".ai-chat-copy-action") && !e.target.closest?.("#aiChatMessages .ai-chat-bubble")) removeMenu();
+  });
+  document.addEventListener("scroll",e=>{ if(menu && e.target?.closest?.("#aiChatMessages")) removeMenu(); },true);
+})();

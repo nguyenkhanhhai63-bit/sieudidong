@@ -16147,3 +16147,16 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 /* v788 - Apple brand logo: SVG instead of unsupported Apple font glyph */
 .sdd-brand-card[data-brand="Apple"] .sdd-brand-mark{font-size:0!important;line-height:1!important;}
 .sdd-brand-card[data-brand="Apple"] .sdd-apple-logo{display:block!important;width:28px!important;height:36px!important;fill:#111827!important;}
+
+/* V817 - AI chat long press copy */
+#aiChatPanel .ai-chat-message{position:relative;}
+#aiChatPanel .ai-chat-bubble{-webkit-touch-callout:none;}
+#aiChatPanel .ai-chat-copy-action{
+  position:absolute;z-index:40;top:100%;margin-top:5px;padding:7px 11px;
+  border:1px solid #e3e7ec;border-radius:10px;background:#fff;color:#1f2937;
+  box-shadow:0 5px 18px rgba(15,23,42,.16);font:700 11px/1.1 inherit;
+  white-space:nowrap;cursor:pointer;animation:sddCopyPop .12s ease-out;
+}
+#aiChatPanel .ai-chat-message.assistant .ai-chat-copy-action{left:0;}
+#aiChatPanel .ai-chat-message.user .ai-chat-copy-action{right:0;}
+@keyframes sddCopyPop{from{opacity:0;transform:translateY(-3px) scale(.96)}to{opacity:1;transform:none}}
