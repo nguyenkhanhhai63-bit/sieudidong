@@ -16388,3 +16388,68 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   #aiChatPanel .ai-chat-emoji-picker{left:8px!important;bottom:66px!important;width:258px!important;grid-template-columns:repeat(8,1fr)!important;padding:9px!important}
   #aiChatPanel .ai-chat-emoji-picker button{width:27px!important;height:27px!important;min-width:27px!important;font-size:19px!important;line-height:27px!important}
 }
+
+/* V829 - FIX emoji button bi bien thanh nut gui do rule cu ap cho moi button trong form */
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle{
+  width:42px!important;
+  height:50px!important;
+  min-width:42px!important;
+  border:1.5px solid #dfe5ed!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  color:#627086!important;
+  box-shadow:none!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  font-size:initial!important;
+  position:relative!important;
+  transform:none!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle::before,
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle::after{
+  content:none!important;
+  display:none!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle svg{
+  width:23px!important;
+  height:23px!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle:hover,
+#aiChatPanel .ai-chat-form .ai-chat-emoji-toggle[aria-expanded="true"]{
+  background:#fff5ef!important;
+  color:#ff5a00!important;
+  border-color:#ffc7aa!important;
+}
+#aiChatPanel .ai-chat-form #aiChatSend{
+  background:linear-gradient(135deg,#ff6500,#ff4b00)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 7px 16px rgba(255,80,0,.2)!important;
+  font-size:0!important;
+}
+#aiChatPanel .ai-chat-form #aiChatSend::before{
+  content:none!important;
+  display:none!important;
+}
+#aiChatPanel .ai-chat-form #aiChatSend svg{
+  width:24px!important;
+  height:24px!important;
+  display:block!important;
+  fill:currentColor!important;
+  stroke:none!important;
+}
+@media(max-width:640px){
+  #aiChatPanel .ai-chat-form .ai-chat-emoji-toggle{
+    width:40px!important;
+    height:48px!important;
+    min-width:40px!important;
+    border-radius:15px!important;
+  }
+}
