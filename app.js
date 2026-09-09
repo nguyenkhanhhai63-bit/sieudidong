@@ -3173,6 +3173,8 @@ const AI_CHAT_PENDING_QUESTIONS=[];
 
 function aiChatOpen(){
   if(!aiChatPanel) return;
+  aiChatDecorateShell();
+  aiChatEnsureTodayDivider();
   const isMobile=window.matchMedia("(max-width:720px)").matches;
 
   // V468: phiên chat mới phải ở trạng thái kết nối, chưa được hiện tên/online.
@@ -3418,14 +3420,125 @@ async function aiChatAppendAssistantMessages(text,data={}){
 
   for(let i=0;i<list.length;i++){
     if(i>0) await aiChatSleep(aiChatInterMessagePause());
-    // V453: luôn hiện "đang soạn" trước MỌI tin, kể cả tin đầu tiên.
     aiChatTyping(true);
     await aiChatSleep(aiChatNaturalBubbleDelay(list[i],i===0));
     aiChatTyping(false);
     aiChatAppend("assistant",list[i]);
   }
+  // V823: khi câu trả lời nhắc đúng một sản phẩm đang có trên web,
+  // hiện card sản phẩm trực tiếp trong đoạn chat như live commerce.
+  aiChatMaybeRenderProductCard(String(text||""));
   return list;
 }
+
+// V823 - Live chat product card + polished messenger helpers
+function aiChatEscapeHtml(value=""){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function aiChatFormatMoney(value){
+  const n=Number(value||0);
+  return n>0 ? n.toLocaleString("vi-VN")+" đ" : "Liên hệ";
+}
+function aiChatFindMentionedGroup(text=""){
+  try{
+    const raw=normalizeSearchText(text);
+    if(!raw || !Array.isArray(PRODUCTS) || !PRODUCTS.length) return null;
+    const groups=groupItems(flattenProducts(PRODUCTS).filter(productMatchesMainCategory));
+    let best=null, bestLen=0;
+    for(const group of groups){
+      const name=normalizeSearchText(group?.name||"");
+      if(name.length<5) continue;
+      // Cho phép AI viết thêm cấu hình phía sau tên máy nhưng phải khớp model đủ rõ.
+      if(raw.includes(name) && name.length>bestLen){ best=group; bestLen=name.length; continue; }
+      const compact=name.replace(/\([^)]*\)/g,"").replace(/\s+/g," ").trim();
+      if(compact.length>=8 && raw.includes(compact) && compact.length>bestLen){ best=group; bestLen=compact.length; }
+    }
+    return best;
+  }catch(_){ return null; }
+}
+function aiChatMaybeRenderProductCard(text=""){
+  if(!aiChatMessages) return;
+  const group=aiChatFindMentionedGroup(text);
+  if(!group) return;
+  const variant=getDefaultVariantForGroup(group);
+  if(!variant) return;
+  const key=String(group.groupKey||group.name||"");
+  const lastCard=aiChatMessages.querySelector('.ai-chat-product-card:last-of-type');
+  if(lastCard?.dataset?.productKey===key) return;
+
+  const wrap=document.createElement("div");
+  wrap.className="ai-chat-product-wrap ai-chat-message-enter";
+  const card=document.createElement("div");
+  card.className="ai-chat-product-card";
+  card.dataset.productKey=key;
+  const img=String(variant.image||group.image||"").trim();
+  const memory=String(variant.memory||"").trim();
+  const color=String(variant.color||"").trim();
+  const onHand=Math.max(0,Number(variant.onHand||0));
+  const price=Number(variant.price||0);
+  card.innerHTML=`
+    <div class="ai-chat-product-main">
+      <div class="ai-chat-product-image">${img?`<img src="${aiChatEscapeHtml(img)}" alt="${aiChatEscapeHtml(group.name||'Sản phẩm')}" loading="lazy" referrerpolicy="no-referrer">`:'<span>S</span>'}</div>
+      <div class="ai-chat-product-info">
+        <strong>${aiChatEscapeHtml(group.name||"Sản phẩm")}</strong>
+        <small>${aiChatEscapeHtml([memory,color].filter(Boolean).join(" · ")||"Xem phiên bản đang có")}</small>
+        <b>${aiChatFormatMoney(price)}</b>
+        <em class="${onHand>0?'is-stock':'is-out'}">${onHand>0?'✓ Còn hàng':'Hết hàng'}</em>
+      </div>
+      <span class="ai-chat-product-arrow" aria-hidden="true">›</span>
+    </div>
+    <div class="ai-chat-product-actions">
+      <button type="button" data-chat-product-action="detail">Xem chi tiết</button>
+      <button type="button" data-chat-product-action="compare">So sánh</button>
+      <button type="button" data-chat-product-action="installment">Trả góp</button>
+    </div>`;
+  card.querySelector('[data-chat-product-action="detail"]')?.addEventListener("click",()=>openInlineProductDetail(group,variant));
+  card.querySelector('[data-chat-product-action="compare"]')?.addEventListener("click",()=>{
+    try{ toggleCompare(group); renderCompareBar(); }catch(_){ openInlineProductDetail(group,variant); }
+  });
+  card.querySelector('[data-chat-product-action="installment"]')?.addEventListener("click",()=>{
+    aiChatAsk(`Máy ${group.name} trả góp như thế nào?`);
+  });
+  wrap.appendChild(card);
+  aiChatMessages.appendChild(wrap);
+  requestAnimationFrame(()=>{
+    wrap.classList.remove("ai-chat-message-enter");
+    try{aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"});}catch(_){aiChatMessages.scrollTop=aiChatMessages.scrollHeight;}
+  });
+}
+function aiChatEnsureTodayDivider(){
+  if(!aiChatMessages || aiChatMessages.querySelector('.ai-chat-day-divider')) return;
+  const el=document.createElement('div');
+  el.className='ai-chat-day-divider';
+  el.innerHTML='<span>Hôm nay</span>';
+  aiChatMessages.prepend(el);
+}
+function aiChatDecorateShell(){
+  if(!aiChatPanel) return;
+  const brand=aiChatPanel.querySelector('.ai-chat-brand > div');
+  if(brand && !brand.querySelector('.ai-chat-storeline')){
+    const line=document.createElement('small');
+    line.className='ai-chat-storeline';
+    line.textContent='Siêu Di Động · Tư vấn sản phẩm';
+    brand.appendChild(line);
+  }
+  const status=document.getElementById('chatStaffStatus');
+  if(status && !status.dataset.v823){
+    status.dataset.v823='1';
+    const textNode=[...status.childNodes].find(n=>n.nodeType===3);
+    if(textNode) textNode.textContent=' Đang trực tuyến · AI hỗ trợ';
+  }
+  if(aiChatSend && !aiChatSend.dataset.v823){
+    aiChatSend.dataset.v823='1';
+    aiChatSend.setAttribute('aria-label','Gửi tin nhắn');
+    aiChatSend.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5 21 12 3 3.5v6.7l12 1.8-12 1.8z"/></svg>';
+  }
+  const foot=aiChatPanel.querySelector('.ai-chat-foot');
+  if(foot) foot.textContent='Trợ lý AI của Siêu Di Động · Có thể chuyển nhân viên khi cần';
+  aiChatEnsureTodayDivider();
+}
+setTimeout(aiChatDecorateShell,0);
+
 function aiChatTyping(show){
   let el=document.getElementById("aiChatTyping");
   if(show && AI_CHAT_BEHAVIOR.typingEnabled===false){ el?.remove(); return; }
