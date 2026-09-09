@@ -3304,6 +3304,15 @@ function aiChatAppend(role,text){
   bubble.className="ai-chat-bubble";
   bubble.textContent=String(text||"");
   row.appendChild(bubble);
+
+  // V821: metadata nhỏ như live chat thật, nhưng vẫn minh bạch đây là trợ lý AI.
+  const meta=document.createElement("div");
+  meta.className="ai-chat-message-meta";
+  const now=new Date();
+  const hh=String(now.getHours()).padStart(2,"0");
+  const mm=String(now.getMinutes()).padStart(2,"0");
+  meta.textContent=(role==="user"?"Đã gửi · ":"")+hh+":"+mm;
+  row.appendChild(meta);
   aiChatMessages.appendChild(row);
 
   // V458: tin mới trượt nhẹ từ dưới lên + khung chat cuộn mượt như Messenger.
@@ -4385,3 +4394,4 @@ window.addEventListener("load",()=>{
   });
   document.addEventListener("scroll",e=>{ if(menu && e.target?.closest?.("#aiChatMessages")) removeMenu(); },true);
 })();
+\n\n/* V821 - live-chat polish: giao diện giống nhân viên trực nhưng luôn ghi rõ AI hỗ trợ */\n(function sddAiLiveChatPolishV821(){\n  function apply(){\n    const panel=document.getElementById('aiChatPanel');\n    if(!panel) return;\n    panel.classList.add('ai-livechat-v821');\n\n    const status=document.getElementById('chatStaffStatus');\n    if(status){\n      status.innerHTML='<i class="chat-online-dot" aria-hidden="true"></i> Đang trực tuyến <b class="ai-chat-disclosure">AI hỗ trợ</b>';\n    }\n\n    const foot=panel.querySelector('.ai-chat-foot');\n    if(foot){\n      foot.innerHTML='<span class="ai-chat-shield" aria-hidden="true">◈</span> Trợ lý AI của Siêu Di Động · Có thể chuyển nhân viên khi cần';\n    }\n\n    const name=document.getElementById('chatStaffName');\n    if(name && !name.dataset.v821Observed){\n      name.dataset.v821Observed='1';\n      const sync=()=>{\n        const value=String(name.textContent||'').trim();\n        if(value && value!== 'Đang kết nối...' && !/trợ lý/i.test(value)) name.setAttribute('aria-label',value+' - trợ lý tư vấn AI');\n      };\n      new MutationObserver(sync).observe(name,{childList:true,characterData:true,subtree:true});\n      sync();\n    }\n  }\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true}); else apply();\n})();\n
