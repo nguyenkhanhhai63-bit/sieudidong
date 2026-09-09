@@ -3418,16 +3418,26 @@ async function aiChatAppendAssistantMessages(text,data={}){
   const messages=supplied.length ? supplied : aiChatSplitReply(text);
   const list=messages.length ? messages : [String(text||"").trim()].filter(Boolean);
 
+  let renderedProductCard=false;
   for(let i=0;i<list.length;i++){
     if(i>0) await aiChatSleep(aiChatInterMessagePause());
     aiChatTyping(true);
     await aiChatSleep(aiChatNaturalBubbleDelay(list[i],i===0));
     aiChatTyping(false);
     aiChatAppend("assistant",list[i]);
+
+    // V825: nếu chính bong bóng này đang nói tới một model cụ thể,
+    // đặt box sản phẩm ngay sau tin đó để khách thấy đúng ngữ cảnh.
+    // Chỉ hiện 1 box cho mỗi lượt trả lời, tránh spam card khi AI chia nhiều bong bóng.
+    if(!renderedProductCard){
+      renderedProductCard=aiChatMaybeRenderProductCard(String(list[i]||""))===true;
+    }
   }
-  // V823: khi câu trả lời nhắc đúng một sản phẩm đang có trên web,
-  // hiện card sản phẩm trực tiếp trong đoạn chat như live commerce.
-  aiChatMaybeRenderProductCard(String(text||""));
+  // Trường hợp tên model bị tách giữa các bong bóng hoặc chỉ xuất hiện trong text gốc,
+  // thử dò lại toàn bộ câu trả lời một lần cuối.
+  if(!renderedProductCard){
+    aiChatMaybeRenderProductCard(String(text||""));
+  }
   return list;
 }
 
@@ -3457,14 +3467,14 @@ function aiChatFindMentionedGroup(text=""){
   }catch(_){ return null; }
 }
 function aiChatMaybeRenderProductCard(text=""){
-  if(!aiChatMessages) return;
+  if(!aiChatMessages) return false;
   const group=aiChatFindMentionedGroup(text);
-  if(!group) return;
+  if(!group) return false;
   const variant=getDefaultVariantForGroup(group);
-  if(!variant) return;
+  if(!variant) return false;
   const key=String(group.groupKey||group.name||"");
   const lastCard=aiChatMessages.querySelector('.ai-chat-product-card:last-of-type');
-  if(lastCard?.dataset?.productKey===key) return;
+  if(lastCard?.dataset?.productKey===key) return false;
 
   const wrap=document.createElement("div");
   wrap.className="ai-chat-product-wrap ai-chat-message-enter";
@@ -3505,6 +3515,7 @@ function aiChatMaybeRenderProductCard(text=""){
     wrap.classList.remove("ai-chat-message-enter");
     try{aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"});}catch(_){aiChatMessages.scrollTop=aiChatMessages.scrollHeight;}
   });
+  return true;
 }
 function aiChatEnsureTodayDivider(){
   if(!aiChatMessages || aiChatMessages.querySelector('.ai-chat-day-divider')) return;
