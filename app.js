@@ -3292,7 +3292,7 @@ function aiChatRestoreConversation(){
       aiChatAppend(item.role==="user"?"user":"assistant",item.text);
       AI_CHAT_HISTORY.push({role:item.role==="user"?"user":"assistant",text:String(item.text||"")});
     }
-    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+    if(AI_CHAT_HISTORY.length>24) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-24);
     AI_CHAT_RESTORING=false;
     requestAnimationFrame(()=>{ aiChatMessages.scrollTop=aiChatMessages.scrollHeight; });
   }
@@ -3445,8 +3445,8 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
   // V481: câu ngắn kiểu "bao nhiêu shop?", "còn không?" phải giữ đúng
   // model khách vừa hỏi ở các tin ngay trước đó.
   const recentUserContext=(Array.isArray(history)?history:[])
-    .filter(x=>x?.role==="user" && String(x?.text||"").trim())
-    .slice(-4)
+    .filter(x=>String(x?.text||"").trim())
+    .slice(-8)
     .map(x=>String(x.text||"").trim())
     .join(" ");
 
@@ -3513,7 +3513,7 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
     };
   })
   .sort((a,b)=>b.score-a.score)
-  .slice(0,20)
+  .slice(0,30)
   .map(({score,...x})=>x);
 }
 async function aiChatAsk(question,options={}){
@@ -3527,7 +3527,7 @@ async function aiChatAsk(question,options={}){
     if(!alreadyAppended){
       aiChatAppend("user",text);
       AI_CHAT_HISTORY.push({role:"user",text});
-      if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+      if(AI_CHAT_HISTORY.length>24) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-24);
     }
     if(aiChatInput) aiChatInput.value="";
     AI_CHAT_PENDING_QUESTIONS.push(text);
@@ -3566,7 +3566,7 @@ async function aiChatAsk(question,options={}){
   if(!alreadyAppended){
     aiChatAppend("user",text);
     AI_CHAT_HISTORY.push({role:"user",text});
-    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+    if(AI_CHAT_HISTORY.length>24) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-24);
   }
 
   if(aiChatInput) aiChatInput.value="";
@@ -3580,7 +3580,7 @@ async function aiChatAsk(question,options={}){
       body:JSON.stringify({
         message:text,
         products:aiChatProductSnapshot(text,AI_CHAT_HISTORY),
-        history:AI_CHAT_HISTORY.slice(-6),
+        history:AI_CHAT_HISTORY.slice(-12),
         sessionId:AI_CHAT_SESSION_ID,
         visitorId:analyticsVisitorId(),
         page:location.pathname+location.search
@@ -3612,7 +3612,7 @@ async function aiChatAsk(question,options={}){
     }else{
       aiChatSetHumanHandoff(false);
     }
-    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
+    if(AI_CHAT_HISTORY.length>24) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-24);
   }catch(e){
     const failText=e.message||"Shop chưa phản hồi kịp. B nhắn lại xíu nha.";
     aiChatAppend("assistant",failText);
