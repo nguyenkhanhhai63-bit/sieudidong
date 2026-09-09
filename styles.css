@@ -16340,3 +16340,51 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   border:2px solid #fff!important;
   box-shadow:0 3px 10px rgba(255,90,0,.20)!important;
 }
+
+
+/* V828 - Emoji chat cho khách + picker gọn như Messenger */
+#aiChatPanel .ai-chat-form{
+  position:relative!important;
+  grid-template-columns:42px minmax(0,1fr) 52px!important;
+  align-items:end!important;
+}
+#aiChatPanel .ai-chat-emoji-toggle{
+  width:42px!important;height:50px!important;min-width:42px!important;
+  border:1.5px solid #dfe5ed!important;border-radius:16px!important;
+  background:#fff!important;color:#627086!important;box-shadow:none!important;
+  display:grid!important;place-items:center!important;padding:0!important;
+  transition:background .15s ease,color .15s ease,transform .15s ease,border-color .15s ease!important;
+}
+#aiChatPanel .ai-chat-emoji-toggle svg{
+  width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#aiChatPanel .ai-chat-emoji-toggle:hover,
+#aiChatPanel .ai-chat-emoji-toggle[aria-expanded="true"]{
+  background:#fff5ef!important;color:#ff5a00!important;border-color:#ffc7aa!important;
+}
+#aiChatPanel .ai-chat-emoji-toggle:active{transform:scale(.94)!important}
+#aiChatPanel .ai-chat-emoji-picker{
+  position:absolute!important;left:10px!important;bottom:72px!important;z-index:80!important;
+  width:272px!important;max-width:calc(100% - 20px)!important;
+  display:grid!important;grid-template-columns:repeat(8,1fr)!important;gap:4px!important;
+  padding:10px!important;border:1px solid rgba(15,23,42,.10)!important;border-radius:18px!important;
+  background:rgba(255,255,255,.98)!important;box-shadow:0 16px 40px rgba(15,23,42,.18)!important;
+  backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
+  transform-origin:left bottom!important;animation:sddEmojiPop .14s ease-out both!important;
+}
+#aiChatPanel .ai-chat-emoji-picker[hidden]{display:none!important}
+#aiChatPanel .ai-chat-emoji-picker button{
+  width:29px!important;height:29px!important;min-width:29px!important;border:0!important;border-radius:9px!important;
+  background:transparent!important;color:inherit!important;box-shadow:none!important;padding:0!important;
+  font-size:20px!important;line-height:29px!important;display:grid!important;place-items:center!important;
+  transition:background .12s ease,transform .12s ease!important;
+}
+#aiChatPanel .ai-chat-emoji-picker button:hover{background:#f1f4f8!important;transform:scale(1.12)!important}
+#aiChatPanel .ai-chat-emoji-picker button:active{transform:scale(.9)!important}
+@keyframes sddEmojiPop{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+@media(max-width:640px){
+  #aiChatPanel .ai-chat-form{grid-template-columns:40px minmax(0,1fr) 48px!important;gap:7px!important}
+  #aiChatPanel .ai-chat-emoji-toggle{width:40px!important;height:48px!important;min-width:40px!important;border-radius:15px!important}
+  #aiChatPanel .ai-chat-emoji-picker{left:8px!important;bottom:66px!important;width:258px!important;grid-template-columns:repeat(8,1fr)!important;padding:9px!important}
+  #aiChatPanel .ai-chat-emoji-picker button{width:27px!important;height:27px!important;min-width:27px!important;font-size:19px!important;line-height:27px!important}
+}

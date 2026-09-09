@@ -2859,6 +2859,8 @@ const aiChatMessages=document.getElementById("aiChatMessages");
 const aiChatForm=document.getElementById("aiChatForm");
 const aiChatInput=document.getElementById("aiChatInput");
 const aiChatSend=document.getElementById("aiChatSend");
+const aiChatEmojiToggle=document.getElementById("aiChatEmojiToggle");
+const aiChatEmojiPicker=document.getElementById("aiChatEmojiPicker");
 const aiChatSuggestions=document.getElementById("aiChatSuggestions");
 const aiHumanHandoff=document.getElementById("aiHumanHandoff");
 const aiHumanZaloBtn=document.getElementById("aiHumanZaloBtn");
@@ -3213,6 +3215,7 @@ function aiChatOpen(){
 }
 function aiChatHide(){
   if(!aiChatPanel) return;
+  aiChatCloseEmojiPicker();
   aiChatPanel.hidden=true;
   document.body.classList.remove("ai-chat-open");
   if(zaloConsultBtn){
@@ -3550,6 +3553,44 @@ function aiChatDecorateShell(){
 }
 setTimeout(aiChatDecorateShell,0);
 
+function aiChatCloseEmojiPicker(){
+  if(!aiChatEmojiPicker) return;
+  aiChatEmojiPicker.hidden=true;
+  aiChatEmojiToggle?.setAttribute("aria-expanded","false");
+}
+function aiChatInsertEmoji(emoji){
+  if(!aiChatInput) return;
+  const value=String(emoji||"");
+  if(!value) return;
+  const start=Number.isFinite(aiChatInput.selectionStart)?aiChatInput.selectionStart:aiChatInput.value.length;
+  const end=Number.isFinite(aiChatInput.selectionEnd)?aiChatInput.selectionEnd:start;
+  aiChatInput.value=aiChatInput.value.slice(0,start)+value+aiChatInput.value.slice(end);
+  const pos=start+value.length;
+  try{ aiChatInput.setSelectionRange(pos,pos); }catch(_){}
+  aiChatInput.dispatchEvent(new Event("input",{bubbles:true}));
+  aiChatInput.focus();
+}
+aiChatEmojiToggle?.addEventListener("click",e=>{
+  e.preventDefault();
+  e.stopPropagation();
+  if(!aiChatEmojiPicker) return;
+  const willOpen=aiChatEmojiPicker.hidden;
+  aiChatEmojiPicker.hidden=!willOpen;
+  aiChatEmojiToggle.setAttribute("aria-expanded",willOpen?"true":"false");
+});
+aiChatEmojiPicker?.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-chat-emoji]");
+  if(!btn) return;
+  e.preventDefault();
+  aiChatInsertEmoji(btn.dataset.chatEmoji||"");
+  aiChatCloseEmojiPicker();
+});
+document.addEventListener("pointerdown",e=>{
+  if(!aiChatEmojiPicker || aiChatEmojiPicker.hidden) return;
+  if(e.target.closest("#aiChatEmojiPicker,#aiChatEmojiToggle")) return;
+  aiChatCloseEmojiPicker();
+});
+
 function aiChatTyping(show){
   let el=document.getElementById("aiChatTyping");
   if(show && AI_CHAT_BEHAVIOR.typingEnabled===false){ el?.remove(); return; }
@@ -3660,6 +3701,7 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
   .map(({score,...x})=>x);
 }
 async function aiChatAsk(question,options={}){
+  aiChatCloseEmojiPicker();
   const text=String(question||"").trim();
   const alreadyAppended=Boolean(options?.alreadyAppended);
   if(!text) return;

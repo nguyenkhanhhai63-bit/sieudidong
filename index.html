@@ -1401,8 +1401,17 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
   </div>
 
   <form id="aiChatForm" class="ai-chat-form">
+    <button id="aiChatEmojiToggle" class="ai-chat-emoji-toggle" type="button" aria-label="Chọn biểu tượng cảm xúc" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M8.5 14.2c1 1.35 2.15 2 3.5 2s2.5-.65 3.5-2"/></svg>
+    </button>
     <textarea id="aiChatInput" rows="1" maxlength="1200" placeholder="Nhập tin nhắn..." aria-label="Nội dung tin nhắn"></textarea>
     <button id="aiChatSend" type="submit">Gửi</button>
+    <div id="aiChatEmojiPicker" class="ai-chat-emoji-picker" hidden aria-label="Biểu tượng cảm xúc">
+      <button type="button" data-chat-emoji="🙂">🙂</button><button type="button" data-chat-emoji="😄">😄</button><button type="button" data-chat-emoji="😂">😂</button><button type="button" data-chat-emoji="😅">😅</button>
+      <button type="button" data-chat-emoji="😍">😍</button><button type="button" data-chat-emoji="🥰">🥰</button><button type="button" data-chat-emoji="👍">👍</button><button type="button" data-chat-emoji="❤️">❤️</button>
+      <button type="button" data-chat-emoji="🔥">🔥</button><button type="button" data-chat-emoji="👌">👌</button><button type="button" data-chat-emoji="🙏">🙏</button><button type="button" data-chat-emoji="🤝">🤝</button>
+      <button type="button" data-chat-emoji="😎">😎</button><button type="button" data-chat-emoji="🤔">🤔</button><button type="button" data-chat-emoji="😮">😮</button><button type="button" data-chat-emoji="✅">✅</button>
+    </div>
   </form>
 
   <div class="ai-chat-foot">Tin nhắn có thể được hỗ trợ tự động. Khi cần, nhân viên sẽ tiếp tục hỗ trợ bạn.</div>
