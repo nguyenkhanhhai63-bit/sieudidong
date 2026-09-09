@@ -16150,7 +16150,30 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 
 /* V817 - AI chat long press copy */
 #aiChatPanel .ai-chat-message{position:relative;}
-#aiChatPanel .ai-chat-bubble{-webkit-touch-callout:none;}
+#aiChatPanel .ai-chat-bubble{
+  -webkit-touch-callout:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  transition:transform .14s ease,box-shadow .14s ease,filter .14s ease!important;
+}
+#aiChatPanel .ai-chat-bubble::selection{background:transparent!important;}
+#aiChatPanel .ai-chat-bubble *{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+#aiChatPanel .ai-chat-bubble.ai-chat-copy-pressing{
+  transform:scale(.985);
+  filter:brightness(.97);
+  box-shadow:0 2px 9px rgba(15,23,42,.10)!important;
+}
+#aiChatPanel .ai-chat-bubble.ai-chat-copy-ready{
+  animation:sddCopyReady .22s ease-out;
+}
+@keyframes sddCopyReady{
+  0%{transform:scale(.985)}
+  55%{transform:scale(1.018)}
+  100%{transform:scale(1)}
+}
 #aiChatPanel .ai-chat-copy-action{
   position:absolute;z-index:40;top:100%;margin-top:5px;padding:7px 11px;
   border:1px solid #e3e7ec;border-radius:10px;background:#fff;color:#1f2937;

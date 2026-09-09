@@ -4340,17 +4340,36 @@ window.addEventListener("load",()=>{
       if(ok){ menu.textContent="Đã sao chép"; setTimeout(removeMenu,650); }
     });
   }
-  function cancelHold(){ if(timer){ clearTimeout(timer); timer=null; } }
+  let pressBubble=null, startX=0, startY=0;
+  function clearPress(){
+    if(pressBubble){ pressBubble.classList.remove("ai-chat-copy-pressing"); pressBubble=null; }
+  }
+  function cancelHold(){
+    if(timer){ clearTimeout(timer); timer=null; }
+    clearPress();
+  }
   document.addEventListener("pointerdown",e=>{
     const bubble=e.target.closest?.("#aiChatMessages .ai-chat-bubble");
     if(!bubble) return;
     cancelHold();
-    timer=setTimeout(()=>{ timer=null; showMenu(bubble); },HOLD_MS);
+    pressBubble=bubble;
+    startX=e.clientX||0; startY=e.clientY||0;
+    bubble.classList.add("ai-chat-copy-pressing");
+    timer=setTimeout(()=>{
+      timer=null;
+      bubble.classList.remove("ai-chat-copy-pressing");
+      bubble.classList.add("ai-chat-copy-ready");
+      setTimeout(()=>bubble.classList.remove("ai-chat-copy-ready"),220);
+      try{ if(navigator.vibrate) navigator.vibrate(12); }catch(_){}
+      showMenu(bubble);
+    },HOLD_MS);
   },{passive:true});
   document.addEventListener("pointerup",cancelHold,{passive:true});
   document.addEventListener("pointercancel",cancelHold,{passive:true});
   document.addEventListener("pointermove",e=>{
-    if(timer && (Math.abs(e.movementX||0)>5 || Math.abs(e.movementY||0)>5)) cancelHold();
+    if(!timer) return;
+    const dx=Math.abs((e.clientX||0)-startX), dy=Math.abs((e.clientY||0)-startY);
+    if(dx>9 || dy>9) cancelHold();
   },{passive:true});
   document.addEventListener("contextmenu",e=>{
     const bubble=e.target.closest?.("#aiChatMessages .ai-chat-bubble");
