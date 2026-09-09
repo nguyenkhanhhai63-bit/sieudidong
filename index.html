@@ -2141,7 +2141,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
    if(moit){moit.hidden=!showMoit;if(showMoit)moit.href=cfg.moitUrl;}
    if(moitLabel)moitLabel.textContent=cfg.moitLabel||'Đã thông báo Bộ Công Thương';
    if(moitImg){const hasImg=showMoit&&/^https?:\/\//i.test(String(cfg.moitBadgeImage||''));moitImg.hidden=!hasImg;if(hasImg)moitImg.src=cfg.moitBadgeImage;}
-   if(legalBlock)legalBlock.hidden=!(legalRows.length||showMoit);
+   if(legalBlock)legalBlock.hidden=!(cfg.moitEnabled===true);
  }
  // Render icon hợp lý ngay cả trước khi API trả dữ liệu.
  render({});
