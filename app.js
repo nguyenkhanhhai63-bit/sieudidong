@@ -4330,14 +4330,18 @@ window.addEventListener("load",()=>{
     menu=document.createElement("button");
     menu.type="button";
     menu.className="ai-chat-copy-action";
-    menu.textContent="Sao chép";
+    menu.innerHTML=`<span class="ai-chat-copy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="10" height="10" rx="2.2" stroke="currentColor" stroke-width="1.9"/><path d="M15 8V6.5A2.5 2.5 0 0 0 12.5 4h-6A2.5 2.5 0 0 0 4 6.5v6A2.5 2.5 0 0 0 6.5 15H8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><span class="ai-chat-copy-label">Sao chép</span>`;
     menu.setAttribute("aria-label","Sao chép tin nhắn");
     const row=bubble.closest(".ai-chat-message");
     (row||bubble.parentElement).appendChild(menu);
     menu.addEventListener("click",async e=>{
       e.preventDefault(); e.stopPropagation();
       const ok=await copyText(bubble.textContent);
-      if(ok){ menu.textContent="Đã sao chép"; setTimeout(removeMenu,650); }
+      if(ok){
+        menu.classList.add("is-copied");
+        menu.innerHTML=`<span class="ai-chat-copy-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m6.5 12.5 3.4 3.4 7.6-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ai-chat-copy-label">Đã sao chép</span>`;
+        setTimeout(removeMenu,780);
+      }
     });
   }
   let pressBubble=null, startX=0, startY=0;

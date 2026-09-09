@@ -16175,11 +16175,33 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   100%{transform:scale(1)}
 }
 #aiChatPanel .ai-chat-copy-action{
-  position:absolute;z-index:40;top:100%;margin-top:5px;padding:7px 11px;
-  border:1px solid #e3e7ec;border-radius:10px;background:#fff;color:#1f2937;
-  box-shadow:0 5px 18px rgba(15,23,42,.16);font:700 11px/1.1 inherit;
-  white-space:nowrap;cursor:pointer;animation:sddCopyPop .12s ease-out;
+  position:absolute;z-index:60;top:100%;margin-top:7px;
+  display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:7px 12px 7px 9px;
+  border:1px solid rgba(15,23,42,.08);border-radius:999px;
+  background:rgba(17,24,39,.94);color:#fff;
+  box-shadow:0 8px 24px rgba(15,23,42,.22),0 2px 7px rgba(15,23,42,.12);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  font:750 12px/1 inherit;letter-spacing:.01em;white-space:nowrap;cursor:pointer;
+  animation:sddCopyPop .18s cubic-bezier(.2,.8,.2,1);
+  transform-origin:top center;
 }
-#aiChatPanel .ai-chat-message.assistant .ai-chat-copy-action{left:0;}
-#aiChatPanel .ai-chat-message.user .ai-chat-copy-action{right:0;}
-@keyframes sddCopyPop{from{opacity:0;transform:translateY(-3px) scale(.96)}to{opacity:1;transform:none}}
+#aiChatPanel .ai-chat-copy-action:active{transform:scale(.96);}
+#aiChatPanel .ai-chat-copy-icon{
+  width:20px;height:20px;display:grid;place-items:center;flex:0 0 20px;
+  border-radius:50%;background:rgba(255,255,255,.12);
+}
+#aiChatPanel .ai-chat-copy-icon svg{width:13px;height:13px;display:block;}
+#aiChatPanel .ai-chat-copy-label{position:relative;top:.2px;}
+#aiChatPanel .ai-chat-copy-action.is-copied{
+  background:rgba(22,101,52,.96);
+}
+#aiChatPanel .ai-chat-copy-action.is-copied .ai-chat-copy-icon{background:rgba(255,255,255,.16);}
+#aiChatPanel .ai-chat-message.assistant .ai-chat-copy-action{left:4px;}
+#aiChatPanel .ai-chat-message.user .ai-chat-copy-action{right:4px;}
+@keyframes sddCopyPop{
+  from{opacity:0;transform:translateY(-5px) scale(.9);filter:blur(2px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+@media(max-width:720px){
+  #aiChatPanel .ai-chat-copy-action{min-height:36px;padding:8px 13px 8px 9px;font-size:12px;}
+}
