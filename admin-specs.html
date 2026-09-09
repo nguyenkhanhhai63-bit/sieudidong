@@ -9237,7 +9237,7 @@ async function loadAdmin(){
   const timer=setTimeout(()=>controller.abort(),6000);
 
   try{
-    const r=await fetch("/api/admin/session?ts="+Date.now(),{
+    const r=await fetch("/api/admin-session-direct?ts="+Date.now(),{
       cache:"no-store",
       credentials:"same-origin",
       signal:controller.signal
@@ -10998,7 +10998,7 @@ loginForm.addEventListener("submit",async(e)=>{
 
     let r;
     try{
-      r=await fetch("/api/admin/login",{
+      r=await fetch("/api/admin-login-direct",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         credentials:"same-origin",
@@ -11010,12 +11010,13 @@ loginForm.addEventListener("submit",async(e)=>{
     }
 
     let data={};
-    try{ data=await r.json(); }catch(_){}
+    let rawText="";
+    try{ rawText=await r.text(); data=rawText?JSON.parse(rawText):{}; }catch(_){}
 
     if(!r.ok){
       if(r.status===401) throw new Error(data.error||"Mật khẩu quản trị không đúng.");
       if(r.status===429) throw new Error("Bạn thử đăng nhập quá nhiều lần. Vui lòng chờ một lúc.");
-      throw new Error(data.error||"Đăng nhập thất bại.");
+      throw new Error(data.error||(`Đăng nhập thất bại (HTTP ${r.status}).`));
     }
 
     setLoginStatus("Mật khẩu chính xác. Đang mở trang quản trị...","success");
@@ -11038,7 +11039,7 @@ loginForm.addEventListener("submit",async(e)=>{
 });
 
 logoutBtn.addEventListener("click",async()=>{
-  await fetch("/api/admin/logout",{method:"POST"});
+  await fetch("/api/admin-logout-direct",{method:"POST"});
   location.reload();
 });
 
