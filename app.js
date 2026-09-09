@@ -1,3 +1,5 @@
+/* V786: iPhone card uses native Android renderer; live KiotViet name is cleaned to remove variant attributes from product title. */
+window.__SDD_IPHONE_NATIVE_V774__=true;
 let sddWarrantyPending=false;
 
 /* V71 - Link Zalo tư vấn.
@@ -271,7 +273,7 @@ function updateSeoForProduct(group,variant){
 
 
 let PRODUCTS = [];
-const PRODUCT_CACHE_KEY = "sieudidong-products-v24";
+const PRODUCT_CACHE_KEY = "sieudidong-products-v25-live-kiot-name";
 const PRODUCT_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
 
 function saveProductCache(products){
@@ -705,6 +707,61 @@ function getColor(attrs, name){
 
   return "";
 }
+
+// V773: iPhone KiotViet là Máy cũ và được gom theo MODEL, giữ các thuộc tính thật của từng mã hàng.
+function iphoneModelName(name){
+  const text=String(name||"").replace(/\s+/g," ").trim();
+  const m=text.match(/\biphone\s*(?:se\s*\d*|\d{1,2})(?:\s*(?:pro\s*max|pro|max|plus|mini|air|e))?/i);
+  if(!m) return "";
+  return m[0].replace(/^iphone/i,"iPhone").replace(/\s+/g," ").trim();
+}
+
+// V786: Tên iPhone trên card chỉ giữ tên sản phẩm, bỏ các thuộc tính KiotViet
+// như Màu, dung lượng, tình trạng, Pin... vốn được nối vào sau dấu " - ".
+function cleanIphoneDisplayName(name){
+  const text=String(name||"").replace(/\s+/g," ").trim();
+  if(!iphoneModelName(text)) return text;
+
+  const parts=text.split(/\s+-\s+/).map(x=>x.trim()).filter(Boolean);
+  if(parts.length<=1) return text;
+
+  const colorRe=/^(?:đen|trắng|xanh(?:\s+(?:dương|lá|biển|ngọc|mint))?|đỏ|hồng|tím|bạc|titan(?:\s+(?:xám|đen|trắng))?|cam|vàng|black|white|blue|green|silver|gold|gray|grey|purple|pink|red)$/i;
+  const storageRe=/^(?:\d{1,4}(?:\s*(?:gb|tb|g|t))?|\d+\s*\/\s*(?:\d+|1t|2t))$/i;
+  const conditionRe=/^(?:\d{2,3}%|pin\s*[0-9xX]{1,5}%?|battery\b.*|like\s*new.*|newseal.*|fullbox.*|seal.*|máy\s*(?:đẹp|zin|cũ).*|tình\s*trạng.*)$/i;
+
+  const kept=[];
+  for(const part of parts){
+    if(colorRe.test(part) || storageRe.test(part) || conditionRe.test(part)) break;
+    kept.push(part);
+  }
+  return (kept.length ? kept.join(" - ") : parts[0]).trim();
+}
+
+function getIphoneQuality(attrs,name){
+  // KiotViet có thể lưu chung một thuộc tính kiểu "Tình trạng / Pin = 98% - Pin 8X".
+  // Không dùng name.includes("pin") để lấy battery vì sẽ đọc trùng cùng một thuộc tính.
+  const list=Array.isArray(attrs)?attrs:[];
+  let condition="", battery="";
+  for(const a of list){
+    const n=String(a?.name||"").trim().toLowerCase();
+    const v=String(a?.value||"").trim();
+    if(!v) continue;
+    if(!condition && (/tình trạng|tinh trang|ngoại hình|ngoai hinh|condition/.test(n))) condition=v;
+    if(!battery && (/^pin$|^battery$|dung lượng pin|dung luong pin/.test(n))) battery=v;
+  }
+  const text=String(name||"");
+  let c=String(condition||"").trim();
+  let b=String(battery||"").trim();
+
+  // Nếu tình trạng đã chứa cả Pin (vd "98% - Pin 8X") thì dùng nguyên giá trị, không nối Pin lần hai.
+  if(c && /\bpin\b/i.test(c)) return c.replace(/\s+-\s+/g," - ").trim();
+
+  if(!c){ const m=text.match(/\b(\d{2,3}%)\b/); if(m) c=m[1]; }
+  if(!b){ const m=text.match(/\bPin\s*([0-9xX]{1,4}%?)\b/i); if(m) b="Pin "+m[1].toUpperCase(); }
+  if(b && !/^pin\b/i.test(b)) b="Pin "+b;
+  return [c,b].filter(Boolean).join(" - ");
+}
+
 function extractMemory(name){
   const m = String(name || "").match(/(\d+)\s*\/\s*(\d+|1T|2T)/i);
   return m ? `${m[1]}/${m[2]}` : "";
@@ -922,7 +979,9 @@ function renderMainCategoryMenu(){
 }
 
 function sddProductKind(p){
-  if(p?.sourceType==="used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
+  const sddName=[p?.fullName,p?.baseName,p?.name].filter(Boolean).join(" ");
+  if(iphoneModelName(sddName)) return "used";
+  if(p?.sourceType==="used" || p?.sourceType==="kiot-iphone-used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
   const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand].filter(Boolean).join(" ").toLowerCase();
   if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
   if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
@@ -947,23 +1006,32 @@ function flattenProducts(raw){
         : (p.attributes || []);
 
       const fullName = v.name || p.name || "";
+      const iphoneModel = iphoneModelName(fullName);
       const memory = getMemory(attrs, fullName);
       const color = getColor(attrs, fullName);
+      const quality = iphoneModel ? getIphoneQuality(attrs,fullName) : "";
+      const sourceType = iphoneModel ? "kiot-iphone-used" : (p.sourceType || "");
 
       items.push({
         id:v.id || p.id,
         fullName,
-        baseName:normalizeProductBaseName(fullName, color, memory),
+        // Giữ tên cha hiện tại từ KiotViet để tiêu đề card luôn bám theo tên đang đặt trên KiotViet.
+        // groupKey iPhone vẫn dùng model để gom biến thể, nhưng tên hiển thị không còn bị ép thành tên model cũ.
+        parentName:String(p.name || "").trim(),
+        // Với iPhone KiotViet, mọi mã hàng iPhone 12 - Đen - 64 - 98% - Pin 8X...
+        // đều dùng cùng key "iPhone 12". Vì vậy danh sách chỉ còn 1 card/model.
+        baseName:iphoneModel || normalizeProductBaseName(fullName, color, memory),
         memory,
         color,
+        quality,
         attributes:attrs,
         price:Number(v.price || 0),
         onHand:Number(v.onHand || 0),
         image:v.image || p.image || "",
-        categoryName:p.categoryName || "Khác",
-        rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:canonicalBrand(p.brand) || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
-        sourceType:p.sourceType || "",
+        categoryName:iphoneModel ? "Máy cũ" : (p.categoryName || "Khác"),
+        rootCategoryName:iphoneModel ? "Máy cũ" : (p.rootCategoryName || p.categoryName || "Khác"),
+        brand:iphoneModel ? "Apple" : (canonicalBrand(p.brand) || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" "))),
+        sourceType,
         usedItemId:p.usedItemId || "",
         images:Array.isArray(v.images)&&v.images.length?v.images:(Array.isArray(p.images)?p.images:[]),
         usedData:v.usedData || p.usedData || null
@@ -981,8 +1049,11 @@ function groupItems(items){
 
     if(!map.has(key)){
       map.set(key,{
-        // Mã key chỉ dùng để gom nhóm. Máy cũ phải hiển thị tên thật đã nhập trong quản trị.
-        name:(item.sourceType==="used" ? (item.fullName || item.baseName || "Máy cũ") : key),
+        // Mã key chỉ dùng để gom nhóm. Tên iPhone KiotViet lấy trực tiếp từ tên sản phẩm cha hiện tại.
+        // Nhờ vậy đổi tên trên KiotViet sẽ đổi theo ở web, nhưng các biến thể vẫn gom thành 1 card/model.
+        name:(item.sourceType==="used"
+          ? (item.fullName || item.baseName || "Máy cũ")
+          : (item.sourceType==="kiot-iphone-used" ? cleanIphoneDisplayName(item.parentName || item.fullName || key) : key)),
         groupKey:key,
         image:item.image || "",
         categoryName:item.categoryName || "Khác",
@@ -1004,7 +1075,17 @@ function groupItems(items){
     group.items.push(item);
   });
 
-  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  const groups=[...map.values()];
+  // V781: ảnh card/chi tiết iPhone lấy trực tiếp từ đúng biến thể KiotViet đang được chọn làm mặc định.
+  // Không dùng ảnh tĩnh/ảnh của biến thể đầu tiên trong nhóm nữa.
+  for(const group of groups){
+    if(group.sourceType==="kiot-iphone-used"){
+      const def=getDefaultVariantForGroup(group);
+      if(def?.image) group.image=def.image;
+      if(Array.isArray(def?.images) && def.images.length) group.images=def.images;
+    }
+  }
+  return groups.sort((a,b)=>a.name.localeCompare(b.name,"vi"));
 }
 
 function imageHTML(group){
@@ -1127,10 +1208,14 @@ function renderCategoryFilters(){
       const display={
         Xiaomi:"mi",Samsung:"SAMSUNG",OPPO:"oppo",vivo:"vivo",Realme:"R",
         OnePlus:"1+",iQOO:"iQOO",HONOR:"HONOR",POCO:"POCO",TECNO:"TECNO",
-        Apple:"",Huawei:"HUAWEI",Nubia:"nubia",Motorola:"moto",Google:"G",
+        Apple:"",Huawei:"HUAWEI",Nubia:"nubia",Motorola:"moto",Google:"G",
         ASUS:"ASUS",Sony:"SONY",Nothing:"NOTHING"
       };
-      mark.textContent=display[filter] || String(filter).toUpperCase();
+      if(filter==="Apple"){
+        mark.innerHTML='<svg class="sdd-apple-logo" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>';
+      }else{
+        mark.textContent=display[filter] || String(filter).toUpperCase();
+      }
       label.textContent=filter;
     }
 
@@ -1690,7 +1775,7 @@ async function openCompareModal(){
 
   // V219: So sánh mở thành TRANG RIÊNG, không dùng popup/modal.
   saveCompareItems();
-  window.location.href="/so-sanh";
+  window.location.href="/so-sanh.html";
 }
 
 function render(){
@@ -1988,6 +2073,7 @@ if(!inlineProductDetail) return;
   let selected=initialVariant || variants[0] || null;
   let selectedColor=selected?.color || "";
   let selectedMemory=selected?.memory || "";
+  let selectedQuality=selected?.quality || "";
 
   inlineProductDetail.innerHTML="";
 
@@ -2011,7 +2097,7 @@ if(!inlineProductDetail) return;
   const breadcrumb=document.createElement("div");
   breadcrumb.className="detail-breadcrumb";
   const brand=group.items[0]?.brand || "Điện thoại";
-  breadcrumb.textContent=`Điện thoại  ›  ${brand}`;
+  breadcrumb.textContent=iphoneModelName(group.name) ? `Máy cũ  ›  ${brand}` : `Điện thoại  ›  ${brand}`;
 
   const heading=document.createElement("div");
   heading.className="detail-heading";
@@ -2106,6 +2192,15 @@ if(!inlineProductDetail) return;
   memoryOptions.className="detail-memory-options";
   memoryRow.append(memoryLabel,memoryOptions);
 
+  const qualityRow=document.createElement("div");
+  qualityRow.className="detail-option-row";
+  const qualityLabel=document.createElement("div");
+  qualityLabel.className="detail-option-label";
+  qualityLabel.textContent="Tình trạng / Pin";
+  const qualityOptions=document.createElement("div");
+  qualityOptions.className="detail-memory-options detail-quality-options";
+  qualityRow.append(qualityLabel,qualityOptions);
+
   const detailActions=document.createElement("div");
   detailActions.className="detail-actions";
 
@@ -2149,6 +2244,7 @@ if(!inlineProductDetail) return;
   }
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
+  if(variants.some(v=>v.quality)) info.appendChild(qualityRow);
   info.appendChild(detailActions);
 
   const related=document.createElement("aside");
@@ -2226,23 +2322,26 @@ if(!inlineProductDetail) return;
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
+  const qualities=[...new Set(variants.map(v=>v.quality).filter(Boolean))];
   const colorButtons=new Map();
   const memoryButtons=new Map();
+  const qualityButtons=new Map();
   const stockText=statusTop;
 
   function findVariant(){
     let matches=variants.filter(v=>{
       const cOk=!selectedColor || v.color===selectedColor;
       const mOk=!selectedMemory || v.memory===selectedMemory;
-      return cOk && mOk;
+      const qOk=!selectedQuality || v.quality===selectedQuality;
+      return cOk && mOk && qOk;
     });
 
-    if(!matches.length && selectedColor){
-      matches=variants.filter(v=>v.color===selectedColor);
+    if(!matches.length){
+      matches=variants.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory));
     }
-    if(!matches.length && selectedMemory){
-      matches=variants.filter(v=>v.memory===selectedMemory);
-    }
+    if(!matches.length && selectedQuality){ matches=variants.filter(v=>v.quality===selectedQuality); }
+    if(!matches.length && selectedColor){ matches=variants.filter(v=>v.color===selectedColor); }
+    if(!matches.length && selectedMemory){ matches=variants.filter(v=>v.memory===selectedMemory); }
     if(!matches.length) matches=[...variants];
 
     return matches.sort((a,b)=>{
@@ -2252,30 +2351,47 @@ if(!inlineProductDetail) return;
     })[0] || null;
   }
 
-  function updateAvailability(){
-    colorButtons.forEach((btn,color)=>{
-      const exists=variants.some(v=>{
-        const mOk=!selectedMemory || v.memory===selectedMemory;
-        return mOk && v.color===color;
-      });
-      btn.classList.toggle("disabled",!exists);
-    });
-
-    memoryButtons.forEach((btn,mem)=>{
-      const exists=variants.some(v=>{
-        const cOk=!selectedColor || v.color===selectedColor;
-        return cOk && v.memory===mem;
-      });
-      btn.classList.toggle("disabled",!exists);
-    });
+  // v775: Trạng thái của từng thuộc tính phải dựa trên tồn kho THỰC của chính thuộc tính đó,
+  // không được làm mờ chỉ vì tổ hợp đang chọn không tồn tại. Ví dụ đang chọn Trắng + Pin 7X
+  // thì Pin 8X vẫn phải bấm được nếu KiotViet còn Đen/Tím + Pin 8X; khi bấm sẽ tự chuyển
+  // sang biến thể còn hàng tương ứng.
+  function attrHasStock(type,value){
+    return variants.some(v=>Number(v.onHand||0)>0 && v[type]===value);
   }
 
+  function bestVariant(list){
+    return [...list].sort((a,b)=>{
+      const stockDiff=(Number(b.onHand||0)>0)-(Number(a.onHand||0)>0);
+      if(stockDiff!==0) return stockDiff;
+      return Number(a.price||0)-Number(b.price||0);
+    })[0] || null;
+  }
+
+  function applyVariant(v){
+    if(!v) return;
+    selectedColor=v.color || "";
+    selectedMemory=v.memory || "";
+    selectedQuality=v.quality || "";
+  }
+
+  function updateAvailability(){
+    colorButtons.forEach((btn,color)=>{
+      btn.classList.toggle("disabled",!attrHasStock("color",color));
+    });
+    memoryButtons.forEach((btn,mem)=>{
+      btn.classList.toggle("disabled",!attrHasStock("memory",mem));
+    });
+    qualityButtons.forEach((btn,q)=>{
+      btn.classList.toggle("disabled",!attrHasStock("quality",q));
+    });
+  }
   function updateUI(){
     selected=findVariant();
 
     if(selected){
       selectedColor=selected.color || selectedColor;
       selectedMemory=selected.memory || selectedMemory;
+      selectedQuality=selected.quality || selectedQuality;
 
       // Đổi ảnh theo đúng biến thể màu/dung lượng đang chọn.
       // Nếu biến thể có ảnh riêng từ KiotViet thì dùng ảnh đó.
@@ -2318,6 +2434,9 @@ if(!inlineProductDetail) return;
     memoryButtons.forEach((btn,mem)=>{
       btn.classList.toggle("active",mem===selectedMemory);
     });
+    qualityButtons.forEach((btn,q)=>{
+      btn.classList.toggle("active",q===selectedQuality);
+    });
 
     colorNote.textContent=selectedColor ? `(${selectedColor})` : "";
     updateAvailability();
@@ -2335,13 +2454,9 @@ if(!inlineProductDetail) return;
 
     btn.addEventListener("click",()=>{
       if(btn.classList.contains("disabled")) return;
-
-      selectedColor=color;
-      const compatible=variants.filter(v=>v.color===selectedColor);
-
-      if(selectedMemory && !compatible.some(v=>v.memory===selectedMemory)){
-        selectedMemory=compatible.find(v=>v.memory)?.memory || "";
-      }
+      const compatible=variants.filter(v=>v.color===color && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
       updateUI();
     });
 
@@ -2361,18 +2476,30 @@ if(!inlineProductDetail) return;
 
     btn.addEventListener("click",()=>{
       if(btn.classList.contains("disabled")) return;
-
-      selectedMemory=mem;
-      const compatible=variants.filter(v=>v.memory===selectedMemory);
-
-      if(selectedColor && !compatible.some(v=>v.color===selectedColor)){
-        selectedColor=compatible.find(v=>v.color)?.color || "";
-      }
+      const compatible=variants.filter(v=>v.memory===mem && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedQuality||v.quality===selectedQuality));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
       updateUI();
     });
 
     memoryButtons.set(mem,btn);
     memoryOptions.appendChild(btn);
+  });
+
+  qualities.forEach(q=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="detail-memory-btn";
+    btn.textContent=q;
+    btn.addEventListener("click",()=>{
+      if(btn.classList.contains("disabled")) return;
+      const compatible=variants.filter(v=>v.quality===q && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory));
+      applyVariant(bestVariant(exact.length ? exact : compatible));
+      updateUI();
+    });
+    qualityButtons.set(q,btn);
+    qualityOptions.appendChild(btn);
   });
 
   productGrid.hidden=true;
@@ -2511,6 +2638,7 @@ loadSearchPopularityCache();
 // Nạp danh sách bán chạy gần nhất trước để tab mặc định hiển thị ngay.
 loadBestSellerCache();
 
+// V785: tên/giá/tồn iPhone bám KiotViet theo dữ liệu sống, không giữ tên cũ trong cache 24h.
 // Hiện cache sản phẩm ngay nếu có, rồi cập nhật nền.
 if(loadProductCache()){
   updatedAt.textContent="Đang cập nhật...";
@@ -2526,6 +2654,20 @@ if(loadProductCache()){
 }
 
 load();
+
+// Tự đồng bộ lại KiotViet mỗi 60 giây và khi người dùng quay lại tab.
+// fetch /api/products có no-store + ts nên tên iPhone đổi trên KiotViet không bị trình duyệt giữ bản cũ.
+let __sddLiveKiotSyncBusy=false;
+async function __sddLiveKiotSync(){
+  if(__sddLiveKiotSyncBusy) return;
+  __sddLiveKiotSyncBusy=true;
+  try{ await load(); }finally{ __sddLiveKiotSyncBusy=false; }
+}
+setInterval(()=>{ if(!document.hidden) __sddLiveKiotSync(); },60000);
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden) __sddLiveKiotSync();
+});
+
 loadBestSellers();
 loadSearchPopularity();
 setInterval(load,60000);

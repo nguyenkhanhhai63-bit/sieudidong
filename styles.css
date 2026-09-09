@@ -1610,7 +1610,8 @@ body.modal-open{
 }
 
 .detail-color-options,
-.detail-memory-options{
+.detail-memory-options,
+.detail-quality-options{
   display:flex;
   flex-wrap:wrap;
   gap:7px;
@@ -16139,3 +16140,10 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 .community-messages{flex:1 1 auto;min-height:0;overflow:auto;padding:12px;background:linear-gradient(180deg,#f7f9fc,#f2f5f8);overscroll-behavior:contain}.community-msg{margin-bottom:10px;max-width:88%}.community-msg.mine{margin-left:auto}.community-meta{display:flex;gap:7px;align-items:center;margin:0 3px 4px;font-size:9px;color:#8490a3}.community-meta b{font-size:9.5px;color:#475467}.community-meta em{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:#ff5a00;color:#fff;font-size:8px;font-style:normal}.community-msg.mine .community-meta{justify-content:flex-end}.community-bubble{display:inline-block;padding:9px 11px;border:1px solid #e6e9ee;border-radius:5px 15px 15px 15px;background:#fff;color:#1f2937;font-size:12px;line-height:1.42;box-shadow:0 1px 5px rgba(15,23,42,.05);white-space:pre-wrap;overflow-wrap:anywhere}.community-msg.mine .community-bubble{float:right;border-color:#ff5a00;border-radius:15px 5px 15px 15px;background:#ff5a00;color:#fff}.community-msg.mine:after{content:"";display:block;clear:both}.community-msg.staff .community-bubble{border-color:#ffd6bf;background:#fff8f4}.community-empty,.community-loading{display:flex;min-height:180px;align-items:center;justify-content:center;flex-direction:column;color:#98a2b3;text-align:center;font-size:11px}.community-empty b{color:#475467;font-size:13px;margin-bottom:5px}
 .community-form{display:flex;align-items:flex-end;gap:7px;padding:8px 9px;background:#fff;border-top:1px solid #edf0f3}.community-form textarea{flex:1;min-height:42px;max-height:92px;resize:none;border:1px solid #dce2e8;border-radius:14px;padding:10px 11px;font:inherit;font-size:12px;line-height:1.4;outline:none}.community-form textarea:focus{border-color:#ff6a21;box-shadow:0 0 0 3px rgba(255,90,0,.09)}.community-form button{width:48px;height:42px;border:0;border-radius:13px;background:#ff5a00;color:#fff;font-weight:800;cursor:pointer}.community-form button:disabled{opacity:.55}.community-status{padding:0 10px 9px;background:#fff;color:#98a2b3;text-align:center;font-size:8.5px;line-height:1.3}
 @media(max-width:720px){.community-launcher{right:14px;bottom:82px;width:48px;height:48px;padding:0;border-radius:50%}.community-launcher-icon{width:48px;height:48px}.community-launcher-copy{display:none}.community-panel{left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));width:auto;height:min(590px,76svh);border-radius:20px}.community-head{min-height:58px;padding:8px 10px}.community-messages{padding:10px}.community-msg{max-width:91%}.community-bubble{font-size:12px;padding:9px 10px}.community-status{padding-bottom:max(8px,env(safe-area-inset-bottom))}}
+
+/* V773 iPhone KiotViet native attributes */
+.detail-quality-options{display:flex;flex-wrap:wrap;gap:10px}
+
+/* v788 - Apple brand logo: SVG instead of unsupported Apple font glyph */
+.sdd-brand-card[data-brand="Apple"] .sdd-brand-mark{font-size:0!important;line-height:1!important;}
+.sdd-brand-card[data-brand="Apple"] .sdd-apple-logo{display:block!important;width:28px!important;height:36px!important;fill:#111827!important;}
