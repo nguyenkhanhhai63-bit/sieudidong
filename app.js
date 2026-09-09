@@ -4394,4 +4394,35 @@ window.addEventListener("load",()=>{
   });
   document.addEventListener("scroll",e=>{ if(menu && e.target?.closest?.("#aiChatMessages")) removeMenu(); },true);
 })();
-\n\n/* V821 - live-chat polish: giao diện giống nhân viên trực nhưng luôn ghi rõ AI hỗ trợ */\n(function sddAiLiveChatPolishV821(){\n  function apply(){\n    const panel=document.getElementById('aiChatPanel');\n    if(!panel) return;\n    panel.classList.add('ai-livechat-v821');\n\n    const status=document.getElementById('chatStaffStatus');\n    if(status){\n      status.innerHTML='<i class="chat-online-dot" aria-hidden="true"></i> Đang trực tuyến <b class="ai-chat-disclosure">AI hỗ trợ</b>';\n    }\n\n    const foot=panel.querySelector('.ai-chat-foot');\n    if(foot){\n      foot.innerHTML='<span class="ai-chat-shield" aria-hidden="true">◈</span> Trợ lý AI của Siêu Di Động · Có thể chuyển nhân viên khi cần';\n    }\n\n    const name=document.getElementById('chatStaffName');\n    if(name && !name.dataset.v821Observed){\n      name.dataset.v821Observed='1';\n      const sync=()=>{\n        const value=String(name.textContent||'').trim();\n        if(value && value!== 'Đang kết nối...' && !/trợ lý/i.test(value)) name.setAttribute('aria-label',value+' - trợ lý tư vấn AI');\n      };\n      new MutationObserver(sync).observe(name,{childList:true,characterData:true,subtree:true});\n      sync();\n    }\n  }\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true}); else apply();\n})();\n
+
+
+/* V821 - live-chat polish: giao diện giống nhân viên trực nhưng luôn ghi rõ AI hỗ trợ */
+(function sddAiLiveChatPolishV821(){
+  function apply(){
+    const panel=document.getElementById('aiChatPanel');
+    if(!panel) return;
+    panel.classList.add('ai-livechat-v821');
+
+    const status=document.getElementById('chatStaffStatus');
+    if(status){
+      status.innerHTML='<i class="chat-online-dot" aria-hidden="true"></i> Đang trực tuyến <b class="ai-chat-disclosure">AI hỗ trợ</b>';
+    }
+
+    const foot=panel.querySelector('.ai-chat-foot');
+    if(foot){
+      foot.innerHTML='<span class="ai-chat-shield" aria-hidden="true">◈</span> Trợ lý AI của Siêu Di Động · Có thể chuyển nhân viên khi cần';
+    }
+
+    const name=document.getElementById('chatStaffName');
+    if(name && !name.dataset.v821Observed){
+      name.dataset.v821Observed='1';
+      const sync=()=>{
+        const value=String(name.textContent||'').trim();
+        if(value && value!== 'Đang kết nối...' && !/trợ lý/i.test(value)) name.setAttribute('aria-label',value+' - trợ lý tư vấn AI');
+      };
+      new MutationObserver(sync).observe(name,{childList:true,characterData:true,subtree:true});
+      sync();
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true}); else apply();
+})();
