@@ -3641,6 +3641,16 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
       stockQty,
       webVariantId:String(webVariant?.id||webVariant?.productId||""),
       webVariantName:String(webVariant?.name||webVariant?.fullName||""),
+      // V826: gửi toàn bộ màu/biến thể + tồn kho thật cho AI.
+      // Không chỉ gửi biến thể mặc định vì khách có thể hỏi "còn màu khác không?".
+      variants:variants.map(v=>({
+        id:String(v?.id||v?.productId||""),
+        name:String(v?.name||v?.fullName||""),
+        color:String(v?.color||""),
+        memory:String(v?.memory||""),
+        price:Number(v?.price||0),
+        onHand:Math.max(0,Number(v?.onHand||0))
+      })),
       brand,
       score
     };
