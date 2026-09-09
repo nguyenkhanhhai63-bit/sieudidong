@@ -9237,7 +9237,7 @@ async function loadAdmin(){
   const timer=setTimeout(()=>controller.abort(),6000);
 
   try{
-    const r=await fetch("/api/admin-session?ts="+Date.now(),{
+    const r=await fetch("/api/admin/session?ts="+Date.now(),{
       cache:"no-store",
       credentials:"same-origin",
       signal:controller.signal
@@ -10979,18 +10979,6 @@ if(togglePassword){
   });
 }
 
-async function checkAdminLoginConfig(){
-  try{
-    const r=await fetch("/api/admin-login?check=1&ts="+Date.now(),{cache:"no-store",credentials:"same-origin"});
-    const d=await r.json().catch(()=>({}));
-    if(!r.ok) return;
-    if(d.configured===false){
-      setLoginStatus("Thiếu ADMIN_PASSWORD trên Vercel. Vào Settings → Environment Variables, tạo ADMIN_PASSWORD rồi Redeploy.","error");
-    }
-  }catch(_){ }
-}
-checkAdminLoginConfig();
-
 loginForm.addEventListener("submit",async(e)=>{
   e.preventDefault();
 
@@ -11010,7 +10998,7 @@ loginForm.addEventListener("submit",async(e)=>{
 
     let r;
     try{
-      r=await fetch("/api/admin-login",{
+      r=await fetch("/api/admin/login",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         credentials:"same-origin",
@@ -11025,12 +11013,9 @@ loginForm.addEventListener("submit",async(e)=>{
     try{ data=await r.json(); }catch(_){}
 
     if(!r.ok){
-      if(data?.code==="ADMIN_PASSWORD_MISSING" || r.status===503){
-        throw new Error(data.error||"Thiếu ADMIN_PASSWORD trên Vercel. Hãy cấu hình rồi Redeploy.");
-      }
       if(r.status===401) throw new Error(data.error||"Mật khẩu quản trị không đúng.");
-      if(r.status===429) throw new Error(data.error||"Bạn thử đăng nhập quá nhiều lần. Vui lòng chờ một lúc.");
-      throw new Error(data.error||`Đăng nhập thất bại (HTTP ${r.status}).`);
+      if(r.status===429) throw new Error("Bạn thử đăng nhập quá nhiều lần. Vui lòng chờ một lúc.");
+      throw new Error(data.error||"Đăng nhập thất bại.");
     }
 
     setLoginStatus("Mật khẩu chính xác. Đang mở trang quản trị...","success");
@@ -11053,7 +11038,7 @@ loginForm.addEventListener("submit",async(e)=>{
 });
 
 logoutBtn.addEventListener("click",async()=>{
-  await fetch("/api/admin-logout",{method:"POST"});
+  await fetch("/api/admin/logout",{method:"POST"});
   location.reload();
 });
 
