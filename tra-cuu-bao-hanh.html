@@ -501,6 +501,24 @@ html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-se
       const r=await fetch("/api/warranty-lookup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:p})});
       let data={}; try{data=await r.json();}catch{}
       if(!r.ok) throw new Error(data.error||("Lỗi tra cứu ("+r.status+")"));
+
+      // V798: lưu CHÍNH XÁC object mà trình duyệt vừa nhận và sắp hiển thị cho khách.
+      // Vì vậy purchaseDate trong admin phải giống hệt "Ngày mua" ở trang tra cứu.
+      try{
+        await fetch("/api/warranty-history-v798",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          cache:"no-store",
+          body:JSON.stringify({
+            phone:p,
+            ts:Date.now(),
+            status:data.found?"found":"not_found",
+            customerName:data.customerName||"",
+            items:Array.isArray(data.items)?data.items:[]
+          })
+        });
+      }catch(saveErr){ console.warn("Không lưu được lịch sử bảo hành v798",saveErr); }
+
       if(!data.found){
         result.innerHTML='<div class="warranty-alert">'+esc(data.message||"Không tìm thấy lịch sử mua hàng với số điện thoại này.")+'</div>';
         return;
