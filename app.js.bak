@@ -174,22 +174,7 @@ else installGlobalZaloTracking();
 // Trước đây page_view phải chờ userAgentData.getHighEntropyValues(); trên một số
 // trình duyệt promise này có thể chậm/treo nên dashboard vẫn thấy heartbeat online
 // nhưng Hôm nay = 0. Dùng UA fallback ngay để không mất lượt truy cập.
-function analyticsTrafficSource(){
-  try{
-    const params=new URLSearchParams(location.search||"");
-    const utm=String(params.get("utm_source")||"").toLowerCase();
-    const ref=String(document.referrer||"");
-    const host=ref ? new URL(ref).hostname.toLowerCase().replace(/^www\./,"") : "";
-    const raw=(utm+" "+host).trim();
-    if(!raw) return "Trực tiếp";
-    if(/google|googleads|gclid/.test(raw)) return "Google";
-    if(/facebook|fb\.com|l\.facebook|m\.facebook|instagram|meta/.test(raw)) return "Facebook";
-    if(/zalo/.test(raw)) return "Zalo";
-    return "Khác";
-  }catch(_){ return "Trực tiếp"; }
-}
-
-sendAnalytics("page_view",{...deviceInfoFromUa(),trafficSource:analyticsTrafficSource()});
+sendAnalytics("page_view",deviceInfoFromUa());
 
 // Nếu trình duyệt trả được thông tin thiết bị chi tiết hơn thì chỉ bổ sung metadata,
 // tuyệt đối không cộng thêm lượt xem.
@@ -723,38 +708,6 @@ function extractColor(name){
 }
 
 
-function canonicalBrand(value){
-  const raw=String(value||"").trim();
-  if(!raw) return "";
-  const text=raw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/[^a-z0-9]+/g," ").trim();
-  const aliases=[
-    ["Xiaomi", ["xiaomi","redmi","mi"]],
-    ["Samsung", ["samsung","galaxy"]],
-    ["OPPO", ["oppo"]],
-    ["vivo", ["vivo"]],
-    ["Realme", ["realme"]],
-    ["OnePlus", ["oneplus","one plus","1plus"]],
-    ["iQOO", ["iqoo","i qoo"]],
-    ["HONOR", ["honor"]],
-    ["POCO", ["poco"]],
-    ["TECNO", ["tecno"]],
-    ["Apple", ["apple","iphone","ipad"]],
-    ["Huawei", ["huawei"]],
-    ["Nubia", ["nubia","redmagic","red magic"]],
-    ["Motorola", ["motorola","moto"]],
-    ["Google", ["google","pixel","google pixel"]],
-    ["ASUS", ["asus","rog","rog phone"]],
-    ["Sony", ["sony","xperia"]],
-    ["Nothing", ["nothing","nothing phone","cmf","cmf phone"]]
-  ];
-  for(const [brand,names] of aliases){
-    if(names.includes(text)) return brand;
-  }
-  // Nếu Sheet nhập kèm chữ thừa như "XIAOMI / REDMI", thử nhận diện theo từ khóa.
-  const detected=detectBrand(raw);
-  return detected!=="Khác" ? detected : raw;
-}
-
 function detectBrand(name){
   const text = String(name || "").toLowerCase();
 
@@ -962,7 +915,7 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:p.categoryName || "Khác",
         rootCategoryName:p.rootCategoryName || p.categoryName || "Khác",
-        brand:canonicalBrand(p.brand) || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
+        brand:p.brand || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" ")),
         sourceType:p.sourceType || "",
         usedItemId:p.usedItemId || "",
         images:Array.isArray(v.images)&&v.images.length?v.images:(Array.isArray(p.images)?p.images:[]),
@@ -1065,8 +1018,7 @@ function renderCategoryFilters(){
   });
 
   flat.forEach(p=>{
-    const canonical=canonicalBrand(p.brand);
-    if(canonical && canonical !== "Khác") brandSet.add(canonical);
+    if(p.brand && p.brand !== "Khác") brandSet.add(p.brand);
   });
 
   const preferredOrder = [
@@ -1608,19 +1560,11 @@ async function runAiCompare(groups,specs,need,button,result){
 
     const data=await r.json().catch(()=>({}));
     if(!r.ok){
-      const sanitizePublicChatError=(value)=>{
-        const raw=String(value||"").trim();
-        if(!raw) return "Shop chưa phản hồi kịp. B thử lại xíu nha.";
-        if(/\bAI\b|trí tuệ nhân tạo|gemini|model|token|rate limit|429/i.test(raw)){
-          return "Shop chưa phản hồi kịp tin nhắn này. B thử lại sau xíu nha.";
-        }
-        return raw;
-      };
-      const message=sanitizePublicChatError(data.error);
+      const message=data.error||"AI đang bận.";
       if((r.status===429 || r.status===502) && !button.dataset.retried){
         button.dataset.retried="1";
         const el=waitNode();
-        if(el) el.textContent="Shop đang xử lý tin nhắn, chờ xíu nha...";
+        if(el) el.textContent="AI đang bận, hệ thống tự thử lại một lần...";
         await new Promise(resolve=>setTimeout(resolve,1200));
 
         const retryController=new AbortController();
@@ -1657,7 +1601,7 @@ async function runAiCompare(groups,specs,need,button,result){
     result.innerHTML="";
     const error=document.createElement("div");
     error.className="compare-ai-error";
-    error.textContent=err?.name==="AbortError" ? "Shop phản hồi hơi lâu, b thử lại xíu nha." : (err?.message||"Shop chưa phản hồi kịp, b thử lại sau xíu nha.");
+    error.textContent=err?.name==="AbortError" ? "AI phản hồi hơi lâu. Vui lòng thử lại." : (err?.message||"AI đang bận. Vui lòng thử lại sau ít phút.");
     result.appendChild(error);
   }finally{
     clearTimeout(statusTimer1);
@@ -1703,7 +1647,7 @@ function render(){
       : new Set();
     items = items.filter(x=>bestNames.has(x.baseName));
   }else if(ACTIVE_CATEGORY!=="Tất cả"){
-    items=items.filter(x=>canonicalBrand(x.brand)===canonicalBrand(ACTIVE_CATEGORY));
+    items=items.filter(x=>x.brand===ACTIVE_CATEGORY);
   }
 
   if(q){
@@ -2139,7 +2083,6 @@ if(!inlineProductDetail) return;
     usedBox.innerHTML=`
       <div class="used-detail-badge">Ảnh thực tế đúng chiếc máy đang bán</div>
       ${ud.condition?`<div><span>Ngoại hình</span><strong>${ud.condition}</strong></div>`:""}
-      ${ud.rom?`<div><span>ROM</span><strong>${ud.rom}</strong></div>`:""}
       ${ud.battery?`<div><span>Tình trạng pin</span><strong>${ud.battery}</strong></div>`:""}
       ${ud.warranty?`<div><span>Bảo hành</span><strong>${ud.warranty}</strong></div>`:""}
       ${ud.accessories?`<div><span>Phụ kiện</span><strong>${ud.accessories}</strong></div>`:""}
@@ -2433,10 +2376,10 @@ window.addEventListener("popstate",()=>{
 
 function usedPublicToProducts(items){
   return (Array.isArray(items)?items:[]).map(x=>{
-    const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"ROM",value:x.rom||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
-    const usedData={condition:x.condition||"",rom:x.rom||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
+    const attrs=[{name:"Dung lượng",value:x.memory||""},{name:"Màu",value:x.color||""},{name:"Tình trạng",value:x.condition||""},{name:"Pin",value:x.battery||""}].filter(v=>v.value);
+    const usedData={condition:x.condition||"",battery:x.battery||"",warranty:x.warranty||"",accessories:x.accessories||"",note:x.note||"",status:x.status||"available"};
     const image=Array.isArray(x.images)&&x.images[0]?x.images[0]:"";
-    return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:canonicalBrand(x.brand)||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
+    return {id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",brand:x.brand||detectBrand(x.name||""),categoryName:"Máy cũ",rootCategoryName:"Máy cũ",
       sourceType:"used",usedItemId:x.id,basePrice:Number(x.price||0),image,images:x.images||[],attributes:attrs,usedData,
       variants:[{id:`used-${x.id}`,code:`USED-${x.id}`,name:x.name||"Máy cũ",price:Number(x.price||0),onHand:x.status==="sold"?0:1,image,images:x.images||[],attributes:attrs,usedData}]};
   });
@@ -2742,65 +2685,6 @@ document.addEventListener("visibilitychange",()=>{
 
 
 const AI_CHAT_HISTORY=[];
-const AI_CHAT_SESSION_KEY="sdd_ai_chat_session_v473";
-const AI_CHAT_CONVERSATION_KEY="sdd_ai_chat_conversation_v473";
-const AI_CHAT_CONVERSATION_TTL=24*60*60*1000;
-function aiChatReadConversation(){
-  try{
-    const data=JSON.parse(localStorage.getItem(AI_CHAT_CONVERSATION_KEY)||"null");
-    if(!data||typeof data!=="object") return null;
-    if(!Number(data.updatedAt)||Date.now()-Number(data.updatedAt)>AI_CHAT_CONVERSATION_TTL){
-      localStorage.removeItem(AI_CHAT_CONVERSATION_KEY);
-      localStorage.removeItem(AI_CHAT_SESSION_KEY);
-      return null;
-    }
-    return data;
-  }catch(_){ return null; }
-}
-function aiChatWriteConversation(patch={}){
-  try{
-    const prev=aiChatReadConversation()||{};
-    const next={...prev,...patch,updatedAt:Date.now()};
-    localStorage.setItem(AI_CHAT_CONVERSATION_KEY,JSON.stringify(next));
-    return next;
-  }catch(_){ return null; }
-}
-function aiChatGetSessionId(){
-  try{
-    const saved=aiChatReadConversation();
-    let id=String(saved?.sessionId||localStorage.getItem(AI_CHAT_SESSION_KEY)||"");
-    if(!/^[a-zA-Z0-9_-]{12,90}$/.test(id)){
-      id="sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
-    }
-    localStorage.setItem(AI_CHAT_SESSION_KEY,id);
-    aiChatWriteConversation({sessionId:id});
-    return id;
-  }catch(_){
-    return "sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
-  }
-}
-const AI_CHAT_SESSION_ID=aiChatGetSessionId();
-function aiChatSaveHistory(userText,assistantText,data={}){
-  const u=String(userText||"").trim(), a=String(assistantText||"").trim();
-  if(!u&&!a)return;
-  fetch("/api/ai-chat-history",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    keepalive:true,
-    body:JSON.stringify({
-      sessionId:AI_CHAT_SESSION_ID,
-      visitorId:analyticsVisitorId(),
-      userText:u,
-      assistantText:a,
-      sentAt:Date.now(),
-      page:location.pathname+location.search,
-      needsHuman:data?.needsHuman===true,
-      source:data?.source||"",
-      intent:data?.understoodIntent||data?.intent||""
-    })
-  }).catch(()=>{});
-}
-
 
 function parseAiChatSuggestions(raw=""){
   return String(raw||"")
@@ -2836,212 +2720,28 @@ function renderAiChatSuggestions(raw=""){
   });
 }
 
-let AI_CHAT_BEHAVIOR={typingEnabled:true,initialDelayMin:2800,initialDelayMax:4500,bubbleDelayMin:1500,bubbleDelayMax:2800,interMessageMin:900,interMessageMax:1800};
-let AI_CHAT_STAFF_NAMES=["Hải","Minh Đang","Tiến"];
-const AI_CHAT_STAFF_KEY="sdd_chat_staff_name_v2";
-const AI_CHAT_LAST_STAFF_KEY="sdd_chat_last_staff_name_v1";
-let AI_CHAT_ASSIGNED_STAFF="";
-function aiChatApplyStaffFromConfig(rawNames){
-  const names=(Array.isArray(rawNames)?rawNames:[]).map(x=>String(x||"").trim()).filter(Boolean).slice(0,20);
-  if(names.length) AI_CHAT_STAFF_NAMES=names;
-  let selected=AI_CHAT_ASSIGNED_STAFF;
-  const savedConversation=aiChatReadConversation();
-  const savedStaff=String(savedConversation?.staffName||"").trim();
-  if(AI_CHAT_STAFF_NAMES.includes(savedStaff)){
-    selected=savedStaff;
-    AI_CHAT_ASSIGNED_STAFF=savedStaff;
-  }
-  if(!AI_CHAT_STAFF_NAMES.includes(selected)){
-    let last="";
-    try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
-    let pool=AI_CHAT_STAFF_NAMES.filter(n=>n!==last);
-    if(!pool.length) pool=AI_CHAT_STAFF_NAMES.slice();
-    selected=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
-    AI_CHAT_ASSIGNED_STAFF=selected;
-    try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,selected);}catch(_){}
-    aiChatWriteConversation({staffName:selected,sessionId:AI_CHAT_SESSION_ID});
-  }
-
-  // Chỉ hiện tên + trạng thái online sau khi quy trình kết nối lần đầu hoàn tất.
-  // Tránh vừa mở chat đã lộ tên nhân viên trước màn hình "Đang kết nối...".
-  let hasWelcomed=false;
-  try{hasWelcomed=aiChatReadConversation()?.welcomed===true;}catch(_){}
-  if(hasWelcomed){
-    const el=document.getElementById("chatStaffName");
-    const status=document.getElementById("chatStaffStatus") || el?.parentElement?.querySelector("span");
-    if(el) el.textContent=selected;
-    if(status) status.style.visibility="";
-  }
-  return selected;
-}
-
 let aiChatWelcomeLoaded=false;
-let aiChatWelcomePromise=null;
-let AI_CHAT_WELCOME_TEXT="Chào bạn, cần tìm máy tầm giá nào hoặc muốn hỏi gì về Siêu Di Động?";
-let AI_CHAT_WELCOME_TEXTS=[AI_CHAT_WELCOME_TEXT];
-const AI_CHAT_LAST_WELCOME_KEY="sdd_ai_chat_last_welcome_v1";
-const AI_CHAT_WELCOME_SHOWN_KEY="sdd_ai_chat_welcome_shown_v471";
-function aiChatPickWelcome(){
-  const list=(Array.isArray(AI_CHAT_WELCOME_TEXTS)?AI_CHAT_WELCOME_TEXTS:[]).map(x=>String(x||"").trim()).filter(Boolean);
-  if(!list.length) return AI_CHAT_WELCOME_TEXT;
-  let last="";
-  try{last=localStorage.getItem(AI_CHAT_LAST_WELCOME_KEY)||"";}catch(_){}
-  let pool=list.filter(x=>x!==last);
-  if(!pool.length) pool=list.slice();
-  const chosen=pool[Math.floor(Math.random()*pool.length)]||list[0]||AI_CHAT_WELCOME_TEXT;
-  try{localStorage.setItem(AI_CHAT_LAST_WELCOME_KEY,chosen);}catch(_){}
-  return chosen;
-}
-
-async function aiChatGenerateLiveWelcome(staffName){
-  let previous="";
-  try{ previous=localStorage.getItem(AI_CHAT_LAST_WELCOME_KEY)||""; }catch(_){}
-  try{
-    const r=await fetch("/api/ai-welcome-live",{
-      method:"POST",cache:"no-store",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({staffName:String(staffName||""),previousGreeting:previous})
-    });
-    const data=await r.json().catch(()=>({}));
-    const text=String(data?.greeting||"").trim();
-    if(r.ok && text){
-      try{ localStorage.setItem(AI_CHAT_LAST_WELCOME_KEY,text); }catch(_){}
-      return text;
-    }
-  }catch(_){}
-  return aiChatPickWelcome();
-}
-
-function aiChatLoadWelcome(){
-  if(aiChatWelcomePromise) return aiChatWelcomePromise;
+async function aiChatLoadWelcome(){
+  if(aiChatWelcomeLoaded) return;
   aiChatWelcomeLoaded=true;
-  aiChatWelcomePromise=(async()=>{
-    try{
-      const r=await fetch("/api/ai-chat",{cache:"no-store"});
-      const data=await r.json();
+  try{
+    const r=await fetch("/api/ai-chat",{cache:"no-store"});
+    const data=await r.json();
       if(data && (data.needsPhone===true || data.warrantyPending===true)) sddWarrantyPending=true;
       if(data && (data.warrantyCompleted===true || data.warrantyPending===false)) sddWarrantyPending=false;
-      const text=String(data?.welcomeMessage||"").trim();
-      if(!r.ok) return;
-      const welcomeList=(Array.isArray(data?.welcomeMessages)?data.welcomeMessages:[]).map(x=>String(x||"").trim()).filter(Boolean);
-      if(welcomeList.length) AI_CHAT_WELCOME_TEXTS=welcomeList;
-      if(text) AI_CHAT_WELCOME_TEXT=text;
-      if(!welcomeList.length && text) AI_CHAT_WELCOME_TEXTS=[text];
-      renderAiChatSuggestions(data?.suggestions||"");
-      aiChatApplyStaffFromConfig(data?.staffNames||[]);
-      if(data?.chatBehavior&&typeof data.chatBehavior==="object") AI_CHAT_BEHAVIOR={...AI_CHAT_BEHAVIOR,...data.chatBehavior};
-    }catch(_){}
-  })();
-  return aiChatWelcomePromise;
-}
-
-
-
-function aiChatShowAssigningStatus(show){
-  let el=document.getElementById("aiChatAssigningStatus");
-  if(show){
-    if(el) return el;
-    el=document.createElement("div");
-    el.id="aiChatAssigningStatus";
-    el.className="ai-chat-assigning-status";
-    el.innerHTML='<span class="ai-chat-assigning-spinner" aria-hidden="true"></span><span>Đang kết nối với tư vấn viên...</span>';
-    aiChatMessages.appendChild(el);
-    requestAnimationFrame(()=>{
-      try{ aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"}); }catch(_){ aiChatMessages.scrollTop=aiChatMessages.scrollHeight; }
-    });
-    return el;
-  }
-  el?.remove();
-}
-
-async function aiChatShowWelcomeOnce(){
-  if(!aiChatMessages) return;
-
-  // V464: lịch sử chat thực tế mới là nguồn xác định đã chào hay chưa.
-  // Bản cũ có thể đã set sessionStorage trước khi bubble chào kịp render,
-  // làm mở chat ra trắng. Nếu chưa có tin assistant nào thì phải chào lại.
-  const hasAssistantMessage=!!aiChatMessages.querySelector(".ai-chat-message.assistant");
-  if(hasAssistantMessage){
-    aiChatWriteConversation({welcomed:true,sessionId:AI_CHAT_SESSION_ID});
-    return;
-  }
-
-  let shown=false;
-  try{ shown=sessionStorage.getItem(AI_CHAT_WELCOME_SHOWN_KEY)==="1"; }catch(_){}
-  // Chỉ tôn trọng cờ khi trong khung đã thực sự có nội dung.
-  if(shown && aiChatMessages.querySelector(".ai-chat-message")) return;
-
-  try{ await aiChatLoadWelcome(); }catch(_){}
-
-  // V465: khi khách mở chat lần đầu, hiển thị trạng thái đang sắp xếp hỗ trợ
-  // trước khi nhân viên trực bắt đầu soạn câu chào.
-  // V467: trong lúc kết nối chưa tiết lộ tên nhân viên. Sau khoảng 5 giây
-  // mới hiện nhân viên được phân công rồi bắt đầu trạng thái đang soạn.
-  const staffNameEl=document.getElementById("chatStaffName");
-  const staffStatusEl=document.getElementById("chatStaffStatus") || staffNameEl?.parentElement?.querySelector("span");
-  let assignedName=AI_CHAT_ASSIGNED_STAFF;
-  const savedStaff=String(aiChatReadConversation()?.staffName||"").trim();
-  if(AI_CHAT_STAFF_NAMES.includes(savedStaff)){
-    assignedName=savedStaff;
-    AI_CHAT_ASSIGNED_STAFF=savedStaff;
-  }
-  if(!AI_CHAT_STAFF_NAMES.includes(assignedName)){
-    let last="";
-    try{last=localStorage.getItem(AI_CHAT_LAST_STAFF_KEY)||"";}catch(_){}
-    let pool=AI_CHAT_STAFF_NAMES.filter(n=>n!==last);
-    if(!pool.length) pool=AI_CHAT_STAFF_NAMES.slice();
-    assignedName=pool[Math.floor(Math.random()*pool.length)]||AI_CHAT_STAFF_NAMES[0]||"Nhân viên";
-    AI_CHAT_ASSIGNED_STAFF=assignedName;
-    try{localStorage.setItem(AI_CHAT_LAST_STAFF_KEY,assignedName);}catch(_){}
-    aiChatWriteConversation({staffName:assignedName,sessionId:AI_CHAT_SESSION_ID});
-  }
-  if(staffNameEl){
-    staffNameEl.dataset.assignedName=assignedName;
-    staffNameEl.textContent="Đang kết nối...";
-  }
-  if(staffStatusEl) staffStatusEl.style.visibility="hidden";
-
-  const liveWelcomePromise=aiChatGenerateLiveWelcome(assignedName);
-  aiChatShowAssigningStatus(true);
-  await aiChatSleep(aiChatRandRange(4800,5200));
-  aiChatShowAssigningStatus(false);
-
-  if(staffNameEl) staffNameEl.textContent=staffNameEl.dataset.assignedName||assignedName;
-  if(staffStatusEl) staffStatusEl.style.visibility="";
-
-  // Sau khi kết nối xong mới hiện tên nhân viên, rồi trạng thái đang soạn và gửi lời chào.
-  if(AI_CHAT_BEHAVIOR.typingEnabled!==false){
-    aiChatTyping(true);
-    await aiChatSleep(aiChatRandRange(
-      Math.max(700, Number(AI_CHAT_BEHAVIOR.initialDelayMin)||1200),
-      Math.max(1100, Number(AI_CHAT_BEHAVIOR.initialDelayMax)||2200)
-    ));
-    aiChatTyping(false);
-  }else{
-    await aiChatSleep(350);
-  }
-
-  const liveWelcome=await liveWelcomePromise;
-  aiChatAppend("assistant",liveWelcome||aiChatPickWelcome());
-  // Chỉ đánh dấu sau khi câu chào đã render thành công.
-  aiChatWriteConversation({welcomed:true,sessionId:AI_CHAT_SESSION_ID});
+    const text=String(data?.welcomeMessage||"").trim();
+    if(!r.ok) return;
+    const first=aiChatMessages?.querySelector(".ai-chat-message.assistant .ai-chat-bubble");
+    if(text && first) first.textContent=text;
+    renderAiChatSuggestions(data?.suggestions||"");
+  }catch(_){}
 }
 
 let aiChatBusy=false;
-const AI_CHAT_PENDING_QUESTIONS=[];
 
 function aiChatOpen(){
   if(!aiChatPanel) return;
   const isMobile=window.matchMedia("(max-width:720px)").matches;
-
-  // V468: phiên chat mới phải ở trạng thái kết nối, chưa được hiện tên/online.
-  let hasWelcomed=false;
-  try{hasWelcomed=aiChatReadConversation()?.welcomed===true;}catch(_){}
-  if(!hasWelcomed){
-    const nameEl=document.getElementById("chatStaffName");
-    const statusEl=document.getElementById("chatStaffStatus") || nameEl?.parentElement?.querySelector("span");
-    if(nameEl) nameEl.textContent="Đang kết nối...";
-    if(statusEl) statusEl.style.visibility="hidden";
-  }
 
   // Mobile: mở chatbox nhưng không tự gọi bàn phím.
   if(isMobile){
@@ -3057,8 +2757,6 @@ function aiChatOpen(){
   aiChatSetHumanHandoff(false);
   aiChatPanel.hidden=false;
   document.body.classList.add("ai-chat-open");
-  requestAnimationFrame(aiChatAdjustForKeyboard);
-  setTimeout(aiChatAdjustForKeyboard,120);
   if(zaloConsultBtn) zaloConsultBtn.style.setProperty("display","none","important");
   if(aiChatFloatLabel) aiChatFloatLabel.style.display="none";
   sendAnalytics("ai_chat_open",{action:"ai_chat_open"});
@@ -3082,18 +2780,15 @@ function aiChatHide(){
 function aiChatSetHumanHandoff(show,reason=""){
   if(!aiHumanHandoff) return;
 
-  // V402: ẩn thật sự bằng cả hidden + inline display để không bị CSS !important cũ ghi đè.
-  aiHumanHandoff.hidden=!show;
+  // Luôn cho khách lựa chọn nhắn nhân viên ngay khi vào chat.
+  aiHumanHandoff.hidden=false;
   aiHumanHandoff.classList.toggle("is-priority",Boolean(show));
-  if(show){
-    aiHumanHandoff.style.removeProperty("display");
-  }else{
-    aiHumanHandoff.style.setProperty("display","none","important");
-  }
 
   const note=aiHumanHandoff.querySelector("span");
-  if(note && show){
-    note.textContent=reason || "Nội dung này cần nhân viên hỗ trợ trực tiếp.";
+  if(note){
+    note.textContent=(show && reason)
+      ? reason
+      : "Nếu muốn nói chuyện với nhân viên ngay, bạn có thể nhắn Zalo trực tiếp.";
   }
 }
 
@@ -3116,177 +2811,43 @@ function aiChatCustomerRequestsHuman(text=""){
   return patterns.some(k=>s.includes(k));
 }
 
-function aiChatNeedsHuman(data={}){
-  // V401: backend quyết định rõ khi nào cần chuyển nhân viên.
-  // Không suy đoán từ các từ như “địa chỉ”, “liên hệ”, “xác nhận” vì AI có thể
-  // đang tự trả lời đúng các thông tin đó mà không cần handoff.
-  return data?.needsHuman===true;
-}
-let AI_CHAT_RESTORING=false;
-function aiChatPersistMessages(){
-  if(AI_CHAT_RESTORING||!aiChatMessages) return;
-  const messages=[...aiChatMessages.querySelectorAll(".ai-chat-message")].filter(row=>row.id!=="aiChatTyping").map(row=>({
-    role:row.classList.contains("user")?"user":"assistant",
-    text:String(row.querySelector(".ai-chat-bubble")?.textContent||"").trim()
-  })).filter(x=>x.text).slice(-60);
-  aiChatWriteConversation({messages,staffName:AI_CHAT_ASSIGNED_STAFF||aiChatReadConversation()?.staffName||"",sessionId:AI_CHAT_SESSION_ID});
-}
-function aiChatRestoreConversation(){
-  if(!aiChatMessages) return;
-  const saved=aiChatReadConversation();
-  if(!saved) return;
-  const staff=String(saved.staffName||"").trim();
-  if(staff){
-    AI_CHAT_ASSIGNED_STAFF=staff;
-    const el=document.getElementById("chatStaffName");
-    const status=document.getElementById("chatStaffStatus") || el?.parentElement?.querySelector("span");
-    if(el){ el.dataset.assignedName=staff; el.textContent=staff; }
-    if(status) status.style.visibility="";
-  }
-  const messages=Array.isArray(saved.messages)?saved.messages:[];
-  if(messages.length && !aiChatMessages.querySelector(".ai-chat-message")){
-    AI_CHAT_RESTORING=true;
-    for(const item of messages){
-      aiChatAppend(item.role==="user"?"user":"assistant",item.text);
-      AI_CHAT_HISTORY.push({role:item.role==="user"?"user":"assistant",text:String(item.text||"")});
-    }
-    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
-    AI_CHAT_RESTORING=false;
-    requestAnimationFrame(()=>{ aiChatMessages.scrollTop=aiChatMessages.scrollHeight; });
-  }
+function aiChatNeedsHuman(reply=""){
+  const s=String(reply||"").toLowerCase();
+  return [
+    "zalo",
+    "nhân viên",
+    "nhan vien",
+    "xác nhận",
+    "xac nhan",
+    "liên hệ",
+    "lien he",
+    "chưa có dữ liệu",
+    "chua co du lieu",
+    "địa chỉ",
+    "dia chi",
+    "giờ mở cửa",
+    "gio mo cua"
+  ].some(k=>s.includes(k));
 }
 function aiChatAppend(role,text){
   const row=document.createElement("div");
-  row.className="ai-chat-message "+(role==="user"?"user":"assistant")+" ai-chat-message-enter";
+  row.className="ai-chat-message "+(role==="user"?"user":"assistant");
   const bubble=document.createElement("div");
   bubble.className="ai-chat-bubble";
   bubble.textContent=String(text||"");
   row.appendChild(bubble);
   aiChatMessages.appendChild(row);
-
-  // V458: tin mới trượt nhẹ từ dưới lên + khung chat cuộn mượt như Messenger.
-  requestAnimationFrame(()=>{
-    try{
-      aiChatMessages.scrollTo({top:aiChatMessages.scrollHeight,behavior:"smooth"});
-    }catch(_){
-      aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
-    }
-  });
-  setTimeout(()=>row.classList.remove("ai-chat-message-enter"),420);
-  aiChatPersistMessages();
+  aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
   return row;
-}
-
-// V404: chia câu trả lời thành nhiều bong bóng ngắn như người thật đang chat.
-// Ưu tiên giữ nguyên từng câu/ý; không cắt giữa tên máy, giá hay cụm từ đang liền nghĩa.
-function aiChatSplitReply(text=""){
-  const raw=String(text||"")
-    .replace(/\r/g,"")
-    .replace(/[ \t]+\n/g,"\n")
-    .trim();
-  if(!raw) return [];
-
-  const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
-  const out=[];
-  const push=(value)=>{
-    let x=String(value||"").trim();
-    if(!x) return;
-    // Với câu quá dài, ưu tiên tách ở dấu ; hoặc dấu : nếu đó là hai ý độc lập.
-    if(x.length>180){
-      const parts=x.split(/(?<=[;:])\s+/).map(v=>v.trim()).filter(Boolean);
-      if(parts.length>1){ parts.forEach(push); return; }
-    }
-    out.push(x);
-  };
-
-  for(const line of lines){
-    // Dòng đánh số/bullet là một tin nhắn riêng để dễ đọc.
-    if(/^(?:[-•–—]|\d+[.)])\s+/.test(line)){
-      push(line);
-      continue;
-    }
-    const sentences=line
-      .split(/(?<=[.!?…])\s+(?=[A-ZÀ-Ỹ0-9Đ])/u)
-      .map(x=>x.trim())
-      .filter(Boolean);
-    if(sentences.length>1) sentences.forEach(push);
-    else push(line);
-  }
-
-  // Tránh spam quá nhiều bong bóng cho một câu trả lời dài bất thường.
-  if(out.length<=6) return out;
-  const compact=out.slice(0,5);
-  compact.push(out.slice(5).join(" "));
-  return compact;
-}
-
-function aiChatSleep(ms){
-  return new Promise(resolve=>setTimeout(resolve,ms));
-}
-
-// V421: tạo nhịp trả lời tự nhiên hơn, tránh cảm giác bot phản hồi tức thì.
-function aiChatRandRange(min,max){
-  let a=Math.max(0,Number(min)||0), b=Math.max(0,Number(max)||a);
-  if(b<a) [a,b]=[b,a];
-  return Math.round(a+Math.random()*(b-a));
-}
-
-function aiChatNaturalInitialDelay(question="",reply=""){
-  const base=aiChatRandRange(AI_CHAT_BEHAVIOR.initialDelayMin,AI_CHAT_BEHAVIOR.initialDelayMax);
-  const len=String(reply||"").trim().length;
-  return Math.round(base+(len>180?500:len>90?250:0));
-}
-
-function aiChatNaturalBubbleDelay(message="",first=false){
-  const base=aiChatRandRange(AI_CHAT_BEHAVIOR.bubbleDelayMin,AI_CHAT_BEHAVIOR.bubbleDelayMax);
-  const len=String(message||"").trim().length;
-  return Math.round(base+(len>150?700:len>90?400:len>45?180:0)+(first?150:0));
-}
-
-function aiChatInterMessagePause(){
-  return aiChatRandRange(AI_CHAT_BEHAVIOR.interMessageMin,AI_CHAT_BEHAVIOR.interMessageMax);
-}
-
-function aiChatCurrentStaffName(){
-  // V472: trạng thái đang soạn phải luôn dùng đúng nhân viên đang được phân công
-  // trong header, không đọc lại key sessionStorage cũ từ các phiên trước.
-  const el=document.getElementById("chatStaffName");
-  const visible=String(el?.textContent||"").trim();
-  const assigned=String(el?.dataset?.assignedName||AI_CHAT_ASSIGNED_STAFF||"").trim();
-  if(visible && visible!=="Đang kết nối...") return visible;
-  if(assigned) return assigned;
-  return "Nhân viên";
-}
-
-async function aiChatAppendAssistantMessages(text,data={}){
-  const supplied=Array.isArray(data?.messages)
-    ? data.messages.map(x=>String(x||"").trim()).filter(Boolean)
-    : [];
-  const messages=supplied.length ? supplied : aiChatSplitReply(text);
-  const list=messages.length ? messages : [String(text||"").trim()].filter(Boolean);
-
-  for(let i=0;i<list.length;i++){
-    if(i>0) await aiChatSleep(aiChatInterMessagePause());
-    // V453: luôn hiện "đang soạn" trước MỌI tin, kể cả tin đầu tiên.
-    aiChatTyping(true);
-    await aiChatSleep(aiChatNaturalBubbleDelay(list[i],i===0));
-    aiChatTyping(false);
-    aiChatAppend("assistant",list[i]);
-  }
-  return list;
 }
 function aiChatTyping(show){
   let el=document.getElementById("aiChatTyping");
-  if(show && AI_CHAT_BEHAVIOR.typingEnabled===false){ el?.remove(); return; }
   if(show){
     if(el) return;
     el=document.createElement("div");
     el.id="aiChatTyping";
-    el.className="ai-chat-message assistant ai-chat-typing-row";
-    const staff=aiChatCurrentStaffName();
-    el.innerHTML='<div class="ai-chat-typing-wrap"><div class="ai-chat-bubble ai-chat-typing"><span></span><span></span><span></span></div><div class="ai-chat-typing-label"></div></div>';
-    const label=el.querySelector(".ai-chat-typing-label");
-    if(label) label.textContent=staff+" đang soạn tin...";
+    el.className="ai-chat-message assistant";
+    el.innerHTML='<div class="ai-chat-bubble ai-chat-typing"><span></span><span></span><span></span></div>';
     aiChatMessages.appendChild(el);
     aiChatMessages.scrollTop=aiChatMessages.scrollHeight;
   }else{
@@ -3299,24 +2860,14 @@ function aiChatPriceFromText(text){
   if(!m) return null;
   return Math.round(Number(m[1].replace(",","."))*1000000);
 }
-function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
-  // V481: câu ngắn kiểu "bao nhiêu shop?", "còn không?" phải giữ đúng
-  // model khách vừa hỏi ở các tin ngay trước đó.
-  const recentUserContext=(Array.isArray(history)?history:[])
-    .filter(x=>x?.role==="user" && String(x?.text||"").trim())
-    .slice(-4)
-    .map(x=>String(x.text||"").trim())
-    .join(" ");
-
-  const contextText=`${recentUserContext} ${String(question||"")}`.trim();
-  const q=normalizeSearchText(contextText);
-  const currentQ=normalizeSearchText(question);
+function aiChatProductSnapshot(question){
+  const q=normalizeSearchText(question);
   const tokens=q.split(" ").filter(x=>x.length>=2);
-  const target=aiChatPriceFromText(question) || aiChatPriceFromText(recentUserContext);
+  const target=aiChatPriceFromText(question);
   const groups=groupItems(flattenProducts(PRODUCTS).filter(productMatchesMainCategory));
 
   return groups.map((group,index)=>{
-    const variants=((group.items||group.variants||[])).filter(Boolean);
+    const variants=(group.variants||[]).filter(Boolean);
     const prices=variants.map(v=>Number(v.price||0)).filter(x=>x>0);
     const minPrice=prices.length?Math.min(...prices):0;
     const maxPrice=prices.length?Math.max(...prices):0;
@@ -3336,10 +2887,8 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
 
     // Ưu tiên rất mạnh tên máy mà khách vừa gõ, kể cả thiếu chữ/sai nhẹ.
     const compactName=normalized.replace(/\s+/g,"");
-    const compactCurrent=currentQ.replace(/\s+/g,"");
-    const compactContext=q.replace(/\s+/g,"");
-    if(compactCurrent && compactCurrent.length>=5 && (compactName.includes(compactCurrent) || compactCurrent.includes(compactName))) score+=45;
-    if(compactContext && (compactContext.includes(compactName) || compactName.includes(compactContext))) score+=25;
+    const compactQ=q.replace(/\s+/g,"");
+    if(compactQ && (compactName.includes(compactQ) || compactQ.includes(compactName))) score+=40;
     const matchedTokens=tokens.filter(t=>normalized.includes(t));
     if(tokens.length>=2 && matchedTokens.length>=Math.ceil(tokens.length*.65)) score+=20;
 
@@ -3371,63 +2920,33 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
     };
   })
   .sort((a,b)=>b.score-a.score)
-  .slice(0,20)
+  .slice(0,14)
   .map(({score,...x})=>x);
 }
-async function aiChatAsk(question,options={}){
+async function aiChatAsk(question){
   const text=String(question||"").trim();
-  const alreadyAppended=Boolean(options?.alreadyAppended);
-  if(!text) return;
-
-  // V457: khách vẫn có thể gõ và gửi thêm khi nhân viên đang soạn.
-  // Tin gửi thêm được hiện ngay trong khung chat và xếp hàng xử lý, không khóa ô nhập.
-  if(aiChatBusy){
-    if(!alreadyAppended){
-      aiChatAppend("user",text);
-      AI_CHAT_HISTORY.push({role:"user",text});
-      if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
-    }
-    if(aiChatInput) aiChatInput.value="";
-    AI_CHAT_PENDING_QUESTIONS.push(text);
-    sendAnalytics("ai_chat_question",{action:"ai_chat_question_queued",question:text});
-    return;
-  }
-
-  try{ await aiChatLoadWelcome(); }catch(_){}
+  if(!text||aiChatBusy) return;
 
   if(aiChatCustomerRequestsHuman(text)){
-    if(!alreadyAppended) aiChatAppend("user",text);
+    aiChatAppend("user",text);
     // Xóa ngay nội dung đã gửi khỏi ô nhập, giống luồng chat AI bình thường.
     // Trước đây nhánh chuyển sang nhân viên return sớm nên input vẫn giữ tin nhắn cũ.
     if(aiChatInput) aiChatInput.value="";
-    aiChatTyping(true);
-    setTimeout(()=>{
-      aiChatTyping(false);
-      aiChatAppend("assistant","Oke bạn nha.");
-      setTimeout(()=>{
-        aiChatTyping(true);
-        setTimeout(()=>{
-          aiChatTyping(false);
-          aiChatAppend("assistant","Mình chuyển qua nhân viên hỗ trợ trực tiếp cho bạn nè.");
-        },1500+Math.random()*900);
-      },700+Math.random()*500);
-    },1700+Math.random()*900);
-    aiChatSaveHistory(text,"Oke bạn nha. Mình chuyển qua nhân viên hỗ trợ trực tiếp cho bạn nè.",{needsHuman:true,source:"human-request"});
+    aiChatAppend("assistant","Được, tôi chuyển bạn sang nhân viên tư vấn trực tiếp. Bấm nút Nhắn Zalo ngay bên dưới.");
     aiChatSetHumanHandoff(true,"Bạn đang muốn gặp nhân viên tư vấn trực tiếp. Bấm Nhắn Zalo ngay để mở cuộc trò chuyện với shop.");
     sendAnalytics("ai_chat_question",{action:"ai_chat_human_requested",question:text});
     return;
   }
 
   aiChatBusy=true;
-  const aiReplyStartedAt=Date.now();
+  aiChatInput.disabled=true;
+  aiChatSend.disabled=true;
 
-  if(!alreadyAppended){
-    aiChatAppend("user",text);
-    AI_CHAT_HISTORY.push({role:"user",text});
-    if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
-  }
+  aiChatAppend("user",text);
+  AI_CHAT_HISTORY.push({role:"user",text});
+  if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
 
-  if(aiChatInput) aiChatInput.value="";
+  aiChatInput.value="";
   aiChatTyping(true);
   sendAnalytics("ai_chat_question",{action:"ai_chat_question",question:text});
 
@@ -3437,90 +2956,46 @@ async function aiChatAsk(question,options={}){
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
         message:text,
-        products:aiChatProductSnapshot(text,AI_CHAT_HISTORY),
-        history:AI_CHAT_HISTORY.slice(-6),
-        sessionId:AI_CHAT_SESSION_ID,
-        visitorId:analyticsVisitorId(),
-        page:location.pathname+location.search
+        products:aiChatProductSnapshot(text),
+        history:AI_CHAT_HISTORY.slice(-6)
       })
     });
     const data=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(data.error||"AI chưa thể trả lời.");
 
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
-
-    // V421: server có trả lời rất nhanh thì vẫn giữ trạng thái đang nhập đủ lâu.
-    // Nếu request đã mất nhiều thời gian thì không cộng thêm độ trễ dư thừa.
-    const naturalTarget=aiChatNaturalInitialDelay(text,reply);
-    const elapsed=Date.now()-aiReplyStartedAt;
-    const remaining=Math.max(0,naturalTarget-elapsed);
-    if(remaining>0) await aiChatSleep(remaining);
-
-    // V453: tắt trạng thái chờ server, rồi bật lại một nhịp gõ thật sự trước từng bong bóng.
-    aiChatTyping(false);
-    await aiChatSleep(Math.round(250+Math.random()*450));
-    const replyMessages=await aiChatAppendAssistantMessages(reply,data);
-    const savedReply=replyMessages.join(" ")||reply;
-    AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});
-    // V419: /api/ai-chat đã tự lưu question + answer trên server trong cùng request.
-    // Chỉ dùng endpoint lịch sử riêng làm fallback nếu server báo chưa lưu được.
-    if(data?.historySaved!==true) aiChatSaveHistory(text,savedReply,data);
-    if(aiChatNeedsHuman(data)){
-      aiChatSetHumanHandoff(true,String(data?.handoffReason||"Nội dung này cần nhân viên hỗ trợ trực tiếp. Bạn có thể nhắn Zalo cho shop."));
-    }else{
-      aiChatSetHumanHandoff(false);
+    aiChatAppend("assistant",reply);
+    AI_CHAT_HISTORY.push({role:"assistant",text:reply});
+    if(aiChatNeedsHuman(reply)){
+      aiChatSetHumanHandoff(true,"Phần này nên để nhân viên xác nhận trực tiếp cho chắc. Bạn có thể chuyển sang Zalo.");
     }
     if(AI_CHAT_HISTORY.length>10) AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length-10);
   }catch(e){
-    const failText=e.message||"Shop chưa phản hồi kịp. B nhắn lại xíu nha.";
-    aiChatAppend("assistant",failText);
-    aiChatSaveHistory(text,failText,{needsHuman:true,source:"error"});
+    aiChatAppend("assistant",e.message||"AI đang bận. Bạn có thể nhờ nhân viên tư vấn trực tiếp.");
     aiChatSetHumanHandoff(true,"AI đang chưa xử lý được câu này. Chuyển sang nhân viên tư vấn trực tiếp trên Zalo.");
   }finally{
     aiChatTyping(false);
     aiChatBusy=false;
-
-    // Không blur/focus ô nhập ở đây: khách có thể đang gõ tin tiếp theo.
-    // Nếu đã gửi thêm trong lúc nhân viên đang soạn, xử lý lần lượt sau đó.
-    const nextQuestion=AI_CHAT_PENDING_QUESTIONS.shift();
-    if(nextQuestion){
-      setTimeout(()=>aiChatAsk(nextQuestion,{alreadyAppended:true}),Math.round(250+Math.random()*450));
+    aiChatInput.disabled=false;
+    aiChatSend.disabled=false;
+    // Mobile: không tự bật lại bàn phím sau khi AI trả lời.
+    if(!window.matchMedia("(max-width:720px)").matches){
+      aiChatInput.focus();
+    }else{
+      aiChatInput.blur();
     }
   }
 }
 
-aiChatRestoreConversation();
-
 zaloConsultBtn?.addEventListener("click",()=>{
   if(zaloConsultBtn.dataset.dragJustEnded==="1") return;
-  // V461: chỉ mở lại khung chat, không tự chèn thêm tin nhắn mỗi lần bật icon.
   aiChatOpen();
-  aiChatShowWelcomeOnce();
+  aiChatAppend("assistant","Bạn cứ hỏi AI trước nha. Nếu cần xác nhận thêm, tôi sẽ đưa nút chuyển sang nhân viên tư vấn trực tiếp.");
 });
 aiChatClose?.addEventListener("click",aiChatHide);
 aiChatForm?.addEventListener("submit",e=>{
   e.preventDefault();
-  const text=aiChatInput?.value||"";
-  if(text.trim()) aiChatAsk(text);
-});
-
-// V456: Android/iOS - nút Gửi phải bấm được ngay cả khi bàn phím đang mở.
-// pointerdown chạy trước lúc browser blur textarea / thay đổi visualViewport.
-let aiChatSendPointerHandled=false;
-aiChatSend?.addEventListener("pointerdown",e=>{
-  if(e.pointerType!=="touch" && e.pointerType!=="pen") return;
-  const text=aiChatInput?.value||"";
-  if(!text.trim()) return;
-  e.preventDefault();
-  aiChatSendPointerHandled=true;
-  aiChatAsk(text);
-  setTimeout(()=>{ aiChatSendPointerHandled=false; },450);
-});
-aiChatSend?.addEventListener("click",e=>{
-  if(aiChatSendPointerHandled){
-    e.preventDefault();
-    return;
-  }
+  aiChatAsk(aiChatInput.value);
 });
 aiChatInput?.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){
@@ -3542,31 +3017,17 @@ aiHumanZaloBtn?.addEventListener("click",()=>{
 
 function aiChatAdjustForKeyboard(){
   if(!aiChatPanel || aiChatPanel.hidden) return;
+  const vv=window.visualViewport;
+  if(!vv) return;
   const isMobile=window.matchMedia("(max-width:720px)").matches;
   if(!isMobile) return;
 
-  // V437: luôn căn popup theo vùng màn hình THỰC SỰ đang nhìn thấy.
-  // Khi bàn phím mở, visualViewport nhỏ lại nên chat tự nằm giữa phần còn trống,
-  // không dính lên thanh địa chỉ và cũng không bị bàn phím che.
-  const vv=window.visualViewport;
-  const viewHeight=vv ? vv.height : window.innerHeight;
-  const viewTop=vv ? vv.offsetTop : 0;
-  const keyboard=Math.max(0,window.innerHeight-viewHeight-viewTop);
-  const keyboardOpen=keyboard>120 || (aiChatInput && document.activeElement===aiChatInput && viewHeight < window.innerHeight*0.82);
-
+  const keyboard=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
   document.documentElement.style.setProperty("--ai-keyboard-offset",keyboard+"px");
-  document.documentElement.style.setProperty("--ai-vv-height",viewHeight+"px");
-  document.documentElement.style.setProperty("--ai-vv-top",viewTop+"px");
-  document.documentElement.style.setProperty("--ai-vv-center",(viewTop + viewHeight/2)+"px");
-  document.body.classList.toggle("ai-keyboard-open",Boolean(keyboardOpen));
+  document.documentElement.style.setProperty("--ai-vv-height",vv.height+"px");
 }
 window.visualViewport?.addEventListener("resize",aiChatAdjustForKeyboard);
 window.visualViewport?.addEventListener("scroll",aiChatAdjustForKeyboard);
-aiChatInput?.addEventListener("focus",()=>setTimeout(aiChatAdjustForKeyboard,60));
-aiChatInput?.addEventListener("blur",()=>{
-  document.body.classList.remove("ai-keyboard-open");
-  setTimeout(aiChatAdjustForKeyboard,120);
-});
 
 
 if(aiMobileZaloDirect) aiMobileZaloDirect.dataset.analyticsZaloBound="1";
@@ -3616,7 +3077,7 @@ function syncAiChatFloatLabel(){
   const btn=zaloConsultBtn;
   if(!btn) return;
 
-  const KEY="sdd-ai-round-pos-v424";
+  const KEY="sdd-ai-round-pos-v2";
   let dragging=false;
   let moved=false;
   let startX=0,startY=0,startLeft=0,startTop=0;
@@ -3743,7 +3204,7 @@ function snapAiSupportToEdge(){
   setAiSupportPositionImportant(btn,targetLeft,targetTop);
 
   try{
-    localStorage.setItem("sdd-ai-round-pos-v424",JSON.stringify({
+    localStorage.setItem("sdd-ai-support-pos-v1",JSON.stringify({
       x:Math.round(targetLeft),
       y:Math.round(targetTop)
     }));
