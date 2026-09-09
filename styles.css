@@ -16324,3 +16324,19 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   .ai-chat-suggestions{padding:9px 10px!important}.ai-chat-suggestions button{height:36px!important;padding:0 12px!important;font-size:10.5px!important}
   .ai-chat-form{grid-template-columns:1fr 48px!important;padding:9px 10px 6px!important;gap:8px!important}.ai-chat-form textarea{min-height:48px!important;padding:13px 14px!important;font-size:13px!important}.ai-chat-form button{width:48px!important;height:48px!important;border-radius:15px!important}.ai-chat-foot{padding-bottom:8px!important;font-size:8.5px!important}
 }
+
+/* =========================================================
+   V827 - Avatar nhân viên chat dùng logo Siêu Di Động thật
+   ========================================================= */
+#aiChatPanel .ai-chat-message.assistant::before{
+  content:''!important;
+  background-color:#ff5a00!important;
+  background-image:url('/assets/logo-square.jpg')!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:cover!important;
+  color:transparent!important;
+  overflow:hidden!important;
+  border:2px solid #fff!important;
+  box-shadow:0 3px 10px rgba(255,90,0,.20)!important;
+}
