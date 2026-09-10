@@ -16271,7 +16271,21 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 .ai-chat-message.assistant .ai-chat-bubble{background:#fff!important;color:#26364a!important;border:1px solid #e6ebf1!important;border-top-left-radius:7px!important;box-shadow:0 5px 16px rgba(15,23,42,.07)!important}
 .ai-chat-message.user .ai-chat-bubble{background:linear-gradient(135deg,#ff6500,#ff4b00)!important;color:#fff!important;border:0!important;border-top-right-radius:7px!important;box-shadow:0 7px 18px rgba(255,80,0,.20)!important}
 .ai-chat-message-meta{position:static!important;margin:0 3px!important;color:#8794a7!important;font-size:10.5px!important;line-height:1.1!important;font-weight:600!important;white-space:nowrap!important;opacity:1!important}
-.ai-chat-message.user .ai-chat-message-meta::after{content:'  ✓✓';color:#a4afbd;font-weight:800}
+/* V832: double-check trạng thái gửi, vẽ bằng CSS để không còn giống chữ v */
+.ai-chat-message.user .ai-chat-message-meta{display:flex!important;align-items:center!important;gap:5px!important}
+.ai-chat-message.user .ai-chat-message-meta::after{
+  content:""!important;
+  display:inline-block!important;
+  width:13px!important;
+  height:8px!important;
+  background:
+    linear-gradient(45deg,transparent 43%,#98a6b8 44% 57%,transparent 58%) 0 2px/7px 6px no-repeat,
+    linear-gradient(-45deg,transparent 43%,#98a6b8 44% 57%,transparent 58%) 4px 0/9px 8px no-repeat,
+    linear-gradient(45deg,transparent 43%,#98a6b8 44% 57%,transparent 58%) 4px 2px/7px 6px no-repeat,
+    linear-gradient(-45deg,transparent 43%,#98a6b8 44% 57%,transparent 58%) 8px 0/9px 8px no-repeat!important;
+  opacity:.95!important;
+  flex:0 0 13px!important;
+}
 .ai-chat-message-enter{animation:v823ChatIn .28s cubic-bezier(.2,.8,.2,1) both!important}
 @keyframes v823ChatIn{from{opacity:0;transform:translateY(9px) scale(.985)}to{opacity:1;transform:none}}
 .ai-chat-typing-row{padding-left:38px!important}
