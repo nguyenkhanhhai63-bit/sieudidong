@@ -9208,6 +9208,29 @@ async function loadAdminProductMeta(){
           grouped.set(base,item);
         });
 
+        // V845: gom các dòng thực chất chỉ là thuộc tính/màu bị dính vào tên model.
+        // Ví dụ API có "REDMI Pad 2" và "REDMI Pad 2 Lá" thì "Lá" là thuộc tính,
+        // không tạo thêm một sản phẩm riêng trong trang Link thông số.
+        const attributeSuffixes=[
+          "lá","xanh lá","xanh","đen","trắng","bạc","xám","đỏ","vàng","cam","hồng","tím"
+        ];
+        const foldKey=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+        [...grouped.keys()].forEach(model=>{
+          const mk=foldKey(model);
+          for(const suffix of attributeSuffixes){
+            const sk=foldKey(suffix);
+            if(!mk.endsWith(" "+sk)) continue;
+            const candidate=model.slice(0, model.length-suffix.length).trim();
+            const parent=[...grouped.keys()].find(k=>foldKey(k)===foldKey(candidate));
+            if(!parent || parent===model) continue;
+            const child=grouped.get(model);
+            const target=grouped.get(parent);
+            child?.variants?.forEach(v=>target.variants.add(v));
+            grouped.delete(model);
+            break;
+          }
+        });
+
         window.PRODUCT_MODEL_META=grouped;
         products=[...grouped.keys()].sort((a,b)=>a.localeCompare(b,"vi"));
 
