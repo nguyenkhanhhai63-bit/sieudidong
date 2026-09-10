@@ -14809,7 +14809,7 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill{display:none!important}
    V434 - Chatbox compact, giao diện tư vấn trung tính
    - Không chiếm gần toàn màn hình trên mobile
    - Không gắn nhãn AI ở giao diện
-   - Vẫn giữ thông báo minh bạch về hỗ trợ tự động ở footer
+   - Vẫn giữ thông báo minh bạch về Hỗ trợ trực tuyến ở footer
    ========================================================= */
 #aiChatPanel.ai-chat-panel{
   position:fixed!important;

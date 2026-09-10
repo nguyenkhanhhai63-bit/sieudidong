@@ -3313,7 +3313,7 @@ function aiChatAppend(role,text){
   bubble.textContent=String(text||"");
   row.appendChild(bubble);
 
-  // V821: metadata nhỏ như live chat thật, nhưng vẫn ghi rõ đây là hỗ trợ tự động.
+  // V821: metadata nhỏ như live chat thật, nhưng vẫn ghi rõ đây là Hỗ trợ trực tuyến.
   const meta=document.createElement("div");
   meta.className="ai-chat-message-meta";
   const now=new Date();
@@ -3570,7 +3570,7 @@ function aiChatDecorateShell(){
     aiChatSend.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5 21 12 3 3.5v6.7l12 1.8-12 1.8z"/></svg>';
   }
   const foot=aiChatPanel.querySelector('.ai-chat-foot');
-  if(foot) foot.textContent='Hỗ trợ tự động của Siêu Di Động · Có thể chuyển nhân viên khi cần';
+  if(foot) foot.textContent='Có thể chuyển nhân viên khi cần';
   aiChatEnsureTodayDivider();
 }
 setTimeout(aiChatDecorateShell,0);
@@ -4670,7 +4670,7 @@ window.addEventListener("load",()=>{
 
     const foot=panel.querySelector('.ai-chat-foot');
     if(foot){
-      foot.innerHTML='<span class="ai-chat-shield" aria-hidden="true">◈</span> Hỗ trợ tự động của Siêu Di Động · Có thể chuyển nhân viên khi cần';
+      foot.innerHTML='<span class="ai-chat-shield" aria-hidden="true">◈</span> Có thể chuyển nhân viên khi cần';
     }
 
     const name=document.getElementById('chatStaffName');
