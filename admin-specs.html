@@ -8272,14 +8272,13 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
         <div class="analytics-section-title"><div><strong>Hoạt động website</strong><span>Truy cập, sản phẩm và tương tác của khách</span></div></div>
         <div class="metric-grid metric-grid-main">
           <div class="metric metric-accent-blue"><small>Khách truy cập</small><strong id="mTodayVisitors">0</strong><em id="mVisitors30">Theo kỳ đang chọn</em></div>
-          <div class="metric"><small>Lượt truy cập</small><strong id="mTodayViews">0</strong><em id="mViews7">Session 30 phút</em></div>
-          <div class="metric"><small>Lượt xem trang</small><strong id="mPageviews">0</strong><em id="mPageviewsPeriod">Mỗi lần tải trang</em></div>
+          <div class="metric"><small>Lượt truy cập</small><strong id="mTodayViews">0</strong><em id="mViews7">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Đang online</small><strong id="mOnlineNow">0</strong><em>Trong 5 phút gần nhất</em></div>
           <div class="metric"><small>Xem chi tiết sản phẩm</small><strong id="mDetailClicks">0</strong><em id="mDetailPeriod">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Lượt so sánh</small><strong id="mTodayCompare">0</strong><em id="mCompare30">Theo kỳ đang chọn</em></div>
           <div class="metric"><small>Bấm Zalo</small><strong id="mTodayZalo">0</strong><em id="mZalo30">Theo kỳ đang chọn</em></div>
           <div class="metric metric-ai"><small>Khách dùng AI chatbox</small><strong id="mAiUsers">0</strong><em id="mAiQuestionsPeriod">0 câu hỏi · Hôm nay</em></div>
-          <div class="metric metric-total"><small>Tổng lượt truy cập</small><strong id="mViews30">0</strong><em id="mTotalViews">Session 30 phút · từ V843</em></div>
+          <div class="metric metric-total"><small>Tổng lượt truy cập hệ thống</small><strong id="mViews30">0</strong><em id="mTotalViews">Từ khi bật thống kê</em></div>
         </div>
         <!-- v514: hàng thứ 2 gồm 4 thống kê truy cập -->
         <div class="traffic-insights-row traffic-insights-row-top traffic-insights-row-four">
@@ -8295,7 +8294,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
             </div>
             <div id="trafficChart" class="chart traffic-line-chart"></div>
           </div>
-          <div class="abox traffic-source-box"><h2>Nguồn truy cập <small style="font-weight:500;color:#98a2b3">(theo session)</small></h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
+          <div class="abox traffic-source-box"><h2>Nguồn truy cập</h2><div id="trafficSourceList" class="traffic-source-list"></div></div>
           <div class="abox device-box"><h2>Thiết bị truy cập</h2>
             <div class="device-chart-wrap">
               <div id="deviceDonut" class="device-donut"><div class="device-donut-hole"><strong id="deviceDonutTotal">0</strong><span>thiết bị</span></div></div>
@@ -9041,18 +9040,14 @@ function setLoggedIn(value){
 }
 
 function mapItem(model){
-  const direct=links[model];
-  if(direct) return direct;
-
-  const target=model.toLowerCase();
-  const key=Object.keys(links)
-    .sort((a,b)=>b.length-a.length)
-    .find(k=>{
-      const x=k.toLowerCase();
-      return target===x || target.includes(x) || x.includes(target);
-    });
-
-  return key ? links[key] : null;
+  // V844: mỗi model chỉ hiện link đã gắn cho chính model đó.
+  // Không dùng includes/fuzzy vì các tên gần nhau như "REDMI Pad 2"
+  // và "REDMI Pad 2 Lá" sẽ bị lấy nhầm cùng một link.
+  const exactKey=Object.keys(links).find(k=>
+    String(k||"").trim().replace(/\s+/g," ").toLowerCase() ===
+    String(model||"").trim().replace(/\s+/g," ").toLowerCase()
+  );
+  return exactKey ? links[exactKey] : null;
 }
 
 let specFilter="all";
@@ -9803,16 +9798,14 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   const caption=document.getElementById("analyticsPeriodCaption"); if(caption) caption.textContent=label;
   document.querySelectorAll(".period-tab").forEach(btn=>btn.classList.toggle("active",btn.dataset.period===period));
   mTodayVisitors.textContent=fmt(p.visitors); mVisitors30.textContent=label;
-  mTodayViews.textContent=fmt(p.views); mViews7.textContent="Session 30 phút · "+label;
-  const pageviewsEl=document.getElementById("mPageviews"); if(pageviewsEl) pageviewsEl.textContent=fmt(p.pageviews);
-  const pageviewsPeriodEl=document.getElementById("mPageviewsPeriod"); if(pageviewsPeriodEl) pageviewsPeriodEl.textContent="Mỗi lần tải trang · "+label;
+  mTodayViews.textContent=fmt(p.views); mViews7.textContent=label;
   mOnlineNow.textContent=fmt(onlineNow);
   mDetailClicks.textContent=fmt(p.detailClicks); const dp=document.getElementById("mDetailPeriod"); if(dp) dp.textContent=label;
   document.getElementById("mTodayCompare").textContent=fmt(p.compare); document.getElementById("mCompare30").textContent=label;
   mTodayZalo.textContent=fmt(p.zalo); mZalo30.textContent=label;
   const aiUsersEl=document.getElementById("mAiUsers"); if(aiUsersEl) aiUsersEl.textContent=fmt(p.aiUsers);
   const aiQEl=document.getElementById("mAiQuestionsPeriod"); if(aiQEl) aiQEl.textContent=`${fmt(p.aiQuestions)} câu hỏi · ${label}`;
-  mViews30.textContent=fmt(o.totalViews); mTotalViews.textContent="Session 30 phút · từ V843";
+  mViews30.textContent=fmt(o.totalViews); mTotalViews.textContent="Từ khi bật thống kê";
   document.getElementById("mTodayWarrantyChecks").textContent=fmt(p.warrantyChecks); document.getElementById("mWarrantyChecks30").textContent=label;
   document.getElementById("mWarrantyPhonesToday").textContent=fmt(p.warrantyPhones); document.getElementById("mWarrantyPhones30").textContent="SĐT khác nhau · "+label;
   document.getElementById("mTodayWarrantyFound").textContent=fmt(p.warrantyFound); document.getElementById("mWarrantyFound30").textContent=label;
@@ -10140,7 +10133,7 @@ async function loadAnalytics(){
     const d=await r.json(); if(!r.ok) throw new Error(d.error||"Không tải được thống kê");
 
     const o=d.overview||{};
-    mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`Session 30 phút · 7 ngày: ${fmt(o.views7)}`; const pv=document.getElementById("mPageviews"); if(pv) pv.textContent=fmt(o.todayPageviews||0);
+    mTodayViews.textContent=fmt(o.todayViews); mViews7.textContent=`7 ngày: ${fmt(o.views7)}`;
     mTodayVisitors.textContent=fmt(o.todayVisitors); mVisitors30.textContent=`30 ngày: ${fmt(o.visitors30)}`;
     mViews30.textContent=fmt(o.views30); mTotalViews.textContent=`Tổng: ${fmt(o.totalViews)}`;
     mTodayZalo.textContent=fmt(o.todayZalo); mZalo30.textContent=`30 ngày: ${fmt(o.zalo30)}`;
