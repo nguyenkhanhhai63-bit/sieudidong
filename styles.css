@@ -16555,3 +16555,31 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   #aiChatPanel .ai-chat-more{width:36px!important;height:36px!important;flex-basis:36px!important}
   #aiChatPanel .ai-chat-more-menu{right:-43px!important;top:43px!important;width:225px!important}
 }
+
+/* V840 - trạng thái tin nhắn: đã gửi -> đã nhận -> đã xem */
+.ai-chat-message.user .ai-chat-message-meta::after{
+  content:""!important;display:inline-block!important;position:relative!important;
+  width:14px!important;height:9px!important;background:none!important;flex:0 0 14px!important;
+  opacity:1!important;
+}
+.ai-chat-message.user .ai-chat-message-meta::before{
+  content:"";display:none;
+}
+/* một tick: đã gửi */
+.ai-chat-message.user .ai-chat-message-meta.chat-status-sent::after{
+  width:8px!important;flex-basis:8px!important;
+  border-right:1.5px solid #98a6b8!important;border-bottom:1.5px solid #98a6b8!important;
+  transform:rotate(42deg)!important;height:5px!important;margin:0 2px 3px 1px!important;
+}
+/* hai tick: đã nhận */
+.ai-chat-message.user .ai-chat-message-meta.chat-status-delivered::after,
+.ai-chat-message.user .ai-chat-message-meta.chat-status-seen::after{
+  width:14px!important;height:9px!important;border:0!important;transform:none!important;margin:0!important;
+  background:
+    linear-gradient(135deg,transparent 47%,var(--check-color) 48% 58%,transparent 59%) 0 3px/7px 6px no-repeat,
+    linear-gradient(45deg,transparent 44%,var(--check-color) 45% 56%,transparent 57%) 3px 0/8px 9px no-repeat,
+    linear-gradient(135deg,transparent 47%,var(--check-color) 48% 58%,transparent 59%) 5px 3px/7px 6px no-repeat,
+    linear-gradient(45deg,transparent 44%,var(--check-color) 45% 56%,transparent 57%) 8px 0/8px 9px no-repeat!important;
+}
+.ai-chat-message.user .ai-chat-message-meta.chat-status-delivered{--check-color:#98a6b8}
+.ai-chat-message.user .ai-chat-message-meta.chat-status-seen{--check-color:#6f8fb8}

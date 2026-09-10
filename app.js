@@ -3320,6 +3320,25 @@ function aiChatAppend(role,text){
   const hh=String(now.getHours()).padStart(2,"0");
   const mm=String(now.getMinutes()).padStart(2,"0");
   meta.textContent=hh+":"+mm;
+  if(role==="user"){
+    meta.classList.add("chat-status-sent");
+    meta.setAttribute("aria-label","Đã gửi");
+    // V840: mô phỏng nhịp ứng dụng chat: gửi -> nhận -> xem, với thời gian biến thiên.
+    const deliveredDelay=aiChatRandRange(350,1100);
+    const seenDelay=deliveredDelay+aiChatRandRange(550,2200);
+    setTimeout(()=>{
+      if(!meta.isConnected) return;
+      meta.classList.remove("chat-status-sent");
+      meta.classList.add("chat-status-delivered");
+      meta.setAttribute("aria-label","Đã nhận");
+    },deliveredDelay);
+    setTimeout(()=>{
+      if(!meta.isConnected) return;
+      meta.classList.remove("chat-status-sent","chat-status-delivered");
+      meta.classList.add("chat-status-seen");
+      meta.setAttribute("aria-label","Đã xem");
+    },seenDelay);
+  }
   row.appendChild(meta);
   aiChatMessages.appendChild(row);
 
@@ -3703,6 +3722,17 @@ function aiChatProductSnapshot(question,history=AI_CHAT_HISTORY){
   .slice(0,30)
   .map(({score,...x})=>x);
 }
+// V840: sau khi khách gửi, nhân viên chỉ bắt đầu soạn sau khi tin đã có thời gian được nhận/xem.
+function aiChatHumanReadPause(question=""){
+  const q=String(question||"").trim();
+  let min=1200,max=3000;
+  if(q.length>80){ min=1900; max=4200; }
+  else if(q.length>35){ min=1500; max=3500; }
+  // Câu cần tra cứu thường có nhịp đọc lâu hơn một chút.
+  if(/giá|gia|màu|mau|còn|con |bản|ban |bảo hành|bao hanh|trả góp|tra gop|so sánh|so sanh/i.test(q)){ min+=350; max+=900; }
+  return aiChatRandRange(min,max);
+}
+
 async function aiChatAsk(question,options={}){
   aiChatCloseEmojiPicker();
   const text=String(question||"").trim();
@@ -3758,8 +3788,11 @@ async function aiChatAsk(question,options={}){
   }
 
   if(aiChatInput) aiChatInput.value="";
-  aiChatTyping(true);
   sendAnalytics("ai_chat_question",{action:"ai_chat_question",question:text});
+
+  // V840: không hiện "đang soạn" ngay khi khách vừa bấm gửi.
+  // Cho tin nhắn đi qua nhịp đã gửi -> đã nhận -> đã xem trước.
+  const readPause=aiChatHumanReadPause(text);
 
   try{
     const r=await fetch("/api/ai-chat",{
@@ -3779,16 +3812,19 @@ async function aiChatAsk(question,options={}){
 
     const reply=String(data.text||"").trim()||"AI chưa có câu trả lời phù hợp.";
 
-    // V421: server có trả lời rất nhanh thì vẫn giữ trạng thái đang nhập đủ lâu.
-    // Nếu request đã mất nhiều thời gian thì không cộng thêm độ trễ dư thừa.
-    const naturalTarget=aiChatNaturalInitialDelay(text,reply);
-    const elapsed=Date.now()-aiReplyStartedAt;
-    const remaining=Math.max(0,naturalTarget-elapsed);
-    if(remaining>0) await aiChatSleep(remaining);
+    // V840: chờ đủ nhịp đọc tin rồi mới hiện nhân viên đang soạn. Request API vẫn chạy song song.
+    const elapsedBeforeRead=Date.now()-aiReplyStartedAt;
+    const waitForRead=Math.max(0,readPause-elapsedBeforeRead);
+    if(waitForRead>0) await aiChatSleep(waitForRead);
+    aiChatTyping(true);
 
-    // V453: tắt trạng thái chờ server, rồi bật lại một nhịp gõ thật sự trước từng bong bóng.
+    // Thời gian soạn thay đổi theo độ dài câu trả lời, không cố định mỗi lượt.
+    const naturalTarget=aiChatNaturalInitialDelay(text,reply);
+    const typingTarget=Math.max(650,Math.round(naturalTarget*.55 + Math.min(1800,reply.length*8)));
+    await aiChatSleep(aiChatRandRange(Math.round(typingTarget*.72),Math.round(typingTarget*1.18)));
+
     aiChatTyping(false);
-    await aiChatSleep(Math.round(250+Math.random()*450));
+    await aiChatSleep(aiChatRandRange(180,520));
     const replyMessages=await aiChatAppendAssistantMessages(reply,data);
     const savedReply=replyMessages.join(" ")||reply;
     AI_CHAT_HISTORY.push({role:"assistant",text:savedReply});
