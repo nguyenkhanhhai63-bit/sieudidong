@@ -2926,7 +2926,7 @@ function aiChatGetSessionId(){
     return "sdd_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,12);
   }
 }
-const AI_CHAT_SESSION_ID=aiChatGetSessionId();
+let AI_CHAT_SESSION_ID=aiChatGetSessionId();
 function aiChatSaveHistory(userText,assistantText,data={}){
   const u=String(userText||"").trim(), a=String(assistantText||"").trim();
   if(!u&&!a)return;
@@ -3848,10 +3848,15 @@ function aiChatClearConversation(){
     localStorage.removeItem(AI_CHAT_SESSION_KEY);
     localStorage.removeItem(AI_CHAT_LAST_WELCOME_KEY);
     localStorage.removeItem(AI_CHAT_WELCOME_SHOWN_KEY);
+    sessionStorage.removeItem(AI_CHAT_WELCOME_SHOWN_KEY);
+    sessionStorage.removeItem("sdd-chat-seen");
   }catch(_){}
   AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length);
   AI_CHAT_PENDING_QUESTIONS.splice(0,AI_CHAT_PENDING_QUESTIONS.length);
   AI_CHAT_ASSIGNED_STAFF="";
+  aiChatTyping(false);
+  aiChatBusy=false;
+  aiChatShowAssigningStatus(false);
   if(aiChatMessages) aiChatMessages.innerHTML="";
   aiChatSetHumanHandoff(false);
   aiChatCloseMoreMenu();
