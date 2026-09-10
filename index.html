@@ -1378,6 +1378,17 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
       </div>
     </div>
     <div class="ai-chat-head-actions">
+      <div class="ai-chat-more-wrap">
+        <button id="aiChatMore" class="ai-chat-more" type="button" aria-label="Tùy chọn chat" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <div id="aiChatMoreMenu" class="ai-chat-more-menu" hidden>
+          <button id="aiChatClearHistory" type="button" class="ai-chat-clear-history">
+            <span class="ai-chat-clear-icon" aria-hidden="true">⌫</span>
+            <span><strong>Xóa lịch sử chat</strong><small>Bắt đầu cuộc trò chuyện mới</small></span>
+          </button>
+        </div>
+      </div>
       <button id="aiChatClose" class="ai-chat-close" type="button" aria-label="Đóng">×</button>
     </div>
   </div>

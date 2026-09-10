@@ -2855,6 +2855,9 @@ document.addEventListener("visibilitychange",()=>{
 window.__AI_CHAT_V138_READY=true;
 const aiChatPanel=document.getElementById("aiChatPanel");
 const aiChatClose=document.getElementById("aiChatClose");
+const aiChatMore=document.getElementById("aiChatMore");
+const aiChatMoreMenu=document.getElementById("aiChatMoreMenu");
+const aiChatClearHistory=document.getElementById("aiChatClearHistory");
 const aiChatMessages=document.getElementById("aiChatMessages");
 const aiChatForm=document.getElementById("aiChatForm");
 const aiChatInput=document.getElementById("aiChatInput");
@@ -3824,7 +3827,47 @@ zaloConsultBtn?.addEventListener("click",()=>{
   aiChatOpen();
   aiChatShowWelcomeOnce();
 });
-aiChatClose?.addEventListener("click",aiChatHide);
+// V835: menu 3 chấm + xóa lịch sử chat
+function aiChatCloseMoreMenu(){
+  if(!aiChatMoreMenu||!aiChatMore) return;
+  aiChatMoreMenu.hidden=true;
+  aiChatMore.setAttribute("aria-expanded","false");
+}
+function aiChatToggleMoreMenu(e){
+  e?.stopPropagation?.();
+  if(!aiChatMoreMenu||!aiChatMore) return;
+  const opening=aiChatMoreMenu.hidden;
+  aiChatMoreMenu.hidden=!opening;
+  aiChatMore.setAttribute("aria-expanded",opening?"true":"false");
+}
+function aiChatClearConversation(){
+  const ok=window.confirm("Xóa toàn bộ lịch sử chat và bắt đầu cuộc trò chuyện mới?");
+  if(!ok) return;
+  try{
+    localStorage.removeItem(AI_CHAT_CONVERSATION_KEY);
+    localStorage.removeItem(AI_CHAT_SESSION_KEY);
+    localStorage.removeItem(AI_CHAT_LAST_WELCOME_KEY);
+    localStorage.removeItem(AI_CHAT_WELCOME_SHOWN_KEY);
+  }catch(_){}
+  AI_CHAT_HISTORY.splice(0,AI_CHAT_HISTORY.length);
+  AI_CHAT_PENDING_QUESTIONS.splice(0,AI_CHAT_PENDING_QUESTIONS.length);
+  AI_CHAT_ASSIGNED_STAFF="";
+  if(aiChatMessages) aiChatMessages.innerHTML="";
+  aiChatSetHumanHandoff(false);
+  aiChatCloseMoreMenu();
+  const nameEl=document.getElementById("chatStaffName");
+  const statusEl=document.getElementById("chatStaffStatus") || nameEl?.parentElement?.querySelector("span");
+  if(nameEl) nameEl.textContent="Đang kết nối...";
+  if(statusEl) statusEl.style.visibility="hidden";
+  // Tạo session mới và hiển thị lời chào như một cuộc chat mới.
+  AI_CHAT_SESSION_ID=aiChatGetSessionId();
+  aiChatShowWelcomeOnce();
+  setTimeout(()=>{ if(aiChatMessages) aiChatMessages.scrollTop=aiChatMessages.scrollHeight; },60);
+}
+aiChatMore?.addEventListener("click",aiChatToggleMoreMenu);
+aiChatClearHistory?.addEventListener("click",e=>{e.stopPropagation();aiChatClearConversation();});
+document.addEventListener("click",e=>{if(!e.target.closest?.(".ai-chat-more-wrap")) aiChatCloseMoreMenu();});
+aiChatClose?.addEventListener("click",()=>{aiChatCloseMoreMenu();aiChatHide();});
 aiChatForm?.addEventListener("submit",e=>{
   e.preventDefault();
   const text=aiChatInput?.value||"";
