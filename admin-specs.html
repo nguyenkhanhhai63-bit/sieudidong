@@ -7104,7 +7104,7 @@ body.auth-pending .wrap{display:block!important;min-height:100vh!important;paddi
 </style>
 
 <style id="v508-hour-heatmap-style">
-.traffic-hour-box{grid-column:span 4!important}.traffic-hour-wrap{padding:14px 16px 16px}.traffic-hour-axis{display:grid;grid-template-columns:30px repeat(7,1fr);align-items:center;margin-bottom:7px;color:#667085;font-size:10px}.traffic-hour-axis span{text-align:center}.traffic-hour-axis span:first-child{text-align:left}.traffic-hour-grid{display:grid;grid-template-columns:30px repeat(24,minmax(7px,1fr));gap:3px;align-items:center}.traffic-hour-day{font-size:10px;font-weight:700;color:#667085}.traffic-hour-cell{aspect-ratio:1/1;min-height:10px;border-radius:2px;background:#eef4ff;transition:transform .12s ease}.traffic-hour-cell:hover{transform:scale(1.16);outline:1px solid #2563eb;z-index:2}.traffic-hour-legend{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#667085;font-size:10px}.traffic-hour-gradient{width:150px;height:9px;border-radius:999px;background:linear-gradient(90deg,#eef4ff,#bcd4ff,#78a8ff,#3478f6)}
+.traffic-hour-box{grid-column:span 4!important}.traffic-hour-wrap{padding:14px 16px 16px}.traffic-hour-axis{display:grid;grid-template-columns:58px repeat(7,1fr);align-items:center;margin-bottom:7px;color:#667085;font-size:10px}.traffic-hour-axis span{text-align:center}.traffic-hour-axis span:first-child{text-align:left}.traffic-hour-grid{display:grid;grid-template-columns:58px repeat(24,minmax(7px,1fr));gap:3px;align-items:center}.traffic-hour-day{font-size:10px;font-weight:700;color:#667085}.traffic-hour-cell{aspect-ratio:1/1;min-height:10px;border-radius:2px;background:#eef4ff;transition:transform .12s ease}.traffic-hour-cell:hover{transform:scale(1.16);outline:1px solid #2563eb;z-index:2}.traffic-hour-legend{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;color:#667085;font-size:10px}.traffic-hour-gradient{width:150px;height:9px;border-radius:999px;background:linear-gradient(90deg,#eef4ff,#bcd4ff,#78a8ff,#3478f6)}
 @media(max-width:1280px){.traffic-hour-box{grid-column:span 6!important}}
 @media(max-width:760px){.traffic-hour-box{grid-column:1!important}.traffic-hour-wrap{overflow-x:auto}.traffic-hour-grid,.traffic-hour-axis{min-width:520px}}
 </style>
@@ -8301,7 +8301,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
               <div id="deviceList" class="device-legend"></div>
             </div>
           </div>
-          <div class="abox traffic-hour-box"><h2>Khung giờ truy cập</h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
+          <div class="abox traffic-hour-box"><h2>Khung giờ truy cập <small style="font-size:10px;color:#98a2b3;font-weight:600">· 7 ngày gần nhất</small></h2><div id="trafficHourHeatmap" class="traffic-hour-wrap"></div></div>
         </div>
         <div class="analytics-section-title warranty-title"><div><strong>Tra cứu bảo hành</strong><span>Theo dõi nhu cầu kiểm tra bảo hành của khách hàng</span></div></div>
         <div class="metric-grid metric-grid-warranty">
@@ -9772,22 +9772,34 @@ document.getElementById("aiHistoryPager")?.addEventListener("click",e=>{
 });
 
 
-function renderTrafficHourHeatmap(matrix){
+function renderTrafficHourHeatmap(matrix,dayKeys=[]){
   const host=document.getElementById("trafficHourHeatmap");
   if(!host) return;
-  const data=Array.from({length:7},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
+  const keys=Array.isArray(dayKeys)?dayKeys.slice(-7):[];
+  const rowCount=Math.max(1,keys.length||Math.min(7,Array.isArray(matrix)?matrix.length:0)||7);
+  const data=Array.from({length:rowCount},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
   const max=Math.max(1,...data.flat());
-  const days=["T2","T3","T4","T5","T6","T7","CN"];
+  const dayName=d=>{
+    const dt=new Date(String(d)+"T00:00:00Z");
+    const n=dt.getUTCDay();
+    return n===0?"CN":`T${n+1}`;
+  };
+  const labels=Array.from({length:rowCount},(_,r)=>{
+    const d=keys[r];
+    if(!d)return ["T2","T3","T4","T5","T6","T7","CN"][r]||"";
+    const [,m,day]=String(d).split("-");
+    return `${dayName(d)} ${day}/${m}`;
+  });
   const axisHours=[0,4,8,12,16,20,24];
   const axis=`<div class="traffic-hour-axis"><span></span>${axisHours.map(h=>`<span>${h}</span>`).join("")}</div>`;
   let cells='<div class="traffic-hour-grid">';
   data.forEach((row,r)=>{
-    cells+=`<span class="traffic-hour-day">${days[r]}</span>`;
+    cells+=`<span class="traffic-hour-day">${labels[r]}</span>`;
     row.forEach((v,h)=>{
       const ratio=v/max;
       const alpha=v?(.14+ratio*.82):.06;
       const bg=v?`rgba(52,120,246,${alpha.toFixed(3)})`:'#eef4ff';
-      cells+=`<i class="traffic-hour-cell" style="background:${bg}" title="${days[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
+      cells+=`<i class="traffic-hour-cell" style="background:${bg}" title="${labels[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
     });
   });
   cells+='</div>';
@@ -9839,7 +9851,7 @@ function applyAnalyticsPeriod(d,period=analyticsPeriod){
   const ranks=d?.rankingsByPeriod?.[period]||{};
   renderDeviceDonut(ranks.devices||{});
   renderTrafficSources(ranks.trafficSources||[]);
-  renderTrafficHourHeatmap(ranks.hourlyHeatmap||[]);
+  renderTrafficHourHeatmap(ranks.hourlyHeatmap||[],ranks.hourlyHeatmapDays||[]);
   renderRank("deviceModelRanks",ranks.topDeviceModels||[]);
   renderRank("deviceOsRanks",ranks.topDeviceOs||[]);
   renderRank("productRanks",ranks.topProducts||[]);
