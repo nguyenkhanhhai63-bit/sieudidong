@@ -15882,3 +15882,24 @@ body > .wrap, .wrap, main{
   max-height:none!important;
 }
 </style>
+
+<style id="v849-price-preview-sticky-inline">
+/* v849 - Giữ nguyên bản xem trước A4 ngay trong popup khi cuộn, không tách ra khung nổi bên cạnh */
+#sddA4StickyMini{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+#sddPriceAdminModal .price-a4-preview-card{
+  position:sticky!important;
+  top:126px!important;
+  z-index:18!important;
+  background:#fff!important;
+  box-shadow:0 10px 26px rgba(16,24,40,.10)!important;
+}
+#sddPriceAdminModal .price-a4-preview-stage{
+  background:#dfe3e8!important;
+}
+@media(max-width:720px){
+  #sddPriceAdminModal .price-a4-preview-card{
+    top:8px!important;
+    z-index:24!important;
+  }
+}
+</style>
