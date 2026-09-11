@@ -19,7 +19,8 @@ const handlers = {
   "order-visibility": () => import("../lib/public-api/order-visibility.js"),
   "footer-settings": () => import("../lib/public-api/footer-settings.js"),
   "facebook-webhook": () => import("../lib/public-api/facebook-webhook.js"),
-  "community-chat": () => import("../lib/public-api/community-chat.js")
+  "community-chat": () => import("../lib/public-api/community-chat.js"),
+  "price-table-settings": () => import("../lib/public-api/price-table-settings.js")
 };
 
 export default async function handler(req,res){

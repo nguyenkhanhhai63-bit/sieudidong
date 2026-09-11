@@ -546,6 +546,7 @@ body.a4-print-layout .sheet .foot{
     return s;
   }
   function modelKey(it){return (String(it.type||'phone')+'|'+baseName(it.name)).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim()}
+  async function loadPriceSettingsCloud(){try{const r=await fetch('/api/price-table-settings?_='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));localStorage.setItem('sdd_price_a4_manual',JSON.stringify(v.a4||{enabled:false,font:100,row:100,gap:100,scale:100}));return true}catch(e){return false}}
   function hiddenModelSet(){try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}}
   function customNames(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}}
   function customColors(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_colors')||'{}')}catch(e){return {}}}
@@ -932,7 +933,7 @@ body.a4-print-layout .sheet .foot{
       try{ fitA4Print(); }catch(_){}
     },0);
   }
-});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});sync();if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
+});window.addEventListener('resize',()=>{fitA4Fill()});window.addEventListener('sdd-price-a4-settings',()=>{applyA4Manual();fitA4Print();if(!document.body.classList.contains('admin-a4-preview'))requestAnimationFrame(fitA4Fill)});window.addEventListener('storage',e=>{if(['sdd_price_hidden_models','sdd_price_custom_names','sdd_price_custom_colors','sdd_price_model_order','sdd_price_a4_manual'].includes(e.key))render()});loadPriceSettingsCloud().finally(()=>sync());if(new URLSearchParams(location.search).get('adminPrint')==='1'){setTimeout(()=>{document.body.classList.add('a4-print-layout');fitA4Print();window.print()},4500)};
 })();
 </script>
 

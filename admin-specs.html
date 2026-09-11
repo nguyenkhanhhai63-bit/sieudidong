@@ -13906,17 +13906,21 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const brandLabel=g=>String(g||'KHÁC').trim()||'KHÁC';
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
-  const saveHidden=set=>localStorage.setItem('sdd_price_hidden_models',JSON.stringify([...set]));
+  let cloudSaveTimer=0,cloudLoaded=false;
+  function cloudPayload(){return {hidden:[...readHidden()],names:readNames(),colors:readColors(),order:readOrder(),a4:readA4()}}
+  function saveCloud(){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(async()=>{try{await fetch('/api/admin/price-table-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(cloudPayload())})}catch(e){console.warn('[Bảng giá] Không lưu được cấu hình máy chủ',e)}},250)}
+  async function loadCloud(){try{const r=await fetch('/api/admin/price-table-settings?_='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));localStorage.setItem(A4_KEY,JSON.stringify(v.a4||a4Defaults));cloudLoaded=true;return true}catch(e){return false}}
+  const saveHidden=set=>{localStorage.setItem('sdd_price_hidden_models',JSON.stringify([...set]));saveCloud()};
   const readNames=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}};
-  const saveNames=o=>localStorage.setItem('sdd_price_custom_names',JSON.stringify(o));
+  const saveNames=o=>{localStorage.setItem('sdd_price_custom_names',JSON.stringify(o));saveCloud()};
   const readColors=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_custom_colors')||'{}')}catch(e){return {}}};
-  const saveColors=o=>localStorage.setItem('sdd_price_custom_colors',JSON.stringify(o));
+  const saveColors=o=>{localStorage.setItem('sdd_price_custom_colors',JSON.stringify(o));saveCloud()};
   const readOrder=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_model_order')||'[]')}catch(e){return []}};
-  const saveOrder=a=>localStorage.setItem('sdd_price_model_order',JSON.stringify(a));
+  const saveOrder=a=>{localStorage.setItem('sdd_price_model_order',JSON.stringify(a));saveCloud()};
   const A4_KEY='sdd_price_a4_manual';
   const a4Defaults={enabled:false,font:100,row:100,gap:100,scale:100};
   function readA4(){try{return Object.assign({},a4Defaults,JSON.parse(localStorage.getItem(A4_KEY)||'{}'))}catch(e){return {...a4Defaults}}}
-  function saveA4(v){const x=Object.assign({},a4Defaults,v||{});localStorage.setItem(A4_KEY,JSON.stringify(x));window.dispatchEvent(new CustomEvent('sdd-price-a4-settings',{detail:x}));return x}
+  function saveA4(v){const x=Object.assign({},a4Defaults,v||{});localStorage.setItem(A4_KEY,JSON.stringify(x));saveCloud();window.dispatchEvent(new CustomEvent('sdd-price-a4-settings',{detail:x}));return x}
   function syncA4Controls(){const v=readA4();if(manualEnabled)manualEnabled.checked=!!v.enabled;if(fontRange)fontRange.value=v.font;if(rowRange)rowRange.value=v.row;if(gapRange)gapRange.value=v.gap;if(scaleRange)scaleRange.value=v.scale;if(fontOut)fontOut.value=v.font+'%';if(rowOut)rowOut.value=v.row+'%';if(gapOut)gapOut.value=v.gap+'%';if(scaleOut)scaleOut.value=v.scale+'%'}
   function collectA4(){return {enabled:!!manualEnabled?.checked,font:+fontRange?.value||100,row:+rowRange?.value||100,gap:+gapRange?.value||100,scale:+scaleRange?.value||100}}
   function fitA4Preview(){if(!previewStage||!previewFrame)return;const w=Math.max(1,previewStage.clientWidth),base=Math.max(1,previewFrame.offsetWidth||1123),scale=w/base;previewFrame.style.transform='scale('+scale+')'}
@@ -14067,7 +14071,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     });
   }
   const menuOpen=$('sddPriceAdminMenuOpen'); if(menuOpen)menuOpen.addEventListener('click',()=>fab.click());
-  fab.addEventListener('click',()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');render()});close.addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)close.click()});search.addEventListener('input',render);
+  fab.addEventListener('click',async()=>{modal.classList.add('open');modal.setAttribute('aria-hidden','false');await loadCloud();render();refreshA4Preview()});close.addEventListener('click',()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true')});modal.addEventListener('click',e=>{if(e.target===modal)close.click()});search.addEventListener('input',render);
   $('sddPriceShowAll').addEventListener('click',()=>{saveHidden(new Set());render()});
   $('sddPriceHideAll').addEventListener('click',()=>{saveHidden(new Set(readModels().map(x=>x.key)));render()});
   updateA4Guide();
