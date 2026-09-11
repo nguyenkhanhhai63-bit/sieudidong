@@ -840,11 +840,34 @@ body.a4-print-layout .sheet .foot{
     }
     return '';
   }
+  function iphoneUsedMeta(raw){
+    const s=String(raw||'').replace(/\s+/g,' ').trim();
+    if(!/^iphone\b/i.test(s))return null;
+    const parts=s.split(/\s*-\s*/).map(x=>x.trim()).filter(Boolean);
+    const model=parts[0]||s;
+    let memory='',color='';
+    const colorRx=/^(?:Đen|Trắng|Bạc|Xám|Đỏ|Cam|Hồng|Tím|Nâu|Be|Vàng(?:\s+(?:Cát|Moca|Mocha|Gold))?|Titan(?:\s+(?:Xám|Đen|Trắng))?|Xanh(?:\s+(?:Dương|Lá|Biển|Ngọc|Mint|Rêu|Đen))?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple|Yellow|Brown|Beige)$/i;
+    for(const part of parts.slice(1)){
+      if(!memory){
+        const m=part.match(/^(64|128|256|512|1024)(?:\s*(?:GB|G))?$/i)||part.match(/^([12])\s*TB$/i);
+        if(m){memory=/TB$/i.test(part)?m[1]+'TB':m[1];continue;}
+      }
+      if(!color&&colorRx.test(part)){color=part;continue;}
+    }
+    return {model,memory,color};
+  }
   function apiMemory(p,v){
     const attrs=Array.isArray(v?.attributes)&&v.attributes.length?v.attributes:(Array.isArray(p?.attributes)?p.attributes:[]);
     const raw=attrValue(attrs,['dung lượng','dung luong','bộ nhớ','bo nho','ram/rom','rom','storage','memory','capacity']);
     const sv=storageValue(raw)||storageValue(v?.name)||storageValue(p?.name);
-    return sv||null;
+    if(sv)return sv;
+    // iPhone cũ KiotViet thường để dung lượng ngay trong tên: "iPhone 12 cũ - Đen - 64 - 98% - Pin 8X".
+    const im=iphoneUsedMeta(v?.name)||iphoneUsedMeta(p?.name);
+    if(im&&im.memory){
+      const rank=/TB$/i.test(im.memory)?parseInt(im.memory,10)*1024:parseInt(im.memory,10)||999999;
+      return {label:im.memory,rank};
+    }
+    return null;
   }
   function apiColor(p,v){
     const attrs=[];
@@ -855,10 +878,17 @@ body.a4-print-layout .sheet .foot{
       const vals=[v?.color,v?.colour,v?.colorName,v?.color_name,p?.color,p?.colour,p?.colorName,p?.color_name];
       raw=vals.find(Boolean)||'';
     }
+    if(!raw){
+      const im=iphoneUsedMeta(v?.name)||iphoneUsedMeta(p?.name);
+      if(im&&im.color)raw=im.color;
+    }
     return normalizeColor(raw);
   }
   function apiModelName(p){
     let s=String(p?.name||'').replace(/\s+/g,' ').trim();
+    // iPhone cũ: giữ tên model, đưa dung lượng + màu sang đúng cột; bỏ % pin / Pin 8X khỏi tên bảng giá.
+    const im=iphoneUsedMeta(s);
+    if(im&&im.model)s=im.model;
     const color='(?:Đen|Trắng|Bạc|Xám|Đỏ|Cam|Hồng|Tím|Nâu|Be|Vàng(?:\\s+(?:Cát|Moca|Mocha|Gold))?|Titan(?:\\s+(?:Xám|Đen|Trắng))?|Xanh(?:\\s+(?:Dương|Lá|Biển|Ngọc|Mint|Rêu|Đen))?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple|Yellow|Brown|Beige)';
     // Tên sản phẩm cha là model chuẩn; chỉ bỏ dung lượng và màu ở phần cuối nếu API tách biến thể thành sản phẩm riêng.
     s=s.replace(/\s*\([^)]*\)\s*/g,' ')
