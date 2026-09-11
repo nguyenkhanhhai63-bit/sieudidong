@@ -607,7 +607,7 @@ body.a4-print-layout .sheet .foot{
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
     const allModels=pickLowestVariants(items);
     // Lưu toàn bộ model tìm được để trang quản trị có thể ẩn/hiện từng máy.
-    try{localStorage.setItem('sdd_price_models_cache',JSON.stringify(allModels.map(it=>({key:modelKey(it),name:baseName(it.name),memory:it.memory||'—',color:it.color||'—',price:it.price||0,type:it.type||'phone',group:(classify(it)||{}).title||''}))))}catch(e){}
+    try{localStorage.setItem('sdd_price_models_cache',JSON.stringify(allModels.map(it=>({key:modelKey(it),name:baseName(it.name),memory:it.memory||'—',color:it.color||'—',price:it.price||0,type:it.type||'phone',group:(classify(it)||{}).title||'',stock:!!it.stock,onHand:Number(it.onHand||0)}))))}catch(e){}
     const hidden=hiddenModelSet();
     const filtered=allModels.filter(it=>!hidden.has(modelKey(it))).filter(it=>!q||it.name.toLocaleLowerCase('vi').includes(q));
     const buckets=[];
