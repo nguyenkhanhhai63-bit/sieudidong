@@ -8426,6 +8426,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
             </div>
             <div class="ai-field"><label for="aiChatWelcomePrompt">Prompt câu chào mở chat</label><textarea id="aiChatWelcomePrompt" maxlength="3000" rows="6" style="min-height:132px" placeholder="VD: Tự nghĩ 1 câu chào ngắn như nhân viên trẻ đang trực shop..."></textarea><small class="ai-field-help">Mỗi phiên chat mới AI sẽ tự nghĩ 1 câu chào mới theo prompt này, không lấy ngẫu nhiên từ danh sách câu viết sẵn.</small><input id="aiChatWelcomeMessage" type="hidden"><textarea id="aiChatWelcomeMessages" hidden></textarea></div>
             <div class="ai-field"><label for="aiChatStoreFacts">Thông tin Siêu Di Động cho AI biết</label><textarea id="aiChatStoreFacts" maxlength="2500" style="min-height:150px"></textarea></div>
+            <div class="ai-field"><label for="aiChatTechnicalKnowledge">Kiến thức chuyên môn / kỹ thuật</label><textarea id="aiChatTechnicalKnowledge" maxlength="6000" style="min-height:190px" placeholder="VD: ROM gốc, ROM Việt hóa, ROM quốc tế, bootloader, OTA, hạ/cập nhật ROM, lỗi phần mềm..."></textarea><small class="ai-field-help">Dùng ô này để dạy kiến thức kỹ thuật chung cho AI. Khi khách hỏi chuyên môn, AI sẽ ưu tiên nội dung ở đây và không tự nhảy sang báo giá/tồn kho.</small></div>
             <div class="ai-field"><label for="aiChatHandoffRules">Khi nào chuyển sang nhân viên</label><textarea id="aiChatHandoffRules" maxlength="1500" style="min-height:105px"></textarea></div>
             <div class="ai-field"><label for="aiChatSuggestions">Gợi ý câu hỏi mẫu</label><textarea id="aiChatSuggestions" maxlength="4000" style="min-height:130px"></textarea><small class="ai-field-help">Mỗi dòng: Tên nút | Câu hỏi AI nhận.</small></div>
             <div class="ai-v408-savebar"><button id="saveAiChatSettings" class="primary" type="button">Lưu AI tư vấn chat</button></div>
@@ -8860,6 +8861,7 @@ const aiChatWelcomePrompt=document.getElementById("aiChatWelcomePrompt");
 const aiGenerateWelcomeMessages=document.getElementById("aiGenerateWelcomeMessages");
 const aiWelcomeGenerateStatus=document.getElementById("aiWelcomeGenerateStatus");
 const aiChatStoreFacts=document.getElementById("aiChatStoreFacts");
+const aiChatTechnicalKnowledge=document.getElementById("aiChatTechnicalKnowledge");
 const aiChatHandoffRules=document.getElementById("aiChatHandoffRules");
 const aiChatSuggestionsInput=document.getElementById("aiChatSuggestions");
 const saveAiChatSettings=document.getElementById("saveAiChatSettings");
@@ -10275,6 +10277,7 @@ function currentAiSettingsPayload(){
     chatWelcomeMessages:aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"",
     chatWelcomePrompt:aiChatWelcomePrompt?.value||"",
     chatStoreFacts:aiChatStoreFacts.value,
+    chatTechnicalKnowledge:aiChatTechnicalKnowledge?.value||"",
     chatHandoffRules:aiChatHandoffRules.value,
     chatSuggestions:aiChatSuggestionsInput.value
   };
@@ -10526,6 +10529,7 @@ function currentAiChatTrainingPayload(){
     chatWelcomeMessages:aiChatWelcomeMessages?.value||aiChatWelcomeMessage.value||"",
     chatWelcomePrompt:aiChatWelcomePrompt?.value||"",
     chatStoreFacts:aiChatStoreFacts.value,
+    chatTechnicalKnowledge:aiChatTechnicalKnowledge?.value||"",
     chatHandoffRules:aiChatHandoffRules.value,
     chatSuggestions:aiChatSuggestionsInput.value
   };
@@ -10546,6 +10550,7 @@ function fillAiChatTraining(s={}){
   if(aiChatWelcomeMessages && ("chatWelcomeMessages" in s || "chatWelcomeMessage" in s)) aiChatWelcomeMessages.value=s.chatWelcomeMessages||s.chatWelcomeMessage||"";
   if(aiChatWelcomePrompt && "chatWelcomePrompt" in s) aiChatWelcomePrompt.value=s.chatWelcomePrompt||"";
   if("chatStoreFacts" in s) aiChatStoreFacts.value=s.chatStoreFacts||"";
+  if(aiChatTechnicalKnowledge && "chatTechnicalKnowledge" in s) aiChatTechnicalKnowledge.value=s.chatTechnicalKnowledge||"";
   if("chatHandoffRules" in s) aiChatHandoffRules.value=s.chatHandoffRules||"";
   if("chatSuggestions" in s) aiChatSuggestionsInput.value=s.chatSuggestions||"";
 }
@@ -10603,7 +10608,7 @@ async function loadAiChatTraining(){
 
 
 ["input","change"].forEach(evt=>{
-  [aiChatInstructions,aiChatMessageStyle,aiChatStaffNames,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessages,aiChatWelcomePrompt,aiChatStoreFacts,aiChatHandoffRules,aiChatSuggestionsInput]
+  [aiChatInstructions,aiChatMessageStyle,aiChatStaffNames,aiChatTypingEnabled,aiChatInitialDelayMin,aiChatInitialDelayMax,aiChatBubbleDelayMin,aiChatBubbleDelayMax,aiChatInterMessageMin,aiChatInterMessageMax,aiChatWelcomeMessages,aiChatWelcomePrompt,aiChatStoreFacts,aiChatTechnicalKnowledge,aiChatHandoffRules,aiChatSuggestionsInput]
     .filter(Boolean)
     .forEach(el=>el.addEventListener(evt,()=>{
       try{ saveAiChatLocalBackup(currentAiChatTrainingPayload()); }catch(_){}
