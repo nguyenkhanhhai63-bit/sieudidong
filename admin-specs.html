@@ -8027,6 +8027,15 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
 .v803-warranty-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-top:1px solid #e9edf3;background:#fff;color:#ff5a0a;font-weight:700;padding:12px;cursor:pointer}
 .v803-warranty-more:hover{background:#fff9f5}
 </style>
+
+<style id="ai-question-log-v856-css">
+.ai-log-v856{background:#fff;border:1px solid #e5e9f0;border-radius:16px;overflow:hidden;box-shadow:0 5px 18px rgba(16,24,40,.04)}
+.ai-log-head-v856{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px 10px}.ai-log-head-v856 h2{margin:0;font-size:19px;color:#101828}.ai-log-head-v856 p{margin:4px 0 0;color:#667085;font-size:12px}
+.ai-log-toolbar-v856{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 14px 12px;border-bottom:1px solid #edf0f4}.ai-log-tabs-v856{display:flex;gap:7px;flex-wrap:wrap}.ai-log-tabs-v856 button{border:1px solid #dfe4ea;background:#fff;border-radius:8px;padding:8px 10px;color:#475467;font-size:11px;font-weight:700;cursor:pointer}.ai-log-tabs-v856 button.active{background:#246bfe;border-color:#246bfe;color:#fff}.ai-log-tabs-v856 b{font-weight:800}.ai-log-search-v856{display:flex;gap:7px}.ai-log-search-v856 input,.ai-log-search-v856 select{height:36px;border:1px solid #dfe4ea;border-radius:8px;background:#fff;padding:0 10px;font-size:11px}.ai-log-search-v856 input{width:230px}
+.ai-log-table-wrap-v856{overflow:auto}.ai-log-table-v856{width:100%;border-collapse:collapse;min-width:980px}.ai-log-table-v856 th{background:#f8fafc;color:#667085;text-align:left;font-size:10.5px;padding:9px 10px;border-bottom:1px solid #e7ebf0;white-space:nowrap}.ai-log-table-v856 td{padding:9px 10px;border-bottom:1px solid #edf0f4;font-size:11px;color:#344054;vertical-align:middle}.ai-log-table-v856 td b{display:block;color:#344054}.ai-log-table-v856 td small{display:block;color:#98a2b3;margin-top:2px}.ai-log-time-v856{white-space:nowrap;font-weight:700}.ai-log-question-v856{min-width:220px;max-width:360px}.ai-log-product-v856{display:inline-block;background:#eef4ff;color:#175cd3;border:1px solid #d1e0ff;border-radius:6px;padding:4px 7px;font-weight:700;white-space:nowrap}.ai-log-status-v856{display:inline-block;border-radius:6px;padding:4px 7px;font-weight:700;white-space:nowrap}.ai-log-status-v856.ok{color:#067647;background:#ecfdf3;border:1px solid #abefc6}.ai-log-status-v856.bad,.ai-log-status-v856.failed{color:#b42318;background:#fef3f2;border:1px solid #fecdca}.ai-log-rating-v856{display:flex;gap:4px}.ai-log-rating-v856 button{width:31px;height:29px;border:0;background:transparent;border-radius:7px;font-size:19px;color:#12b76a;cursor:pointer}.ai-log-rating-v856 button.bad{color:#f04438}.ai-log-rating-v856 button.on{background:#ecfdf3}.ai-log-rating-v856 button.bad.on{background:#fef3f2}.ai-log-view-v856{border:1px solid #d0d5dd;background:#fff;border-radius:7px;padding:6px 13px;font-weight:700;color:#344054;cursor:pointer}.ai-log-empty-v856{text-align:center!important;padding:45px!important;color:#98a2b3!important}.ai-log-v856 #aiChatHistoryPagination{padding:12px 15px;display:flex;justify-content:flex-end;gap:5px}
+.ai-log-modal-v856{position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:99999;display:grid;place-items:center;padding:20px}.ai-log-modal-v856[hidden]{display:none}.ai-log-modal-card-v856{width:min(760px,96vw);max-height:86vh;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.25);overflow:hidden}.ai-log-modal-head-v856{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eaecf0}.ai-log-modal-head-v856 h3{margin:0;font-size:18px}.ai-log-modal-head-v856 span{font-size:11px;color:#667085}.ai-log-modal-head-v856 button{border:0;background:#f2f4f7;width:34px;height:34px;border-radius:9px;font-size:21px;cursor:pointer}.ai-log-modal-msgs-v856{padding:16px;overflow:auto;max-height:70vh;background:#f8fafc}.ai-log-msg-v856{max-width:78%;margin:0 0 12px}.ai-log-msg-v856.user{margin-left:auto}.ai-log-msg-v856 b{font-size:10px;color:#667085}.ai-log-msg-v856 p{margin:4px 0;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #e4e7ec;line-height:1.5}.ai-log-msg-v856.user p{background:#fff4ed;border-color:#ffd6ae}.ai-log-msg-v856 small{font-size:9px;color:#98a2b3}
+@media(max-width:760px){.ai-log-head-v856,.ai-log-toolbar-v856{display:block}.ai-log-head-v856 button{margin-top:10px}.ai-log-search-v856{margin-top:10px}.ai-log-search-v856 input{width:100%;flex:1}.ai-log-tabs-v856{display:grid;grid-template-columns:1fr 1fr}.ai-log-tabs-v856 button{width:100%}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -8475,24 +8484,24 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
       </div>
 
       <div class="ai-v408-panel" data-ai-v408-panel="history">
-        <div class="ai-history-toolbar">
-          <div class="ai-v408-search">⌕ <input id="aiChatHistorySearch" type="search" placeholder="Tìm câu khách hỏi hoặc câu AI trả lời..."></div>
-          <select id="aiChatHistoryLimit"><option value="30">30 cuộc gần nhất</option><option value="50" selected>50 cuộc gần nhất</option><option value="100">100 cuộc gần nhất</option></select>
-          <button id="reloadAiChatHistory" class="secondary" type="button">↻ Tải lại</button>
-        </div>
-        <div class="ai-history-layout">
-          <section class="ai-history-list-card ai-history-list-card-v533">
-            <div class="ai-history-list-head ai-history-list-head-v533">
-              <div><h2>Lịch sử chat <span id="aiChatHistoryTotalInline">(0)</span></h2><p>Các đoạn hội thoại đã diễn ra</p></div>
-              <span id="aiChatHistoryTotal" class="ai-v408-pill" hidden>0 cuộc</span>
+        <section class="ai-log-v856">
+          <div class="ai-log-head-v856"><div><h2>Nhật ký câu hỏi khách hàng</h2><p>Theo dõi câu khách hỏi, sản phẩm liên quan và đánh giá chất lượng câu trả lời AI.</p></div><button id="reloadAiChatHistory" class="secondary" type="button">↻ Tải lại</button></div>
+          <div class="ai-log-toolbar-v856">
+            <div class="ai-log-tabs-v856">
+              <button type="button" class="active" data-ai-log-filter="all">Tất cả <b id="aiLogAllCount">0</b></button>
+              <button type="button" data-ai-log-filter="bad">🔴 Chưa tốt <b id="aiLogBadCount">0</b></button>
+              <button type="button" data-ai-log-filter="failed">● Không trả lời được <b id="aiLogFailedCount">0</b></button>
+              <button type="button" data-ai-log-filter="converted">● Đã chuyển đổi <b id="aiLogConvertedCount">0</b></button>
             </div>
-            <div id="aiChatHistoryList" class="ai-history-list"><div class="ai-history-empty">Bấm Tải lại để cập nhật lịch sử hội thoại.</div></div>
-            <div id="aiChatHistoryPagination" class="ai-history-pagination-v533" hidden></div>
-          </section>
-          <section class="ai-history-detail-card">
-            <div id="aiChatHistoryDetail" class="ai-history-detail-empty"><div class="ai-history-empty-icon">💬</div><b>Chọn một cuộc hội thoại</b><span>Nội dung chat của khách và AI sẽ hiển thị tại đây.</span></div>
-          </section>
-        </div>
+            <div class="ai-log-search-v856">⌕ <input id="aiChatHistorySearch" type="search" placeholder="Tìm kiếm câu hỏi..."><select id="aiChatHistoryLimit"><option value="50" selected>50 gần nhất</option><option value="100">100 gần nhất</option></select></div>
+          </div>
+          <div class="ai-log-table-wrap-v856">
+            <table class="ai-log-table-v856"><thead><tr><th>Thời gian</th><th>Khách hàng</th><th>Câu hỏi</th><th>Sản phẩm liên quan</th><th>AI trả lời</th><th>Đánh giá</th><th>Hành động</th></tr></thead><tbody id="aiChatHistoryList"><tr><td colspan="7" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr></tbody></table>
+          </div>
+          <div id="aiChatHistoryPagination" class="ai-history-pagination-v533"></div>
+          <span id="aiChatHistoryTotalInline" hidden></span><span id="aiChatHistoryTotal" hidden></span>
+        </section>
+        <div id="aiChatHistoryDetail" class="ai-log-modal-v856" hidden></div>
       </div>
 
       <div class="ai-v408-panel" data-ai-v408-panel="config">
@@ -12979,135 +12988,30 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </script>
 
 
-<script id="ai-chat-history-v416-js">
+<script id="ai-chat-history-v856-js">
 (function(){
-  const card=document.getElementById('aiSettingsCard'); if(!card)return;
-  const list=document.getElementById('aiChatHistoryList');
-  const detail=document.getElementById('aiChatHistoryDetail');
-  const search=document.getElementById('aiChatHistorySearch');
-  const limit=document.getElementById('aiChatHistoryLimit');
-  const reload=document.getElementById('reloadAiChatHistory');
-  const count=document.getElementById('aiChatHistoryCount');
-  const total=document.getElementById('aiChatHistoryTotal');
-  const totalInline=document.getElementById('aiChatHistoryTotalInline');
-  const pagination=document.getElementById('aiChatHistoryPagination');
-  if(!list||!detail)return;
-  let rows=[],selected='',page=1;
-  const pageSize=7;
-  const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c));
-  const dt=v=>{const n=Number(v)||0;if(!n)return '—';try{return new Date(n).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'})}catch{return '—'}};
-  const shortDt=v=>{const n=Number(v)||0;if(!n)return '—';try{return new Date(n).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'})}catch{return '—'}};
-  function firstUser(item){return (item.messages||[]).find(x=>x.role==='user')?.text||'Cuộc hội thoại AI'}
-  function lastPreview(item){
-    const msgs=item.preview||item.messages||[];
-    const last=[...msgs].reverse().find(x=>x.text);
-    if(!last)return 'Chưa có nội dung xem trước.';
-    return (last.role==='user'?'Khách hỏi về ':'Khách hỏi / AI trả lời: ')+(last.text||'');
-  }
-  function getChannel(item){
-    const raw=String(item.channel||item.source||item.platform||item.provider||item.page||'').toLowerCase();
-    if(raw.includes('zalo'))return {name:'zalo',tone:'green'};
-    if(raw.includes('messenger')||raw.includes('facebook'))return {name:'messenger',tone:'blue'};
-    return {name:'web_chat',tone:'gray'};
-  }
-  function iconSvg(tone){
-    return `<span class="ai-history-channel-icon ${tone}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 6.5h9.6A3.2 3.2 0 0 1 20 9.7v4.6a3.2 3.2 0 0 1-3.2 3.2h-4.1l-3.5 2.3.7-2.3H7.2A3.2 3.2 0 0 1 4 14.3V9.7a3.2 3.2 0 0 1 3.2-3.2Z" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="#fff"/><circle cx="12" cy="12" r="1" fill="#fff"/><circle cx="15" cy="12" r="1" fill="#fff"/></svg></span>`;
-  }
-  function visiblePages(totalPages,current){
-    if(totalPages<=6)return Array.from({length:totalPages},(_,i)=>i+1);
-    const arr=[1];
-    let a=Math.max(2,current-1),b=Math.min(totalPages-1,current+1);
-    if(current<=3){a=2;b=4} if(current>=totalPages-2){a=totalPages-3;b=totalPages-1}
-    if(a>2)arr.push('…');
-    for(let i=a;i<=b;i++)arr.push(i);
-    if(b<totalPages-1)arr.push('…');
-    arr.push(totalPages);return arr;
-  }
-  function renderPagination(){
-    if(!pagination)return;
-    const pages=Math.max(1,Math.ceil(rows.length/pageSize));
-    if(rows.length<=pageSize){pagination.hidden=true;pagination.innerHTML='';return}
-    pagination.hidden=false;
-    const nums=visiblePages(pages,page).map(x=>x==='…'?`<span class="ai-history-page-dots">…</span>`:`<button type="button" class="ai-history-page-btn-v533 ${x===page?'active':''}" data-page="${x}">${x}</button>`).join('');
-    pagination.innerHTML=`${nums}<button type="button" class="ai-history-page-btn-v533 next" data-page="next" aria-label="Trang sau">›</button>`;
-  }
-  function renderList(){
-    if(!rows.length){list.innerHTML='<div class="ai-history-empty">Chưa có lịch sử hội thoại phù hợp.</div>';detail.classList.remove('ai-history-detail-content-v535');detail.classList.add('ai-history-detail-empty');detail.innerHTML='<div><div class="ai-history-empty-icon">💬</div><b>Chưa có cuộc trò chuyện</b><span>Khi khách chat với AI, lịch sử sẽ tự động xuất hiện ở đây.</span></div>';renderPagination();return}
-    const pages=Math.max(1,Math.ceil(rows.length/pageSize)); if(page>pages)page=pages;
-    const slice=rows.slice((page-1)*pageSize,page*pageSize);
-    if(!selected||!rows.some(x=>x.sessionId===selected))selected=slice[0]?.sessionId||rows[0].sessionId;
-    list.innerHTML=slice.map(x=>{const ch=getChannel(x);return `<div class="ai-history-item ${x.sessionId===selected?'is-active':''}" data-history-id="${esc(x.sessionId)}">${iconSvg(ch.tone)}<div class="ai-history-item-main"><div class="ai-history-item-top"><b>${esc(firstUser(x))}</b><span class="ai-history-channel-tag ${ch.tone}">${esc(ch.name)}</span></div><div class="ai-history-preview">${esc(lastPreview(x))}</div></div><time>${esc(shortDt(x.updatedAt))}</time></div>`}).join('');
-    renderPagination();
-    renderDetail(rows.find(x=>x.sessionId===selected));
-  }
-  function renderDetail(item){
-    if(!item)return;
-    detail.classList.remove('ai-history-detail-empty');
-    detail.classList.add('ai-history-detail-content-v535');
-    const ch=getChannel(item);
-    const msgs=item.messages||[];
-    detail.innerHTML=`<div class="ai-history-conversation ai-history-conversation-v534">
-      <div class="ai-history-conv-head ai-history-conv-head-v534">
-        <div class="ai-history-conv-title-v534">
-          <div class="ai-history-conv-icon-v534">${iconSvg(ch.tone)}</div>
-          <div><h2>Nội dung đoạn chat</h2><small><span class="ai-history-live-dot-v534"></span>${esc(ch.name)} · ${esc(dt(item.startedAt))} · ${Number(item.messageCount||msgs.length)} tin nhắn</small></div>
-        </div>
-        <button class="ai-history-delete ai-history-delete-v534" type="button" data-history-delete="${esc(item.sessionId)}" title="Xóa cuộc chat" aria-label="Xóa cuộc chat">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg><span>Xóa</span>
-        </button>
-      </div>
-      <div class="ai-history-messages ai-history-messages-v534">
-        <div class="ai-history-date-sep-v534"><span>${esc(dt(item.startedAt))}</span></div>
-        ${msgs.map((m,i)=>{const isUser=m.role==='user'; return `<div class="ai-history-msg-v534 ${isUser?'user':'assistant'}">
-          <div class="ai-history-avatar-v534">${isUser?'K':'AI'}</div>
-          <div class="ai-history-msg-body-v534">
-            <div class="ai-history-msg-meta-v534"><b>${isUser?'Khách hàng':'AI trả lời'}</b><time>${esc(dt(m.at))}</time></div>
-            <div class="ai-history-bubble-v534">${esc(m.text||'')}</div>
-          </div>
-        </div>`}).join('')}
-      </div>
-    </div>`;
-  }
-  async function load(){
-    list.innerHTML='<div class="ai-history-empty">Đang tải lịch sử...</div>';
-    const q=(search?.value||'').trim();
-    const l=Number(limit?.value)||50;
-    try{
-      const r=await fetch('/api/admin/ai-chat-history?limit='+l+'&q='+encodeURIComponent(q)+'&_='+Date.now(),{cache:'no-store',credentials:'same-origin'});
-      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Không tải được');
-      rows=Array.isArray(d.items)?d.items:[]; page=1;
-      const n=Number(d.total||rows.length);
-      if(count)count.textContent=String(n); if(total)total.textContent=n+' cuộc'; if(totalInline)totalInline.textContent='('+n.toLocaleString('vi-VN')+')';
-      renderList();
-    }catch(e){list.innerHTML='<div class="ai-history-empty">'+esc(e.message||'Không tải được lịch sử')+'</div>'}
-  }
-  function scrollToHistoryDetailOnMobile(){
-    if(!window.matchMedia('(max-width: 760px)').matches)return;
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        const target=document.getElementById('aiChatHistoryDetail');
-        if(!target)return;
-        const stickyOffset=84;
-        const top=Math.max(0,target.getBoundingClientRect().top+window.scrollY-stickyOffset);
-        window.scrollTo({top,behavior:'smooth'});
-      });
-    });
-  }
-  list.addEventListener('click',e=>{
-    const el=e.target.closest('[data-history-id]');
-    if(!el)return;
-    selected=el.dataset.historyId;
-    renderList();
-    scrollToHistoryDetailOnMobile();
-  });
-  pagination?.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(!b)return;const pages=Math.max(1,Math.ceil(rows.length/pageSize));page=b.dataset.page==='next'?Math.min(pages,page+1):Number(b.dataset.page)||1;renderList();list.scrollTop=0});
-  detail.addEventListener('click',async e=>{const b=e.target.closest('[data-history-delete]');if(!b)return;if(!confirm('Xóa cuộc hội thoại này?'))return;try{const r=await fetch('/api/admin/ai-chat-history?id='+encodeURIComponent(b.dataset.historyDelete),{method:'DELETE',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không xóa được');selected='';await load()}catch(err){alert(err.message||'Không xóa được')}});
-  let historyLoadedOnce=false;
-  async function loadOnceOnFirstOpen(){if(historyLoadedOnce)return;historyLoadedOnce=true;await load()}
-  const historyTab=card.querySelector('[data-ai-v408-tab="history"]');
-  historyTab?.addEventListener('click',loadOnceOnFirstOpen);
-  if(historyTab?.classList.contains('is-active')) setTimeout(loadOnceOnFirstOpen,0);
-  reload?.addEventListener('click',async()=>{historyLoadedOnce=true;await load();});
+ const card=document.getElementById('aiSettingsCard'); if(!card)return;
+ const body=document.getElementById('aiChatHistoryList'), modal=document.getElementById('aiChatHistoryDetail'), search=document.getElementById('aiChatHistorySearch'), limit=document.getElementById('aiChatHistoryLimit'), reload=document.getElementById('reloadAiChatHistory'), pager=document.getElementById('aiChatHistoryPagination');
+ if(!body||!modal)return; let rows=[],filter='all',page=1; const pageSize=12;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+ const dt=v=>{try{return new Date(Number(v)||0).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})}catch{return '—'}};
+ const firstUser=x=>(x.messages||[]).find(m=>m.role==='user')?.text||'—';
+ const lastAi=x=>[...(x.messages||[])].reverse().find(m=>m.role==='assistant')?.text||'';
+ const failed=x=>{const a=lastAi(x).toLowerCase();return !a||/không (có|tìm thấy|xác định|biết)|chưa (có|xác định)|không thể trả lời|cần.*(nhân viên|kiểm tra)/i.test(a)};
+ const product=x=>{const q=firstUser(x);const m=q.match(/(?:redmi\s+)?k\d{2,3}(?:\s+(?:pro|max|ultra))?|(?:redmi\s+)?note\s*\d+(?:\s+pro)?(?:\s*5g)?|turbo\s*\d+(?:\s+max|\s+pro)?|iqoo\s*[a-z]*\s*\d+(?:\s*(?:pro|t|turbo|ultra))?|xiaomi\s*\d+(?:\s*(?:pro|max|ultra|t))?|iphone\s*\d+(?:\s*(?:pro|max|plus))?|oppo\s*[a-z]+\s*\d+(?:\s*(?:pro|plus|turbo))?|honor\s+[a-z]+\s*\w+/i);return m?m[0].replace(/\s+/g,' ').trim():(x.meta?.intent&&x.meta.intent!=='general'?x.meta.intent:'—')};
+ const status=x=>x.rating==='bad'?'bad':failed(x)?'failed':'ok';
+ const filtered=()=>rows.filter(x=>filter==='all'||(filter==='bad'&&x.rating==='bad')||(filter==='failed'&&failed(x))||(filter==='converted'&&x.meta?.needsHuman===true));
+ function counts(){document.getElementById('aiLogAllCount').textContent=rows.length;document.getElementById('aiLogBadCount').textContent=rows.filter(x=>x.rating==='bad').length;document.getElementById('aiLogFailedCount').textContent=rows.filter(failed).length;document.getElementById('aiLogConvertedCount').textContent=rows.filter(x=>x.meta?.needsHuman===true).length;const c=document.getElementById('aiChatHistoryCount');if(c)c.textContent=rows.length}
+ function render(){counts();const data=filtered(),pages=Math.max(1,Math.ceil(data.length/pageSize));page=Math.min(page,pages);const slice=data.slice((page-1)*pageSize,page*pageSize);if(!slice.length){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">Chưa có dữ liệu phù hợp.</td></tr>'}else body.innerHTML=slice.map((x,i)=>{const q=firstUser(x),a=lastAi(x),st=status(x),vid=x.visitorId||x.meta?.visitorId||('Khách #'+String(x.sessionId||'').slice(-4).toUpperCase());return `<tr><td class="ai-log-time-v856">${esc(dt(x.updatedAt))}</td><td><b>${esc(vid)}</b><small>Web</small></td><td class="ai-log-question-v856">${esc(q)}</td><td><span class="ai-log-product-v856">${esc(product(x))}</span></td><td><span class="ai-log-status-v856 ${st}">${st==='bad'?'Trả lời chưa tốt':st==='failed'?'Không trả lời được':'Đã trả lời'}</span></td><td><div class="ai-log-rating-v856"><button data-rate="good" data-id="${esc(x.sessionId)}" class="${x.rating==='good'?'on':''}" title="Trả lời tốt">♡</button><button data-rate="bad" data-id="${esc(x.sessionId)}" class="bad ${x.rating==='bad'?'on':''}" title="Trả lời chưa tốt">♧</button></div></td><td><button class="ai-log-view-v856" data-view="${esc(x.sessionId)}">Xem</button></td></tr>`}).join('');
+ pager.innerHTML=pages<=1?'':Array.from({length:pages},(_,i)=>`<button type="button" class="ai-history-page-btn-v533 ${i+1===page?'active':''}" data-p="${i+1}">${i+1}</button>`).join('')}
+ function show(x){if(!x)return;const msgs=x.messages||[];modal.hidden=false;modal.innerHTML=`<div class="ai-log-modal-card-v856"><div class="ai-log-modal-head-v856"><div><h3>Nội dung hội thoại</h3><span>${esc(dt(x.startedAt))} · ${msgs.length} tin nhắn</span></div><button data-close>×</button></div><div class="ai-log-modal-msgs-v856">${msgs.map(m=>`<div class="ai-log-msg-v856 ${m.role==='user'?'user':'assistant'}"><b>${m.role==='user'?'Khách hàng':'AI trả lời'}</b><p>${esc(m.text||'')}</p><small>${esc(dt(m.at))}</small></div>`).join('')}</div></div>`}
+ async function rate(id,rating){const resp=await fetch('/api/admin/ai-chat-history',{method:'PATCH',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({id,rating})});const d=await resp.json();if(!resp.ok)throw new Error(d.error||'Không lưu được đánh giá');const x=rows.find(r=>r.sessionId===id);if(x)x.rating=rating;render()}
+ async function load(){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr>';try{const r=await fetch('/api/admin/ai-chat-history?limit='+(Number(limit?.value)||50)+'&q='+encodeURIComponent((search?.value||'').trim())+'&_='+Date.now(),{cache:'no-store',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không tải được');rows=Array.isArray(d.items)?d.items:[];page=1;render()}catch(e){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">'+esc(e.message||'Không tải được nhật ký')+'</td></tr>'}}
+ body.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(v){show(rows.find(x=>x.sessionId===v.dataset.view));return}const r=e.target.closest('[data-rate]');if(r){try{await rate(r.dataset.id,r.dataset.rate)}catch(err){alert(err.message)}}});
+ modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-close]'))modal.hidden=true});
+ document.querySelectorAll('[data-ai-log-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-ai-log-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.aiLogFilter;page=1;render()}));
+ pager.addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(b){page=Number(b.dataset.p)||1;render()}}); let t;search?.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(load,350)});limit?.addEventListener('change',load);reload?.addEventListener('click',load);
+ const tab=card.querySelector('[data-ai-v408-tab="history"]');let once=false;tab?.addEventListener('click',()=>{if(!once){once=true;load()}});if(tab?.classList.contains('is-active')){once=true;load()}
 })();
 </script>
 <script id="v474-facebook-comment-ai-admin">
