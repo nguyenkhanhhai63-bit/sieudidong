@@ -179,14 +179,18 @@ else installGlobalZaloTracking();
 function analyticsTrafficSource(){
   try{
     const params=new URLSearchParams(location.search||"");
-    const utm=String(params.get("utm_source")||"").toLowerCase();
+    const utm=[params.get("utm_source"),params.get("utm_medium"),params.get("utm_campaign")].filter(Boolean).join(" ").toLowerCase();
+    const clickIds=[params.get("gclid"),params.get("fbclid"),params.get("ttclid")].filter(Boolean).join(" ").toLowerCase();
     const ref=String(document.referrer||"");
-    const host=ref ? new URL(ref).hostname.toLowerCase().replace(/^www\./,"") : "";
-    const raw=(utm+" "+host).trim();
+    let host="";
+    try{ host=ref ? new URL(ref).hostname.toLowerCase().replace(/^www\./,"") : ""; }catch(_){}
+    const raw=(utm+" "+clickIds+" "+host).trim();
     if(!raw) return "Trực tiếp";
-    if(/google|googleads|gclid/.test(raw)) return "Google";
-    if(/facebook|fb\.com|l\.facebook|m\.facebook|instagram|meta/.test(raw)) return "Facebook";
-    if(/zalo/.test(raw)) return "Zalo";
+    // V860: ưu tiên click-id/UTM và các host chuyển hướng phổ biến của từng nền tảng.
+    if(params.get("ttclid") || /(^|[ ._-])tiktok([ ._-]|$)|tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com|tiktokcdn/.test(raw)) return "TikTok";
+    if(params.get("gclid") || /google|googleads|googleadservices|googlesyndication/.test(raw)) return "Google";
+    if(params.get("fbclid") || /facebook|fb\.com|l\.facebook|lm\.facebook|m\.facebook|instagram|meta/.test(raw)) return "Facebook";
+    if(/zalo|zaloapp/.test(raw)) return "Zalo";
     return "Khác";
   }catch(_){ return "Trực tiếp"; }
 }

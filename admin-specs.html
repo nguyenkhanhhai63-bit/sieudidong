@@ -9818,8 +9818,8 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
 function renderTrafficSources(items){
   const host=document.getElementById("trafficSourceList");
   if(!host) return;
-  const order=["Trực tiếp","Google","Facebook","Zalo","Khác"];
-  const colors={"Trực tiếp":"#4f8cff","Google":"#20c997","Facebook":"#8b5cf6","Zalo":"#ff6b00","Khác":"#b7c0d0"};
+  const order=["Trực tiếp","Google","Facebook","TikTok","Zalo","Khác"];
+  const colors={"Trực tiếp":"#4f8cff","Google":"#20c997","Facebook":"#8b5cf6","TikTok":"#111827","Zalo":"#ff6b00","Khác":"#b7c0d0"};
   const map=new Map((Array.isArray(items)?items:[]).map(x=>[String(x?.name||""),Number(x?.value||0)]));
   const rows=order.map(name=>({name,value:map.get(name)||0}));
   const total=rows.reduce((a,x)=>a+x.value,0);
