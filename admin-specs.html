@@ -8615,6 +8615,75 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-r
 </div></section>
 
 
+
+<div id="usedImageModal" class="used-image-modal" aria-hidden="true">
+  <div class="used-image-dialog" role="dialog" aria-modal="true" aria-labelledby="usedImageModalTitle">
+    <div class="used-image-dialog-head">
+      <div class="used-image-title-wrap">
+        <h3 id="usedImageModalTitle">Thêm ảnh máy cũ</h3>
+        <p>Chọn và sắp xếp ảnh ngay tại đây, không phải kéo về form bên trái.</p>
+        <div class="used-image-product">
+          <div id="usedImageModalPhoto" class="used-image-product-photo"></div>
+          <div class="used-image-product-info">
+            <strong id="usedImageModalName" class="used-image-product-name">Máy đã chọn</strong>
+            <div id="usedImageModalMeta" class="used-image-product-meta"></div>
+          </div>
+        </div>
+      </div>
+      <button id="usedImageModalClose" class="used-image-dialog-close" type="button" aria-label="Đóng">×</button>
+    </div>
+    <div class="used-image-dialog-body">
+      <div class="used-image-tip"><span>ⓘ</span><div><strong>Ảnh đầu tiên là ảnh đại diện.</strong> Bấm vào ảnh khác để đưa lên đầu; bấm × để xóa. Tối đa 8 ảnh.</div></div>
+      <div id="usedImageModalMount"></div>
+    </div>
+    <div class="used-image-dialog-foot">
+      <button id="usedImageModalCancel" class="used-image-cancel" type="button">Hủy</button>
+      <button id="usedImageModalSave" class="used-image-save" type="button">Lưu ảnh</button>
+    </div>
+  </div>
+</div>
+
+<style id="v861-used-image-modal">
+/* V861 - modal gọn khi thêm/cập nhật ảnh máy cũ */
+.used-image-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.52);backdrop-filter:blur(4px)}
+.used-image-modal.show{display:flex}
+.used-image-dialog{width:min(760px,100%);max-height:min(86vh,820px);display:flex;flex-direction:column;background:#fff;border:1px solid #e7eaf0;border-radius:20px;box-shadow:0 28px 80px rgba(15,23,42,.24);overflow:hidden}
+.used-image-dialog-head{display:flex;align-items:flex-start;gap:12px;padding:18px 20px;border-bottom:1px solid #eef1f5;background:linear-gradient(180deg,#fff,#fbfcfe)}
+.used-image-dialog-head .used-image-title-wrap{min-width:0;flex:1}
+.used-image-dialog-head h3{margin:0;color:#172033;font-size:19px;line-height:1.25}
+.used-image-dialog-head p{margin:5px 0 0;color:#667085;font-size:12px;line-height:1.45}
+.used-image-dialog-close{width:36px;height:36px;flex:0 0 36px;border:1px solid #dfe4ea;border-radius:10px;background:#fff;color:#344054;font-size:20px;line-height:1;cursor:pointer}
+.used-image-dialog-close:hover{border-color:#ff7a33;color:#d94800;background:#fff8f4}
+.used-image-product{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:center;margin-top:14px;padding:10px 12px;border:1px solid #f0e1d8;border-radius:13px;background:#fff8f4}
+.used-image-product-photo{width:58px;height:58px;border-radius:11px;border:1px solid #eadfd8;background:#fff center/cover no-repeat}
+.used-image-product-info{min-width:0}
+.used-image-product-name{display:block;font-size:15px;font-weight:800;color:#172033;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.used-image-product-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.used-image-product-meta span{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border:1px solid #e6e9ef;border-radius:999px;background:#fff;color:#475467;font-size:11px;font-weight:650}
+.used-image-dialog-body{padding:18px 20px;overflow:auto}
+.used-image-tip{display:flex;gap:9px;align-items:flex-start;margin-bottom:14px;padding:11px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e7ebf0;color:#475467;font-size:12px;line-height:1.45}
+.used-image-tip strong{color:#172033}
+#usedImageModalMount .used-image-upload{grid-column:auto!important;border:1px dashed #ffb58d!important;border-radius:15px!important;padding:16px!important;background:#fffaf7!important}
+#usedImageModalMount .used-upload-btn{height:42px!important;padding:0 16px!important;border-radius:11px!important;background:#ff5a00!important;border-color:#ff5a00!important;color:#fff!important;font-size:12px!important;box-shadow:0 7px 18px rgba(255,90,0,.16)}
+#usedImageModalMount .used-upload-note{margin-top:9px!important;font-size:11.5px!important;line-height:1.45!important}
+#usedImageModalMount .used-cloudinary-status{margin-top:8px!important}
+#usedImageModalMount .used-image-preview{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin-top:14px!important}
+#usedImageModalMount .used-preview-item{border-radius:12px!important}
+.used-image-dialog-foot{display:flex;align-items:center;justify-content:flex-end;gap:9px;padding:14px 20px;border-top:1px solid #eef1f5;background:#fbfcfe}
+.used-image-dialog-foot button{height:40px;padding:0 16px;border-radius:10px;font-weight:750;cursor:pointer}
+.used-image-cancel{border:1px solid #d8dde5;background:#fff;color:#344054}
+.used-image-save{border:1px solid #ff5a00;background:#ff5a00;color:#fff;min-width:118px}
+.used-image-save:disabled{opacity:.6;cursor:wait}
+body.used-image-modal-open{overflow:hidden}
+@media(max-width:620px){
+ .used-image-modal{padding:0;align-items:flex-end}
+ .used-image-dialog{width:100%;max-height:92vh;border-radius:20px 20px 0 0;border-left:0;border-right:0;border-bottom:0}
+ .used-image-dialog-head,.used-image-dialog-body,.used-image-dialog-foot{padding-left:14px;padding-right:14px}
+ #usedImageModalMount .used-image-preview{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .used-image-dialog-foot{padding-bottom:max(14px,env(safe-area-inset-bottom))}
+}
+</style>
+
 <section id="accessoryAdminCard" class="card panel" data-panel="accessories" style="display:none">
   <div class="head"><div><h1>Quản lý Phụ kiện</h1><p>Quản lý riêng ốp lưng, củ sạc, cáp sạc, tai nghe, pin dự phòng... và giá bán ngoài website.</p></div><button id="reloadAccessories" class="secondary" type="button">Tải lại</button></div>
   <div class="accessory-admin-shell">
@@ -11790,6 +11859,9 @@ document.addEventListener("DOMContentLoaded",function(){
     sheetUrl:$('usedSheetUrl'),sheetSave:$('saveUsedSheetUrl'),sheetReset:$('resetUsedSheetUrl'),sheetConfigMsg:$('usedSheetConfigMsg')
   };
   let rows=[], editingId='', editingSource='', editingSheetRow=0, assets=[], toastTimer=null;
+  const imageModal=$('usedImageModal'), imageModalMount=$('usedImageModalMount'), imageModalClose=$('usedImageModalClose'), imageModalCancel=$('usedImageModalCancel'), imageModalSave=$('usedImageModalSave'), imageModalName=$('usedImageModalName'), imageModalMeta=$('usedImageModalMeta'), imageModalPhoto=$('usedImageModalPhoto');
+  const uploadHome={parent:els.uploadBox?.parentNode||null,next:els.uploadBox?.nextSibling||null};
+  let imageModalItem=null;
 
   const BRAND_RULES=[['redmi','Redmi'],['poco','POCO'],['xiaomi','Xiaomi'],['samsung','Samsung'],['galaxy','Samsung'],['oppo','OPPO'],['vivo','vivo'],['iqoo','iQOO'],['oneplus','OnePlus'],['honor','HONOR'],['realme','Realme'],['tecno','Tecno'],['iphone','Apple'],['ipad','Apple']];
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -11966,6 +12038,61 @@ document.addEventListener("DOMContentLoaded",function(){
     const box=els.formTitle?.closest('.used-admin-formbox');
     box?.classList.toggle('editing-sheet-item',!!on);
   }
+  function restoreUploadBox(){
+    if(!els.uploadBox||!uploadHome.parent)return;
+    if(uploadHome.next&&uploadHome.next.parentNode===uploadHome.parent) uploadHome.parent.insertBefore(els.uploadBox,uploadHome.next);
+    else uploadHome.parent.appendChild(els.uploadBox);
+  }
+  function closeImageModal(doReset=true){
+    if(!imageModal?.classList.contains('show'))return;
+    imageModal.classList.remove('show');imageModal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('used-image-modal-open');
+    restoreUploadBox();
+    imageModalItem=null;
+    if(doReset) reset();
+  }
+  function openImageModal(x){
+    if(!x||!imageModal||!imageModalMount||!els.uploadBox)return edit(x);
+    editingId=x.id||'';editingSource=x.source||'';editingSheetRow=Number(x.sheetRow||0)||0;
+    for(const k of ['name','brand','price','memory','color','rom','condition','battery','warranty','imei','accessories','note']) if(els[k]) els[k].value=x[k]??'';
+    if(els.status)els.status.value=x.status==='sold'?'sold':'available';
+    assets=(Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets:(x.images||[])).map(normalizedAsset);
+    setSheetEditMode(x.source==='sheet');
+    renderImages();
+    imageModalItem=x;
+    const hasImages=currentImages().length>0;
+    if(imageModalName)imageModalName.textContent=x.name||'Máy đã chọn';
+    if(imageModalMeta){
+      const bits=[x.memory,x.color,x.imei?('IMEI: '+x.imei):'',x.status==='sold'?'Đã bán':'Còn hàng'].filter(Boolean);
+      imageModalMeta.innerHTML=bits.map(v=>`<span>${esc(v)}</span>`).join('');
+    }
+    if(imageModalPhoto){const src=currentImages()[0]||'';imageModalPhoto.style.backgroundImage=src?`url("${String(src).replace(/"/g,'&quot;')}")`:'';}
+    const title=$('usedImageModalTitle');if(title)title.textContent=(hasImages?'Cập nhật ảnh':'Thêm ảnh')+' • '+(x.name||'Máy cũ');
+    imageModalSave.textContent=hasImages?'Lưu cập nhật':'Lưu ảnh';
+    imageModalMount.appendChild(els.uploadBox);
+    imageModal.classList.add('show');imageModal.setAttribute('aria-hidden','false');document.body.classList.add('used-image-modal-open');
+    setStatus('');
+    setTimeout(()=>imageModalClose?.focus(),60);
+  }
+  imageModalClose?.addEventListener('click',()=>closeImageModal(true));
+  imageModalCancel?.addEventListener('click',()=>closeImageModal(true));
+  imageModal?.addEventListener('click',e=>{if(e.target===imageModal)closeImageModal(true)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&imageModal?.classList.contains('show'))closeImageModal(true)});
+  imageModalSave?.addEventListener('click',async()=>{
+    if(!imageModalItem)return;
+    const x=formData();
+    if(!x.images.length)return fail(els.imagesInput,'Bạn chưa có ảnh thực tế. Hãy upload ít nhất 1 ảnh.');
+    imageModalSave.disabled=true;imageModalSave.textContent='Đang lưu...';
+    try{
+      await apiSave(x);
+      closeImageModal(false);
+      reset();
+      setStatus('✓ Đã cập nhật ảnh cho máy cũ.','#15803d');
+      toast('Đã cập nhật ảnh máy cũ.','success');
+    }catch(e){const msg=e?.message||'Không lưu được ảnh.';setStatus(msg,'#b42318');toast(msg,'error')}
+    finally{imageModalSave.disabled=false;if(!imageModalItem)imageModalSave.textContent='Lưu ảnh'}
+  });
+
   function highlightImageUpload(x){
     const box=els.uploadBox;
     if(!box)return;
@@ -12109,7 +12236,7 @@ document.addEventListener("DOMContentLoaded",function(){
   els.list?.addEventListener('click',async e=>{
     const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
     const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
-    if(act==='edit')return edit(x);
+    if(act==='edit')return x.source==='sheet'?openImageModal(x):edit(x);
     if(act==='toggle'){if(x.source==='sheet'){toast('Trạng thái lấy từ Google Sheet. Hãy đổi cột TRẠNG THÁI trên Sheet Android rồi bấm Đồng bộ Sheet.','error');return}try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
     if(act==='delete'){
       if(!confirm(`Xóa "${x.name}" khỏi danh sách máy cũ?\nẢnh Cloudinary của máy này cũng sẽ được xóa.`))return;
