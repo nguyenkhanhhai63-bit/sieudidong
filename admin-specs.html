@@ -14271,6 +14271,107 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  btn.addEventListener('click',()=>setOpen(btn.getAttribute('aria-expanded')!=='true'));
 })();
 </script>
+
+
+<style id="v882-price-editor-layout-polish">
+/* V882 - Căn lại khu vực Tùy chỉnh bảng giá: danh sách và A4 thẳng hàng, không còn khoảng trống trên preview */
+#sddPriceAdminModal .price-admin-box{
+  width:min(1720px,99vw)!important;
+  max-height:96vh!important;
+}
+#sddPriceAdminModal .v871-workspace{
+  grid-template-columns:minmax(620px,1.08fr) minmax(560px,.92fr)!important;
+  gap:12px!important;
+  padding:10px 12px 12px!important;
+  align-items:start!important;
+}
+#sddPriceAdminModal .v871-editor-pane,
+#sddPriceAdminModal .v871-preview-pane{
+  border-radius:12px!important;
+  align-self:start!important;
+}
+#sddPriceAdminModal .v871-editor-pane{
+  max-height:calc(96vh - 205px)!important;
+}
+#sddPriceAdminModal .v871-preview-pane{
+  position:sticky!important;
+  top:8px!important;
+  max-height:calc(96vh - 205px)!important;
+  overflow:auto!important;
+}
+/* Ép thứ tự hiển thị để A4 luôn nằm sát trên cùng */
+#sddPriceAdminModal .v871-preview-pane .v870-a4-panel{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  padding:0!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-a4-preview-card{
+  order:1!important;
+  position:relative!important;
+  top:auto!important;
+  margin:8px!important;
+  padding:10px!important;
+  box-shadow:none!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-a4-guide{
+  order:2!important;
+  margin:0 8px 8px!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-manual-card{
+  order:3!important;
+  margin:0 8px 8px!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-a4-preview-head{
+  margin-bottom:8px!important;
+  align-items:center!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-a4-preview-stage{
+  width:100%!important;
+  aspect-ratio:297/210!important;
+  margin:0!important;
+}
+#sddPriceAdminModal .v871-preview-pane .price-a4-preview-help,
+#sddPriceAdminModal .v871-preview-pane .price-a4-print-note{
+  margin-top:6px!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+/* Danh sách bên trái gọn, cột edit rộng hơn */
+#sddPriceAdminModal .price-admin-row{
+  grid-template-columns:34px 46px minmax(260px,1.65fr) minmax(130px,.72fr) 66px 76px 96px!important;
+  gap:7px!important;
+  padding:8px 6px!important;
+  align-items:center!important;
+}
+#sddPriceAdminModal .price-name-edit,
+#sddPriceAdminModal .price-color-edit{
+  height:36px!important;
+}
+#sddPriceAdminModal .v870-edit-toolbar{
+  padding:8px 10px!important;
+}
+#sddPriceAdminModal .v871-editor-pane .price-admin-list{
+  padding:3px 8px 12px!important;
+}
+@media (min-width:1500px){
+  #sddPriceAdminModal .v871-workspace{
+    grid-template-columns:minmax(690px,1.06fr) minmax(650px,.94fr)!important;
+  }
+}
+@media (max-width:1250px){
+  #sddPriceAdminModal .v871-workspace{
+    grid-template-columns:minmax(520px,1fr) minmax(470px,.9fr)!important;
+  }
+  #sddPriceAdminModal .price-admin-row{
+    grid-template-columns:32px 44px minmax(220px,1.5fr) minmax(118px,.7fr) 62px 72px 92px!important;
+  }
+}
+@media (max-width:900px){
+  #sddPriceAdminModal .v871-workspace{display:flex!important;flex-direction:column!important}
+  #sddPriceAdminModal .v871-preview-pane{position:relative!important;top:auto!important;max-height:none!important;overflow:visible!important}
+}
+</style>
 </body>
 </html>
 
