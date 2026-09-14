@@ -585,7 +585,9 @@ body.a4-print-layout .sheet .foot{
   function displayName(it){
     const m=customNames(), custom=m[modelKey(it)];
     if(custom)return custom;
-    const base=compactPriceTableName(baseName(it.name)),rom=romType(it);
+    // v876: giữ nguyên tên model gốc để người dùng tự chỉnh tùy ý trong editor.
+    // Không tự bỏ 5G / Chính hãng hay rút gọn tên; chỉ tách màu/dung lượng và giữ ROM thành dòng riêng.
+    const base=baseName(it.name),rom=romType(it);
     // Nội bộ vẫn giữ khóa "ROM TIẾNG VIỆT" để không mất cấu hình đã lưu,
     // nhưng tên hiển thị trên bảng giá chỉ ghi "TIẾNG VIỆT".
     const romLabel=rom==='ROM TIẾNG VIỆT'?'TIẾNG VIỆT':rom;
