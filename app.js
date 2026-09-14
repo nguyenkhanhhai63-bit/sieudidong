@@ -862,40 +862,41 @@ function escapeRegExp(text){
   return String(text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function normalizeProductBaseName(fullName, color, memory){
-  let s = String(fullName || "").trim();
+function normalizeProductBaseName(fullName, color, memory, rom, attrs){
+  let s = String(fullName || "").replace(/\s+/g," ").trim();
 
-  // Remove exact memory suffix if present.
-  if(memory){
-    const m = escapeRegExp(memory);
-    s = s.replace(new RegExp(`\\s*-\\s*${m}\\s*$`, "i"), "");
-    s = s.replace(new RegExp(`\\s+${m}\\s*$`, "i"), "");
+  // V866: KiotViet can expose each attribute combination as a separate
+  // top-level product. Remove only trailing attribute values repeatedly so
+  // all variants still collapse into one model card. Specs inside parentheses
+  // such as "Snapdragon 8s Gen 4 - Pin 7550mAh" stay untouched.
+  const suffixes=[];
+  const push=v=>{
+    const x=String(v||"").replace(/\s+/g," ").trim();
+    if(x && !suffixes.some(y=>y.toLowerCase()===x.toLowerCase())) suffixes.push(x);
+  };
+
+  push(color); push(memory); push(rom);
+  (Array.isArray(attrs)?attrs:[]).forEach(a=>push(a?.value));
+  ["ROM GỐC","ROM GOC","TIẾNG VIỆT","TIENG VIET","ROM QUỐC TẾ","ROM QUOC TE"].forEach(push);
+  suffixes.sort((a,b)=>b.length-a.length);
+
+  let changed=true;
+  while(changed && s){
+    changed=false;
+    for(const value of suffixes){
+      const e=escapeRegExp(value);
+      let next=s.replace(new RegExp(`\\s*-\\s*${e}\\s*$`,"i"),"").trim();
+      if(next===s) next=s.replace(new RegExp(`\\s+${e}\\s*$`,"i"),"").trim();
+      next=next.replace(/\s+-\s*$/g,"").trim();
+      if(next!==s){ s=next; changed=true; break; }
+    }
+
+    const storageTrim=s.replace(/\s*-\s*\d+\s*\/\s*(?:\d+|1T|2T)\s*$/i,"").trim();
+    if(storageTrim!==s){ s=storageTrim; changed=true; }
   }
 
-  // Remove exact detected color suffix if present.
-  // Supports "Xanh Dương", "Đen Bạc", "Titan Xám"... not only one-word colors.
-  if(color){
-    const c = escapeRegExp(color);
-    s = s.replace(new RegExp(`\\s*-\\s*${c}\\s*$`, "i"), "");
-    s = s.replace(new RegExp(`\\s+${c}\\s*$`, "i"), "");
-  }
-
-  // Some product names end with both attributes in either order.
-  if(memory){
-    const m = escapeRegExp(memory);
-    s = s.replace(new RegExp(`\\s*-\\s*${m}\\s*$`, "i"), "");
-  }
-  if(color){
-    const c = escapeRegExp(color);
-    s = s.replace(new RegExp(`\\s*-\\s*${c}\\s*$`, "i"), "");
-  }
-
-  // Final cleanup.
-  s = s.replace(/\s+-\s*$/g, "").replace(/\s{2,}/g, " ").trim();
-
-  return s;
+  return s.replace(/\s+-\s*$/g, "").replace(/\s{2,}/g, " ").trim();
 }
-
 
 
 let ACTIVE_MAIN_CATEGORY = "";
@@ -1037,7 +1038,7 @@ function flattenProducts(raw){
         // đều dùng cùng key "iPhone 12". Vì vậy danh sách chỉ còn 1 card/model.
         // V865: KiotViet variants must always group under the parent product.
         // New attributes (ROM/language/etc.) are options, never separate product cards.
-        baseName:iphoneModel || String(p.name || normalizeProductBaseName(fullName, color, memory)).trim(),
+        baseName:iphoneModel || normalizeProductBaseName(fullName || p.name, color, memory, rom, attrs),
         memory,
         color,
         rom,
