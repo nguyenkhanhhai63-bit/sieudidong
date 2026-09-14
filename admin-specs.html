@@ -13993,19 +13993,9 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     if(!previewZoomTouched) previewScale=previewFitScale;
     const scale=Math.max(.25,Math.min(4,previewScale));
     previewScale=scale;
-    // V897: zoom theo kích thước viewport thật của iframe thay vì CSS zoom/transform.
-    // Nhờ vậy 100% = đúng 1123x794px, các mức 50/75/125... có tỷ lệ hình học đúng
-    // và trình duyệt tự render lại chữ/đường kẻ ở kích thước đích, giảm mờ khi thu nhỏ.
-    const baseW=1123, baseH=794;
-    previewFrame.style.zoom='1';
+    // CSS zoom render lại nội dung nên chữ/đường kẻ vẫn sắc nét.
     previewFrame.style.transform='none';
-    previewFrame.style.width=Math.max(1,Math.round(baseW*scale))+'px';
-    previewFrame.style.height=Math.max(1,Math.round(baseH*scale))+'px';
-    // Trang preview nhận tỷ lệ viewport để scale nội dung A4 từ gốc 1123x794 mà không reflow sai bố cục.
-    try{
-      const win=previewFrame.contentWindow;
-      if(win&&typeof win.postMessage==='function') win.postMessage({type:'sdd-a4-preview-zoom',scale:scale,baseW:baseW,baseH:baseH},'*');
-    }catch(_){}
+    previewFrame.style.zoom=String(scale);
     previewStage.style.setProperty('--sdd-a4-preview-scale',scale);
     updateA4PreviewZoomBadge();
   }
@@ -14496,50 +14486,6 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 @media(max-width:980px){#sddPriceAdminModal .price-manual-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:560px){#sddPriceAdminModal .price-manual-grid{grid-template-columns:1fr 1fr!important;gap:7px!important}#sddPriceAdminModal .price-manual-item{padding:7px 8px!important}}
 </style>
-
-<style id="v897-a4-sharp-true-zoom">
-/* V897 - iframe có đúng kích thước tỷ lệ; nội dung bên trong tự scale từ canvas gốc A4 */
-#sddPriceAdminModal .price-a4-preview-frame{
-  transform:none!important;
-  zoom:1!important;
-  image-rendering:auto!important;
-  backface-visibility:hidden;
-}
-</style>
-<script id="v897-a4-sharp-true-zoom-script">
-(function(){
-  function installIntoFrame(){
-    var f=document.getElementById('sddA4PreviewFrame');
-    if(!f)return;
-    try{
-      var w=f.contentWindow,d=f.contentDocument;if(!w||!d)return;
-      if(w.__sddV897ZoomInstalled)return;
-      w.__sddV897ZoomInstalled=true;
-      var st=d.createElement('style');
-      st.id='sdd-v897-preview-zoom-style';
-      st.textContent='html,body{transform-origin:0 0!important;} body{overflow:hidden!important;}';
-      (d.head||d.documentElement).appendChild(st);
-      function apply(scale){
-        scale=Math.max(.25,Math.min(4,Number(scale)||1));
-        // Giữ layout nội bộ luôn ở canvas 1123x794; chỉ scale lớp gốc bên trong iframe.
-        // transform trong chính document cho chất lượng chữ tốt hơn việc scale cả iframe ngoài.
-        var root=d.documentElement,body=d.body;
-        root.style.width='1123px';root.style.height='794px';root.style.overflow='hidden';
-        if(body){
-          body.style.width='1123px';body.style.height='794px';body.style.margin='0';
-          body.style.transformOrigin='0 0';body.style.transform='scale('+scale+')';
-        }
-      }
-      w.addEventListener('message',function(ev){var x=ev.data||{};if(x.type==='sdd-a4-preview-zoom')apply(x.scale)});
-      // Áp ngay tỷ lệ hiện tại theo kích thước iframe.
-      var sc=(parseFloat(f.style.width)||1123)/1123;apply(sc);
-    }catch(e){}
-  }
-  var f=document.getElementById('sddA4PreviewFrame');
-  if(f){f.addEventListener('load',function(){setTimeout(installIntoFrame,0)});setTimeout(installIntoFrame,100)}
-})();
-</script>
-
 </body>
 </html>
 
