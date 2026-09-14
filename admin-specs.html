@@ -16375,3 +16375,171 @@ body > .wrap, .wrap, main{
 })();
 </script>
 
+
+<!-- V880 FULL HD 1920x1080 DASHBOARD TUNING -->
+<style id="v880-fullhd-dashboard-tuning">
+/* Tối ưu riêng viewport Full HD: tận dụng ngang, giảm chiều cao thừa,
+   giữ chữ đủ lớn và đưa thêm nội dung vào một màn hình 1920x1080. */
+@media (min-width:1700px) and (max-width:2100px) and (max-height:1200px){
+  :root{
+    --v878-dash-max:1810px!important;
+    --v878-dash-gap:10px!important;
+    --v878-card-radius:13px!important;
+  }
+
+  body.authenticated .wrap{
+    padding-left:calc(var(--sidebar-w) + 18px)!important;
+    padding-right:18px!important;
+  }
+
+  #analyticsCard .head{
+    min-height:58px!important;
+    padding:10px 18px!important;
+    margin-bottom:8px!important;
+  }
+  #analyticsCard .head h1{
+    font-size:20px!important;
+    margin:0 0 2px!important;
+  }
+  #analyticsCard .head p{
+    font-size:11px!important;
+    line-height:1.25!important;
+  }
+  #analyticsCard .head #refreshAnalytics,
+  #analyticsCard #refreshAnalytics{
+    min-height:36px!important;
+    padding:0 16px!important;
+  }
+
+  #analyticsCard .analytics-periodbar{
+    min-height:46px!important;
+    padding:6px 8px!important;
+    margin:0 0 10px!important;
+  }
+  #analyticsCard .period-tabs{gap:4px!important}
+  #analyticsCard .period-tab{
+    min-height:30px!important;
+    padding:5px 11px!important;
+    font-size:10.5px!important;
+  }
+
+  #analyticsCard .analytics-shell{
+    padding:10px 16px 12px!important;
+  }
+
+  #analyticsCard .metric-grid.metric-grid-main{
+    gap:10px!important;
+    margin-bottom:10px!important;
+  }
+  #analyticsCard .metric-grid-main .metric{
+    min-height:104px!important;
+    padding:11px 9px 9px 50px!important;
+  }
+  #analyticsCard .metric-grid-main .metric-icon{
+    left:11px!important;
+    top:12px!important;
+    width:31px!important;
+    height:31px!important;
+  }
+  #analyticsCard .metric-grid-main .metric small{
+    font-size:11px!important;
+    line-height:1.15!important;
+  }
+  #analyticsCard .metric-grid-main .metric strong{
+    font-size:25px!important;
+    margin-top:3px!important;
+  }
+  #analyticsCard .metric-grid-main .metric .metric-trend,
+  #analyticsCard .metric-grid-main .metric em{
+    font-size:9.5px!important;
+    line-height:1.15!important;
+  }
+
+  /* Hàng 4 biểu đồ: cân đối lại chiều ngang đúng Full HD. */
+  #analyticsCard .traffic-insights-row-four{
+    gap:10px!important;
+    grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr) minmax(0,.92fr) minmax(0,1.18fr)!important;
+    margin-bottom:10px!important;
+  }
+  #analyticsCard .traffic-insights-row-four>.abox{
+    min-width:0!important;
+    min-height:246px!important;
+    height:246px!important;
+  }
+  #analyticsCard .traffic-insights-row-four .abox>h2,
+  #analyticsCard .traffic-chart-head{
+    min-height:42px!important;
+    padding:10px 13px!important;
+  }
+  #analyticsCard .traffic-insights-row-four h2,
+  #analyticsCard .traffic-chart-head h2{
+    font-size:12px!important;
+  }
+  #analyticsCard .chart{
+    height:192px!important;
+    min-height:192px!important;
+  }
+  #analyticsCard .device-chart-wrap{
+    min-height:192px!important;
+    height:192px!important;
+    padding:8px 10px!important;
+  }
+  #analyticsCard .traffic-hour-wrap{
+    padding:8px 10px 7px!important;
+  }
+  #analyticsCard .traffic-source-list{
+    padding:12px 14px!important;
+  }
+
+  /* Hàng AI + bảo hành: ưu tiên bảng rộng, giảm chiều cao rỗng. */
+  #analyticsCard .analytics-grid{
+    gap:10px!important;
+  }
+  #analyticsCard .analytics-grid>.v518-primary-row{
+    grid-template-columns:minmax(0,4.5fr) minmax(0,7.5fr)!important;
+    gap:10px!important;
+  }
+  #analyticsCard .analytics-grid>.v518-primary-row>.abox,
+  #analyticsCard .ai-history-box,
+  #analyticsCard .warranty-analytics-box{
+    min-height:250px!important;
+  }
+  #analyticsCard .ai-history-head,
+  #analyticsCard .warranty-analytics-head{
+    padding:11px 14px!important;
+  }
+  #analyticsCard .ai-question-history,
+  #analyticsCard .warranty-recent-wrap{
+    max-height:210px!important;
+  }
+
+  /* 5 card thống kê nhỏ của V879: gọn hơn để phần tiếp theo xuất hiện sớm. */
+  #analyticsCard .v879-secondary-grid{
+    gap:10px!important;
+  }
+  #analyticsCard .v879-secondary-grid>.abox{
+    min-height:190px!important;
+  }
+  #analyticsCard .v879-secondary-grid .ranklist{
+    padding:8px 12px 10px!important;
+  }
+
+  #analyticsCard .abox>h2,
+  #analyticsCard .compare-pairs-head{
+    padding:10px 13px!important;
+  }
+  #analyticsCard .abox>h2,
+  #analyticsCard .ai-history-head h2,
+  #analyticsCard .warranty-analytics-head h2,
+  #analyticsCard .compare-pairs-head h2{
+    font-size:12px!important;
+  }
+
+  .admin-topbar{
+    min-height:54px!important;
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .admin-quick-search{width:300px!important}
+}
+</style>
