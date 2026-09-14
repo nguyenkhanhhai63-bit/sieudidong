@@ -13971,20 +13971,25 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function saveA4(v){const x=Object.assign({},a4Defaults,v||{});localStorage.setItem(A4_KEY,JSON.stringify(x));saveCloud();window.dispatchEvent(new CustomEvent('sdd-price-a4-settings',{detail:x}));return x}
   function syncA4Controls(){const v=readA4();if(manualEnabled)manualEnabled.checked=!!v.enabled;if(fontRange)fontRange.value=v.font;if(rowRange)rowRange.value=v.row;if(gapRange)gapRange.value=v.gap;if(scaleRange)scaleRange.value=v.scale;if(fontOut)fontOut.value=v.font+'%';if(rowOut)rowOut.value=v.row+'%';if(gapOut)gapOut.value=v.gap+'%';if(scaleOut)scaleOut.value=v.scale+'%'}
   function collectA4(){return {enabled:!!manualEnabled?.checked,font:+fontRange?.value||100,row:+rowRange?.value||100,gap:+gapRange?.value||100,scale:+scaleRange?.value||100}}
-  let previewZoom=1,previewFitScale=1;
+  // v895: phần trăm zoom phải là tỷ lệ hiển thị THỰC, không phải tỷ lệ tương đối so với chế độ vừa khung.
+  // Ví dụ khung đang fit ở 96% thì badge hiện đúng 96%; 100% luôn là kích thước gốc của preview A4.
+  let previewScale=1,previewFitScale=1,previewZoomTouched=false;
   function updateA4PreviewZoomBadge(){
     if(!previewStage)return;
     let badge=previewStage.querySelector('.sdd-a4-wheel-zoom-badge');
     if(!badge){badge=document.createElement('div');badge.className='sdd-a4-wheel-zoom-badge';previewStage.appendChild(badge)}
-    badge.textContent=Math.round(previewZoom*100)+'%';
+    badge.textContent=Math.round(previewScale*100)+'%';
+    badge.title='Tỷ lệ hiển thị thực tế của bản xem trước A4';
   }
   function fitA4Preview(){
     if(!previewStage||!previewFrame)return;
     const w=Math.max(1,previewStage.clientWidth),base=Math.max(1,previewFrame.offsetWidth||1123);
     previewFitScale=w/base;
-    const scale=previewFitScale*previewZoom;
-    // v893: dùng CSS zoom thay cho transform để trình duyệt render lại iframe ở độ phân giải
-    // cao hơn khi phóng to, giúp chữ và đường kẻ sắc nét hơn thay vì kéo giãn bitmap cũ.
+    // Trước khi người dùng zoom, luôn vừa khung. Sau khi đã zoom thì giữ nguyên tỷ lệ tuyệt đối khi resize.
+    if(!previewZoomTouched) previewScale=previewFitScale;
+    const scale=Math.max(.25,Math.min(4,previewScale));
+    previewScale=scale;
+    // CSS zoom render lại nội dung nên chữ/đường kẻ vẫn sắc nét.
     previewFrame.style.transform='none';
     previewFrame.style.zoom=String(scale);
     previewStage.style.setProperty('--sdd-a4-preview-scale',scale);
@@ -13993,24 +13998,26 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function bindA4WheelZoom(){
     if(!previewStage||previewStage.dataset.wheelZoomBound==='1')return;
     previewStage.dataset.wheelZoomBound='1';
-    previewStage.title='Lăn chuột để phóng to / thu nhỏ. Giữ chuột trái và kéo để di chuyển. Nhấp đúp để về 100%.';
+    previewStage.title='Lăn chuột để phóng to / thu nhỏ theo tỷ lệ thực. Giữ chuột trái và kéo để di chuyển. Nhấp đúp để về đúng 100%.';
     previewStage.addEventListener('wheel',e=>{
       e.preventDefault();
       const rect=previewStage.getBoundingClientRect();
       const mx=e.clientX-rect.left,my=e.clientY-rect.top;
-      const oldScale=previewFitScale*previewZoom;
-      const contentX=(previewStage.scrollLeft+mx)/Math.max(.001,oldScale);
-      const contentY=(previewStage.scrollTop+my)/Math.max(.001,oldScale);
+      const oldScale=Math.max(.001,previewScale);
+      const contentX=(previewStage.scrollLeft+mx)/oldScale;
+      const contentY=(previewStage.scrollTop+my)/oldScale;
       const factor=e.deltaY<0?1.1:(1/1.1);
-      previewZoom=Math.max(.5,Math.min(3,previewZoom*factor));
+      previewScale=Math.max(.25,Math.min(4,oldScale*factor));
+      previewZoomTouched=true;
       fitA4Preview();
-      const newScale=previewFitScale*previewZoom;
+      const newScale=previewScale;
       requestAnimationFrame(()=>{
         previewStage.scrollLeft=Math.max(0,contentX*newScale-mx);
         previewStage.scrollTop=Math.max(0,contentY*newScale-my);
       });
     },{passive:false});
-    previewStage.addEventListener('dblclick',e=>{e.preventDefault();previewZoom=1;fitA4Preview();previewStage.scrollTo({left:0,top:0,behavior:'smooth'})});
+    // Nhấp đúp = đúng 100% kích thước gốc, không phải 100% tương đối theo khung.
+    previewStage.addEventListener('dblclick',e=>{e.preventDefault();previewScale=1;previewZoomTouched=true;fitA4Preview();previewStage.scrollTo({left:0,top:0,behavior:'smooth'})});
 
     // v892: giữ chuột trái và kéo để di chuyển vùng xem trước A4.
     let dragging=false,startX=0,startY=0,startLeft=0,startTop=0,moved=false;
@@ -14464,6 +14471,10 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 <style id="v893-a4-sharp-zoom">
 /* v893 - zoom iframe bằng CSS zoom để chữ/đường kẻ không bị mờ khi phóng lớn */
 #sddPriceAdminModal .price-a4-preview-frame{transform:none!important;transform-origin:top left!important}
+</style>
+<style id="v895-a4-true-zoom-scale">
+/* v895 - badge và thao tác zoom dùng tỷ lệ tuyệt đối: 100% = kích thước gốc */
+#sddPriceAdminModal .sdd-a4-wheel-zoom-badge{min-width:38px;text-align:center}
 </style>
 </body>
 </html>
