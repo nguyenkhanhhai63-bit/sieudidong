@@ -13958,10 +13958,31 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   const brandLabel=g=>String(g||'KHÁC').trim()||'KHÁC';
   const readModels=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_models_cache')||'[]')}catch(e){return []}};
   const readHidden=()=>{try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}};
-  let cloudSaveTimer=0,cloudLoaded=false;
+  let cloudSaveTimer=0,cloudLoaded=false,cloudSaving=false,cloudUpdatedAt=0,lastLocalEditAt=0,cloudPollTimer=0;
   function cloudPayload(){return {hidden:[...readHidden()],names:readNames(),colors:readColors(),order:readOrder(),a4:readA4()}}
-  function saveCloud(){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(async()=>{try{await fetch('/api/admin/price-table-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(cloudPayload())})}catch(e){console.warn('[Bảng giá] Không lưu được cấu hình máy chủ',e)}},250)}
-  async function loadCloud(){try{const r=await fetch('/api/admin/price-table-settings?_='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));localStorage.setItem(A4_KEY,JSON.stringify(v.a4||a4Defaults));cloudLoaded=true;return true}catch(e){return false}}
+  function applyCloudSettings(v,rerender=false){
+    if(!v||typeof v!=='object')return;
+    localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));
+    localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));
+    localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));
+    localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));
+    localStorage.setItem(A4_KEY,JSON.stringify(Object.assign({},a4Defaults,v.a4||{})));
+    cloudUpdatedAt=Math.max(cloudUpdatedAt,Number(v.updatedAt)||0);cloudLoaded=true;
+    if(rerender){syncA4Controls();try{render()}catch(_){};try{refreshA4Preview()}catch(_){} }
+  }
+  function saveCloud(){
+    lastLocalEditAt=Date.now();clearTimeout(cloudSaveTimer);
+    cloudSaveTimer=setTimeout(async()=>{cloudSaving=true;try{
+      const r=await fetch('/api/admin/price-table-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',cache:'no-store',body:JSON.stringify(cloudPayload())});
+      if(!r.ok)throw 0;const j=await r.json();cloudUpdatedAt=Math.max(cloudUpdatedAt,Number(j.updatedAt)||Number(j.settings&&j.settings.updatedAt)||0);
+    }catch(e){console.warn('[Bảng giá] Không lưu được cấu hình máy chủ',e)}finally{cloudSaving=false}},180)
+  }
+  async function loadCloud(rerender=false){try{const r=await fetch('/api/admin/price-table-settings?_='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};applyCloudSettings(v,rerender);return true}catch(e){return false}}
+  async function pollCloud(){
+    if(cloudSaving||Date.now()-lastLocalEditAt<1200||modal.classList.contains('hidden'))return;
+    try{const r=await fetch('/api/admin/price-table-settings?_='+Date.now(),{cache:'no-store',credentials:'same-origin'});if(!r.ok)return;const j=await r.json(),v=j.settings||{},ts=Number(v.updatedAt)||Number(j.updatedAt)||0;if(ts>cloudUpdatedAt)applyCloudSettings(v,true)}catch(_){}
+  }
+  cloudPollTimer=setInterval(pollCloud,3000);
   const saveHidden=set=>{localStorage.setItem('sdd_price_hidden_models',JSON.stringify([...set]));saveCloud()};
   const readNames=()=>{try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}};
   const saveNames=o=>{localStorage.setItem('sdd_price_custom_names',JSON.stringify(o));saveCloud()};
