@@ -712,6 +712,16 @@ function getColor(attrs, name){
   return "";
 }
 
+function getRom(attrs, name){
+  const byAttr = attributeValue(attrs, [
+    "rom", "ngôn ngữ", "ngon ngu", "phiên bản rom", "phien ban rom", "hệ điều hành", "he dieu hanh"
+  ]);
+  if(byAttr) return byAttr;
+  const text=String(name||"");
+  const m=text.match(/(?:^|\s-\s)(ROM\s+GỐC|ROM\s+GOC|TIẾNG\s+VIỆT|TIENG\s+VIET|ROM\s+QUỐC\s+TẾ|ROM\s+QUOC\s+TE)(?:\s-\s|$)/i);
+  return m ? m[1] : "";
+}
+
 // V773: iPhone KiotViet là Máy cũ và được gom theo MODEL, giữ các thuộc tính thật của từng mã hàng.
 function iphoneModelName(name){
   const text=String(name||"").replace(/\s+/g," ").trim();
@@ -1013,6 +1023,7 @@ function flattenProducts(raw){
       const iphoneModel = iphoneModelName(fullName);
       const memory = getMemory(attrs, fullName);
       const color = getColor(attrs, fullName);
+      const rom = getRom(attrs, fullName);
       const quality = iphoneModel ? getIphoneQuality(attrs,fullName) : "";
       const sourceType = iphoneModel ? "kiot-iphone-used" : (p.sourceType || "");
 
@@ -1024,9 +1035,12 @@ function flattenProducts(raw){
         parentName:String(p.name || "").trim(),
         // Với iPhone KiotViet, mọi mã hàng iPhone 12 - Đen - 64 - 98% - Pin 8X...
         // đều dùng cùng key "iPhone 12". Vì vậy danh sách chỉ còn 1 card/model.
-        baseName:iphoneModel || normalizeProductBaseName(fullName, color, memory),
+        // V865: KiotViet variants must always group under the parent product.
+        // New attributes (ROM/language/etc.) are options, never separate product cards.
+        baseName:iphoneModel || String(p.name || normalizeProductBaseName(fullName, color, memory)).trim(),
         memory,
         color,
+        rom,
         quality,
         attributes:attrs,
         price:Number(v.price || 0),
@@ -2196,6 +2210,15 @@ if(!inlineProductDetail) return;
   memoryOptions.className="detail-memory-options";
   memoryRow.append(memoryLabel,memoryOptions);
 
+  const romRow=document.createElement("div");
+  romRow.className="detail-option-row";
+  const romLabel=document.createElement("div");
+  romLabel.className="detail-option-label";
+  romLabel.textContent="ROM / Ngôn ngữ";
+  const romOptions=document.createElement("div");
+  romOptions.className="detail-memory-options detail-rom-options";
+  romRow.append(romLabel,romOptions);
+
   const qualityRow=document.createElement("div");
   qualityRow.className="detail-option-row";
   const qualityLabel=document.createElement("div");
@@ -2248,6 +2271,7 @@ if(!inlineProductDetail) return;
   }
   if(variants.some(v=>v.color)) info.appendChild(colorRow);
   if(variants.some(v=>v.memory)) info.appendChild(memoryRow);
+  if(variants.some(v=>v.rom)) info.appendChild(romRow);
   if(variants.some(v=>v.quality)) info.appendChild(qualityRow);
   info.appendChild(detailActions);
 
@@ -2326,9 +2350,11 @@ if(!inlineProductDetail) return;
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
+  const roms=[...new Set(variants.map(v=>v.rom).filter(Boolean))];
   const qualities=[...new Set(variants.map(v=>v.quality).filter(Boolean))];
   const colorButtons=new Map();
   const memoryButtons=new Map();
+  const romButtons=new Map();
   const qualityButtons=new Map();
   const stockText=statusTop;
 
@@ -2336,8 +2362,9 @@ if(!inlineProductDetail) return;
     let matches=variants.filter(v=>{
       const cOk=!selectedColor || v.color===selectedColor;
       const mOk=!selectedMemory || v.memory===selectedMemory;
+      const rOk=!selectedRom || v.rom===selectedRom;
       const qOk=!selectedQuality || v.quality===selectedQuality;
-      return cOk && mOk && qOk;
+      return cOk && mOk && rOk && qOk;
     });
 
     if(!matches.length){
@@ -2385,6 +2412,9 @@ if(!inlineProductDetail) return;
     memoryButtons.forEach((btn,mem)=>{
       btn.classList.toggle("disabled",!attrHasStock("memory",mem));
     });
+    romButtons.forEach((btn,rom)=>{
+      btn.classList.toggle("disabled",!attrHasStock("rom",rom));
+    });
     qualityButtons.forEach((btn,q)=>{
       btn.classList.toggle("disabled",!attrHasStock("quality",q));
     });
@@ -2395,6 +2425,7 @@ if(!inlineProductDetail) return;
     if(selected){
       selectedColor=selected.color || selectedColor;
       selectedMemory=selected.memory || selectedMemory;
+      selectedRom=selected.rom || selectedRom;
       selectedQuality=selected.quality || selectedQuality;
 
       // Đổi ảnh theo đúng biến thể màu/dung lượng đang chọn.
@@ -2437,6 +2468,9 @@ if(!inlineProductDetail) return;
 
     memoryButtons.forEach((btn,mem)=>{
       btn.classList.toggle("active",mem===selectedMemory);
+    });
+    romButtons.forEach((btn,rom)=>{
+      btn.classList.toggle("active",rom===selectedRom);
     });
     qualityButtons.forEach((btn,q)=>{
       btn.classList.toggle("active",q===selectedQuality);
@@ -2488,6 +2522,21 @@ if(!inlineProductDetail) return;
 
     memoryButtons.set(mem,btn);
     memoryOptions.appendChild(btn);
+  });
+
+  roms.forEach(rom=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="detail-memory-btn";
+    btn.textContent=rom;
+    btn.addEventListener("click",()=>{
+      selectedRom=rom;
+      const compatible=variants.filter(v=>v.rom===rom && Number(v.onHand||0)>0);
+      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
+      applyVariant((exact[0]||compatible[0]||variants.find(v=>v.rom===rom)));
+    });
+    romButtons.set(rom,btn);
+    romOptions.appendChild(btn);
   });
 
   qualities.forEach(q=>{
