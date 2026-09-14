@@ -13971,7 +13971,44 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function saveA4(v){const x=Object.assign({},a4Defaults,v||{});localStorage.setItem(A4_KEY,JSON.stringify(x));saveCloud();window.dispatchEvent(new CustomEvent('sdd-price-a4-settings',{detail:x}));return x}
   function syncA4Controls(){const v=readA4();if(manualEnabled)manualEnabled.checked=!!v.enabled;if(fontRange)fontRange.value=v.font;if(rowRange)rowRange.value=v.row;if(gapRange)gapRange.value=v.gap;if(scaleRange)scaleRange.value=v.scale;if(fontOut)fontOut.value=v.font+'%';if(rowOut)rowOut.value=v.row+'%';if(gapOut)gapOut.value=v.gap+'%';if(scaleOut)scaleOut.value=v.scale+'%'}
   function collectA4(){return {enabled:!!manualEnabled?.checked,font:+fontRange?.value||100,row:+rowRange?.value||100,gap:+gapRange?.value||100,scale:+scaleRange?.value||100}}
-  function fitA4Preview(){if(!previewStage||!previewFrame)return;const w=Math.max(1,previewStage.clientWidth),base=Math.max(1,previewFrame.offsetWidth||1123),scale=w/base;previewFrame.style.transform='scale('+scale+')'}
+  let previewZoom=1,previewFitScale=1;
+  function updateA4PreviewZoomBadge(){
+    if(!previewStage)return;
+    let badge=previewStage.querySelector('.sdd-a4-wheel-zoom-badge');
+    if(!badge){badge=document.createElement('div');badge.className='sdd-a4-wheel-zoom-badge';previewStage.appendChild(badge)}
+    badge.textContent=Math.round(previewZoom*100)+'%';
+  }
+  function fitA4Preview(){
+    if(!previewStage||!previewFrame)return;
+    const w=Math.max(1,previewStage.clientWidth),base=Math.max(1,previewFrame.offsetWidth||1123);
+    previewFitScale=w/base;
+    const scale=previewFitScale*previewZoom;
+    previewFrame.style.transform='scale('+scale+')';
+    previewStage.style.setProperty('--sdd-a4-preview-scale',scale);
+    updateA4PreviewZoomBadge();
+  }
+  function bindA4WheelZoom(){
+    if(!previewStage||previewStage.dataset.wheelZoomBound==='1')return;
+    previewStage.dataset.wheelZoomBound='1';
+    previewStage.title='Lăn chuột để phóng to / thu nhỏ. Nhấp đúp để về 100%.';
+    previewStage.addEventListener('wheel',e=>{
+      e.preventDefault();
+      const rect=previewStage.getBoundingClientRect();
+      const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+      const oldScale=previewFitScale*previewZoom;
+      const contentX=(previewStage.scrollLeft+mx)/Math.max(.001,oldScale);
+      const contentY=(previewStage.scrollTop+my)/Math.max(.001,oldScale);
+      const factor=e.deltaY<0?1.1:(1/1.1);
+      previewZoom=Math.max(.5,Math.min(3,previewZoom*factor));
+      fitA4Preview();
+      const newScale=previewFitScale*previewZoom;
+      requestAnimationFrame(()=>{
+        previewStage.scrollLeft=Math.max(0,contentX*newScale-mx);
+        previewStage.scrollTop=Math.max(0,contentY*newScale-my);
+      });
+    },{passive:false});
+    previewStage.addEventListener('dblclick',e=>{e.preventDefault();previewZoom=1;fitA4Preview();previewStage.scrollTo({left:0,top:0,behavior:'smooth'})});
+  }
   function refreshA4Preview(){if(!previewFrame)return;const base='./bang-gia.html?adminPreview=1&exact=1&ts=';previewFrame.src=base+Date.now()}
   function loadExternalScript(src,globalName){
     if(globalName&&window[globalName])return Promise.resolve();
@@ -14043,7 +14080,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
-  function bindA4(){syncA4Controls();[fontRange,rowRange,gapRange,scaleRange].forEach(el=>el&&el.addEventListener('input',()=>{const v=collectA4();saveA4(v);syncA4Controls();setTimeout(fitA4Preview,0)}));manualEnabled&&manualEnabled.addEventListener('change',()=>{saveA4(collectA4());syncA4Controls()});resetA4&&resetA4.addEventListener('click',()=>{saveA4({enabled:true,font:100,row:100,gap:100,scale:100});syncA4Controls()});autoA4&&autoA4.addEventListener('click',()=>{saveA4({...a4Defaults,enabled:false});syncA4Controls()});previewFrame&&previewFrame.addEventListener('load',fitA4Preview);previewRefresh&&previewRefresh.addEventListener('click',refreshA4Preview);adminPdf&&adminPdf.addEventListener('click',exportA4Pdf);adminPng&&adminPng.addEventListener('click',exportA4Png);adminPrint&&adminPrint.addEventListener('click',()=>{if(adminPrint.dataset.printing==='1')return;adminPrint.dataset.printing='1';adminPrint.disabled=true;setTimeout(()=>{adminPrint.dataset.printing='0';adminPrint.disabled=false},1800);try{const w=previewFrame&&previewFrame.contentWindow;if(!w)throw new Error('preview');w.focus();try{if(typeof w.sddFreezePreviewForPrint==='function'){w.sddFreezePreviewForPrint();}else{if(typeof w.fitA4Print==='function')w.fitA4Print();if(w.document&&w.document.body){w.document.body.classList.add('a4-print-layout');void w.document.body.offsetHeight;}}}catch(_){};requestAnimationFrame(()=>requestAnimationFrame(()=>w.print()))}catch(e){window.open('./bang-gia.html?adminPrint=1','_blank','noopener')}});window.addEventListener('resize',fitA4Preview);setTimeout(fitA4Preview,80)}
+  function bindA4(){syncA4Controls();bindA4WheelZoom();[fontRange,rowRange,gapRange,scaleRange].forEach(el=>el&&el.addEventListener('input',()=>{const v=collectA4();saveA4(v);syncA4Controls();setTimeout(fitA4Preview,0)}));manualEnabled&&manualEnabled.addEventListener('change',()=>{saveA4(collectA4());syncA4Controls()});resetA4&&resetA4.addEventListener('click',()=>{saveA4({enabled:true,font:100,row:100,gap:100,scale:100});syncA4Controls()});autoA4&&autoA4.addEventListener('click',()=>{saveA4({...a4Defaults,enabled:false});syncA4Controls()});previewFrame&&previewFrame.addEventListener('load',fitA4Preview);previewRefresh&&previewRefresh.addEventListener('click',refreshA4Preview);adminPdf&&adminPdf.addEventListener('click',exportA4Pdf);adminPng&&adminPng.addEventListener('click',exportA4Png);adminPrint&&adminPrint.addEventListener('click',()=>{if(adminPrint.dataset.printing==='1')return;adminPrint.dataset.printing='1';adminPrint.disabled=true;setTimeout(()=>{adminPrint.dataset.printing='0';adminPrint.disabled=false},1800);try{const w=previewFrame&&previewFrame.contentWindow;if(!w)throw new Error('preview');w.focus();try{if(typeof w.sddFreezePreviewForPrint==='function'){w.sddFreezePreviewForPrint();}else{if(typeof w.fitA4Print==='function')w.fitA4Print();if(w.document&&w.document.body){w.document.body.classList.add('a4-print-layout');void w.document.body.offsetHeight;}}}catch(_){};requestAnimationFrame(()=>requestAnimationFrame(()=>w.print()))}catch(e){window.open('./bang-gia.html?adminPrint=1','_blank','noopener')}});window.addEventListener('resize',fitA4Preview);setTimeout(fitA4Preview,80)}
   function orderedModels(){const models=readModels(),order=readOrder(),pos=new Map(order.map((k,i)=>[k,i]));const groupPos=g=>{const i=brandOrder.indexOf(brandLabel(g));return i<0?brandOrder.length:i};return models.slice().sort((a,b)=>groupPos(a.group)-groupPos(b.group)||(pos.has(a.key)?pos.get(a.key):1e9)-(pos.has(b.key)?pos.get(b.key):1e9)||String(a.name||'').localeCompare(String(b.name||''),'vi'))}
   function moveKey(key,dir){const models=orderedModels(),i=models.findIndex(x=>x.key===key);if(i<0)return;const j=i+dir;if(j<0||j>=models.length)return;[models[i],models[j]]=[models[j],models[i]];saveOrder(models.map(x=>x.key));render()}
   function moveBefore(srcKey,dstKey){if(srcKey===dstKey)return;const models=orderedModels(),from=models.findIndex(x=>x.key===srcKey),to=models.findIndex(x=>x.key===dstKey);if(from<0||to<0)return;const [row]=models.splice(from,1);models.splice(to,0,row);saveOrder(models.map(x=>x.key));render()}
@@ -14384,6 +14421,12 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     margin-top:3px!important;
   }
 }
+</style>
+
+<style id="v891-a4-wheel-zoom">
+#sddPriceAdminModal .price-a4-preview-stage{overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin;cursor:zoom-in}
+#sddPriceAdminModal .price-a4-preview-stage .sdd-a4-wheel-zoom-badge{position:sticky;left:8px;top:8px;z-index:8;float:left;margin:8px 0 0 8px;padding:4px 7px;border-radius:999px;background:rgba(17,24,39,.78);color:#fff;font-size:10px;font-weight:800;line-height:1;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+#sddPriceAdminModal .price-a4-preview-frame{will-change:transform}
 </style>
 </body>
 </html>
