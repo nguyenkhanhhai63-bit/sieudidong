@@ -13990,7 +13990,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function bindA4WheelZoom(){
     if(!previewStage||previewStage.dataset.wheelZoomBound==='1')return;
     previewStage.dataset.wheelZoomBound='1';
-    previewStage.title='Lăn chuột để phóng to / thu nhỏ. Nhấp đúp để về 100%.';
+    previewStage.title='Lăn chuột để phóng to / thu nhỏ. Giữ chuột trái và kéo để di chuyển. Nhấp đúp để về 100%.';
     previewStage.addEventListener('wheel',e=>{
       e.preventDefault();
       const rect=previewStage.getBoundingClientRect();
@@ -14008,6 +14008,34 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
       });
     },{passive:false});
     previewStage.addEventListener('dblclick',e=>{e.preventDefault();previewZoom=1;fitA4Preview();previewStage.scrollTo({left:0,top:0,behavior:'smooth'})});
+
+    // v892: giữ chuột trái và kéo để di chuyển vùng xem trước A4.
+    let dragging=false,startX=0,startY=0,startLeft=0,startTop=0,moved=false;
+    previewStage.addEventListener('pointerdown',e=>{
+      if(e.button!==0)return;
+      if(e.target.closest('button,a,input,select,textarea,label'))return;
+      dragging=true;moved=false;startX=e.clientX;startY=e.clientY;startLeft=previewStage.scrollLeft;startTop=previewStage.scrollTop;
+      previewStage.classList.add('sdd-a4-dragging');
+      try{previewStage.setPointerCapture(e.pointerId)}catch(_){}
+      e.preventDefault();
+    });
+    previewStage.addEventListener('pointermove',e=>{
+      if(!dragging)return;
+      const dx=e.clientX-startX,dy=e.clientY-startY;
+      if(Math.abs(dx)>2||Math.abs(dy)>2)moved=true;
+      previewStage.scrollLeft=startLeft-dx;
+      previewStage.scrollTop=startTop-dy;
+      e.preventDefault();
+    });
+    const stopDrag=e=>{
+      if(!dragging)return;
+      dragging=false;previewStage.classList.remove('sdd-a4-dragging');
+      try{previewStage.releasePointerCapture(e.pointerId)}catch(_){}
+    };
+    previewStage.addEventListener('pointerup',stopDrag);
+    previewStage.addEventListener('pointercancel',stopDrag);
+    previewStage.addEventListener('lostpointercapture',()=>{dragging=false;previewStage.classList.remove('sdd-a4-dragging')});
+    previewStage.addEventListener('dragstart',e=>e.preventDefault());
   }
   function refreshA4Preview(){if(!previewFrame)return;const base='./bang-gia.html?adminPreview=1&exact=1&ts=';previewFrame.src=base+Date.now()}
   function loadExternalScript(src,globalName){
@@ -14424,7 +14452,9 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </style>
 
 <style id="v891-a4-wheel-zoom">
-#sddPriceAdminModal .price-a4-preview-stage{overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin;cursor:zoom-in}
+#sddPriceAdminModal .price-a4-preview-stage{overflow:auto!important;overscroll-behavior:contain;scrollbar-width:thin;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+#sddPriceAdminModal .price-a4-preview-stage.sdd-a4-dragging{cursor:grabbing!important}
+#sddPriceAdminModal .price-a4-preview-stage iframe{pointer-events:none}
 #sddPriceAdminModal .price-a4-preview-stage .sdd-a4-wheel-zoom-badge{position:sticky;left:8px;top:8px;z-index:8;float:left;margin:8px 0 0 8px;padding:4px 7px;border-radius:999px;background:rgba(17,24,39,.78);color:#fff;font-size:10px;font-weight:800;line-height:1;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 #sddPriceAdminModal .price-a4-preview-frame{will-change:transform}
 </style>
