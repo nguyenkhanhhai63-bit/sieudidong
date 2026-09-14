@@ -16943,3 +16943,32 @@ body > .wrap, .wrap, main{
   #sddPriceAdminModal .price-a4-preview-card{position:relative!important;top:auto!important}
 }
 </style>
+
+<!-- V887 HEATMAP CELLS TIGHTER -->
+<style id="v887-heatmap-tight-cells">
+/* Làm các ô khung giờ liền mạch hơn, bớt cảm giác rời rạc */
+#analyticsCard .traffic-hour-grid{
+  gap:1px!important;
+  column-gap:1px!important;
+  row-gap:2px!important;
+}
+#analyticsCard .traffic-hour-cell{
+  border-radius:1px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+@media (min-width:1700px) and (max-width:2100px) and (max-height:1200px){
+  #analyticsCard .traffic-insights-row-four .traffic-hour-grid{
+    gap:1px!important;
+    column-gap:1px!important;
+    row-gap:2px!important;
+  }
+}
+@media (max-width:760px){
+  #analyticsCard .traffic-hour-grid{
+    gap:1px!important;
+    column-gap:1px!important;
+    row-gap:2px!important;
+  }
+}
+</style>
