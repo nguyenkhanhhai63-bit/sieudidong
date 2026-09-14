@@ -2403,21 +2403,56 @@ if(!inlineProductDetail) return;
     if(!v) return;
     selectedColor=v.color || "";
     selectedMemory=v.memory || "";
+    selectedRom=v.rom || "";
     selectedQuality=v.quality || "";
+  }
+
+  // V867: ROM/Ngôn ngữ phải phản ánh tồn kho theo đúng tổ hợp đang chọn.
+  // Ví dụ đang chọn 12/256 + Đen thì ROM GỐC chỉ sáng khi có chính biến thể
+  // 12/256 + Đen + ROM GỐC còn hàng. Nếu hết hàng thì làm mờ và không cho bấm.
+  function romHasCompatibleStock(rom){
+    const strict=variants.some(v=>
+      Number(v.onHand||0)>0 &&
+      v.rom===rom &&
+      (!selectedColor || v.color===selectedColor) &&
+      (!selectedMemory || v.memory===selectedMemory) &&
+      (!selectedQuality || v.quality===selectedQuality)
+    );
+    if(strict) return true;
+
+    // Nếu model không có màu/tình trạng tương ứng ở mọi ROM, ưu tiên kiểm tra theo
+    // dung lượng đang chọn để tránh vô tình khóa toàn bộ lựa chọn ROM.
+    if(selectedMemory){
+      return variants.some(v=>Number(v.onHand||0)>0 && v.rom===rom && v.memory===selectedMemory);
+    }
+    return attrHasStock("rom",rom);
   }
 
   function updateAvailability(){
     colorButtons.forEach((btn,color)=>{
-      btn.classList.toggle("disabled",!attrHasStock("color",color));
+      const disabled=!attrHasStock("color",color);
+      btn.classList.toggle("disabled",disabled);
+      btn.disabled=disabled;
+      btn.setAttribute("aria-disabled",String(disabled));
     });
     memoryButtons.forEach((btn,mem)=>{
-      btn.classList.toggle("disabled",!attrHasStock("memory",mem));
+      const disabled=!attrHasStock("memory",mem);
+      btn.classList.toggle("disabled",disabled);
+      btn.disabled=disabled;
+      btn.setAttribute("aria-disabled",String(disabled));
     });
     romButtons.forEach((btn,rom)=>{
-      btn.classList.toggle("disabled",!attrHasStock("rom",rom));
+      const disabled=!romHasCompatibleStock(rom);
+      btn.classList.toggle("disabled",disabled);
+      btn.disabled=disabled;
+      btn.setAttribute("aria-disabled",String(disabled));
+      btn.title=disabled ? `${rom} hiện hết hàng với phiên bản đang chọn` : rom;
     });
     qualityButtons.forEach((btn,q)=>{
-      btn.classList.toggle("disabled",!attrHasStock("quality",q));
+      const disabled=!attrHasStock("quality",q);
+      btn.classList.toggle("disabled",disabled);
+      btn.disabled=disabled;
+      btn.setAttribute("aria-disabled",String(disabled));
     });
   }
   function updateUI(){
@@ -2531,10 +2566,16 @@ if(!inlineProductDetail) return;
     btn.className="detail-memory-btn";
     btn.textContent=rom;
     btn.addEventListener("click",()=>{
-      selectedRom=rom;
+      if(btn.disabled || btn.classList.contains("disabled")) return;
+
       const compatible=variants.filter(v=>v.rom===rom && Number(v.onHand||0)>0);
       const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
-      applyVariant((exact[0]||compatible[0]||variants.find(v=>v.rom===rom)));
+      const sameMemory=selectedMemory ? compatible.filter(v=>v.memory===selectedMemory) : [];
+      const next=bestVariant(exact.length ? exact : (sameMemory.length ? sameMemory : compatible));
+      if(!next) return;
+
+      applyVariant(next);
+      updateUI();
     });
     romButtons.set(rom,btn);
     romOptions.appendChild(btn);
