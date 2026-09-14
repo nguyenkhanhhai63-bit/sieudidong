@@ -12705,7 +12705,9 @@ document.addEventListener("DOMContentLoaded",function(){
     });
 
     sidebar.addEventListener("click",function(e){
-      const nav=e.target.closest(".admin-tab,[data-go-tab]");
+      // Mobile: mọi nút chức năng trong sidebar (kể cả Tùy chỉnh bảng giá / Bảng cấu hình)
+      // đều phải đóng drawer ngay sau khi được chọn.
+      const nav=e.target.closest(".admin-tab,[data-go-tab],.sidebar-shortcut");
       if(nav && drawerMode()) setTimeout(forceClose,30);
     });
 
