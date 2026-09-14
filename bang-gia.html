@@ -415,6 +415,8 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
 /* V894: tự cân độ rộng 4 cột theo nội dung, giữ mọi ô trên một dòng */
 .tbl th,.tbl td{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;}
 .tbl td{overflow:hidden!important;text-overflow:clip!important;}
+.tbl .v896-fit-text{display:block;white-space:nowrap!important;transform-origin:left center;will-change:transform;}
+.tbl td:nth-child(2) .v896-fit-text,.tbl td:nth-child(4) .v896-fit-text{transform-origin:center center;}
 .tbl col.col-name{width:var(--col-name,52%)}
 .tbl col.col-memory{width:var(--col-memory,13%)}
 .tbl col.col-color{width:var(--col-color,19%)}
@@ -582,14 +584,14 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
     const rom=romType(it);
     return (String(it.type||'phone')+'|'+baseName(it.name)+(rom?'|'+rom:'')).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim();
   }
-  async function loadPriceSettingsCloud(){try{const r=await fetch('/api/price-table-settings?_='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));localStorage.setItem('sdd_price_a4_manual',JSON.stringify(v.a4||{enabled:false,font:100,row:100,gap:100,scale:100}));return true}catch(e){return false}}
+  async function loadPriceSettingsCloud(){try{const r=await fetch('/api/price-table-settings?_='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json(),v=j.settings||{};localStorage.setItem('sdd_price_hidden_models',JSON.stringify(Array.isArray(v.hidden)?v.hidden:[]));localStorage.setItem('sdd_price_custom_names',JSON.stringify(v.names||{}));localStorage.setItem('sdd_price_custom_colors',JSON.stringify(v.colors||{}));localStorage.setItem('sdd_price_model_order',JSON.stringify(Array.isArray(v.order)?v.order:[]));localStorage.setItem('sdd_price_a4_manual',JSON.stringify(v.a4||{enabled:false,font:100,row:100,gap:100,scale:100,colName:52,colMemory:13,colColor:19,colPrice:16}));return true}catch(e){return false}}
   function hiddenModelSet(){try{return new Set(JSON.parse(localStorage.getItem('sdd_price_hidden_models')||'[]'))}catch(e){return new Set()}}
   function customNames(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_names')||'{}')}catch(e){return {}}}
   function customColors(){try{return JSON.parse(localStorage.getItem('sdd_price_custom_colors')||'{}')}catch(e){return {}}}
   function customOrder(){try{return JSON.parse(localStorage.getItem('sdd_price_model_order')||'[]')}catch(e){return []}}
   const A4_MANUAL_KEY='sdd_price_a4_manual';
   function a4Manual(){try{return Object.assign({enabled:false,font:100,row:100,gap:100,scale:100},JSON.parse(localStorage.getItem(A4_MANUAL_KEY)||'{}'))}catch(e){return {enabled:false,font:100,row:100,gap:100,scale:100}}}
-  function applyA4Manual(){const sh=document.querySelector('.sheet');if(!sh)return;const v=a4Manual(),on=!!v.enabled;sh.style.setProperty('--manual-font',on?Math.max(.75,Math.min(1.3,(+v.font||100)/100)):1);sh.style.setProperty('--manual-row',on?Math.max(.65,Math.min(1.45,(+v.row||100)/100)):1);sh.style.setProperty('--manual-gap',on?Math.max(.5,Math.min(1.6,(+v.gap||100)/100)):1);sh.dataset.manualA4=on?'1':'0'}
+  function applyA4Manual(){const sh=document.querySelector('.sheet');if(!sh)return;const v=a4Manual(),on=!!v.enabled;sh.style.setProperty('--manual-font',on?Math.max(.75,Math.min(1.3,(+v.font||100)/100)):1);sh.style.setProperty('--manual-row',on?Math.max(.65,Math.min(1.45,(+v.row||100)/100)):1);sh.style.setProperty('--manual-gap',on?Math.max(.5,Math.min(1.6,(+v.gap||100)/100)):1);sh.dataset.manualA4=on?'1':'0';requestAnimationFrame(v896FitTexts)}
   function compactPriceTableName(name){
     // v875: chỉ rút gọn tên HIỂN THỊ trên bảng giá; không đổi tên sản phẩm gốc/KiotViet.
     // Giữ các thông tin khách cần hiểu: Like New, Tiếng Việt, ROM Gốc.
@@ -663,6 +665,13 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
     return Array.from(String(v==null?'':v).trim()).reduce((n,ch)=>n+(/[MWQĐỒỘÔÁÀẢÃẠĂÂÊƯỨỪỬỮỰ]/.test(ch)?1.08:/[il1|]/.test(ch)?.58:1),0);
   }
   function v894ColumnWidths(arr){
+    const manual=a4Manual(), manualOn=!!manual.enabled;
+    if(manualOn){
+      const raw=[+manual.colName||52,+manual.colMemory||13,+manual.colColor||19,+manual.colPrice||16].map(x=>Math.max(1,x));
+      const sum=raw.reduce((a,b)=>a+b,0)||100;
+      return raw.map(x=>Math.round((x/sum)*1000)/10);
+    }
+    // Tự động: đo đúng chiều dài nội dung rồi ưu tiên Tên máy và Màu; Bộ nhớ/Giá chỉ lấy vừa đủ.
     let nameLen=v894TextLen('TÊN MÁY'),memLen=v894TextLen('BỘ NHỚ'),colorLen=v894TextLen('MÀU'),priceLen=v894TextLen('GIÁ BÁN');
     (arr||[]).forEach(it=>{
       nameLen=Math.max(nameLen,v894TextLen(displayName(it)));
@@ -670,23 +679,32 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
       colorLen=Math.max(colorLen,v894TextLen(displayColor(it)));
       priceLen=Math.max(priceLen,v894TextLen(formatPrice(it.price)));
     });
-    let mem=v894Clamp(11+(memLen-5)*.45,11,14);
-    let price=v894Clamp(14.5+(priceLen-8)*.32,14.5,17);
-    let color=v894Clamp(14+(colorLen-7)*.48,14,22);
+    let mem=v894Clamp(11+(memLen-5)*.38,11,14);
+    let price=v894Clamp(14.5+(priceLen-8)*.30,14.5,17);
+    let color=v894Clamp(15+(colorLen-7)*.62,15,25);
     let name=100-mem-price-color;
-    const wantName=v894Clamp(47+(nameLen-17)*.62,47,60);
+    const wantName=v894Clamp(49+(nameLen-17)*.72,49,62);
     let need=Math.max(0,wantName-name);
-    const takeColor=Math.min(need,Math.max(0,color-14));color-=takeColor;need-=takeColor;
-    const takePrice=Math.min(need,Math.max(0,price-14));price-=takePrice;need-=takePrice;
+    const takeColor=Math.min(need,Math.max(0,color-15));color-=takeColor;need-=takeColor;
+    const takePrice=Math.min(need,Math.max(0,price-14.5));price-=takePrice;need-=takePrice;
     const takeMem=Math.min(need,Math.max(0,mem-11));mem-=takeMem;need-=takeMem;
     name=100-mem-price-color;
     return [name,mem,color,price].map(x=>Math.round(x*10)/10);
+  }
+  function v896FitTexts(){
+    document.querySelectorAll('.v896-fit-text').forEach(el=>{
+      el.style.transform='none';el.style.width='100%';
+      const td=el.parentElement;if(!td)return;
+      const cs=getComputedStyle(td),avail=Math.max(1,td.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0)-1);
+      const need=Math.max(1,el.scrollWidth);
+      if(need>avail){const ratio=Math.max(.68,Math.min(1,avail/need));el.style.transform='scaleX('+ratio.toFixed(4)+')';el.style.width=(100/ratio).toFixed(2)+'%';}
+    });
   }
   function panelHtml(g,arr){
     const w=v894ColumnWidths(arr);
     const vars='--col-name:'+w[0]+'%;--col-memory:'+w[1]+'%;--col-color:'+w[2]+'%;--col-price:'+w[3]+'%;';
     const cols='<colgroup><col class="col-name"><col class="col-memory"><col class="col-color"><col class="col-price"></colgroup>';
-    return '<section class="panel" style="--accent:'+g.accent+';'+vars+'"><div class="panel-title">'+g.title+'</div><table class="tbl">'+cols+'<thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td title="'+escapeHtml(displayName(it))+'">'+escapeHtml(displayName(it))+'</td><td>'+escapeHtml(it.memory)+'</td><td title="'+escapeHtml(displayColor(it))+'">'+escapeHtml(displayColor(it))+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'
+    return '<section class="panel" style="--accent:'+g.accent+';'+vars+'"><div class="panel-title">'+g.title+'</div><table class="tbl">'+cols+'<thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td title="'+escapeHtml(displayName(it))+'"><span class="v896-fit-text">'+escapeHtml(displayName(it))+'</span></td><td><span class="v896-fit-text">'+escapeHtml(it.memory)+'</span></td><td title="'+escapeHtml(displayColor(it))+'"><span class="v896-fit-text">'+escapeHtml(displayColor(it))+'</span></td><td class="price"><span class="v896-fit-text">'+formatPrice(it.price)+'</span></td></tr>').join('')+'</tbody></table></section>'
   }
   function render(){
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
@@ -729,6 +747,7 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
     if(!right.children.length)right.innerHTML='<div class="empty">Không có sản phẩm phù hợp.</div>';
     applyA4Manual();
     fitA4Print();
+    requestAnimationFrame(()=>requestAnimationFrame(v896FitTexts));
     if(!document.body.classList.contains('admin-a4-preview')) requestAnimationFrame(fitA4Fill);
   }
   function fitA4Fill(){
@@ -1164,5 +1183,15 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
 })();
 </script>
 
+
+<script id="v896-column-fit-refresh">
+(()=>{
+  const rerun=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>{try{v896FitTexts()}catch(_){}}));
+  window.addEventListener('resize',rerun);
+  window.addEventListener('sdd-price-a4-settings',rerun);
+  window.addEventListener('beforeprint',rerun);
+  setTimeout(rerun,700);
+})();
+</script>
 </body>
 </html>
