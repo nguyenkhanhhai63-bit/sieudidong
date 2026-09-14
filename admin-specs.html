@@ -16040,3 +16040,224 @@ body > .wrap, .wrap, main{
  new MutationObserver(setup).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<!-- V878 DESKTOP DASHBOARD RESPONSIVE - FINAL OVERRIDE -->
+<style id="v878-desktop-dashboard-responsive">
+/* Tối ưu riêng dashboard trên mọi kích thước màn hình máy tính.
+   Mobile giữ nguyên các rule hiện có. */
+@media (min-width:761px){
+  :root{
+    --v878-dash-max:1920px;
+    --v878-dash-gap:clamp(10px,.72vw,16px);
+    --v878-card-radius:clamp(12px,.7vw,16px);
+  }
+
+  body.authenticated .wrap{
+    width:auto!important;
+    max-width:none!important;
+    margin:0!important;
+    padding-left:calc(var(--sidebar-w) + clamp(14px,1.15vw,28px))!important;
+    padding-right:clamp(14px,1.15vw,28px)!important;
+    box-sizing:border-box!important;
+  }
+
+  #analyticsCard{
+    width:min(100%,var(--v878-dash-max))!important;
+    max-width:var(--v878-dash-max)!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    box-sizing:border-box!important;
+  }
+
+  #analyticsCard .analytics-shell{
+    padding:clamp(12px,.9vw,20px)!important;
+  }
+
+  #analyticsCard .analytics-head,
+  #analyticsCard>.head{
+    padding-left:clamp(15px,1vw,22px)!important;
+    padding-right:clamp(15px,1vw,22px)!important;
+  }
+  #analyticsCard .analytics-head h1,
+  #analyticsCard>.head h1{
+    font-size:clamp(21px,1.15vw,27px)!important;
+    line-height:1.15!important;
+  }
+  #analyticsCard .analytics-head p,
+  #analyticsCard>.head p{
+    font-size:clamp(11px,.63vw,13px)!important;
+    line-height:1.4!important;
+  }
+
+  /* KPI: tự đổi số cột theo bề rộng desktop, không bó cứng một kiểu cho mọi màn hình */
+  #analyticsCard .metric-grid.metric-grid-main{
+    display:grid!important;
+    gap:var(--v878-dash-gap)!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+  #analyticsCard .metric-grid-main .metric{
+    min-width:0!important;
+    min-height:clamp(108px,6.6vw,132px)!important;
+    padding:clamp(13px,.78vw,17px) clamp(10px,.72vw,15px) clamp(11px,.7vw,15px) clamp(48px,3.15vw,60px)!important;
+    border-radius:var(--v878-card-radius)!important;
+  }
+  #analyticsCard .metric-grid-main .metric-icon{
+    left:clamp(10px,.72vw,14px)!important;
+    top:clamp(12px,.72vw,15px)!important;
+    width:clamp(30px,1.85vw,36px)!important;
+    height:clamp(30px,1.85vw,36px)!important;
+  }
+  #analyticsCard .metric-grid-main .metric small{
+    min-height:0!important;
+    font-size:clamp(10.5px,.61vw,12.5px)!important;
+    line-height:1.25!important;
+  }
+  #analyticsCard .metric-grid-main .metric strong{
+    font-size:clamp(22px,1.45vw,30px)!important;
+    line-height:1.05!important;
+  }
+  #analyticsCard .metric-grid-main .metric .metric-trend{
+    font-size:clamp(9.5px,.54vw,11px)!important;
+  }
+  #analyticsCard .metric-grid-main .metric em{
+    font-size:clamp(9px,.52vw,10.5px)!important;
+    line-height:1.25!important;
+  }
+
+  /* Toàn bộ khối thống kê co giãn theo container, không dùng width px cố định */
+  #analyticsCard .analytics-grid{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    gap:var(--v878-dash-gap)!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    box-sizing:border-box!important;
+  }
+  #analyticsCard .analytics-grid > *,
+  #analyticsCard .analytics-grid .abox{
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+  #analyticsCard .analytics-grid > .v518-primary-row{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    grid-column:1/-1!important;
+    grid-template-columns:minmax(0,5fr) minmax(0,7fr)!important;
+    gap:var(--v878-dash-gap)!important;
+    box-sizing:border-box!important;
+  }
+
+  #analyticsCard .abox,
+  #analyticsCard .v518-primary-row>.abox{
+    border-radius:var(--v878-card-radius)!important;
+  }
+  #analyticsCard .abox>h2,
+  #analyticsCard .ai-history-head,
+  #analyticsCard .warranty-analytics-head,
+  #analyticsCard .compare-pairs-head{
+    padding:clamp(12px,.78vw,16px) clamp(13px,.9vw,18px)!important;
+  }
+  #analyticsCard .abox>h2,
+  #analyticsCard .ai-history-head h2,
+  #analyticsCard .warranty-analytics-head h2,
+  #analyticsCard .compare-pairs-head h2{
+    font-size:clamp(12px,.69vw,14.5px)!important;
+    line-height:1.3!important;
+  }
+  #analyticsCard .ai-history-head p,
+  #analyticsCard .warranty-analytics-head p,
+  #analyticsCard .compare-pairs-head p{
+    font-size:clamp(9.5px,.55vw,11.5px)!important;
+  }
+  #analyticsCard .rankrow,
+  #analyticsCard .compare-pair-row-compact,
+  #analyticsCard .warranty-recent-table{
+    font-size:clamp(10px,.59vw,12px)!important;
+  }
+  #analyticsCard .warranty-recent-table th{
+    font-size:clamp(9px,.53vw,10.5px)!important;
+  }
+  #analyticsCard .chart{
+    height:clamp(205px,13vw,270px)!important;
+  }
+  #analyticsCard .device-chart-wrap{
+    min-height:clamp(215px,13vw,270px)!important;
+  }
+
+  /* Topbar cũng co giãn để không chật ở laptop và không quá nhỏ trên màn hình 2K/4K */
+  .admin-topbar{
+    padding-left:clamp(14px,1.1vw,26px)!important;
+    padding-right:clamp(14px,1.1vw,26px)!important;
+  }
+  .admin-quick-search{
+    width:clamp(190px,16vw,320px)!important;
+  }
+}
+
+/* Laptop nhỏ: ưu tiên đọc dễ, giảm số cột */
+@media (min-width:761px) and (max-width:1099px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #analyticsCard .analytics-grid > .v518-primary-row{grid-template-columns:1fr!important}
+  #analyticsCard .analytics-grid > .v518-primary-row>.abox{grid-column:1/-1!important}
+}
+
+/* 1100–1499: 4 KPI/cột, card chính chia đôi cân đối */
+@media (min-width:1100px) and (max-width:1499px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #analyticsCard .analytics-grid > .v518-primary-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+}
+
+/* Từ 1500 trở lên: đủ không gian cho toàn bộ 7 KPI trên một hàng */
+@media (min-width:1500px){
+  #analyticsCard .metric-grid.metric-grid-main{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+}
+
+/* Full HD / 2K / ultrawide: tăng vùng đọc, nhưng không kéo card dài vô hạn */
+@media (min-width:1800px){
+  :root{--v878-dash-max:1760px}
+  #analyticsCard .analytics-grid>.ai-history-box,
+  #analyticsCard .analytics-grid>.warranty-analytics-box{min-height:320px!important}
+}
+@media (min-width:2200px){
+  :root{--v878-dash-max:1960px}
+  body:not(.sidebar-collapsed){--sidebar-w:250px}
+  .admin-sidebar{padding-left:14px!important;padding-right:14px!important}
+}
+</style>
+<script id="v878-desktop-dashboard-responsive-js">
+(function(){
+  function normalizeDashboardWidth(){
+    if(window.innerWidth<=760) return;
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var grid=card.querySelector('.analytics-shell > .analytics-grid');
+    var row=grid && grid.querySelector(':scope > .v518-primary-row');
+    if(grid){
+      grid.style.setProperty('width','100%','important');
+      grid.style.setProperty('min-width','0','important');
+      grid.style.setProperty('max-width','none','important');
+    }
+    if(row){
+      row.style.setProperty('width','100%','important');
+      row.style.setProperty('min-width','0','important');
+      row.style.setProperty('max-width','none','important');
+      row.style.setProperty('grid-column','1 / -1','important');
+      row.style.setProperty('justify-self','stretch','important');
+    }
+  }
+  function setup(){
+    normalizeDashboardWidth();
+    [60,180,500,1100,2100].forEach(function(ms){setTimeout(normalizeDashboardWidth,ms)});
+    window.addEventListener('resize',function(){requestAnimationFrame(normalizeDashboardWidth)},{passive:true});
+    if(window.ResizeObserver){
+      var card=document.getElementById('analyticsCard');
+      if(card) new ResizeObserver(function(){normalizeDashboardWidth()}).observe(card);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup,{once:true});
+  else setup();
+})();
+</script>
