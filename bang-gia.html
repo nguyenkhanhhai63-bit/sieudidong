@@ -575,7 +575,10 @@ body.a4-print-layout .sheet .foot{
     const m=customNames(), custom=m[modelKey(it)];
     if(custom)return custom;
     const base=baseName(it.name),rom=romType(it);
-    return base+(rom?' - '+rom:'');
+    // v874: nội bộ vẫn giữ khóa "ROM TIẾNG VIỆT" để không mất cấu hình đã lưu,
+    // nhưng tên hiển thị trên bảng giá chỉ ghi "TIẾNG VIỆT" theo yêu cầu.
+    const romLabel=rom==='ROM TIẾNG VIỆT'?'TIẾNG VIỆT':rom;
+    return base+(romLabel?' - '+romLabel:'');
   }
   function cleanColorForMemory(raw,memory){
     const mem=String(memory||'').replace(/\s+/g,'').toUpperCase();
