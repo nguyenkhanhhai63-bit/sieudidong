@@ -2232,7 +2232,7 @@ if(!inlineProductDetail) return;
   romRow.className="detail-option-row";
   const romLabel=document.createElement("div");
   romLabel.className="detail-option-label";
-  romLabel.textContent="ROM / Ngôn ngữ";
+  romLabel.textContent="ROM";
   const romOptions=document.createElement("div");
   romOptions.className="detail-memory-options detail-rom-options";
   romRow.append(romLabel,romOptions);
@@ -2473,7 +2473,7 @@ if(!inlineProductDetail) return;
       btn.classList.toggle("disabled",disabled);
       btn.disabled=disabled;
       btn.setAttribute("aria-disabled",String(disabled));
-      btn.title=disabled ? `${rom} hiện hết hàng với phiên bản đang chọn` : rom;
+      btn.title=disabled ? `${displayRomLabel(rom)} hiện hết hàng với phiên bản đang chọn` : displayRomLabel(rom);
     });
     qualityButtons.forEach((btn,q)=>{
       const disabled=!attrHasStock("quality",q);
@@ -2587,11 +2587,19 @@ if(!inlineProductDetail) return;
     memoryOptions.appendChild(btn);
   });
 
+  function displayRomLabel(value){
+    const raw=String(value||"").trim();
+    const t=raw.toUpperCase();
+    if(/ROM\s*G[ỐO]C/.test(t)) return "ROM GỐC";
+    if(/TIẾNG\s*VIỆT|TIENG\s*VIET/.test(t)) return "ROM TIẾNG VIỆT";
+    return /^ROM\b/i.test(raw) ? raw : `ROM ${raw}`.trim();
+  }
+
   roms.forEach(rom=>{
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="detail-memory-btn";
-    btn.textContent=rom;
+    btn.textContent=displayRomLabel(rom);
     btn.addEventListener("click",()=>{
       if(btn.disabled || btn.classList.contains("disabled")) return;
 
