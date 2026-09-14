@@ -13932,12 +13932,12 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     <div class="price-a4-preview-card">
       <div class="price-a4-preview-head">
         <div><strong>Xem trước giao diện A4 ngang</strong><div class="price-a4-sub">Kéo các thanh phía trên và xem kết quả ngay tại đây trước khi in.</div></div>
-        <div class="price-a4-preview-actions"><span class="price-a4-preview-live">● Xem trước trực tiếp</span><button id="sddA4AdminPrint" class="price-a4-admin-print" type="button">In</button><button id="sddA4AdminPdf" class="price-a4-admin-pdf" type="button">Xuất PDF</button><button id="sddA4PreviewRefresh" class="price-a4-preview-refresh" type="button">Làm mới</button></div>
+        <div class="price-a4-preview-actions"><span class="price-a4-preview-live">● Xem trước trực tiếp</span><button id="sddA4AdminPrint" class="price-a4-admin-print" type="button">In</button><button id="sddA4AdminPdf" class="price-a4-admin-pdf" type="button">Xuất PDF</button><button id="sddA4AdminPng" class="price-a4-admin-pdf" type="button">Xuất PNG</button><button id="sddA4PreviewRefresh" class="price-a4-preview-refresh" type="button">Làm mới</button></div>
       </div>
       <div id="sddA4PreviewStage" class="price-a4-preview-stage">
         <iframe id="sddA4PreviewFrame" class="price-a4-preview-frame" src="./bang-gia.html?adminPreview=1&exact=1" title="Xem trước bảng giá A4" tabindex="-1"></iframe>
       </div>
-      <div class="price-a4-preview-help"><b>Đây là khung A4 ngang chuẩn 297 × 210 mm.</b> Nút <b>In</b> mở máy in; nút <b>Xuất PDF</b> tạo và tải file PDF trực tiếp theo đúng bố cục đang xem, không mở hộp thoại in.</div>
+      <div class="price-a4-preview-help"><b>Đây là khung A4 ngang chuẩn 297 × 210 mm.</b> Nút <b>In</b> mở máy in; nút <b>Xuất PDF</b> tạo file PDF và nút <b>Xuất PNG</b> tạo ảnh bảng giá theo đúng bố cục đang xem.</div>
       <div class="price-a4-print-note"><b>Để trùng 1:1:</b> chọn A4 ngang, Tỷ lệ 100%/Mặc định và tắt “Đầu trang và chân trang”. Màu nền đã được ép giữ khi in; không dùng thêm “Vừa trang”.</div>
     </div>
     </div>
@@ -13945,7 +13945,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </div>
 <script id="sddPriceAdminScript">
 (function(){
-  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State'),manualEnabled=$('sddA4ManualEnabled'),fontRange=$('sddA4Font'),rowRange=$('sddA4Row'),gapRange=$('sddA4Gap'),scaleRange=$('sddA4Scale'),fontOut=$('sddA4FontOut'),rowOut=$('sddA4RowOut'),gapOut=$('sddA4GapOut'),scaleOut=$('sddA4ScaleOut'),resetA4=$('sddA4Reset'),autoA4=$('sddA4Auto'),previewStage=$('sddA4PreviewStage'),previewFrame=$('sddA4PreviewFrame'),previewRefresh=$('sddA4PreviewRefresh'),adminPrint=$('sddA4AdminPrint'),adminPdf=$('sddA4AdminPdf'),brandFilter=$('sddPriceBrandFilter');
+  const $=id=>document.getElementById(id), fab=$('sddPriceAdminFab'),modal=$('sddPriceAdminModal'),close=$('sddPriceAdminClose'),list=$('sddPriceAdminList'),search=$('sddPriceAdminSearch'),a4Count=$('sddPriceA4Count'),a4State=$('sddPriceA4State'),manualEnabled=$('sddA4ManualEnabled'),fontRange=$('sddA4Font'),rowRange=$('sddA4Row'),gapRange=$('sddA4Gap'),scaleRange=$('sddA4Scale'),fontOut=$('sddA4FontOut'),rowOut=$('sddA4RowOut'),gapOut=$('sddA4GapOut'),scaleOut=$('sddA4ScaleOut'),resetA4=$('sddA4Reset'),autoA4=$('sddA4Auto'),previewStage=$('sddA4PreviewStage'),previewFrame=$('sddA4PreviewFrame'),previewRefresh=$('sddA4PreviewRefresh'),adminPrint=$('sddA4AdminPrint'),adminPdf=$('sddA4AdminPdf'),adminPng=$('sddA4AdminPng'),brandFilter=$('sddPriceBrandFilter');
   if(!fab||!modal)return;
   let currentBrand='ALL';
   const brandOrder=['XIAOMI/REDMI','VIVO/IQOO','ONEPLUS','OPPO','HONOR','APPLE','MÁY TÍNH BẢNG'];
@@ -14005,51 +14005,33 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     return w.html2canvas;
   }
   function pdfFileName(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return 'bang-gia-sieu-di-dong-'+pad(d.getDate())+'-'+pad(d.getMonth()+1)+'-'+d.getFullYear()+'.pdf'}
+  function pngFileName(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return 'bang-gia-sieu-di-dong-'+pad(d.getDate())+'-'+pad(d.getMonth()+1)+'-'+d.getFullYear()+'.png'}
+  async function captureA4Canvas(){
+    const w=previewFrame&&previewFrame.contentWindow,doc=previewFrame&&previewFrame.contentDocument;
+    if(!w||!doc)throw new Error('Khung A4 chưa sẵn sàng');
+    const sheet=doc.querySelector('.sheet');if(!sheet)throw new Error('Không tìm thấy bảng A4');
+    try{if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready}catch(_){}
+    await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
+    const frameH2C=await ensureFrameHtml2Canvas(w);
+    const rect=sheet.getBoundingClientRect(),sw=Math.max(1,Math.round(rect.width)),sh=Math.max(1,Math.round(rect.height));
+    return await frameH2C(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,foreignObjectRendering:true,width:sw,height:sh,windowWidth:Math.max(sw,doc.documentElement.clientWidth||sw),windowHeight:Math.max(sh,doc.documentElement.clientHeight||sh),scrollX:0,scrollY:0,onclone:(clonedDoc)=>{const cs=clonedDoc.querySelector('.sheet');if(!cs)return;cs.style.setProperty('width',sw+'px','important');cs.style.setProperty('height',sh+'px','important');cs.style.setProperty('min-width',sw+'px','important');cs.style.setProperty('max-width',sw+'px','important');cs.style.setProperty('min-height',sh+'px','important');cs.style.setProperty('max-height',sh+'px','important');cs.style.setProperty('margin','0','important');cs.style.setProperty('overflow','hidden','important');cs.style.setProperty('box-sizing','border-box','important')}});
+  }
+  async function exportA4Png(){
+    if(!adminPng||adminPng.dataset.exporting==='1')return;
+    adminPng.dataset.exporting='1';adminPng.disabled=true;const old=adminPng.textContent;adminPng.textContent='Đang tạo PNG...';
+    try{
+      const canvas=await captureA4Canvas();
+      const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Không tạo được ảnh PNG')),'image/png'));
+      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=pngFileName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    }catch(e){console.error(e);alert('Không thể xuất PNG: '+(e&&e.message?e.message:'Lỗi không xác định'))}
+    finally{adminPng.dataset.exporting='0';adminPng.disabled=false;adminPng.textContent=old}
+  }
   async function exportA4Pdf(){
     if(!adminPdf||adminPdf.dataset.exporting==='1')return;
     adminPdf.dataset.exporting='1';adminPdf.disabled=true;const old=adminPdf.textContent;adminPdf.textContent='Đang tạo PDF...';
     try{
       await ensurePdfLibraries();
-      const w=previewFrame&&previewFrame.contentWindow,doc=previewFrame&&previewFrame.contentDocument;
-      if(!w||!doc)throw new Error('Khung A4 chưa sẵn sàng');
-      const sheet=doc.querySelector('.sheet');if(!sheet)throw new Error('Không tìm thấy bảng A4');
-      try{if(doc.fonts&&doc.fonts.ready)await doc.fonts.ready}catch(_){}
-      await new Promise(r=>w.requestAnimationFrame(()=>w.requestAnimationFrame(r)));
-      const frameH2C=await ensureFrameHtml2Canvas(w);
-
-      // v736: chụp CHÍNH phần tử .sheet bằng renderer native của Chrome.
-      // foreignObjectRendering giữ transform/scale/grid giống preview hơn renderer canvas cũ,
-      // đồng thời khóa vùng chụp theo đúng kích thước A4 297x210 của sheet.
-      const rect=sheet.getBoundingClientRect();
-      const sw=Math.max(1,Math.round(rect.width));
-      const sh=Math.max(1,Math.round(rect.height));
-      const canvas=await frameH2C(sheet,{
-        backgroundColor:'#ffffff',
-        scale:2,
-        useCORS:true,
-        allowTaint:false,
-        logging:false,
-        foreignObjectRendering:true,
-        width:sw,
-        height:sh,
-        windowWidth:Math.max(sw,doc.documentElement.clientWidth||sw),
-        windowHeight:Math.max(sh,doc.documentElement.clientHeight||sh),
-        scrollX:0,
-        scrollY:0,
-        onclone:(clonedDoc)=>{
-          const cs=clonedDoc.querySelector('.sheet');
-          if(!cs)return;
-          cs.style.setProperty('width',sw+'px','important');
-          cs.style.setProperty('height',sh+'px','important');
-          cs.style.setProperty('min-width',sw+'px','important');
-          cs.style.setProperty('max-width',sw+'px','important');
-          cs.style.setProperty('min-height',sh+'px','important');
-          cs.style.setProperty('max-height',sh+'px','important');
-          cs.style.setProperty('margin','0','important');
-          cs.style.setProperty('overflow','hidden','important');
-          cs.style.setProperty('box-sizing','border-box','important');
-        }
-      });
+      const canvas=await captureA4Canvas();
 
       const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
       const img=canvas.toDataURL('image/png');
@@ -14059,7 +14041,7 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     }catch(e){console.error(e);alert('Không thể xuất PDF: '+(e&&e.message?e.message:'Lỗi không xác định'))}
     finally{adminPdf.dataset.exporting='0';adminPdf.disabled=false;adminPdf.textContent=old}
   }
-  function bindA4(){syncA4Controls();[fontRange,rowRange,gapRange,scaleRange].forEach(el=>el&&el.addEventListener('input',()=>{const v=collectA4();saveA4(v);syncA4Controls();setTimeout(fitA4Preview,0)}));manualEnabled&&manualEnabled.addEventListener('change',()=>{saveA4(collectA4());syncA4Controls()});resetA4&&resetA4.addEventListener('click',()=>{saveA4({enabled:true,font:100,row:100,gap:100,scale:100});syncA4Controls()});autoA4&&autoA4.addEventListener('click',()=>{saveA4({...a4Defaults,enabled:false});syncA4Controls()});previewFrame&&previewFrame.addEventListener('load',fitA4Preview);previewRefresh&&previewRefresh.addEventListener('click',refreshA4Preview);adminPdf&&adminPdf.addEventListener('click',exportA4Pdf);adminPrint&&adminPrint.addEventListener('click',()=>{if(adminPrint.dataset.printing==='1')return;adminPrint.dataset.printing='1';adminPrint.disabled=true;setTimeout(()=>{adminPrint.dataset.printing='0';adminPrint.disabled=false},1800);try{const w=previewFrame&&previewFrame.contentWindow;if(!w)throw new Error('preview');w.focus();try{if(typeof w.sddFreezePreviewForPrint==='function'){w.sddFreezePreviewForPrint();}else{if(typeof w.fitA4Print==='function')w.fitA4Print();if(w.document&&w.document.body){w.document.body.classList.add('a4-print-layout');void w.document.body.offsetHeight;}}}catch(_){};requestAnimationFrame(()=>requestAnimationFrame(()=>w.print()))}catch(e){window.open('./bang-gia.html?adminPrint=1','_blank','noopener')}});window.addEventListener('resize',fitA4Preview);setTimeout(fitA4Preview,80)}
+  function bindA4(){syncA4Controls();[fontRange,rowRange,gapRange,scaleRange].forEach(el=>el&&el.addEventListener('input',()=>{const v=collectA4();saveA4(v);syncA4Controls();setTimeout(fitA4Preview,0)}));manualEnabled&&manualEnabled.addEventListener('change',()=>{saveA4(collectA4());syncA4Controls()});resetA4&&resetA4.addEventListener('click',()=>{saveA4({enabled:true,font:100,row:100,gap:100,scale:100});syncA4Controls()});autoA4&&autoA4.addEventListener('click',()=>{saveA4({...a4Defaults,enabled:false});syncA4Controls()});previewFrame&&previewFrame.addEventListener('load',fitA4Preview);previewRefresh&&previewRefresh.addEventListener('click',refreshA4Preview);adminPdf&&adminPdf.addEventListener('click',exportA4Pdf);adminPng&&adminPng.addEventListener('click',exportA4Png);adminPrint&&adminPrint.addEventListener('click',()=>{if(adminPrint.dataset.printing==='1')return;adminPrint.dataset.printing='1';adminPrint.disabled=true;setTimeout(()=>{adminPrint.dataset.printing='0';adminPrint.disabled=false},1800);try{const w=previewFrame&&previewFrame.contentWindow;if(!w)throw new Error('preview');w.focus();try{if(typeof w.sddFreezePreviewForPrint==='function'){w.sddFreezePreviewForPrint();}else{if(typeof w.fitA4Print==='function')w.fitA4Print();if(w.document&&w.document.body){w.document.body.classList.add('a4-print-layout');void w.document.body.offsetHeight;}}}catch(_){};requestAnimationFrame(()=>requestAnimationFrame(()=>w.print()))}catch(e){window.open('./bang-gia.html?adminPrint=1','_blank','noopener')}});window.addEventListener('resize',fitA4Preview);setTimeout(fitA4Preview,80)}
   function orderedModels(){const models=readModels(),order=readOrder(),pos=new Map(order.map((k,i)=>[k,i]));return models.slice().sort((a,b)=>(pos.has(a.key)?pos.get(a.key):1e9)-(pos.has(b.key)?pos.get(b.key):1e9)||String(a.group||'').localeCompare(String(b.group||''),'vi')||String(a.name||'').localeCompare(String(b.name||''),'vi'))}
   function moveKey(key,dir){const models=orderedModels(),i=models.findIndex(x=>x.key===key);if(i<0)return;const j=i+dir;if(j<0||j>=models.length)return;[models[i],models[j]]=[models[j],models[i]];saveOrder(models.map(x=>x.key));render()}
   function moveBefore(srcKey,dstKey){if(srcKey===dstKey)return;const models=orderedModels(),from=models.findIndex(x=>x.key===srcKey),to=models.findIndex(x=>x.key===dstKey);if(from<0||to<0)return;const [row]=models.splice(from,1);models.splice(to,0,row);saveOrder(models.map(x=>x.key));render()}
