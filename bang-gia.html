@@ -532,17 +532,24 @@ body.a4-print-layout .sheet .foot{
     return '—';
   }
   function baseName(name){
-    let s=String(name||'').trim();
-    // Danh sách màu có thể xuất hiện ở cuối tên sản phẩm. Dùng \\s trong chuỗi regex
-    // để các màu nhiều từ (Xanh Dương, Vàng Cát, Vàng Mocha...) được xóa đúng.
+    let s=String(name||'').replace(/\s+/g,' ').trim();
+    // v872: KiotViet có thể đẩy Màu / Dung lượng / ROM thành nhiều biến thể top-level.
+    // Bảng giá chỉ dùng MODEL GỐC làm khóa; thuộc tính được gom sang các cột/giá tương ứng.
     const color='(?:Đen|Trắng|Bạc|Xám|Đỏ|Cam|Hồng|Tím|Nâu|Be|Vàng(?:\\s+(?:Cát|Moca|Mocha|Gold))?|Titan(?:\\s+(?:Xám|Đen|Trắng))?|Xanh(?:\\s+(?:Dương|Lá|Biển|Ngọc|Mint|Rêu|Đen))?|Blue|Green|Black|White|Silver|Gray|Grey|Red|Gold|Orange|Pink|Purple|Yellow|Brown|Beige)';
-    s=s.replace(new RegExp('\\b\\d{1,3}\\s*\\/\\s*\\d{2,4}\\s*(?:GB)?\\b','ig'),' ')
-       .replace(new RegExp('\\b(?:64|128|256|512|1024)\\s*(?:GB|G)\\b','ig'),' ')
-       .replace(new RegExp('\\b(?:1|2)\\s*TB\\b','ig'),' ')
-       // Màu đã có cột riêng: xóa màu ở cuối tên, có hoặc không có dấu gạch nối.
-       .replace(new RegExp('(?:\\s*-\\s*|\\s+)'+color+'\\s*-?\\s*$','i'),' ')
-       .replace(/\s+-\s*$/g,' ')
-       .replace(/\s+/g,' ').trim();
+    // Dung lượng luôn là thuộc tính, không phải một model riêng.
+    s=s.replace(/\b\d{1,3}\s*\/\s*\d{2,4}\s*(?:GB)?\b/ig,' ')
+       .replace(/\b(?:64|128|256|512|1024)\s*(?:GB|G)\b/ig,' ')
+       .replace(/\b(?:1|2)\s*TB\b/ig,' ');
+    // Bóc nhiều lớp thuộc tính ở CUỐI tên. Ví dụ:
+    // "Turbo 5 Max - Cam - ROM GỐC" và "... - Đen - TIẾNG VIỆT" => "Turbo 5 Max".
+    let prev='';
+    while(prev!==s){
+      prev=s;
+      s=s.replace(/(?:\s*-\s*|\s+)(?:ROM\s*)?(?:GỐC|GOC|TIẾNG\s*VIỆT|TIENG\s*VIET)\s*$/i,' ')
+         .replace(new RegExp('(?:\\s*-\\s*|\\s+)'+color+'\\s*$','i'),' ')
+         .replace(/\s+-\s*$/g,' ')
+         .replace(/\s+/g,' ').trim();
+    }
     return s;
   }
   function modelKey(it){return (String(it.type||'phone')+'|'+baseName(it.name)).toLocaleLowerCase('vi').replace(/\s+/g,' ').trim()}
