@@ -13983,7 +13983,10 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
     const w=Math.max(1,previewStage.clientWidth),base=Math.max(1,previewFrame.offsetWidth||1123);
     previewFitScale=w/base;
     const scale=previewFitScale*previewZoom;
-    previewFrame.style.transform='scale('+scale+')';
+    // v893: dùng CSS zoom thay cho transform để trình duyệt render lại iframe ở độ phân giải
+    // cao hơn khi phóng to, giúp chữ và đường kẻ sắc nét hơn thay vì kéo giãn bitmap cũ.
+    previewFrame.style.transform='none';
+    previewFrame.style.zoom=String(scale);
     previewStage.style.setProperty('--sdd-a4-preview-scale',scale);
     updateA4PreviewZoomBadge();
   }
@@ -14456,7 +14459,11 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 #sddPriceAdminModal .price-a4-preview-stage.sdd-a4-dragging{cursor:grabbing!important}
 #sddPriceAdminModal .price-a4-preview-stage iframe{pointer-events:none}
 #sddPriceAdminModal .price-a4-preview-stage .sdd-a4-wheel-zoom-badge{position:sticky;left:8px;top:8px;z-index:8;float:left;margin:8px 0 0 8px;padding:4px 7px;border-radius:999px;background:rgba(17,24,39,.78);color:#fff;font-size:10px;font-weight:800;line-height:1;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-#sddPriceAdminModal .price-a4-preview-frame{will-change:transform}
+#sddPriceAdminModal .price-a4-preview-frame{will-change:auto;transform:none!important;image-rendering:auto;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+</style>
+<style id="v893-a4-sharp-zoom">
+/* v893 - zoom iframe bằng CSS zoom để chữ/đường kẻ không bị mờ khi phóng lớn */
+#sddPriceAdminModal .price-a4-preview-frame{transform:none!important;transform-origin:top left!important}
 </style>
 </body>
 </html>
