@@ -2089,9 +2089,26 @@ if(!inlineProductDetail) return;
   }
 
   const variants=[...group.items];
-  let selected=initialVariant || variants[0] || null;
+
+  // V868: khi mở chi tiết luôn chọn biến thể có giá thấp nhất đang còn hàng.
+  // Nếu toàn bộ biến thể hết hàng thì dùng giá thấp nhất của toàn bộ model.
+  // Không phụ thuộc vào biến thể tình cờ được truyền từ card, để giá đầu trang luôn ổn định.
+  const initialCandidates=variants.filter(v=>Number(v.onHand||0)>0 && Number(v.price||0)>0);
+  const fallbackCandidates=variants.filter(v=>Number(v.price||0)>0);
+  const initialPool=initialCandidates.length ? initialCandidates : (fallbackCandidates.length ? fallbackCandidates : variants);
+  let selected=[...initialPool].sort((a,b)=>{
+    const pa=Number(a.price||0);
+    const pb=Number(b.price||0);
+    if(pa!==pb) return pa-pb;
+    // Cùng giá thì ưu tiên ROM GỐC để trải nghiệm mặc định nhất quán.
+    const ar=/rom\s*g[oố]c/i.test(String(a.rom||"")) ? 0 : 1;
+    const br=/rom\s*g[oố]c/i.test(String(b.rom||"")) ? 0 : 1;
+    return ar-br;
+  })[0] || initialVariant || variants[0] || null;
+
   let selectedColor=selected?.color || "";
   let selectedMemory=selected?.memory || "";
+  let selectedRom=selected?.rom || "";
   let selectedQuality=selected?.quality || "";
 
   inlineProductDetail.innerHTML="";
@@ -2351,7 +2368,17 @@ if(!inlineProductDetail) return;
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
   const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
-  const roms=[...new Set(variants.map(v=>v.rom).filter(Boolean))];
+  const roms=[...new Set(variants.map(v=>v.rom).filter(Boolean))].sort((a,b)=>{
+    // V868: ROM GỐC luôn đứng trước các lựa chọn ROM/ngôn ngữ khác.
+    const rank=(value)=>{
+      const t=String(value||"").trim().toUpperCase();
+      if(/ROM\s*G[ỐO]C/.test(t)) return 0;
+      if(/TIẾNG\s*VIỆT|TIENG\s*VIET/.test(t)) return 1;
+      return 2;
+    };
+    const d=rank(a)-rank(b);
+    return d || String(a).localeCompare(String(b),"vi");
+  });
   const qualities=[...new Set(variants.map(v=>v.quality).filter(Boolean))];
   const colorButtons=new Map();
   const memoryButtons=new Map();
