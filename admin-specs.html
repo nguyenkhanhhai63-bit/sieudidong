@@ -16261,3 +16261,117 @@ body > .wrap, .wrap, main{
   else setup();
 })();
 </script>
+
+<!-- V879 DASHBOARD LOWER GRID NO EMPTY SPACE -->
+<style id="v879-dashboard-lower-grid-no-gap">
+/* Gom 5 card thống kê nhỏ thành một hàng riêng để không còn ô trống do grid 12 cột cũ. */
+@media (min-width:761px){
+  #analyticsCard .analytics-grid > .v879-secondary-grid{
+    grid-column:1 / -1!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    display:grid!important;
+    gap:var(--v878-dash-gap,12px)!important;
+    margin:0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+    align-items:stretch!important;
+    order:5!important;
+  }
+  #analyticsCard .v879-secondary-grid > .abox{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    grid-column:auto!important;
+    min-height:218px!important;
+    height:100%!important;
+    box-sizing:border-box!important;
+  }
+  #analyticsCard .analytics-grid > .compare-pairs-box{
+    order:6!important;
+    grid-column:1 / -1!important;
+  }
+}
+
+/* Laptop: 2 + 2 + 1, card cuối chiếm nguyên hàng nên không để ô trống. */
+@media (min-width:761px) and (max-width:1099px){
+  #analyticsCard .analytics-grid > .v879-secondary-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  #analyticsCard .v879-secondary-grid > .abox{grid-column:span 2!important}
+  #analyticsCard .v879-secondary-grid > .abox:nth-child(5){grid-column:1 / -1!important}
+}
+
+/* Desktop vừa: 3 card hàng đầu, 2 card hàng sau chia đều toàn chiều ngang. */
+@media (min-width:1100px) and (max-width:1499px){
+  #analyticsCard .analytics-grid > .v879-secondary-grid{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  #analyticsCard .v879-secondary-grid > .abox:nth-child(-n+3){grid-column:span 2!important}
+  #analyticsCard .v879-secondary-grid > .abox:nth-child(n+4){grid-column:span 3!important}
+}
+
+/* Full HD trở lên: cả 5 card nằm gọn một hàng, không thừa cột. */
+@media (min-width:1500px){
+  #analyticsCard .analytics-grid > .v879-secondary-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  }
+  #analyticsCard .v879-secondary-grid > .abox{grid-column:auto!important}
+}
+
+/* Mobile giữ luồng card cũ tự nhiên, không tạo bố cục desktop. */
+@media (max-width:760px){
+  #analyticsCard .analytics-grid > .v879-secondary-grid{
+    display:contents!important;
+  }
+}
+</style>
+<script id="v879-dashboard-lower-grid-no-gap-js">
+(function(){
+  function setupV879(){
+    var card=document.getElementById('analyticsCard');
+    if(!card) return;
+    var grid=card.querySelector('.analytics-shell > .analytics-grid');
+    if(!grid) return;
+
+    var selectors=['.device-model-box','.device-os-box','.top-products-box','.top-search-box','.compare-products-box'];
+    var boxes=[];
+    selectors.forEach(function(sel){
+      var el=card.querySelector(sel);
+      if(el && !boxes.includes(el)) boxes.push(el);
+    });
+    /* Fallback theo id nếu script gắn class cũ chưa chạy. */
+    if(boxes.length<5){
+      ['deviceModelRanks','deviceOsRanks','productRanks','searchRanks','compareProductRanks'].forEach(function(id){
+        var node=document.getElementById(id);
+        var el=node && node.closest('.abox');
+        if(el && !boxes.includes(el)) boxes.push(el);
+      });
+    }
+    if(!boxes.length) return;
+
+    var wrap=grid.querySelector(':scope > .v879-secondary-grid');
+    if(!wrap){
+      wrap=document.createElement('div');
+      wrap.className='v879-secondary-grid';
+      var compare=grid.querySelector(':scope > .compare-pairs-box');
+      if(compare) grid.insertBefore(wrap,compare); else grid.appendChild(wrap);
+    }
+    boxes.forEach(function(box){ if(box.parentElement!==wrap) wrap.appendChild(box); });
+  }
+
+  function boot(){
+    setupV879();
+    [50,180,500,1100,2200].forEach(function(ms){setTimeout(setupV879,ms)});
+    var card=document.getElementById('analyticsCard');
+    if(card && window.MutationObserver){
+      new MutationObserver(function(){ setupV879(); }).observe(card,{childList:true,subtree:true});
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script>
+
