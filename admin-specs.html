@@ -14372,6 +14372,35 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #sddPriceAdminModal .v871-preview-pane{position:relative!important;top:auto!important;max-height:none!important;overflow:visible!important}
 }
 </style>
+
+<!-- V883: Đưa bộ căn chỉnh A4 sát ngay dưới ảnh preview để vừa xem vừa chỉnh -->
+<style id="v883-a4-manual-controls-near-preview">
+@media (min-width:861px){
+  #sddPriceAdminModal .v871-preview-pane .price-manual-card{
+    order:2!important;
+    margin:0 8px 6px!important;
+    padding:9px 10px!important;
+  }
+  #sddPriceAdminModal .v871-preview-pane .price-a4-guide{
+    order:3!important;
+    margin:0 8px 6px!important;
+  }
+  #sddPriceAdminModal .v871-preview-pane .price-manual-grid{
+    margin-top:8px!important;
+    gap:7px!important;
+  }
+  #sddPriceAdminModal .v871-preview-pane .price-manual-item{
+    padding:7px 8px!important;
+  }
+  #sddPriceAdminModal .v871-preview-pane .price-manual-actions{
+    margin-top:7px!important;
+  }
+  #sddPriceAdminModal .v871-preview-pane .price-a4-preview-help,
+  #sddPriceAdminModal .v871-preview-pane .price-a4-print-note{
+    margin-top:3px!important;
+  }
+}
+</style>
 </body>
 </html>
 
