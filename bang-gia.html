@@ -410,6 +410,18 @@ body.a4-print-layout .sheet .foot{
 body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!important;}
 @media print{#updatedText{font-size:calc(8pt * var(--a4-fit,1))!important;font-weight:700!important;}}
 </style>
+
+<style id="v894-auto-fit-price-columns">
+/* V894: tự cân độ rộng 4 cột theo nội dung, giữ mọi ô trên một dòng */
+.tbl th,.tbl td{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;}
+.tbl td{overflow:hidden!important;text-overflow:clip!important;}
+.tbl col.col-name{width:var(--col-name,52%)}
+.tbl col.col-memory{width:var(--col-memory,13%)}
+.tbl col.col-color{width:var(--col-color,19%)}
+.tbl col.col-price{width:var(--col-price,16%)}
+/* Bỏ width cứng cũ; colgroup V894 là nguồn duy nhất quyết định độ rộng */
+.tbl th:nth-child(1),.tbl th:nth-child(2),.tbl th:nth-child(3),.tbl th:nth-child(4){width:auto!important;}
+</style>
 </head>
 <body>
 <script>
@@ -646,7 +658,36 @@ body.admin-a4-preview #updatedText{font-size:calc(8pt * var(--print-density,1))!
     });
     return out;
   }
-  function panelHtml(g,arr){return '<section class="panel" style="--accent:'+g.accent+'"><div class="panel-title">'+g.title+'</div><table class="tbl"><thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td>'+escapeHtml(displayName(it))+'</td><td>'+escapeHtml(it.memory)+'</td><td>'+escapeHtml(displayColor(it))+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'}
+  function v894Clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+  function v894TextLen(v){
+    return Array.from(String(v==null?'':v).trim()).reduce((n,ch)=>n+(/[MWQĐỒỘÔÁÀẢÃẠĂÂÊƯỨỪỬỮỰ]/.test(ch)?1.08:/[il1|]/.test(ch)?.58:1),0);
+  }
+  function v894ColumnWidths(arr){
+    let nameLen=v894TextLen('TÊN MÁY'),memLen=v894TextLen('BỘ NHỚ'),colorLen=v894TextLen('MÀU'),priceLen=v894TextLen('GIÁ BÁN');
+    (arr||[]).forEach(it=>{
+      nameLen=Math.max(nameLen,v894TextLen(displayName(it)));
+      memLen=Math.max(memLen,v894TextLen(it.memory||'—'));
+      colorLen=Math.max(colorLen,v894TextLen(displayColor(it)));
+      priceLen=Math.max(priceLen,v894TextLen(formatPrice(it.price)));
+    });
+    let mem=v894Clamp(11+(memLen-5)*.45,11,14);
+    let price=v894Clamp(14.5+(priceLen-8)*.32,14.5,17);
+    let color=v894Clamp(14+(colorLen-7)*.48,14,22);
+    let name=100-mem-price-color;
+    const wantName=v894Clamp(47+(nameLen-17)*.62,47,60);
+    let need=Math.max(0,wantName-name);
+    const takeColor=Math.min(need,Math.max(0,color-14));color-=takeColor;need-=takeColor;
+    const takePrice=Math.min(need,Math.max(0,price-14));price-=takePrice;need-=takePrice;
+    const takeMem=Math.min(need,Math.max(0,mem-11));mem-=takeMem;need-=takeMem;
+    name=100-mem-price-color;
+    return [name,mem,color,price].map(x=>Math.round(x*10)/10);
+  }
+  function panelHtml(g,arr){
+    const w=v894ColumnWidths(arr);
+    const vars='--col-name:'+w[0]+'%;--col-memory:'+w[1]+'%;--col-color:'+w[2]+'%;--col-price:'+w[3]+'%;';
+    const cols='<colgroup><col class="col-name"><col class="col-memory"><col class="col-color"><col class="col-price"></colgroup>';
+    return '<section class="panel" style="--accent:'+g.accent+';'+vars+'"><div class="panel-title">'+g.title+'</div><table class="tbl">'+cols+'<thead><tr><th>TÊN MÁY</th><th>BỘ NHỚ</th><th>MÀU</th><th>GIÁ BÁN</th></tr></thead><tbody>'+arr.map(it=>'<tr><td title="'+escapeHtml(displayName(it))+'">'+escapeHtml(displayName(it))+'</td><td>'+escapeHtml(it.memory)+'</td><td title="'+escapeHtml(displayColor(it))+'">'+escapeHtml(displayColor(it))+'</td><td class="price">'+formatPrice(it.price)+'</td></tr>').join('')+'</tbody></table></section>'
+  }
   function render(){
     const q=(search.value||'').trim().toLocaleLowerCase('vi'); left.innerHTML='';right.innerHTML='';
     const allModels=pickLowestVariants(items);
