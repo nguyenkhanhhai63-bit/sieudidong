@@ -2386,97 +2386,58 @@ if(!inlineProductDetail) return;
   const qualityButtons=new Map();
   const stockText=statusTop;
 
+  // V905: Mỗi thuộc tính chỉ sáng khi còn hàng trong đúng tổ hợp các thuộc tính đang chọn.
+  // Không tự đổi ROM/màu/dung lượng sang biến thể khác khi khách bấm lựa chọn.
+  function variantMatchesSelection(v, ignoreType=""){
+    if(ignoreType!=="color" && selectedColor && v.color!==selectedColor) return false;
+    if(ignoreType!=="memory" && selectedMemory && v.memory!==selectedMemory) return false;
+    if(ignoreType!=="rom" && selectedRom && v.rom!==selectedRom) return false;
+    if(ignoreType!=="quality" && selectedQuality && v.quality!==selectedQuality) return false;
+    return true;
+  }
+
   function findVariant(){
-    let matches=variants.filter(v=>{
-      const cOk=!selectedColor || v.color===selectedColor;
-      const mOk=!selectedMemory || v.memory===selectedMemory;
-      const rOk=!selectedRom || v.rom===selectedRom;
-      const qOk=!selectedQuality || v.quality===selectedQuality;
-      return cOk && mOk && rOk && qOk;
-    });
-
-    if(!matches.length){
-      matches=variants.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory));
-    }
-    if(!matches.length && selectedQuality){ matches=variants.filter(v=>v.quality===selectedQuality); }
-    if(!matches.length && selectedColor){ matches=variants.filter(v=>v.color===selectedColor); }
-    if(!matches.length && selectedMemory){ matches=variants.filter(v=>v.memory===selectedMemory); }
-    if(!matches.length) matches=[...variants];
-
-    return matches.sort((a,b)=>{
-      const stockDiff=(b.onHand>0)-(a.onHand>0);
-      if(stockDiff!==0) return stockDiff;
-      return Number(a.price||0)-Number(b.price||0);
-    })[0] || null;
-  }
-
-  // v775: Trạng thái của từng thuộc tính phải dựa trên tồn kho THỰC của chính thuộc tính đó,
-  // không được làm mờ chỉ vì tổ hợp đang chọn không tồn tại. Ví dụ đang chọn Trắng + Pin 7X
-  // thì Pin 8X vẫn phải bấm được nếu KiotViet còn Đen/Tím + Pin 8X; khi bấm sẽ tự chuyển
-  // sang biến thể còn hàng tương ứng.
-  function attrHasStock(type,value){
-    return variants.some(v=>Number(v.onHand||0)>0 && v[type]===value);
-  }
-
-  function bestVariant(list){
-    return [...list].sort((a,b)=>{
+    const exact=variants.filter(v=>variantMatchesSelection(v));
+    if(!exact.length) return null;
+    return [...exact].sort((a,b)=>{
       const stockDiff=(Number(b.onHand||0)>0)-(Number(a.onHand||0)>0);
       if(stockDiff!==0) return stockDiff;
       return Number(a.price||0)-Number(b.price||0);
     })[0] || null;
   }
 
-  function applyVariant(v){
-    if(!v) return;
-    selectedColor=v.color || "";
-    selectedMemory=v.memory || "";
-    selectedRom=v.rom || "";
-    selectedQuality=v.quality || "";
-  }
-
-  // V867: ROM/Ngôn ngữ phải phản ánh tồn kho theo đúng tổ hợp đang chọn.
-  // Ví dụ đang chọn 12/256 + Đen thì ROM GỐC chỉ sáng khi có chính biến thể
-  // 12/256 + Đen + ROM GỐC còn hàng. Nếu hết hàng thì làm mờ và không cho bấm.
-  function romHasCompatibleStock(rom){
-    const strict=variants.some(v=>
+  function attrHasCompatibleStock(type,value){
+    return variants.some(v=>
       Number(v.onHand||0)>0 &&
-      v.rom===rom &&
-      (!selectedColor || v.color===selectedColor) &&
-      (!selectedMemory || v.memory===selectedMemory) &&
-      (!selectedQuality || v.quality===selectedQuality)
+      v[type]===value &&
+      variantMatchesSelection(v,type)
     );
-    if(strict) return true;
-
-    // Nếu model không có màu/tình trạng tương ứng ở mọi ROM, ưu tiên kiểm tra theo
-    // dung lượng đang chọn để tránh vô tình khóa toàn bộ lựa chọn ROM.
-    if(selectedMemory){
-      return variants.some(v=>Number(v.onHand||0)>0 && v.rom===rom && v.memory===selectedMemory);
-    }
-    return attrHasStock("rom",rom);
   }
 
   function updateAvailability(){
     colorButtons.forEach((btn,color)=>{
-      const disabled=!attrHasStock("color",color);
+      const disabled=!attrHasCompatibleStock("color",color);
       btn.classList.toggle("disabled",disabled);
       btn.disabled=disabled;
       btn.setAttribute("aria-disabled",String(disabled));
+      btn.title=disabled ? `${color} hiện hết hàng với ROM/phiên bản đang chọn` : color;
     });
     memoryButtons.forEach((btn,mem)=>{
-      const disabled=!attrHasStock("memory",mem);
+      const disabled=!attrHasCompatibleStock("memory",mem);
       btn.classList.toggle("disabled",disabled);
       btn.disabled=disabled;
       btn.setAttribute("aria-disabled",String(disabled));
+      btn.title=disabled ? `${mem} hiện hết hàng với màu/ROM đang chọn` : mem;
     });
     romButtons.forEach((btn,rom)=>{
-      const disabled=!romHasCompatibleStock(rom);
+      const disabled=!attrHasCompatibleStock("rom",rom);
       btn.classList.toggle("disabled",disabled);
       btn.disabled=disabled;
       btn.setAttribute("aria-disabled",String(disabled));
-      btn.title=disabled ? `${displayRomLabel(rom)} hiện hết hàng với phiên bản đang chọn` : displayRomLabel(rom);
+      btn.title=disabled ? `${displayRomLabel(rom)} hiện hết hàng với màu/dung lượng đang chọn` : displayRomLabel(rom);
     });
     qualityButtons.forEach((btn,q)=>{
-      const disabled=!attrHasStock("quality",q);
+      const disabled=!attrHasCompatibleStock("quality",q);
       btn.classList.toggle("disabled",disabled);
       btn.disabled=disabled;
       btn.setAttribute("aria-disabled",String(disabled));
@@ -2486,10 +2447,7 @@ if(!inlineProductDetail) return;
     selected=findVariant();
 
     if(selected){
-      selectedColor=selected.color || selectedColor;
-      selectedMemory=selected.memory || selectedMemory;
-      selectedRom=selected.rom || selectedRom;
-      selectedQuality=selected.quality || selectedQuality;
+      // V905: giữ nguyên lựa chọn khách đã bấm; không tự nhảy sang thuộc tính khác.
 
       // Đổi ảnh theo đúng biến thể màu/dung lượng đang chọn.
       // Nếu biến thể có ảnh riêng từ KiotViet thì dùng ảnh đó.
@@ -2554,10 +2512,8 @@ if(!inlineProductDetail) return;
     btn.appendChild(swatch);
 
     btn.addEventListener("click",()=>{
-      if(btn.classList.contains("disabled")) return;
-      const compatible=variants.filter(v=>v.color===color && Number(v.onHand||0)>0);
-      const exact=compatible.filter(v=>(!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
-      applyVariant(bestVariant(exact.length ? exact : compatible));
+      if(btn.disabled || btn.classList.contains("disabled")) return;
+      selectedColor=color;
       updateUI();
     });
 
@@ -2576,10 +2532,8 @@ if(!inlineProductDetail) return;
     btn.textContent=mem;
 
     btn.addEventListener("click",()=>{
-      if(btn.classList.contains("disabled")) return;
-      const compatible=variants.filter(v=>v.memory===mem && Number(v.onHand||0)>0);
-      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedQuality||v.quality===selectedQuality));
-      applyVariant(bestVariant(exact.length ? exact : compatible));
+      if(btn.disabled || btn.classList.contains("disabled")) return;
+      selectedMemory=mem;
       updateUI();
     });
 
@@ -2602,14 +2556,7 @@ if(!inlineProductDetail) return;
     btn.textContent=displayRomLabel(rom);
     btn.addEventListener("click",()=>{
       if(btn.disabled || btn.classList.contains("disabled")) return;
-
-      const compatible=variants.filter(v=>v.rom===rom && Number(v.onHand||0)>0);
-      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory) && (!selectedQuality||v.quality===selectedQuality));
-      const sameMemory=selectedMemory ? compatible.filter(v=>v.memory===selectedMemory) : [];
-      const next=bestVariant(exact.length ? exact : (sameMemory.length ? sameMemory : compatible));
-      if(!next) return;
-
-      applyVariant(next);
+      selectedRom=rom;
       updateUI();
     });
     romButtons.set(rom,btn);
@@ -2622,10 +2569,8 @@ if(!inlineProductDetail) return;
     btn.className="detail-memory-btn";
     btn.textContent=q;
     btn.addEventListener("click",()=>{
-      if(btn.classList.contains("disabled")) return;
-      const compatible=variants.filter(v=>v.quality===q && Number(v.onHand||0)>0);
-      const exact=compatible.filter(v=>(!selectedColor||v.color===selectedColor) && (!selectedMemory||v.memory===selectedMemory));
-      applyVariant(bestVariant(exact.length ? exact : compatible));
+      if(btn.disabled || btn.classList.contains("disabled")) return;
+      selectedQuality=q;
       updateUI();
     });
     qualityButtons.set(q,btn);
