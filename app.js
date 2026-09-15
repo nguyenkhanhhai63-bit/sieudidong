@@ -2367,7 +2367,29 @@ if(!inlineProductDetail) return;
   inlineProductDetail.appendChild(shell);
 
   const colors=[...new Set(variants.map(v=>v.color).filter(Boolean))];
-  const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))];
+  // V907: sắp dung lượng theo bộ nhớ lưu trữ trước, sau đó RAM.
+  // Ví dụ: 12/256 → 16/256 → 12/512 → 16/512.
+  const memories=[...new Set(variants.map(v=>v.memory).filter(Boolean))].sort((a,b)=>{
+    const parseMemory=(value)=>{
+      const text=String(value||"").trim().toUpperCase().replace(/\s+/g,"");
+      const m=text.match(/^(\d+)(?:GB|G)?\/(\d+)(TB|T|GB|G)?$/i);
+      if(m){
+        const ram=Number(m[1])||0;
+        let storage=Number(m[2])||0;
+        if(/^(TB|T)$/i.test(m[3]||"")) storage*=1024;
+        return {storage,ram};
+      }
+      const one=text.match(/^(\d+)(TB|T|GB|G)?$/i);
+      if(one){
+        let storage=Number(one[1])||0;
+        if(/^(TB|T)$/i.test(one[2]||"")) storage*=1024;
+        return {storage,ram:0};
+      }
+      return {storage:Number.MAX_SAFE_INTEGER,ram:Number.MAX_SAFE_INTEGER};
+    };
+    const A=parseMemory(a), B=parseMemory(b);
+    return (A.storage-B.storage) || (A.ram-B.ram) || String(a).localeCompare(String(b),"vi",{numeric:true});
+  });
   const roms=[...new Set(variants.map(v=>v.rom).filter(Boolean))].sort((a,b)=>{
     // V868: ROM GỐC luôn đứng trước các lựa chọn ROM/ngôn ngữ khác.
     const rank=(value)=>{
