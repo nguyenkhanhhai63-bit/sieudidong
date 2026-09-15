@@ -19,7 +19,8 @@ const handlers = {
   "footer-settings": () => import("../../lib/admin-api/footer-settings.js"),
   "facebook-comment-settings": () => import("../../lib/admin-api/facebook-comment-settings.js"),
   "community-chat": () => import("../../lib/admin-api/community-chat.js"),
-  "price-table-settings": () => import("../../lib/admin-api/price-table-settings.js")
+  "price-table-settings": () => import("../../lib/admin-api/price-table-settings.js"),
+  "config-table-settings": () => import("../../lib/admin-api/config-table-settings.js")
 };
 
 export default async function handler(req, res) {

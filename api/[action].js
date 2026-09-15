@@ -20,7 +20,8 @@ const handlers = {
   "footer-settings": () => import("../lib/public-api/footer-settings.js"),
   "facebook-webhook": () => import("../lib/public-api/facebook-webhook.js"),
   "community-chat": () => import("../lib/public-api/community-chat.js"),
-  "price-table-settings": () => import("../lib/public-api/price-table-settings.js")
+  "price-table-settings": () => import("../lib/public-api/price-table-settings.js"),
+  "config-table-settings": () => import("../lib/public-api/config-table-settings.js")
 };
 
 export default async function handler(req,res){
