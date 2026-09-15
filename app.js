@@ -2406,12 +2406,37 @@ if(!inlineProductDetail) return;
     })[0] || null;
   }
 
+  // V906: tồn kho thuộc tính đi theo chuỗi lựa chọn thực tế của KiotViet.
+  // ROM: chỉ cần ROM đó có ít nhất một variant còn hàng.
+  // Màu: xét trong ROM đang chọn, KHÔNG khóa theo dung lượng cũ.
+  // Dung lượng: xét đúng ROM + màu đang chọn.
+  // Nhờ vậy một lựa chọn còn hàng trên web không bị làm mờ chỉ vì thuộc tính khác
+  // của lần chọn trước không tương thích. Không tự nhảy lựa chọn của khách.
   function attrHasCompatibleStock(type,value){
-    return variants.some(v=>
-      Number(v.onHand||0)>0 &&
-      v[type]===value &&
-      variantMatchesSelection(v,type)
-    );
+    return variants.some(v=>{
+      if(Number(v.onHand||0)<=0) return false;
+      if(v[type]!==value) return false;
+
+      if(type==="rom") return true;
+      if(type==="color"){
+        if(selectedRom && v.rom!==selectedRom) return false;
+        if(selectedQuality && v.quality!==selectedQuality) return false;
+        return true;
+      }
+      if(type==="memory"){
+        if(selectedRom && v.rom!==selectedRom) return false;
+        if(selectedColor && v.color!==selectedColor) return false;
+        if(selectedQuality && v.quality!==selectedQuality) return false;
+        return true;
+      }
+      if(type==="quality"){
+        if(selectedRom && v.rom!==selectedRom) return false;
+        if(selectedColor && v.color!==selectedColor) return false;
+        if(selectedMemory && v.memory!==selectedMemory) return false;
+        return true;
+      }
+      return true;
+    });
   }
 
   function updateAvailability(){
@@ -2481,6 +2506,13 @@ if(!inlineProductDetail) return;
       statusTop.classList.toggle("out",!inStock);
       stockText.textContent=inStock ? "Còn hàng" : "Hết hàng";
       stockText.classList.toggle("out",!inStock);
+    }else{
+      // Tổ hợp khách đang giữ không tồn tại: tuyệt đối không tự nhảy sang variant khác.
+      // Hiển thị hết hàng thay vì giữ lại giá/trạng thái của lựa chọn trước.
+      statusTop.textContent="Hết hàng";
+      statusTop.classList.add("out");
+      stockText.textContent="Hết hàng";
+      stockText.classList.add("out");
     }
 
     colorButtons.forEach((btn,color)=>{
