@@ -2461,7 +2461,18 @@ if(!inlineProductDetail) return;
     });
   }
 
+  function enforceMemoryButtonOrder(){
+    // V908: DOM luôn giữ đúng thứ tự dung lượng, kể cả sau khi đổi ROM/màu
+    // hoặc update trạng thái tồn kho. appendChild node cũ sẽ chỉ di chuyển vị trí,
+    // không tạo lại nút và không làm mất event listener.
+    memories.forEach(mem=>{
+      const btn=memoryButtons.get(mem);
+      if(btn) memoryOptions.appendChild(btn);
+    });
+  }
+
   function updateAvailability(){
+    enforceMemoryButtonOrder();
     colorButtons.forEach((btn,color)=>{
       const disabled=!attrHasCompatibleStock("color",color);
       btn.classList.toggle("disabled",disabled);
@@ -2594,6 +2605,9 @@ if(!inlineProductDetail) return;
     memoryButtons.set(mem,btn);
     memoryOptions.appendChild(btn);
   });
+
+  // V908: chốt lại thứ tự ngay sau khi render lần đầu.
+  enforceMemoryButtonOrder();
 
   function displayRomLabel(value){
     const raw=String(value||"").trim();
