@@ -143,7 +143,12 @@ function suffixIsVariant(part,mem,col,attrs){
   const p=String(part||'').trim(),n=norm(p);if(!p)return true;
   if(isRomVariant(p))return true;
   if(/^(?:rom\s*)?(?:goc|tieng\s*viet|tv|global|quoc\s*te)$/i.test(n))return true;
-  if(/^(?:\d+\s*\/\s*)?(?:64|128|256|512|1024|1t|2t)(?:\s*(?:gb|tb))?$/i.test(p)||/^\d+\s*\/\s*(?:\d+|1t|2t)$/i.test(p))return true;
+  if(/^(?:\d+\s*\/\s*)?(?:32|64|128|256|512|1024|1t|2t)(?:\s*(?:gb|tb))?$/i.test(p)||/^\d+\s*\/\s*(?:\d+|1t|2t)$/i.test(p))return true;
+  // V910: các máy cũ (đặc biệt iPhone) từ KiotViet có thể đưa màu, % pin và loại pin
+  // trực tiếp vào tên sản phẩm thay vì attributes. Đây đều là thuộc tính biến thể, không phải model.
+  if(/^\d{1,3}\s*%$/.test(p))return true;
+  if(/^pin\s*(?:[5-9]x|100|zin|moi|mới|thay|new)$/i.test(p))return true;
+  if(/^(?:den|đen|trang|trắng|do|đỏ|hong|hồng|vang|vàng|xanh(?:\s*(?:duong|dương|la|lá))?|tim|tím|bac|bạc|xam|xám|cam|nau|nâu|green|blue|black|white|red|pink|purple|gold|silver|gray|grey)$/i.test(p))return true;
   const known=[mem,col,...(Array.isArray(attrs)?attrs.map(a=>a?.value):[])].filter(Boolean).map(norm);
   if(known.includes(n))return true;
   return false;
