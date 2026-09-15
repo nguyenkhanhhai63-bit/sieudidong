@@ -2465,9 +2465,12 @@ if(!inlineProductDetail) return;
     // V908: DOM luôn giữ đúng thứ tự dung lượng, kể cả sau khi đổi ROM/màu
     // hoặc update trạng thái tồn kho. appendChild node cũ sẽ chỉ di chuyển vị trí,
     // không tạo lại nút và không làm mất event listener.
-    memories.forEach(mem=>{
+    memories.forEach((mem,index)=>{
       const btn=memoryButtons.get(mem);
-      if(btn) memoryOptions.appendChild(btn);
+      if(btn){
+        btn.style.order=String(index);
+        memoryOptions.appendChild(btn);
+      }
     });
   }
 
@@ -2602,6 +2605,9 @@ if(!inlineProductDetail) return;
       updateUI();
     });
 
+    // V909: khóa thứ tự hiển thị ngay trên chính nút bằng CSS order.
+    // Cách này không thể bị một lần append/render cũ phía sau làm đảo lại.
+    btn.style.order=String(memories.indexOf(mem));
     memoryButtons.set(mem,btn);
     memoryOptions.appendChild(btn);
   });
