@@ -1,12 +1,13 @@
-CHỈ CẦN UP ĐÈ 2 MỤC NÀY LÊN CODE WEBSITE HIỆN TẠI:
+UPDATE: THÊM MỤC EDIT BANNER LINK TRONG ADMIN
 
-1. index.html
-2. assets/banner-link-sieudidong.png
+Upload đè toàn bộ file/thư mục trong ZIP lên code hiện tại.
 
-Không xóa code cũ, không up lại toàn bộ web.
+Sau khi deploy:
+Admin > SEO & Google > Ảnh banner khi gửi link
+- Chọn ảnh mới
+- Xem trước
+- Bấm Lưu thay đổi SEO
 
-Sau khi deploy kiểm tra:
-https://sieudidong.vn/assets/banner-link-sieudidong.png?v=1
-
-Link chia sẻ sẽ dùng:
-Siêu Di Động | Chuyên điện thoại Android giá tốt
+Ảnh được upload qua Cloudinary đang có sẵn trong web.
+Facebook/Zalo/Messenger sẽ lấy ảnh hiện tại qua /api/share-image.
+Không ảnh hưởng dữ liệu sản phẩm và các module khác.

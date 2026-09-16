@@ -11,6 +11,7 @@ const handlers = {
   "products": () => import("../lib/public-api/products.js"),
   "search-popular": () => import("../lib/public-api/search-popular.js"),
   "seo-settings": () => import("../lib/public-api/seo-settings.js"),
+  "share-image": () => import("../lib/public-api/share-image.js"),
   "sitemap": () => import("../lib/public-api/sitemap.js"),
   "specs": () => import("../lib/public-api/specs.js"),
   "version": () => import("../lib/public-api/version.js"),

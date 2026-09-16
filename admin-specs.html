@@ -8784,6 +8784,30 @@ body.used-image-modal-open{overflow:hidden}
         <span class="seo-mini-badge">SEO</span>
       </div>
 
+      <div id="shareBannerAdmin" style="margin:0 0 16px;padding:16px;border:1px solid #e5e9f0;border-radius:14px;background:#fff">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <div><h2 style="margin:0 0 5px;font-size:18px">Ảnh banner khi gửi link</h2>
+          <p style="margin:0;color:#667085;font-size:12px">Đổi ảnh hiển thị khi gửi sieudidong.vn qua Facebook, Messenger, Zalo và các nền tảng hỗ trợ Open Graph.</p></div>
+          <span class="seo-mini-badge">BANNER LINK</span>
+        </div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:16px;margin-top:14px;align-items:start" class="share-banner-grid">
+          <div>
+            <label style="display:block;font-size:12px;font-weight:700;color:#344054;margin-bottom:6px">Link ảnh banner</label>
+            <input id="seoShareImage" style="width:100%;height:42px;border:1px solid #dfe3e8;border-radius:10px;padding:0 11px" placeholder="/assets/banner-link.png hoặc https://...">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+              <label for="seoShareImageFile" class="seo-btn seo-btn-primary" style="cursor:pointer;display:inline-flex;align-items:center">＋ Chọn ảnh mới</label>
+              <input id="seoShareImageFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+              <button id="seoShareImageClear" class="seo-btn seo-btn-light" type="button">Dùng ảnh mặc định</button>
+            </div>
+            <div id="seoShareImageStatus" style="margin-top:8px;font-size:12px;color:#667085">Nên dùng ảnh ngang, tối thiểu 1200 × 630px.</div>
+          </div>
+          <div style="border:1px solid #e5e9f0;border-radius:12px;overflow:hidden;background:#f8fafc;aspect-ratio:1.91/1">
+            <img id="seoShareImagePreview" src="/assets/share-logo-v265.jpg" alt="Banner link" style="width:100%;height:100%;object-fit:cover;display:block">
+          </div>
+        </div>
+      </div>
+      <style>@media(max-width:760px){#shareBannerAdmin .share-banner-grid{grid-template-columns:1fr!important}}</style>
+
       <div class="seo-config-layout">
         <div class="seo-form-area">
           <div class="seo-form-grid">
@@ -8981,6 +9005,11 @@ const saveSeoSettings=document.getElementById("saveSeoSettings");
 const reloadSeoSettings=document.getElementById("reloadSeoSettings");
 const resetSeoSettings=document.getElementById("resetSeoSettings");
 const seoSettingsStatus=document.getElementById("seoSettingsStatus");
+const seoShareImage=document.getElementById("seoShareImage");
+const seoShareImageFile=document.getElementById("seoShareImageFile");
+const seoShareImagePreview=document.getElementById("seoShareImagePreview");
+const seoShareImageStatus=document.getElementById("seoShareImageStatus");
+const seoShareImageClear=document.getElementById("seoShareImageClear");
 const seoAuditUrl=document.getElementById("seoAuditUrl");
 const seoAuditOne=document.getElementById("seoAuditOne");
 const seoAuditOneResult=document.getElementById("seoAuditOneResult");
@@ -11231,15 +11260,40 @@ function updateSeoPreview(){
 async function loadSeoSettings(){
   seoSettingsStatus.textContent="Đang tải...";
   try{const r=await fetch("/api/admin/seo-settings",{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json(),x=d.settings||{};
-    seoSiteName.value=x.siteName||"";seoAreaServed.value=x.areaServed||"";seoTitleInput.value=x.seoTitle||"";seoDescription.value=x.description||"";seoOgDescription.value=x.ogDescription||"";seoFavicon.value=x.favicon||"";seoLogo.value=x.logo||"";updateSeoPreview();seoSettingsStatus.textContent="Đã tải.";
+    seoSiteName.value=x.siteName||"";seoAreaServed.value=x.areaServed||"";seoTitleInput.value=x.seoTitle||"";seoDescription.value=x.description||"";seoOgDescription.value=x.ogDescription||"";seoFavicon.value=x.favicon||"";seoLogo.value=x.logo||"";if(seoShareImage)seoShareImage.value=x.shareImage||"/assets/share-logo-v265.jpg";if(seoShareImagePreview)seoShareImagePreview.src=seoShareImage.value||"/assets/share-logo-v265.jpg";updateSeoPreview();seoSettingsStatus.textContent="Đã tải.";
   }catch(e){seoSettingsStatus.textContent="Không tải được SEO: "+e.message}
 }
 async function persistSeoSettings(){
   seoSettingsStatus.textContent="Đang lưu...";
-  const body={siteName:seoSiteName.value,areaServed:seoAreaServed.value,seoTitle:seoTitleInput.value,description:seoDescription.value,ogDescription:seoOgDescription.value,favicon:seoFavicon.value,logo:seoLogo.value};
+  const body={siteName:seoSiteName.value,areaServed:seoAreaServed.value,seoTitle:seoTitleInput.value,description:seoDescription.value,ogDescription:seoOgDescription.value,favicon:seoFavicon.value,logo:seoLogo.value,shareImage:seoShareImage?.value||"/assets/share-logo-v265.jpg"};
   try{const r=await fetch("/api/admin/seo-settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error("HTTP "+r.status);seoSettingsStatus.textContent="✓ Đã lưu. Website sẽ dùng nội dung mới.";try{showToast("Đã lưu SEO");}catch(_){ }}
   catch(e){seoSettingsStatus.textContent="Lưu thất bại: "+e.message}
 }
+
+async function uploadSeoShareBanner(file){
+  if(!file?.type?.startsWith("image/")) throw new Error("File đã chọn không phải ảnh.");
+  seoShareImageStatus.textContent="Đang upload ảnh...";
+  const sigRes=await fetch("/api/admin/cloudinary-signature",{cache:"no-store",credentials:"same-origin"});
+  const sig=await sigRes.json();
+  if(!sigRes.ok||!sig.ok) throw new Error(sig.error||"Cloudinary chưa cấu hình.");
+  const fd=new FormData();
+  fd.append("file",file);
+  fd.append("api_key",sig.apiKey);
+  fd.append("timestamp",String(sig.timestamp));
+  fd.append("folder",sig.folder);
+  fd.append("signature",sig.signature);
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(sig.cloudName)}/image/upload`,{method:"POST",body:fd});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok||!d.secure_url) throw new Error(d?.error?.message||"Upload ảnh thất bại.");
+  seoShareImage.value=d.secure_url;
+  seoShareImagePreview.src=d.secure_url;
+  seoShareImageStatus.textContent="✓ Đã upload. Bấm “Lưu thay đổi SEO” để áp dụng.";
+  seoShareImageStatus.style.color="#15803d";
+}
+seoShareImage?.addEventListener("input",()=>{seoShareImagePreview.src=seoShareImage.value||"/assets/share-logo-v265.jpg"});
+seoShareImageFile?.addEventListener("change",async()=>{try{const f=seoShareImageFile.files?.[0];if(f)await uploadSeoShareBanner(f)}catch(e){seoShareImageStatus.textContent=e.message;seoShareImageStatus.style.color="#b42318"}finally{seoShareImageFile.value=""}});
+seoShareImageClear?.addEventListener("click",()=>{seoShareImage.value="/assets/share-logo-v265.jpg";seoShareImagePreview.src=seoShareImage.value;seoShareImageStatus.textContent="Đã chọn ảnh mặc định. Bấm Lưu thay đổi SEO.";seoShareImageStatus.style.color="#667085"});
+
 [seoSiteName,seoAreaServed,seoTitleInput,seoDescription,seoOgDescription,seoFavicon,seoLogo].forEach(el=>el&&el.addEventListener("input",updateSeoPreview));
 if(saveSeoSettings)saveSeoSettings.addEventListener("click",persistSeoSettings);
 if(reloadSeoSettings)reloadSeoSettings.addEventListener("click",loadSeoSettings);
