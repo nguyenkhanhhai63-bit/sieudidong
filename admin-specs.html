@@ -9855,7 +9855,8 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
   if(!host) return;
   const keys=Array.isArray(dayKeys)?dayKeys.slice(-7):[];
   const rowCount=Math.max(1,keys.length||Math.min(7,Array.isArray(matrix)?matrix.length:0)||7);
-  const data=Array.from({length:rowCount},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
+  const raw=Array.from({length:rowCount},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
+  const data=raw.map(row=>Array.from({length:12},(_,i)=>(row[i*2]||0)+(row[i*2+1]||0)));
   const dayName=d=>{
     const dt=new Date(String(d)+"T00:00:00Z");
     const n=dt.getUTCDay();
@@ -9867,27 +9868,28 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
     const [,m,day]=String(d).split("-");
     return `${dayName(d)} ${day}/${m}`;
   });
+  const max=Math.max(1,...data.flat());
   const heatColor=v=>{
     if(v<=0)return '#f1f5f9';
-    if(v<=5)return '#dbeafe';
-    if(v<=20)return '#93c5fd';
-    if(v<=50)return '#60a5fa';
+    const ratio=v/max;
+    if(ratio<=.18)return '#dbeafe';
+    if(ratio<=.4)return '#93c5fd';
+    if(ratio<=.7)return '#60a5fa';
     return '#2563eb';
   };
-  const axisHours=[0,2,4,6,8,10,12,14,16,18,20,22];
-  const axis=`<div class="v917-heat-axis"><span></span>${axisHours.map(h=>`<span style="grid-column:${h+2}/span 2">${h}</span>`).join("")}</div>`;
-  let cells='<div class="v917-heat-grid">';
+  const ranges=Array.from({length:12},(_,i)=>`${String(i*2).padStart(2,'0')}–${String(i*2+2).padStart(2,'0')}`);
+  const axis=`<div class="v920-heat-axis"><span></span>${ranges.map(x=>`<span>${x}</span>`).join("")}</div>`;
+  let cells='<div class="v920-heat-grid">';
   data.forEach((row,r)=>{
-    cells+=`<span class="v917-heat-day">${labels[r]}</span>`;
-    row.forEach((v,h)=>{
-      cells+=`<button type="button" class="traffic-hour-cell v917-heat-cell" data-count="${v}" data-day="${labels[r]}" data-hour="${h}" style="background-color:${heatColor(v)}" aria-label="${labels[r]} ${h} giờ, ${fmt(v)} lượt"><span class="v917-heat-tip"><b>${labels[r]} · ${String(h).padStart(2,'0')}:00</b><em>${fmt(v)} lượt truy cập</em></span></button>`;
+    cells+=`<span class="v920-heat-day">${labels[r]}</span>`;
+    row.forEach((v,i)=>{
+      const from=i*2,to=from+2;
+      cells+=`<button type="button" class="traffic-hour-cell v920-heat-cell" data-count="${v}" style="background-color:${heatColor(v)}" aria-label="${labels[r]}, ${from} đến ${to} giờ, ${fmt(v)} lượt"><span class="v920-heat-tip"><b>${labels[r]} · ${String(from).padStart(2,'0')}:00–${String(to).padStart(2,'0')}:00</b><em>${fmt(v)} lượt truy cập</em></span></button>`;
     });
   });
   cells+='</div>';
-  const legend=`<div class="v917-heat-footer"><div class="v917-heat-levels">
-    <span><i style="background:#f1f5f9"></i>0 lượt</span><span><i style="background:#dbeafe"></i>1–5</span><span><i style="background:#93c5fd"></i>6–20</span><span><i style="background:#60a5fa"></i>21–50</span><span><i style="background:#2563eb"></i>&gt; 50</span>
-  </div><span class="v917-heat-note">ⓘ Màu càng đậm, lượt truy cập càng cao</span></div>`;
-  host.innerHTML=`<div class="v917-heatmap">${axis}${cells}${legend}</div>`;
+  const legend=`<div class="v920-heat-footer"><div class="v920-heat-levels"><span><i style="background:#f1f5f9"></i>0 lượt</span><span><i style="background:#dbeafe"></i>Thấp</span><span><i style="background:#93c5fd"></i>Vừa</span><span><i style="background:#60a5fa"></i>Cao</span><span><i style="background:#2563eb"></i>Rất cao</span></div><span class="v920-heat-note">ⓘ Mỗi ô = 2 giờ · màu đậm hơn = nhiều lượt hơn</span></div>`;
+  host.innerHTML=`<div class="v920-heatmap">${axis}${cells}${legend}</div>`;
 }
 
 function renderTrafficSources(items){
@@ -17227,86 +17229,30 @@ body > .wrap, .wrap, main{
 }
 </style>
 
-
-<!-- V919 HEATMAP FINAL REDESIGN: balanced demo layout, overrides all legacy heatmap CSS -->
-<style id="v919-heatmap-final-redesign">
-#analyticsCard .traffic-insights-row-four>.traffic-hour-box{
-  overflow:visible!important;height:300px!important;min-height:300px!important;max-height:300px!important;
-}
-#analyticsCard .traffic-insights-row-four>.traffic-hour-box>h2{
-  height:48px!important;box-sizing:border-box!important;padding:13px 16px!important;margin:0!important;
-  display:flex!important;align-items:center!important;gap:4px!important;font-size:14px!important;font-weight:800!important;
-}
-#analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
-  box-sizing:border-box!important;height:252px!important;min-height:252px!important;max-height:252px!important;
-  padding:10px 16px 12px!important;display:block!important;overflow:visible!important;
-}
-#analyticsCard .v917-heatmap{
-  width:min(100%,820px)!important;height:100%!important;margin:0 auto!important;min-width:0!important;
-  display:flex!important;flex-direction:column!important;justify-content:center!important;box-sizing:border-box!important;
-}
-#analyticsCard .v917-heat-axis{
-  display:grid!important;grid-template-columns:64px repeat(24,minmax(0,1fr))!important;
-  align-items:end!important;margin:0 0 7px!important;color:#64748b!important;font-size:8px!important;font-weight:700!important;line-height:1!important;
-}
-#analyticsCard .v917-heat-axis span{text-align:center!important;white-space:nowrap!important}
-#analyticsCard .v917-heat-grid{
-  display:grid!important;grid-template-columns:64px repeat(24,minmax(0,1fr))!important;
-  gap:4px!important;column-gap:4px!important;row-gap:4px!important;align-items:center!important;overflow:visible!important;
-  flex:none!important;min-height:0!important;
-}
-#analyticsCard .v917-heat-day{
-  font-size:9px!important;line-height:1!important;font-weight:700!important;color:#64748b!important;white-space:nowrap!important;padding-right:7px!important;
-}
-#analyticsCard .v917-heat-cell{
-  appearance:none!important;border:0!important;padding:0!important;margin:0!important;
-  width:100%!important;height:18px!important;min-height:18px!important;max-height:18px!important;aspect-ratio:auto!important;
-  border-radius:4px!important;position:relative!important;box-sizing:border-box!important;cursor:default!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.62)!important;transition:transform .12s ease,box-shadow .12s ease!important;
-}
-#analyticsCard .v917-heat-cell:hover{
-  transform:translateY(-1px) scale(1.08)!important;outline:2px solid #2563eb!important;
-  box-shadow:0 5px 14px rgba(37,99,235,.24),inset 0 0 0 1px rgba(255,255,255,.8)!important;z-index:50!important;
-}
-#analyticsCard .v917-heat-tip{
-  display:none!important;position:absolute!important;left:50%!important;bottom:calc(100% + 9px)!important;transform:translateX(-50%)!important;
-  min-width:132px!important;padding:8px 10px!important;border-radius:8px!important;background:#172033!important;color:#fff!important;
-  text-align:left!important;box-shadow:0 8px 22px rgba(15,23,42,.28)!important;pointer-events:none!important;white-space:nowrap!important;z-index:100!important;
-}
-#analyticsCard .v917-heat-cell:hover .v917-heat-tip{display:block!important}
-#analyticsCard .v917-heat-tip:after{content:""!important;position:absolute!important;left:50%!important;top:100%!important;transform:translateX(-50%)!important;border:6px solid transparent!important;border-top-color:#172033!important}
-#analyticsCard .v917-heat-tip b{display:block!important;font-size:10px!important;line-height:1.35!important}
-#analyticsCard .v917-heat-tip em{display:block!important;font-style:normal!important;font-size:10px!important;font-weight:500!important;opacity:.92!important;margin-top:2px!important}
-#analyticsCard .v917-heat-footer{
-  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
-  margin:13px 0 0!important;min-height:34px!important;flex-wrap:nowrap!important;
-}
-#analyticsCard .v917-heat-levels{
-  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;flex-wrap:nowrap!important;
-  padding:6px 9px!important;border-radius:9px!important;background:#f8fafc!important;color:#64748b!important;font-size:8px!important;font-weight:650!important;
-}
-#analyticsCard .v917-heat-levels span{display:flex!important;align-items:center!important;gap:4px!important;white-space:nowrap!important}
-#analyticsCard .v917-heat-levels i{display:inline-block!important;width:13px!important;height:13px!important;border-radius:3px!important}
-#analyticsCard .v917-heat-note{
-  display:block!important;margin-left:auto!important;padding:7px 9px!important;border-radius:9px!important;background:#f8fafc!important;
-  color:#64748b!important;font-size:8px!important;font-weight:650!important;white-space:nowrap!important;
-}
-/* Ensure legacy Low/High legend can never reappear inside the redesigned heatmap. */
-#analyticsCard .v917-heatmap .traffic-hour-legend,#analyticsCard .v917-heatmap .traffic-hour-gradient{display:none!important}
-@media (min-width:1700px) and (max-width:2100px) and (max-height:1200px){
-  #analyticsCard .traffic-insights-row-four>.traffic-hour-box{height:276px!important;min-height:276px!important;max-height:276px!important}
-  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:228px!important;min-height:228px!important;max-height:228px!important;padding:8px 12px 9px!important}
-  #analyticsCard .v917-heat-cell{height:16px!important;min-height:16px!important;max-height:16px!important}
-  #analyticsCard .v917-heat-grid{gap:3px!important;column-gap:3px!important;row-gap:3px!important}
-  #analyticsCard .v917-heat-footer{margin-top:10px!important;min-height:30px!important}
-}
-@media (max-width:1500px) and (min-width:761px){
-  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}
-  #analyticsCard .v917-heatmap{width:760px!important;min-width:760px!important}
-}
-@media (max-width:760px){
-  #analyticsCard .traffic-insights-row-four>.traffic-hour-box{height:auto!important;min-height:0!important;max-height:none!important}
-  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:auto!important;min-height:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important}
-  #analyticsCard .v917-heatmap{width:760px!important;min-width:760px!important}
-}
+<!-- V920 HEATMAP 12 TWO-HOUR BLOCKS -->
+<style id="v920-heatmap-12-blocks">
+#analyticsCard .traffic-hour-box{overflow:visible!important}
+#analyticsCard .traffic-hour-box>h2{font-size:14px!important;font-weight:800!important;padding:13px 16px!important}
+#analyticsCard .traffic-hour-wrap{height:auto!important;min-height:0!important;max-height:none!important;padding:12px 16px 14px!important;overflow:visible!important;display:block!important}
+#analyticsCard .v920-heatmap{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#analyticsCard .v920-heat-axis,#analyticsCard .v920-heat-grid{display:grid!important;grid-template-columns:66px repeat(12,minmax(38px,1fr))!important;column-gap:5px!important;align-items:center!important}
+#analyticsCard .v920-heat-axis{margin:0 0 7px!important;color:#64748b;font-size:9px!important;font-weight:700!important}
+#analyticsCard .v920-heat-axis span{text-align:center!important;white-space:nowrap!important}
+#analyticsCard .v920-heat-grid{row-gap:5px!important}
+#analyticsCard .v920-heat-day{font-size:10px!important;font-weight:700!important;color:#64748b!important;white-space:nowrap!important;padding-right:6px!important}
+#analyticsCard .v920-heat-cell{appearance:none!important;border:0!important;margin:0!important;padding:0!important;width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;border-radius:5px!important;position:relative!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)!important;cursor:default!important;transition:transform .12s ease,box-shadow .12s ease!important;z-index:1!important}
+#analyticsCard .v920-heat-cell:hover{transform:translateY(-1px) scale(1.035)!important;outline:2px solid #2563eb!important;box-shadow:0 4px 12px rgba(37,99,235,.18)!important;z-index:30!important}
+#analyticsCard .v920-heat-tip{display:none!important;position:absolute!important;left:50%!important;bottom:calc(100% + 9px)!important;transform:translateX(-50%)!important;min-width:145px!important;padding:8px 10px!important;border-radius:8px!important;background:#1e293b!important;color:#fff!important;text-align:left!important;white-space:nowrap!important;box-shadow:0 8px 22px rgba(15,23,42,.25)!important;pointer-events:none!important}
+#analyticsCard .v920-heat-tip:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1e293b}
+#analyticsCard .v920-heat-tip b{display:block;font-size:10px;line-height:1.35}#analyticsCard .v920-heat-tip em{display:block;font-style:normal;font-size:10px;font-weight:500;opacity:.9;margin-top:2px}
+#analyticsCard .v920-heat-cell:hover .v920-heat-tip{display:block!important}
+#analyticsCard .v920-heat-footer{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-top:12px!important;min-height:28px!important;flex-wrap:wrap!important}
+#analyticsCard .v920-heat-levels{display:flex!important;align-items:center!important;gap:12px!important;flex-wrap:wrap!important;color:#64748b!important;font-size:9px!important;font-weight:650!important}
+#analyticsCard .v920-heat-levels span{display:flex!important;align-items:center!important;gap:5px!important;white-space:nowrap!important}
+#analyticsCard .v920-heat-levels i{display:inline-block!important;width:14px!important;height:14px!important;border-radius:4px!important}
+#analyticsCard .v920-heat-note{margin-left:auto!important;padding:7px 10px!important;border-radius:8px!important;background:#f8fafc!important;color:#64748b!important;font-size:9px!important;font-weight:650!important;white-space:nowrap!important}
+/* neutralize old fixed height only for new V920 heatmap */
+#analyticsCard .traffic-insights-row-four>.traffic-hour-box:has(.v920-heatmap){height:auto!important;min-height:250px!important;max-height:none!important}
+@media(min-width:1700px) and (max-width:2100px) and (max-height:1200px){#analyticsCard .traffic-insights-row-four>.traffic-hour-box:has(.v920-heatmap){height:246px!important;min-height:246px!important}#analyticsCard .v920-heat-cell{height:22px!important;min-height:22px!important;max-height:22px!important}#analyticsCard .v920-heat-grid{row-gap:4px!important}}
+@media(max-width:1200px){#analyticsCard .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}#analyticsCard .v920-heatmap{min-width:720px!important}}
 </style>
