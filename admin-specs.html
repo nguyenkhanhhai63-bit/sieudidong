@@ -9874,10 +9874,19 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
   data.forEach((row,r)=>{
     cells+=`<span class="traffic-hour-day">${labels[r]}</span>`;
     row.forEach((v,h)=>{
-      const ratio=v/max;
-      const alpha=v?(.14+ratio*.82):.06;
-      const bg=v?`rgba(52,120,246,${alpha.toFixed(3)})`:'#eef4ff';
-      cells+=`<i class="traffic-hour-cell" style="background:${bg}" title="${labels[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
+      // V916: màu của TỪNG Ô chỉ phụ thuộc số lượt của chính ô đó.
+      // 0 lượt luôn là nền gần trắng; không dùng alpha trong suốt để tránh
+      // màu nền/card phía sau làm các hàng trông thành dải xanh liên tục.
+      const ratio=max>0?Math.max(0,Math.min(1,v/max)):0;
+      let bg='#f3f6fb';
+      if(v>0){
+        if(ratio<=0.20) bg='#dbe8ff';
+        else if(ratio<=0.40) bg='#b9d2ff';
+        else if(ratio<=0.60) bg='#8fb7ff';
+        else if(ratio<=0.80) bg='#6398f5';
+        else bg='#3478f6';
+      }
+      cells+=`<i class="traffic-hour-cell" data-count="${v}" style="background-color:${bg}" title="${labels[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
     });
   });
   cells+='</div>';
@@ -14535,6 +14544,21 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   transform-origin:top left!important;
   transform:scale(var(--sdd-a4-preview-scale,1))!important;
   will-change:transform;
+}
+</style>
+
+<!-- V916 HEATMAP COLOR FIX -->
+<style id="v916-heatmap-color-fix">
+#analyticsCard .traffic-hour-cell{
+  background-image:none!important;
+  box-shadow:none!important;
+  opacity:1!important;
+}
+#analyticsCard .traffic-hour-cell[data-count="0"]{
+  background-color:#f3f6fb!important;
+}
+#analyticsCard .traffic-hour-gradient{
+  background:linear-gradient(90deg,#f3f6fb 0%,#dbe8ff 20%,#b9d2ff 40%,#8fb7ff 60%,#6398f5 80%,#3478f6 100%)!important;
 }
 </style>
 </body>
