@@ -14586,6 +14586,59 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 @media(max-width:1100px){#analyticsCard .traffic-hour-wrap{overflow-x:auto!important}#analyticsCard .v917-heatmap{min-width:720px}}
 @media(max-width:760px){#analyticsCard .traffic-hour-wrap{padding:10px 12px 12px!important}#analyticsCard .v917-heatmap{min-width:680px}#analyticsCard .v917-heat-footer{justify-content:flex-start}#analyticsCard .v917-heat-note{margin-left:0}}
 </style>
+
+<!-- V918 HEATMAP LAYOUT FIX: keep 7x24 cells + legend fully visible -->
+<style id="v918-heatmap-layout-fix">
+/* Override legacy fixed-height/tight-cell rules that were applied after V917. */
+#analyticsCard .traffic-insights-row-four > .traffic-hour-box{
+  overflow:visible!important;
+}
+#analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  padding:9px 12px 10px!important;overflow:visible!important;display:block!important;
+}
+#analyticsCard .v917-heatmap{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+#analyticsCard .v917-heat-axis{
+  display:grid!important;grid-template-columns:58px repeat(24,minmax(0,1fr))!important;
+  margin:0 0 5px!important;font-size:8px!important;line-height:1!important;
+}
+#analyticsCard .v917-heat-grid{
+  display:grid!important;grid-template-columns:58px repeat(24,minmax(0,1fr))!important;
+  gap:2px!important;column-gap:2px!important;row-gap:3px!important;align-items:center!important;
+}
+#analyticsCard .v917-heat-day{font-size:9px!important;line-height:1!important;padding-right:5px!important}
+#analyticsCard .v917-heat-cell{
+  width:100%!important;height:12px!important;min-height:12px!important;max-height:12px!important;
+  aspect-ratio:auto!important;border-radius:2px!important;box-sizing:border-box!important;
+}
+#analyticsCard .v917-heat-footer{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:10px!important;margin-top:8px!important;min-height:22px!important;flex-wrap:nowrap!important;
+}
+#analyticsCard .v917-heat-levels{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;flex-wrap:nowrap!important;font-size:8px!important}
+#analyticsCard .v917-heat-levels span{gap:3px!important}
+#analyticsCard .v917-heat-levels i{width:11px!important;height:11px!important;border-radius:2px!important}
+#analyticsCard .v917-heat-note{display:none!important}
+/* Full-HD dashboard keeps the four cards aligned, but no longer clips the new legend. */
+@media (min-width:1501px){
+  #analyticsCard .traffic-insights-row-four > .traffic-hour-box{height:300px!important;min-height:300px!important;max-height:300px!important}
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:254px!important;min-height:254px!important;max-height:254px!important;overflow:visible!important}
+}
+@media (min-width:1700px) and (max-width:2100px) and (max-height:1200px){
+  #analyticsCard .traffic-insights-row-four > .traffic-hour-box{height:246px!important;min-height:246px!important;max-height:246px!important;overflow:visible!important}
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:204px!important;min-height:204px!important;max-height:204px!important;padding:7px 9px 7px!important;overflow:visible!important}
+  #analyticsCard .v917-heat-cell{height:11px!important;min-height:11px!important;max-height:11px!important}
+  #analyticsCard .v917-heat-footer{margin-top:6px!important;min-height:18px!important}
+}
+@media (max-width:1500px) and (min-width:761px){
+  #analyticsCard .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}
+  #analyticsCard .v917-heatmap{min-width:620px!important}
+}
+@media (max-width:760px){
+  #analyticsCard .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}
+  #analyticsCard .v917-heatmap{min-width:650px!important}
+}
+</style>
 </body>
 </html>
 
