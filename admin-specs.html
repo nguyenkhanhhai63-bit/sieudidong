@@ -17235,7 +17235,7 @@ body > .wrap, .wrap, main{
 #analyticsCard .traffic-hour-box>h2{font-size:14px!important;font-weight:800!important;padding:13px 16px!important}
 #analyticsCard .traffic-hour-wrap{height:auto!important;min-height:0!important;max-height:none!important;padding:12px 16px 14px!important;overflow:visible!important;display:block!important}
 #analyticsCard .v920-heatmap{width:100%!important;min-width:0!important;box-sizing:border-box!important}
-#analyticsCard .v920-heat-axis,#analyticsCard .v920-heat-grid{display:grid!important;grid-template-columns:66px repeat(12,minmax(38px,1fr))!important;column-gap:5px!important;align-items:center!important}
+#analyticsCard .v920-heat-axis,#analyticsCard .v920-heat-grid{display:grid!important;grid-template-columns:58px repeat(12,minmax(0,1fr))!important;column-gap:4px!important;align-items:center!important;width:100%!important;min-width:0!important;box-sizing:border-box!important}
 #analyticsCard .v920-heat-axis{margin:0 0 7px!important;color:#64748b;font-size:9px!important;font-weight:700!important}
 #analyticsCard .v920-heat-axis span{text-align:center!important;white-space:nowrap!important}
 #analyticsCard .v920-heat-grid{row-gap:5px!important}
@@ -17254,5 +17254,8 @@ body > .wrap, .wrap, main{
 /* neutralize old fixed height only for new V920 heatmap */
 #analyticsCard .traffic-insights-row-four>.traffic-hour-box:has(.v920-heatmap){height:auto!important;min-height:250px!important;max-height:none!important}
 @media(min-width:1700px) and (max-width:2100px) and (max-height:1200px){#analyticsCard .traffic-insights-row-four>.traffic-hour-box:has(.v920-heatmap){height:246px!important;min-height:246px!important}#analyticsCard .v920-heat-cell{height:22px!important;min-height:22px!important;max-height:22px!important}#analyticsCard .v920-heat-grid{row-gap:4px!important}}
-@media(max-width:1200px){#analyticsCard .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}#analyticsCard .v920-heatmap{min-width:720px!important}}
+@media(max-width:1200px){#analyticsCard .traffic-hour-wrap{overflow-x:hidden!important;overflow-y:visible!important}#analyticsCard .v920-heatmap{width:100%!important;min-width:0!important}#analyticsCard .v920-heat-axis,#analyticsCard .v920-heat-grid{grid-template-columns:52px repeat(12,minmax(0,1fr))!important;column-gap:3px!important}#analyticsCard .v920-heat-axis{font-size:8px!important}#analyticsCard .v920-heat-day{font-size:9px!important}#analyticsCard .v920-heat-cell{height:22px!important;min-height:22px!important;max-height:22px!important}}
+
+/* V921: 12 khung giờ luôn chia đều trong đúng chiều rộng card, không cắt 18–24 */
+@media(min-width:1201px){#analyticsCard .v920-heat-axis,#analyticsCard .v920-heat-grid{grid-template-columns:60px repeat(12,minmax(0,1fr))!important;column-gap:4px!important}}
 </style>
