@@ -17226,3 +17226,87 @@ body > .wrap, .wrap, main{
   }
 }
 </style>
+
+
+<!-- V919 HEATMAP FINAL REDESIGN: balanced demo layout, overrides all legacy heatmap CSS -->
+<style id="v919-heatmap-final-redesign">
+#analyticsCard .traffic-insights-row-four>.traffic-hour-box{
+  overflow:visible!important;height:300px!important;min-height:300px!important;max-height:300px!important;
+}
+#analyticsCard .traffic-insights-row-four>.traffic-hour-box>h2{
+  height:48px!important;box-sizing:border-box!important;padding:13px 16px!important;margin:0!important;
+  display:flex!important;align-items:center!important;gap:4px!important;font-size:14px!important;font-weight:800!important;
+}
+#analyticsCard .traffic-insights-row-four .traffic-hour-wrap{
+  box-sizing:border-box!important;height:252px!important;min-height:252px!important;max-height:252px!important;
+  padding:10px 16px 12px!important;display:block!important;overflow:visible!important;
+}
+#analyticsCard .v917-heatmap{
+  width:min(100%,820px)!important;height:100%!important;margin:0 auto!important;min-width:0!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;box-sizing:border-box!important;
+}
+#analyticsCard .v917-heat-axis{
+  display:grid!important;grid-template-columns:64px repeat(24,minmax(0,1fr))!important;
+  align-items:end!important;margin:0 0 7px!important;color:#64748b!important;font-size:8px!important;font-weight:700!important;line-height:1!important;
+}
+#analyticsCard .v917-heat-axis span{text-align:center!important;white-space:nowrap!important}
+#analyticsCard .v917-heat-grid{
+  display:grid!important;grid-template-columns:64px repeat(24,minmax(0,1fr))!important;
+  gap:4px!important;column-gap:4px!important;row-gap:4px!important;align-items:center!important;overflow:visible!important;
+  flex:none!important;min-height:0!important;
+}
+#analyticsCard .v917-heat-day{
+  font-size:9px!important;line-height:1!important;font-weight:700!important;color:#64748b!important;white-space:nowrap!important;padding-right:7px!important;
+}
+#analyticsCard .v917-heat-cell{
+  appearance:none!important;border:0!important;padding:0!important;margin:0!important;
+  width:100%!important;height:18px!important;min-height:18px!important;max-height:18px!important;aspect-ratio:auto!important;
+  border-radius:4px!important;position:relative!important;box-sizing:border-box!important;cursor:default!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.62)!important;transition:transform .12s ease,box-shadow .12s ease!important;
+}
+#analyticsCard .v917-heat-cell:hover{
+  transform:translateY(-1px) scale(1.08)!important;outline:2px solid #2563eb!important;
+  box-shadow:0 5px 14px rgba(37,99,235,.24),inset 0 0 0 1px rgba(255,255,255,.8)!important;z-index:50!important;
+}
+#analyticsCard .v917-heat-tip{
+  display:none!important;position:absolute!important;left:50%!important;bottom:calc(100% + 9px)!important;transform:translateX(-50%)!important;
+  min-width:132px!important;padding:8px 10px!important;border-radius:8px!important;background:#172033!important;color:#fff!important;
+  text-align:left!important;box-shadow:0 8px 22px rgba(15,23,42,.28)!important;pointer-events:none!important;white-space:nowrap!important;z-index:100!important;
+}
+#analyticsCard .v917-heat-cell:hover .v917-heat-tip{display:block!important}
+#analyticsCard .v917-heat-tip:after{content:""!important;position:absolute!important;left:50%!important;top:100%!important;transform:translateX(-50%)!important;border:6px solid transparent!important;border-top-color:#172033!important}
+#analyticsCard .v917-heat-tip b{display:block!important;font-size:10px!important;line-height:1.35!important}
+#analyticsCard .v917-heat-tip em{display:block!important;font-style:normal!important;font-size:10px!important;font-weight:500!important;opacity:.92!important;margin-top:2px!important}
+#analyticsCard .v917-heat-footer{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;
+  margin:13px 0 0!important;min-height:34px!important;flex-wrap:nowrap!important;
+}
+#analyticsCard .v917-heat-levels{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;flex-wrap:nowrap!important;
+  padding:6px 9px!important;border-radius:9px!important;background:#f8fafc!important;color:#64748b!important;font-size:8px!important;font-weight:650!important;
+}
+#analyticsCard .v917-heat-levels span{display:flex!important;align-items:center!important;gap:4px!important;white-space:nowrap!important}
+#analyticsCard .v917-heat-levels i{display:inline-block!important;width:13px!important;height:13px!important;border-radius:3px!important}
+#analyticsCard .v917-heat-note{
+  display:block!important;margin-left:auto!important;padding:7px 9px!important;border-radius:9px!important;background:#f8fafc!important;
+  color:#64748b!important;font-size:8px!important;font-weight:650!important;white-space:nowrap!important;
+}
+/* Ensure legacy Low/High legend can never reappear inside the redesigned heatmap. */
+#analyticsCard .v917-heatmap .traffic-hour-legend,#analyticsCard .v917-heatmap .traffic-hour-gradient{display:none!important}
+@media (min-width:1700px) and (max-width:2100px) and (max-height:1200px){
+  #analyticsCard .traffic-insights-row-four>.traffic-hour-box{height:276px!important;min-height:276px!important;max-height:276px!important}
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:228px!important;min-height:228px!important;max-height:228px!important;padding:8px 12px 9px!important}
+  #analyticsCard .v917-heat-cell{height:16px!important;min-height:16px!important;max-height:16px!important}
+  #analyticsCard .v917-heat-grid{gap:3px!important;column-gap:3px!important;row-gap:3px!important}
+  #analyticsCard .v917-heat-footer{margin-top:10px!important;min-height:30px!important}
+}
+@media (max-width:1500px) and (min-width:761px){
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{overflow-x:auto!important;overflow-y:visible!important}
+  #analyticsCard .v917-heatmap{width:760px!important;min-width:760px!important}
+}
+@media (max-width:760px){
+  #analyticsCard .traffic-insights-row-four>.traffic-hour-box{height:auto!important;min-height:0!important;max-height:none!important}
+  #analyticsCard .traffic-insights-row-four .traffic-hour-wrap{height:auto!important;min-height:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important}
+  #analyticsCard .v917-heatmap{width:760px!important;min-width:760px!important}
+}
+</style>
