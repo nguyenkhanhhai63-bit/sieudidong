@@ -1,0 +1,12 @@
+CHỈ CẦN UP ĐÈ 2 MỤC NÀY LÊN CODE WEBSITE HIỆN TẠI:
+
+1. index.html
+2. assets/banner-link-sieudidong.png
+
+Không xóa code cũ, không up lại toàn bộ web.
+
+Sau khi deploy kiểm tra:
+https://sieudidong.vn/assets/banner-link-sieudidong.png?v=1
+
+Link chia sẻ sẽ dùng:
+Siêu Di Động | Chuyên điện thoại Android giá tốt
