@@ -2746,7 +2746,9 @@ document.addEventListener('click', function(e){
   window.location.href='./bang-gia.html';
 }, true);
 </script>
-\n<!-- v742: keep original category loading order, move Used Phones only after home data has finished rendering -->\n<style id="v743-home-section-order-safe">
+
+<!-- v742: keep original category loading order, move Used Phones only after home data has finished rendering -->
+<style id="v743-home-section-order-safe">
 /* Chỉ đổi thứ tự hiển thị, không di chuyển node nên không ảnh hưởng loader từng danh mục. */
 body.sdd-home-all-mode #sddHomeAllProducts{display:flex!important;flex-direction:column!important}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-head{order:0}
@@ -2754,7 +2756,8 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-tinh-bang"]){order:20}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/phu-kien"]){order:40}
 body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[data-home-cat="/may-cu"]){order:30}
-</style>\n
+</style>
+
 
 
 
