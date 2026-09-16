@@ -9856,7 +9856,6 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
   const keys=Array.isArray(dayKeys)?dayKeys.slice(-7):[];
   const rowCount=Math.max(1,keys.length||Math.min(7,Array.isArray(matrix)?matrix.length:0)||7);
   const data=Array.from({length:rowCount},(_,r)=>Array.from({length:24},(_,h)=>Number(matrix?.[r]?.[h]||0)));
-  const max=Math.max(1,...data.flat());
   const dayName=d=>{
     const dt=new Date(String(d)+"T00:00:00Z");
     const n=dt.getUTCDay();
@@ -9868,29 +9867,27 @@ function renderTrafficHourHeatmap(matrix,dayKeys=[]){
     const [,m,day]=String(d).split("-");
     return `${dayName(d)} ${day}/${m}`;
   });
-  const axisHours=[0,4,8,12,16,20,24];
-  const axis=`<div class="traffic-hour-axis"><span></span>${axisHours.map(h=>`<span>${h}</span>`).join("")}</div>`;
-  let cells='<div class="traffic-hour-grid">';
+  const heatColor=v=>{
+    if(v<=0)return '#f1f5f9';
+    if(v<=5)return '#dbeafe';
+    if(v<=20)return '#93c5fd';
+    if(v<=50)return '#60a5fa';
+    return '#2563eb';
+  };
+  const axisHours=[0,2,4,6,8,10,12,14,16,18,20,22];
+  const axis=`<div class="v917-heat-axis"><span></span>${axisHours.map(h=>`<span style="grid-column:${h+2}/span 2">${h}</span>`).join("")}</div>`;
+  let cells='<div class="v917-heat-grid">';
   data.forEach((row,r)=>{
-    cells+=`<span class="traffic-hour-day">${labels[r]}</span>`;
+    cells+=`<span class="v917-heat-day">${labels[r]}</span>`;
     row.forEach((v,h)=>{
-      // V916: màu của TỪNG Ô chỉ phụ thuộc số lượt của chính ô đó.
-      // 0 lượt luôn là nền gần trắng; không dùng alpha trong suốt để tránh
-      // màu nền/card phía sau làm các hàng trông thành dải xanh liên tục.
-      const ratio=max>0?Math.max(0,Math.min(1,v/max)):0;
-      let bg='#f3f6fb';
-      if(v>0){
-        if(ratio<=0.20) bg='#dbe8ff';
-        else if(ratio<=0.40) bg='#b9d2ff';
-        else if(ratio<=0.60) bg='#8fb7ff';
-        else if(ratio<=0.80) bg='#6398f5';
-        else bg='#3478f6';
-      }
-      cells+=`<i class="traffic-hour-cell" data-count="${v}" style="background-color:${bg}" title="${labels[r]} · ${String(h).padStart(2,'0')}:00–${String((h+1)%24).padStart(2,'0')}:00 · ${fmt(v)} lượt"></i>`;
+      cells+=`<button type="button" class="traffic-hour-cell v917-heat-cell" data-count="${v}" data-day="${labels[r]}" data-hour="${h}" style="background-color:${heatColor(v)}" aria-label="${labels[r]} ${h} giờ, ${fmt(v)} lượt"><span class="v917-heat-tip"><b>${labels[r]} · ${String(h).padStart(2,'0')}:00</b><em>${fmt(v)} lượt truy cập</em></span></button>`;
     });
   });
   cells+='</div>';
-  host.innerHTML=axis+cells+'<div class="traffic-hour-legend"><span>Thấp</span><i class="traffic-hour-gradient"></i><span>Cao</span></div>';
+  const legend=`<div class="v917-heat-footer"><div class="v917-heat-levels">
+    <span><i style="background:#f1f5f9"></i>0 lượt</span><span><i style="background:#dbeafe"></i>1–5</span><span><i style="background:#93c5fd"></i>6–20</span><span><i style="background:#60a5fa"></i>21–50</span><span><i style="background:#2563eb"></i>&gt; 50</span>
+  </div><span class="v917-heat-note">ⓘ Màu càng đậm, lượt truy cập càng cao</span></div>`;
+  host.innerHTML=`<div class="v917-heatmap">${axis}${cells}${legend}</div>`;
 }
 
 function renderTrafficSources(items){
@@ -14560,6 +14557,34 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 #analyticsCard .traffic-hour-gradient{
   background:linear-gradient(90deg,#f3f6fb 0%,#dbe8ff 20%,#b9d2ff 40%,#8fb7ff 60%,#6398f5 80%,#3478f6 100%)!important;
 }
+</style>
+
+
+<!-- V917 HEATMAP REDESIGN -->
+<style id="v917-heatmap-redesign">
+#analyticsCard .traffic-hour-box{overflow:visible!important}
+#analyticsCard .traffic-hour-box>h2{font-size:14px!important;font-weight:800!important;color:#101828!important;padding:13px 16px!important}
+#analyticsCard .traffic-hour-wrap{padding:12px 16px 14px!important;min-height:0!important;overflow:visible!important}
+#analyticsCard .v917-heatmap{width:100%;min-width:0}
+#analyticsCard .v917-heat-axis{display:grid;grid-template-columns:72px repeat(24,minmax(0,1fr));align-items:end;margin-bottom:7px;color:#64748b;font-size:9px;font-weight:700}
+#analyticsCard .v917-heat-axis span{text-align:center;white-space:nowrap}
+#analyticsCard .v917-heat-grid{display:grid!important;grid-template-columns:72px repeat(24,minmax(0,1fr))!important;gap:4px!important;align-items:center!important;overflow:visible!important}
+#analyticsCard .v917-heat-day{font-size:10px;font-weight:700;color:#64748b;white-space:nowrap;padding-right:7px}
+#analyticsCard .v917-heat-cell{appearance:none;border:0!important;padding:0!important;margin:0!important;width:100%!important;min-width:0!important;height:auto!important;aspect-ratio:1.18/1!important;border-radius:4px!important;position:relative!important;cursor:default;opacity:1!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)!important;transition:transform .12s ease,box-shadow .12s ease!important;z-index:1}
+#analyticsCard .v917-heat-cell:hover{transform:translateY(-1px) scale(1.08)!important;box-shadow:0 3px 10px rgba(37,99,235,.22),inset 0 0 0 1px rgba(255,255,255,.7)!important;outline:2px solid #2563eb!important;z-index:20!important}
+#analyticsCard .v917-heat-tip{display:none;position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);min-width:125px;padding:8px 10px;border-radius:8px;background:#1e293b;color:#fff;text-align:left;box-shadow:0 8px 22px rgba(15,23,42,.25);pointer-events:none;white-space:nowrap}
+#analyticsCard .v917-heat-tip:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1e293b}
+#analyticsCard .v917-heat-tip b{display:block;font-size:10px;line-height:1.35}.v917-heat-tip em{display:block;font-style:normal;font-size:10px;font-weight:500;opacity:.9;margin-top:2px}
+#analyticsCard .v917-heat-cell:hover .v917-heat-tip{display:block}
+#analyticsCard .v917-heat-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:13px;flex-wrap:wrap}
+#analyticsCard .v917-heat-levels{display:flex;align-items:center;gap:15px;flex-wrap:wrap;color:#64748b;font-size:9px;font-weight:650}
+#analyticsCard .v917-heat-levels span{display:flex;align-items:center;gap:5px;white-space:nowrap}
+#analyticsCard .v917-heat-levels i{display:inline-block;width:17px;height:17px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(148,163,184,.08)}
+#analyticsCard .v917-heat-note{margin-left:auto;padding:7px 10px;border-radius:8px;background:#f8fafc;color:#64748b;font-size:9px;font-weight:650;white-space:nowrap}
+/* V917 vô hiệu giao diện legend/spacing cũ chỉ trong heatmap mới */
+#analyticsCard .v917-heatmap .traffic-hour-legend,#analyticsCard .v917-heatmap .traffic-hour-gradient{display:none!important}
+@media(max-width:1100px){#analyticsCard .traffic-hour-wrap{overflow-x:auto!important}#analyticsCard .v917-heatmap{min-width:720px}}
+@media(max-width:760px){#analyticsCard .traffic-hour-wrap{padding:10px 12px 12px!important}#analyticsCard .v917-heatmap{min-width:680px}#analyticsCard .v917-heat-footer{justify-content:flex-start}#analyticsCard .v917-heat-note{margin-left:0}}
 </style>
 </body>
 </html>
