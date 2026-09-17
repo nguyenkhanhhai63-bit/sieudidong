@@ -1,13 +1,10 @@
-UPDATE: THÊM MỤC EDIT BANNER LINK TRONG ADMIN
+FIX AI CHATBOX NHẬN SAI MODEL
 
-Upload đè toàn bộ file/thư mục trong ZIP lên code hiện tại.
+Lỗi đã sửa:
+- Khách hỏi X200S nhưng AI không được tự đổi thành Vivo X200 Pro/X200 model khác.
+- Các mã model dạng X200S, K90, Z10X, 15T... phải khớp đúng model trong dữ liệu.
+- Nếu web không có đúng model, AI không được lấy model gần giống để trả lời thay.
 
-Sau khi deploy:
-Admin > SEO & Google > Ảnh banner khi gửi link
-- Chọn ảnh mới
-- Xem trước
-- Bấm Lưu thay đổi SEO
-
-Ảnh được upload qua Cloudinary đang có sẵn trong web.
-Facebook/Zalo/Messenger sẽ lấy ảnh hiện tại qua /api/share-image.
-Không ảnh hưởng dữ liệu sản phẩm và các module khác.
+Cách up:
+Upload đè file lib/public-api/ai-chat.js vào đúng đường dẫn trên hosting/repo hiện tại.
+Không cần xóa data, không ảnh hưởng các phần khác.
