@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/ai-data",
+      "destination": "/api/ai-data"
+    },
+    {
       "source": "/tra-cuu-bao-hanh",
       "destination": "/tra-cuu-bao-hanh.html"
     },

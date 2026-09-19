@@ -9,6 +9,7 @@ const handlers = {
   "service-pricing": () => import("../lib/public-api/service-pricing.js"),
   "compare-ai": () => import("../lib/public-api/compare-ai.js"),
   "products": () => import("../lib/public-api/products.js"),
+  "ai-data": () => import("../lib/public-api/ai-data.js"),
   "search-popular": () => import("../lib/public-api/search-popular.js"),
   "seo-settings": () => import("../lib/public-api/seo-settings.js"),
   "share-image": () => import("../lib/public-api/share-image.js"),
