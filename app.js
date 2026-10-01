@@ -827,36 +827,52 @@ function canonicalBrand(value){
 }
 
 function detectBrand(name){
-  const text = String(name || "").toLowerCase();
+  // Nhận diện theo ranh giới từ để tránh dính hãng do chuỗi con trong tên máy/danh mục.
+  const text = String(name || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g,"d")
+    .replace(/[^a-z0-9]+/g," ")
+    .trim();
+  const has=(term)=>new RegExp(`(?:^|\\s)${String(term).replace(/[^a-z0-9]+/g,"\\s+")}(?:$|\\s)`,"i").test(text);
 
-  const brands = [
-    ["POCO", ["poco"]],
-    ["OnePlus", ["oneplus"]],
-    ["Realme", ["realme"]],
-    ["iQOO", ["iqoo", "i qoo"]],
-    ["Xiaomi", ["xiaomi", "redmi", "mi " ]],
-    ["Apple", ["iphone", "ipad", "apple"]],
-    ["Samsung", ["samsung", "galaxy"]],
-    ["OPPO", ["oppo", "find x", "reno", "k13", "k15"]],
-    ["vivo", ["vivo"]],
-    ["HONOR", ["honor"]],
-    ["TECNO", ["tecno"]],
-    ["Huawei", ["huawei"]],
-    ["Nubia", ["nubia", "redmagic", "red magic"]],
-    ["Motorola", ["motorola", "moto"]],
-    ["Google", ["google pixel", "pixel"]],
-    ["ASUS", ["asus", "rog phone"]],
-    ["Sony", ["sony", "xperia"]],
-    ["Nothing", ["nothing phone", "cmf phone"]]
-  ];
-
-  for(const [brand, keywords] of brands){
-    if(keywords.some(k => text.includes(k))) return brand;
-  }
-
+  // Hãng con phải kiểm tra trước Xiaomi để POCO/Redmi không bị nhận sai.
+  if(has("poco")) return "POCO";
+  if(has("oneplus") || (has("one") && has("plus"))) return "OnePlus";
+  if(has("realme")) return "Realme";
+  if(has("iqoo") || (has("i") && has("qoo"))) return "iQOO";
+  if(has("oppo")) return "OPPO";
+  if(has("vivo")) return "vivo";
+  if(has("honor")) return "HONOR";
+  if(has("samsung") || has("galaxy")) return "Samsung";
+  if(has("iphone") || has("ipad") || has("apple")) return "Apple";
+  if(has("redmi") || has("xiaomi")) return "Xiaomi";
+  if(has("tecno")) return "TECNO";
+  if(has("huawei")) return "Huawei";
+  if(has("nubia") || has("redmagic") || (has("red") && has("magic"))) return "Nubia";
+  if(has("motorola") || has("moto")) return "Motorola";
+  if(has("pixel") || (has("google") && has("pixel"))) return "Google";
+  if(has("asus") || (has("rog") && has("phone"))) return "ASUS";
+  if(has("sony") || has("xperia")) return "Sony";
+  if(has("nothing") || (has("cmf") && has("phone"))) return "Nothing";
   return "Khác";
 }
 
+function resolveProductBrand(p, fullName){
+  // 1. Hãng được khai báo rõ trong dữ liệu là ưu tiên cao nhất.
+  const explicit=canonicalBrand(p?.brand);
+  if(explicit && explicit!=="Khác") return explicit;
+
+  // 2. Chỉ nhận diện từ tên model/sản phẩm. Không trộn tên danh mục vào cùng
+  // chuỗi vì một danh mục có thể chứa nhiều hãng và làm bộ lọc bị sai.
+  let brand=detectBrand([fullName,p?.name].filter(Boolean).join(" "));
+  if(brand!=="Khác") return brand;
+
+  // 3. Chỉ dùng category làm fallback khi tên máy thật sự không cho biết hãng.
+  brand=detectBrand(p?.categoryName||"");
+  if(brand!=="Khác") return brand;
+  return detectBrand(p?.rootCategoryName||"");
+}
 
 function escapeRegExp(text){
   return String(text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -1049,7 +1065,7 @@ function flattenProducts(raw){
         image:v.image || p.image || "",
         categoryName:iphoneModel ? "Máy cũ" : (p.categoryName || "Khác"),
         rootCategoryName:iphoneModel ? "Máy cũ" : (p.rootCategoryName || p.categoryName || "Khác"),
-        brand:iphoneModel ? "Apple" : (canonicalBrand(p.brand) || detectBrand([fullName, p.name, p.categoryName, p.rootCategoryName].filter(Boolean).join(" "))),
+        brand:iphoneModel ? "Apple" : resolveProductBrand(p, fullName),
         sourceType,
         usedItemId:p.usedItemId || "",
         images:Array.isArray(v.images)&&v.images.length?v.images:(Array.isArray(p.images)?p.images:[]),
@@ -1146,24 +1162,8 @@ function renderCategoryFilters(){
   // Không phụ thuộc vào việc variant có ghi hãng hay không.
   const brandSet = new Set();
 
-  PRODUCTS.forEach(p=>{
-    const root = normalizeCategoryName(p.rootCategoryName || p.categoryName || "");
-    if(ACTIVE_NAV_KIND){
-      const probe={...p, fullName:p.name || "", baseName:p.name || ""};
-      if(sddProductKind(probe) !== ACTIVE_NAV_KIND) return;
-    }else if(ACTIVE_MAIN_CATEGORY && categoryKey(root) !== categoryKey(ACTIVE_MAIN_CATEGORY)) return;
-
-    const candidates = [
-      p.name,
-      p.categoryName,
-      p.rootCategoryName,
-      ...((p.variants || []).map(v=>v.name))
-    ].filter(Boolean).join(" ");
-
-    const brand = detectBrand(candidates);
-    if(brand && brand !== "Khác") brandSet.add(brand);
-  });
-
+  // Danh sách hãng phải lấy từ chính sản phẩm sau khi đã resolve hãng.
+  // Không quét chuỗi category + tất cả variant vì có thể tạo hãng giả/sai.
   flat.forEach(p=>{
     const canonical=canonicalBrand(p.brand);
     if(canonical && canonical !== "Khác") brandSet.add(canonical);
