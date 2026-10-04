@@ -1,10 +1,1 @@
-Upload đè 2 file:
-- app.js
-- styles.css
-
-Thay đổi:
-- Bảng Thông Số Kỹ Thuật 2 cột giống ảnh mẫu.
-- Cột trái in đậm, cột phải nội dung.
-- Giữ xuống dòng.
-- Chỉ hiển thị 10 mục: Màn hình, Hệ điều hành, Camera sau, Camera trước, CPU, RAM, Bộ nhớ trong, Thẻ SIM, Dung lượng pin, Thiết kế.
-- Có responsive mobile.
+Upload đè app.js và styles.css. V303 chỉnh bảng thông số sát ảnh mẫu: khung 584px, cột trái 156px, nền trắng, viền mảnh, font 18px desktop, tiêu đề 20px.

@@ -16663,3 +16663,98 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     padding:8px 6px;
   }
 }
+
+
+/* V303 - Khớp sát ảnh mẫu bảng thông số */
+.technical-spec-section{
+  width:100%;
+  max-width:584px;
+  margin:24px 0 0;
+  padding:0;
+  background:#fff;
+  border-top:1px solid #ddd;
+  box-shadow:none;
+  border-radius:0;
+}
+.technical-spec-title{
+  margin:0;
+  padding:10px 14px 11px;
+  min-height:49px;
+  display:flex;
+  align-items:center;
+  color:#000;
+  background:#fff;
+  border:0;
+  border-bottom:1px solid #ddd;
+  font-size:20px;
+  line-height:1.25;
+  font-weight:800;
+}
+.technical-spec-body{
+  padding:14px 0 0;
+  margin:0;
+}
+.tech-spec-table{
+  width:100%;
+  margin:0;
+  background:#fff;
+  border:1px solid #e7e2df;
+  border-bottom:0;
+  border-radius:0;
+  overflow:visible;
+  box-shadow:none;
+}
+.tech-spec-row{
+  width:100%;
+  display:grid;
+  grid-template-columns:156px minmax(0,1fr);
+  background:#fff;
+  border-bottom:1px solid #e7e2df;
+}
+.tech-spec-label{
+  min-width:0;
+  padding:9px 7px;
+  display:flex;
+  align-items:center;
+  color:#000;
+  background:#fff;
+  border-right:1px solid #e7e2df;
+  font-size:18px;
+  line-height:1.38;
+  font-weight:800;
+}
+.tech-spec-value{
+  min-width:0;
+  padding:9px 7px;
+  color:#000;
+  background:#fff;
+  white-space:pre-line;
+  overflow-wrap:break-word;
+  word-break:normal;
+  font-size:18px;
+  line-height:1.32;
+  font-weight:400;
+}
+@media(max-width:620px){
+  .technical-spec-section{
+    max-width:none;
+    width:100%;
+  }
+  .technical-spec-title{
+    min-height:auto;
+    padding:10px 12px;
+    font-size:18px;
+  }
+  .technical-spec-body{
+    padding-top:12px;
+  }
+  .tech-spec-row{
+    grid-template-columns:27% minmax(0,1fr);
+  }
+  .tech-spec-label,
+  .tech-spec-value{
+    padding:8px 6px;
+    font-size:14px;
+    line-height:1.38;
+  }
+}
