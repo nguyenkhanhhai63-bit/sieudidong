@@ -1,13 +1,10 @@
-FIX THÔNG SỐ ADMIN - BẢN FINAL
+Upload đè 2 file:
+- app.js
+- styles.css
 
-Upload đè toàn bộ file trong ZIP.
-
-Đã sửa:
-- Chỉ dùng URL cấu hình đã lưu tại Admin > Link thông số.
-- Request URL nguồn bằng header trình duyệt đầy đủ.
-- Parser mới đọc trực tiếp vùng chữ “Thông số kỹ thuật” của MobileCity, không phụ thuộc cấu trúc div/table.
-- Bắt các mục: Màn hình, HĐH, Camera sau/trước, CPU, RAM, Bộ nhớ, SIM, Pin, Thiết kế.
-- Trang sản phẩm và trang so sánh ép gọi API mới, bỏ cache lỗi cũ.
-- API trả lỗi rõ: chưa gắn link / không tải được link / tải được nhưng chưa bóc được bảng.
-
-Sau deploy Ctrl+F5.
+Thay đổi:
+- Bảng Thông Số Kỹ Thuật 2 cột giống ảnh mẫu.
+- Cột trái in đậm, cột phải nội dung.
+- Giữ xuống dòng.
+- Chỉ hiển thị 10 mục: Màn hình, Hệ điều hành, Camera sau, Camera trước, CPU, RAM, Bộ nhớ trong, Thẻ SIM, Dung lượng pin, Thiết kế.
+- Có responsive mobile.

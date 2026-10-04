@@ -16583,3 +16583,83 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 }
 .ai-chat-message.user .ai-chat-message-meta.chat-status-delivered{--check-color:#98a6b8}
 .ai-chat-message.user .ai-chat-message-meta.chat-status-seen{--check-color:#6f8fb8}
+
+
+/* V302 - Bảng Thông Số Kỹ Thuật theo mẫu 2 cột */
+.technical-spec-section{
+  margin-top:24px;
+  background:#fff;
+  border-top:1px solid #d9d9d9;
+}
+.technical-spec-title{
+  padding:12px 14px 10px;
+  font-size:20px;
+  line-height:1.35;
+  font-weight:800;
+  color:#000;
+  border-bottom:1px solid #d9d9d9;
+}
+.technical-spec-body{
+  padding:14px 0 0;
+}
+.tech-spec-table{
+  width:100%;
+  max-width:100%;
+  border:1px solid #e5e1df;
+  border-bottom:0;
+  background:#fff;
+}
+.tech-spec-row{
+  display:grid;
+  grid-template-columns:minmax(155px,27%) minmax(0,1fr);
+  border-bottom:1px solid #e5e1df;
+}
+.tech-spec-label{
+  display:flex;
+  align-items:center;
+  padding:10px 8px;
+  background:#fff;
+  border-right:1px solid #e5e1df;
+  color:#000;
+  font-size:17px;
+  line-height:1.35;
+  font-weight:800;
+}
+.tech-spec-value{
+  padding:9px 8px;
+  color:#000;
+  background:#fff;
+  white-space:pre-line;
+  overflow-wrap:anywhere;
+  font-size:17px;
+  line-height:1.42;
+  font-weight:400;
+}
+@media(max-width:720px){
+  .technical-spec-title{
+    padding:11px 12px 9px;
+    font-size:18px;
+  }
+  .technical-spec-body{
+    padding-top:12px;
+  }
+  .tech-spec-row{
+    grid-template-columns:30% minmax(0,1fr);
+  }
+  .tech-spec-label,
+  .tech-spec-value{
+    padding:8px 7px;
+    font-size:14px;
+    line-height:1.4;
+  }
+}
+@media(max-width:420px){
+  .tech-spec-row{
+    grid-template-columns:32% minmax(0,1fr);
+  }
+  .tech-spec-label,
+  .tech-spec-value{
+    font-size:13px;
+    padding:8px 6px;
+  }
+}

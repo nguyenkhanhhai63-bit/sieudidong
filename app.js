@@ -1966,16 +1966,25 @@ function renderTechnicalSpecs(container,data){
     return;
   }
 
+  const wanted=[
+    "Màn hình","Hệ điều hành","Camera sau","Camera trước","CPU",
+    "RAM","Bộ nhớ trong","Thẻ SIM","Dung lượng pin","Thiết kế"
+  ];
+  const rows=new Map(data.specs.map(row=>[String(row.label||"").trim(),row]));
+
   const table=document.createElement("div");
   table.className="tech-spec-table";
 
-  data.specs.forEach(row=>{
+  wanted.forEach(name=>{
+    const row=rows.get(name);
+    if(!row || !row.value) return;
+
     const line=document.createElement("div");
     line.className="tech-spec-row";
 
     const label=document.createElement("div");
     label.className="tech-spec-label";
-    label.textContent=row.label;
+    label.textContent=name+":";
 
     const value=document.createElement("div");
     value.className="tech-spec-value";
