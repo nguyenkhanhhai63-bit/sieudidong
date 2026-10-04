@@ -9225,7 +9225,7 @@ function render(){
     const test=document.createElement("button");
     test.type="button";
     test.className="secondary";
-    test.textContent="Kiểm tra";
+    test.textContent="Đồng bộ";
     test.onclick=async()=>{
       if(!input.value.trim()){
         alert("Hãy dán link và bấm Lưu trước.");
@@ -9233,23 +9233,18 @@ function render(){
       }
 
       test.disabled=true;
-      test.textContent="Đang kiểm tra...";
+      test.textContent="Đang đồng bộ...";
 
       try{
         const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
         const data=await r.json();
-        if(!r.ok){
-          const tag=data.stage==="fetch" ? "LỖI TẢI LINK"
-            : data.stage==="parse" ? "LỖI ĐỌC CẤU HÌNH"
-            : data.stage==="mapping" ? "LỖI KHỚP MODEL" : "LỖI";
-          throw new Error(tag+": "+(data.error||"Không đọc được thông số")+(data.detail?" — "+data.detail:""));
-        }
-        alert(`OK - lấy được ${data.specs?.length||0} thông số từ đúng link Admin.`);
+        if(!r.ok) throw new Error(data.error||"Không đọc được thông số");
+        alert(`Đã đồng bộ và lưu ${data.specs?.length||0} thông số. Từ giờ website dùng bản đã lưu.`);
       }catch(e){
         alert(e.message);
       }finally{
         test.disabled=false;
-        test.textContent="Kiểm tra";
+        test.textContent="Đồng bộ";
       }
     };
 

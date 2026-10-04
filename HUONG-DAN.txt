@@ -1,14 +1,17 @@
-V307
-Upload đè:
+V308 - ĐỒNG BỘ + LƯU THÔNG SỐ REDIS
+
+Upload đè 4 file:
 - lib/public-api/specs.js
+- admin-specs.html
 - app.js
 - styles.css
 
-Chỉ đọc khu vực thông số kỹ thuật, nhưng hỗ trợ:
-1) table/tr/td
-2) dt/dd
-3) div/li dạng hàng 2 cột
-4) Markdown table từ fallback 403
+Cách dùng:
+1. Admin > Link thông số.
+2. Gắn/Lưu URL như cũ.
+3. Bấm ĐỒNG BỘ.
+4. Nếu đọc được bảng, 10 thông số được lưu vào Redis.
+5. Khách mở sản phẩm: website đọc bản Redis đã lưu, KHÔNG fetch MobileCity mỗi lần.
+6. Bấm Đồng bộ lại khi muốn cập nhật nguồn.
 
-Không quét bài review. Chỉ nhận 10 nhãn thông số hợp lệ.
-Request bump v307 để tránh cache cũ.
+Nếu nguồn tạm lỗi/403 nhưng đã từng đồng bộ thành công, website tiếp tục dùng bản đã lưu.
