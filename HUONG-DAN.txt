@@ -1,1 +1,10 @@
-Upload đè app.js và styles.css. V303 chỉnh bảng thông số sát ảnh mẫu: khung 584px, cột trái 156px, nền trắng, viền mảnh, font 18px desktop, tiêu đề 20px.
+Upload đè 3 file:
+- lib/public-api/specs.js
+- app.js
+- styles.css
+
+Bản này CHỈ nhận bảng Thông Số Kỹ Thuật 2 cột từ đúng link Admin.
+Chỉ giữ 10 mục:
+Màn hình, Hệ điều hành, Camera sau, Camera trước, CPU, RAM, Bộ nhớ trong, Thẻ SIM, Dung lượng pin, Thiết kế.
+
+Không lấy bài mô tả, danh sách sản phẩm, giá bán, hình ảnh, URL hay nội dung bài viết.
