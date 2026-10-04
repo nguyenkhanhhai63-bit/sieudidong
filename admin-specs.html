@@ -2727,6 +2727,11 @@ html,body,button,input,select,textarea,table{font-family:Arial,Helvetica,sans-se
 html,body,button,input,select,textarea,table,th,td,label,p,span,a,div,strong,b,small,h1,h2,h3,h4,h5,h6{font-family:Arial,Helvetica,sans-serif!important;font-synthesis:none;}
 body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
 
+
+#adminCard .spec-read-status{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
+#adminCard .spec-read-status.ok{background:#ecfdf3;color:#067647;border:1px solid #abefc6}
+#adminCard .spec-read-status.fail{background:#fef3f2;color:#b42318;border:1px solid #fecdca}
+#adminCard .spec-read-status.checking{background:#f2f4f7;color:#475467;border:1px solid #e4e7ec}
 </style>
 
 <style id="login-success-toast-style">
@@ -9161,6 +9166,8 @@ function mapItem(model){
 
 let specFilter="all";
 
+const specReadStatus=window.__specReadStatus||(window.__specReadStatus={});
+
 function render(){
   const q=search.value.trim().toLowerCase();
 
@@ -9222,6 +9229,14 @@ function render(){
       }
     };
 
+    const readStatus=document.createElement("span");
+    const currentStatus=specReadStatus[model];
+    readStatus.className="spec-read-status "+(currentStatus?.state||"checking");
+    readStatus.textContent=currentStatus?.state==="ok"
+      ? `✓ Lấy được (${currentStatus.count||0})`
+      : currentStatus?.state==="fail" ? "✕ Không lấy được" : "Chưa kiểm tra";
+    if(currentStatus?.message) readStatus.title=currentStatus.message;
+
     const test=document.createElement("button");
     test.type="button";
     test.className="secondary";
@@ -9234,14 +9249,22 @@ function render(){
 
       test.disabled=true;
       test.textContent="Đang kiểm tra...";
+      readStatus.className="spec-read-status checking";
+      readStatus.textContent="Đang kiểm tra...";
 
       try{
         const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
         const data=await r.json();
         if(!r.ok) throw new Error(data.error||"Không đọc được thông số");
-        alert(`OK - đọc được ${data.specs?.length||0} thông số.`);
+        specReadStatus[model]={state:"ok",count:data.specs?.length||0};
+        readStatus.className="spec-read-status ok";
+        readStatus.textContent=`✓ Lấy được (${data.specs?.length||0})`;
+        readStatus.title="";
       }catch(e){
-        alert(e.message);
+        specReadStatus[model]={state:"fail",message:e.message||"Không đọc được thông số"};
+        readStatus.className="spec-read-status fail";
+        readStatus.textContent="✕ Không lấy được";
+        readStatus.title=e.message||"Không đọc được thông số";
       }finally{
         test.disabled=false;
         test.textContent="Kiểm tra";
@@ -9265,7 +9288,7 @@ function render(){
       render();
     };
 
-    actions.append(save,test,del);
+    actions.append(readStatus,save,test,del);
     row.append(meta,input,actions);
     rows.appendChild(row);
   });
