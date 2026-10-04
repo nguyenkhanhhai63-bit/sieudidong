@@ -1,1 +1,1 @@
-Chỉ upload đè styles.css. V305: khung thông số rộng bằng khu vực chi tiết sản phẩm; bảng bên trong tối đa 900px và căn giữa; cột trái 220px; mobile 34/66.
+Chỉ upload đè styles.css. V306 bỏ max-width 900px và khoảng trắng hai bên; bảng thông số chạy full chiều ngang khung.
