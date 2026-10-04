@@ -1,17 +1,14 @@
-V308 - ĐỒNG BỘ + LƯU THÔNG SỐ REDIS
+V309 - ĐỌC THEO KHỐI THÔNG SỐ KỸ THUẬT
 
-Upload đè 4 file:
-- lib/public-api/specs.js
-- admin-specs.html
-- app.js
-- styles.css
+Upload đè 4 file.
 
-Cách dùng:
-1. Admin > Link thông số.
-2. Gắn/Lưu URL như cũ.
-3. Bấm ĐỒNG BỘ.
-4. Nếu đọc được bảng, 10 thông số được lưu vào Redis.
-5. Khách mở sản phẩm: website đọc bản Redis đã lưu, KHÔNG fetch MobileCity mỗi lần.
-6. Bấm Đồng bộ lại khi muốn cập nhật nguồn.
+Cách đọc mới:
+- Vẫn thử bảng HTML/Markdown chuẩn trước.
+- Nếu trung gian làm mất cấu trúc bảng, tìm đúng tiêu đề "Thông số kỹ thuật".
+- Chỉ đọc từ tiêu đề đó đến "Xem thêm cấu hình chi tiết"/"Thông tin chung".
+- Chỉ nhận 10 nhãn cấu hình.
+- Không quét xuống bài review, bảng giá, hình ảnh.
+- Có >=5 mục hợp lệ mới lưu Redis.
+- Website tiếp tục dùng bản Redis đã đồng bộ.
 
-Nếu nguồn tạm lỗi/403 nhưng đã từng đồng bộ thành công, website tiếp tục dùng bản đã lưu.
+Bump request v309.
