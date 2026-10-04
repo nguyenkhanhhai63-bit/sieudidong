@@ -1,15 +1,1 @@
-V304 - CHỈ ĐỌC BẢNG THÔNG SỐ THẬT
-
-Upload đè:
-- lib/public-api/specs.js
-- app.js
-- styles.css
-
-Parser:
-- Chỉ xét từng <table> HTML độc lập hoặc từng block bảng Markdown |...|.
-- Cột đầu phải khớp chính xác 1 trong 10 nhãn thông số.
-- Bảng phải có tối thiểu 5 mục hợp lệ mới được nhận.
-- Không còn cơ chế cắt bài viết từ chữ Màn hình/Camera.
-- Loại nội dung có giá bán, danh sách sản phẩm, URL/hình ảnh.
-- Nếu không thấy bảng thật => báo không lấy được, KHÔNG lấy tào lao.
-- Bump request/cache v304 để tránh dữ liệu sai cũ còn lưu.
+Chỉ upload đè styles.css. V305: khung thông số rộng bằng khu vực chi tiết sản phẩm; bảng bên trong tối đa 900px và căn giữa; cột trái 220px; mobile 34/66.
