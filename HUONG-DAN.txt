@@ -1,10 +1,15 @@
-Upload đè 3 file:
+V304 - CHỈ ĐỌC BẢNG THÔNG SỐ THẬT
+
+Upload đè:
 - lib/public-api/specs.js
 - app.js
 - styles.css
 
-Bản này CHỈ nhận bảng Thông Số Kỹ Thuật 2 cột từ đúng link Admin.
-Chỉ giữ 10 mục:
-Màn hình, Hệ điều hành, Camera sau, Camera trước, CPU, RAM, Bộ nhớ trong, Thẻ SIM, Dung lượng pin, Thiết kế.
-
-Không lấy bài mô tả, danh sách sản phẩm, giá bán, hình ảnh, URL hay nội dung bài viết.
+Parser:
+- Chỉ xét từng <table> HTML độc lập hoặc từng block bảng Markdown |...|.
+- Cột đầu phải khớp chính xác 1 trong 10 nhãn thông số.
+- Bảng phải có tối thiểu 5 mục hợp lệ mới được nhận.
+- Không còn cơ chế cắt bài viết từ chữ Màn hình/Camera.
+- Loại nội dung có giá bán, danh sách sản phẩm, URL/hình ảnh.
+- Nếu không thấy bảng thật => báo không lấy được, KHÔNG lấy tào lao.
+- Bump request/cache v304 để tránh dữ liệu sai cũ còn lưu.
