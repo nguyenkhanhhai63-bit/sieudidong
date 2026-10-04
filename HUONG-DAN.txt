@@ -1,1 +1,14 @@
-Chỉ upload đè styles.css. V306 bỏ max-width 900px và khoảng trắng hai bên; bảng thông số chạy full chiều ngang khung.
+V307
+Upload đè:
+- lib/public-api/specs.js
+- app.js
+- styles.css
+
+Chỉ đọc khu vực thông số kỹ thuật, nhưng hỗ trợ:
+1) table/tr/td
+2) dt/dd
+3) div/li dạng hàng 2 cột
+4) Markdown table từ fallback 403
+
+Không quét bài review. Chỉ nhận 10 nhãn thông số hợp lệ.
+Request bump v307 để tránh cache cũ.
