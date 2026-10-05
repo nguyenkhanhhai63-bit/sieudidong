@@ -16588,133 +16588,154 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 .technical-spec-section{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}.technical-spec-title{font-size:22px!important;line-height:1.25!important;font-weight:700!important;color:#111!important;padding:0 0 14px!important;border:0!important;background:#fff!important;text-transform:none!important}.technical-spec-body{padding:0!important;background:#fff!important}.mc-spec-table{width:100%;border:1px solid #e5e5e5;border-radius:3px;overflow:hidden;background:#fff}.mc-spec-row{display:grid;grid-template-columns:190px minmax(0,1fr);border-bottom:1px solid #e5e5e5}.mc-spec-row:last-child{border-bottom:0}.mc-spec-label,.mc-spec-value{padding:13px 15px;font-size:15px;line-height:1.55;color:#222}.mc-spec-label{font-weight:700;background:#fafafa;border-right:1px solid #e5e5e5}.mc-spec-value{font-weight:400;white-space:normal}.technical-spec-empty{padding:18px 0;color:#777;font-size:14px}@media(max-width:600px){.technical-spec-title{font-size:19px!important;padding-bottom:11px!important}.mc-spec-row{grid-template-columns:34% 66%}.mc-spec-label,.mc-spec-value{padding:10px 9px;font-size:13px;line-height:1.45}}
 
 
-/* ===== V316 - TECHNICAL SPECS UI ===== */
+/* ===== V318 - SPEC UI MATCH DEMO ===== */
 .technical-specs{
-  width:100%;
-  max-width:1180px;
-  margin:24px auto;
-  padding:0;
-  background:#fff;
-  border:1px solid #edf0f3;
-  border-radius:18px;
-  box-shadow:0 8px 30px rgba(15,23,42,.06);
-  overflow:hidden;
+  width:min(1180px,calc(100% - 28px))!important;
+  max-width:1180px!important;
+  margin:24px auto!important;
+  background:#fff!important;
+  border:1px solid #edf0f3!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 28px rgba(15,23,42,.07)!important;
+  overflow:hidden!important;
 }
 .technical-specs .section-title,
 .technical-specs h2,
 .technical-spec-title{
+  position:relative;
   margin:0!important;
-  padding:22px 24px 8px!important;
-  font-size:24px!important;
-  line-height:1.25!important;
+  padding:24px 24px 8px 76px!important;
+  min-height:40px;
+  font-size:25px!important;
+  line-height:1.2!important;
   font-weight:800!important;
   color:#111827!important;
   border:0!important;
 }
-.technical-specs .section-title::after,
-.technical-spec-title::after{
+.technical-specs .section-title:before,
+.technical-specs h2:before,
+.technical-spec-title:before{
+  content:"";
+  position:absolute;
+  left:24px;top:21px;
+  width:38px;height:46px;
+  border-radius:9px;
+  background:#ff5315;
+  box-shadow:0 5px 13px rgba(255,83,21,.18);
+}
+.technical-specs .section-title:after,
+.technical-specs h2:after,
+.technical-spec-title:after{
   content:"Thông tin chi tiết về cấu hình và tính năng của sản phẩm";
   display:block;
-  margin-top:7px;
-  font-size:13px;
-  line-height:1.45;
-  font-weight:400;
-  color:#7b8494;
+  margin-top:8px;
+  font-size:13px!important;
+  line-height:1.4!important;
+  font-weight:400!important;
+  color:#8a93a3!important;
 }
-.technical-spec-body{
-  padding:14px 20px 20px!important;
-}
+.technical-spec-body{padding:18px 20px 20px!important}
 .tech-spec-table{
   width:100%!important;
   max-width:none!important;
   margin:0!important;
-  border:1px solid #e8ebef!important;
-  border-radius:13px!important;
+  border:1px solid #e4e8ee!important;
+  border-radius:12px!important;
   overflow:hidden!important;
   background:#fff!important;
 }
 .tech-spec-row{
   display:grid!important;
-  grid-template-columns:220px minmax(0,1fr)!important;
-  min-height:58px;
-  border-bottom:1px solid #e8ebef!important;
+  grid-template-columns:250px minmax(0,1fr)!important;
+  min-height:68px!important;
+  border-bottom:1px solid #e5e9ef!important;
   background:#fff!important;
 }
 .tech-spec-row:last-child{border-bottom:0!important}
 .tech-spec-label{
   display:flex!important;
+  flex-direction:row!important;
   align-items:center!important;
-  padding:15px 18px!important;
+  justify-content:flex-start!important;
+  gap:16px!important;
+  padding:17px 20px!important;
   background:#fff8f3!important;
+  border-right:1px solid #e5e9ef!important;
   color:#101828!important;
   font-size:14px!important;
-  line-height:1.4!important;
   font-weight:800!important;
-  border-right:1px solid #e8ebef!important;
+  line-height:1.35!important;
 }
+.tech-spec-icon{
+  width:34px!important;height:34px!important;min-width:34px!important;
+  display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;
+  color:#ff5315!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+}
+.tech-spec-icon svg{
+  width:29px!important;height:29px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.9!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.tech-spec-label-text{display:block!important;min-width:0!important}
 .tech-spec-value{
-  padding:15px 18px!important;
+  padding:17px 20px!important;
   color:#1f2937!important;
+  background:#fff!important;
   font-size:14px!important;
   line-height:1.75!important;
   white-space:pre-line!important;
-  overflow-wrap:anywhere;
+  overflow-wrap:anywhere!important;
 }
-.tech-spec-row:hover .tech-spec-label{background:#fff3e9!important}
+.tech-spec-row:hover .tech-spec-label{background:#fff4ec!important}
 .tech-spec-row:hover .tech-spec-value{background:#fffdfb!important}
 
-/* optional detail button if present */
-.tech-spec-more,
-.technical-spec-more,
-#technicalSpecMore{
-  width:calc(100% - 40px);
-  margin:0 20px 20px!important;
-  min-height:46px;
-  border:1px solid #ff7a45!important;
-  border-radius:10px!important;
-  background:#fff7f2!important;
-  color:#f4511e!important;
-  font-weight:700!important;
-  cursor:pointer;
-}
-
+/* Mobile giống demo nhưng không chiếm quá nhiều chiều ngang */
 @media(max-width:700px){
   .technical-specs{
-    margin:14px 0;
-    border-radius:12px;
+    width:calc(100% - 16px)!important;
+    margin:12px auto!important;
+    border-radius:12px!important;
   }
   .technical-specs .section-title,
   .technical-specs h2,
   .technical-spec-title{
-    padding:18px 16px 7px!important;
+    padding:18px 14px 7px 61px!important;
     font-size:20px!important;
   }
-  .technical-spec-body{padding:10px 12px 14px!important}
+  .technical-specs .section-title:before,
+  .technical-specs h2:before,
+  .technical-spec-title:before{
+    left:14px;top:15px;width:34px;height:41px;border-radius:8px;
+  }
+  .technical-specs .section-title:after,
+  .technical-specs h2:after,
+  .technical-spec-title:after{
+    font-size:12px!important;
+  }
+  .technical-spec-body{padding:12px 10px 14px!important}
   .tech-spec-row{
-    grid-template-columns:112px minmax(0,1fr)!important;
-    min-height:52px;
+    grid-template-columns:132px minmax(0,1fr)!important;
+    min-height:64px!important;
   }
   .tech-spec-label{
     padding:12px 10px!important;
+    gap:8px!important;
     font-size:12px!important;
   }
+  .tech-spec-icon{
+    width:25px!important;height:25px!important;min-width:25px!important;
+  }
+  .tech-spec-icon svg{width:23px!important;height:23px!important}
   .tech-spec-value{
-    padding:12px!important;
+    padding:12px 12px!important;
     font-size:13px!important;
     line-height:1.65!important;
   }
-  .tech-spec-more,.technical-spec-more,#technicalSpecMore{
-    width:calc(100% - 24px);
-    margin:0 12px 14px!important;
-  }
-}
-
-/* V317 - icon bảng thông số */
-.tech-spec-label{gap:12px!important}
-.tech-spec-icon{width:30px;height:30px;min-width:30px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #ff5a16;border-radius:8px;color:#ff5a16;background:#fff;font-size:17px;line-height:1;font-weight:800;box-sizing:border-box}
-.tech-spec-label-text{min-width:0;display:block}
-@media(max-width:700px){
- .tech-spec-label{gap:7px!important;padding:10px 7px!important;flex-direction:column;align-items:flex-start!important;justify-content:center}
- .tech-spec-icon{width:25px;height:25px;min-width:25px;border-radius:7px;font-size:14px}
- .tech-spec-label-text{font-size:12px;line-height:1.3}
 }

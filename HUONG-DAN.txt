@@ -1,1 +1,3 @@
-Upload đè app.js và styles.css rồi deploy. V317 thêm icon cam cho đủ 10 mục thông số, desktop + mobile.
+V318 - Giao diện thông số bám sát ảnh demo.
+Upload đè app.js + styles.css rồi deploy.
+Icon là SVG nét cam thật, không dùng ký tự Unicode.

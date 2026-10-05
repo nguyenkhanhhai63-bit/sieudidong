@@ -1975,19 +1975,27 @@ function renderTechnicalSpecs(container,data){
 
     const label=document.createElement("div");
     label.className="tech-spec-label";
-    const icon=document.createElement("span");
-    icon.className="tech-spec-icon";
-    const specIcons={
-      "Màn hình":"▣","Hệ điều hành":"⚙","Camera sau":"◉","Camera trước":"◉",
-      "CPU":"▦","RAM":"▤","Bộ nhớ trong":"▱","Thẻ SIM":"▥",
-      "Dung lượng pin":"▰","Thiết kế":"▯"
+
+    const iconWrap=document.createElement("span");
+    iconWrap.className="tech-spec-icon";
+    const svgIcons={
+      "Màn hình":'<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M9 21h6M12 17v4"/></svg>',
+      "Hệ điều hành":'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.15.37.37.7.66.96.3.26.68.4 1.07.4H21v4h-.09a1.7 1.7 0 0 0-1.51.64z"/></svg>',
+      "Camera sau":'<svg viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></svg>',
+      "Camera trước":'<svg viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></svg>',
+      "CPU":'<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>',
+      "RAM":'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 10v4M10 10v4M14 10v4M17 10v4M6 17v2M18 17v2"/></svg>',
+      "Bộ nhớ trong":'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7"/></svg>',
+      "Thẻ SIM":'<svg viewBox="0 0 24 24"><path d="M7 2h7l5 5v15H7z"/><path d="M10 12h2v2h-2zM14 12h2v2h-2zM10 16h2v2h-2zM14 16h2v2h-2z"/></svg>',
+      "Dung lượng pin":'<svg viewBox="0 0 24 24"><rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4M5 9h9v6H5z"/></svg>',
+      "Thiết kế":'<svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 19h4"/></svg>'
     };
-    icon.textContent=specIcons[row.label]||"•";
-    icon.setAttribute("aria-hidden","true");
+    iconWrap.innerHTML=svgIcons[row.label]||svgIcons["Thiết kế"];
+
     const labelText=document.createElement("span");
     labelText.className="tech-spec-label-text";
     labelText.textContent=row.label;
-    label.append(icon,labelText);
+    label.append(iconWrap,labelText);
 
     const value=document.createElement("div");
     value.className="tech-spec-value";
