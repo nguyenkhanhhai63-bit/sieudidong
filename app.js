@@ -1975,7 +1975,19 @@ function renderTechnicalSpecs(container,data){
 
     const label=document.createElement("div");
     label.className="tech-spec-label";
-    label.textContent=row.label;
+    const icon=document.createElement("span");
+    icon.className="tech-spec-icon";
+    const specIcons={
+      "Màn hình":"▣","Hệ điều hành":"⚙","Camera sau":"◉","Camera trước":"◉",
+      "CPU":"▦","RAM":"▤","Bộ nhớ trong":"▱","Thẻ SIM":"▥",
+      "Dung lượng pin":"▰","Thiết kế":"▯"
+    };
+    icon.textContent=specIcons[row.label]||"•";
+    icon.setAttribute("aria-hidden","true");
+    const labelText=document.createElement("span");
+    labelText.className="tech-spec-label-text";
+    labelText.textContent=row.label;
+    label.append(icon,labelText);
 
     const value=document.createElement("div");
     value.className="tech-spec-value";

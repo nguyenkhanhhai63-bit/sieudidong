@@ -1,3 +1,1 @@
-V316 - GIAO DIỆN THÔNG SỐ MỚI
-Chỉ cần upload đè file styles.css rồi deploy.
-Thiết kế desktop + mobile, giữ nguyên logic lấy cấu hình hiện tại.
+Upload đè app.js và styles.css rồi deploy. V317 thêm icon cam cho đủ 10 mục thông số, desktop + mobile.

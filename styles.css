@@ -16708,3 +16708,13 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     margin:0 12px 14px!important;
   }
 }
+
+/* V317 - icon bảng thông số */
+.tech-spec-label{gap:12px!important}
+.tech-spec-icon{width:30px;height:30px;min-width:30px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #ff5a16;border-radius:8px;color:#ff5a16;background:#fff;font-size:17px;line-height:1;font-weight:800;box-sizing:border-box}
+.tech-spec-label-text{min-width:0;display:block}
+@media(max-width:700px){
+ .tech-spec-label{gap:7px!important;padding:10px 7px!important;flex-direction:column;align-items:flex-start!important;justify-content:center}
+ .tech-spec-icon{width:25px;height:25px;min-width:25px;border-radius:7px;font-size:14px}
+ .tech-spec-label-text{font-size:12px;line-height:1.3}
+}
