@@ -1,4 +1,3 @@
-V319 - Thiết kế lại trang Admin > Link thông số.
-Chỉ upload đè admin-specs.html rồi deploy.
-Không thay đổi logic Lưu / Lấy tự động / Cấu hình / Xóa.
-Desktop gọn hơn, mobile chuyển dạng card.
+V320 - Admin Link thông số theo thiết kế demo.
+Upload đè admin-specs.html rồi deploy.
+Giữ nguyên logic Lưu / Lấy tự động / Cấu hình / Xóa và Browserless.
