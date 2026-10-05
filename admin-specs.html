@@ -8167,6 +8167,65 @@ tbody button:last-of-type{background:#fff4f3!important;border-color:#ffe0dd!impo
 @media(max-width:560px){.spec-actions{grid-template-columns:1fr 1fr!important}}
 </style>
 
+
+<style id="v323-polish">
+/* V323: bám sát demo hơn */
+body{background:#f8fafc!important}
+#specRows,.rows{border-radius:13px!important;overflow:hidden!important;box-shadow:0 4px 18px rgba(15,23,42,.035)!important}
+.spec-table-head,.spec-table-row{
+ grid-template-columns:minmax(310px,1.22fr) 125px minmax(430px,1.9fr) 112px 360px!important;
+ gap:10px!important
+}
+.spec-table-head{
+ min-height:42px!important;padding:0 14px!important;background:linear-gradient(180deg,#f8fafc,#f2f5f8)!important;
+ border-color:#e5eaf0!important;font-size:10px!important
+}
+.spec-table-row{
+ min-height:62px!important;padding:8px 14px!important;border-color:#e6ebf1!important
+}
+.spec-product{gap:9px!important}
+.spec-index{background:transparent!important;width:24px!important;min-width:24px!important;color:#475467!important;font-size:11px!important}
+.spec-thumb{
+ width:30px;height:38px;min-width:30px;display:inline-flex;align-items:center;justify-content:center;
+ border:1px solid #dce3eb;border-radius:6px;background:linear-gradient(145deg,#fff,#f0f3f7);
+ color:#ff5a0a;font-size:20px;box-shadow:0 1px 3px rgba(15,23,42,.06)
+}
+.spec-product-copy{min-width:0}
+.spec-product strong{font-size:11px!important;line-height:1.25!important}
+.spec-product small{font-size:9px!important;margin-top:3px!important;color:#8490a2!important}
+.spec-badge{font-size:9px!important;padding:4px 8px!important}
+.spec-linkbox .url{height:36px!important;font-size:10px!important;background:#fff!important}
+.spec-open{width:27px!important;height:27px!important;font-size:13px!important}
+.spec-updated{font-size:10px!important;line-height:1.25!important}
+.spec-actions{grid-template-columns:60px 98px 88px 60px!important;gap:6px!important}
+.spec-actions button{
+ height:34px!important;min-height:34px!important;padding:0 8px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;
+ font-size:10px!important;border-radius:8px!important
+}
+.btn-ico{font-size:13px;line-height:1;font-weight:800}
+.spec-actions .spec-save{
+ background:linear-gradient(180deg,#ff681f,#ff5200)!important;
+ box-shadow:0 3px 8px rgba(255,82,0,.16)!important
+}
+.spec-actions .danger{background:#fff5f4!important}
+.spec-table-row:hover{box-shadow:inset 3px 0 0 #ff6a28!important}
+
+/* cards phía trên gần demo */
+#specTotalCount,#specLinkedCount,#specMissingCount{font-weight:850!important}
+@media(min-width:1101px){
+ .spec-table-row:nth-child(even){background:#fff!important}
+}
+@media(max-width:1100px){
+ .spec-table-row{padding:12px!important}
+ .spec-thumb{width:28px;height:36px;min-width:28px}
+ .spec-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+ .spec-actions{grid-template-columns:1fr 1fr!important}
+}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -9322,7 +9381,7 @@ function render(){
     const meta=document.createElement("div");
     meta.className="model spec-product";
     const variantCount=window.PRODUCT_MODEL_META?.get(model)?.variants?.size || 1;
-    meta.innerHTML=`<span class="spec-index">${index+1}</span><div><strong>${model}</strong><small>${variantCount} phiên bản</small></div>`;
+    meta.innerHTML=`<span class="spec-index">${index+1}</span><span class="spec-thumb" aria-hidden="true">▯</span><div class="spec-product-copy"><strong>${model}</strong><small>${variantCount} phiên bản</small></div>`;
 
     const status=document.createElement("div");
     status.className="spec-status";
@@ -9349,7 +9408,7 @@ function render(){
     actions.className="actions spec-actions";
 
     const save=document.createElement("button");
-    save.type="button"; save.className="spec-save"; save.textContent="Lưu";
+    save.type="button"; save.className="spec-save"; save.innerHTML='<span class="btn-ico">▣</span>Lưu';
     save.onclick=async()=>{
       save.disabled=true; save.textContent="Đang lưu...";
       try{
@@ -9357,11 +9416,11 @@ function render(){
         const data=await r.json(); if(!r.ok) throw new Error(data.error||"Lỗi");
         links[model]=data.item; render();
       }catch(e){alert(e.message)}
-      finally{save.disabled=false;save.textContent="Lưu"}
+      finally{save.disabled=false;save.innerHTML='<span class="btn-ico">▣</span>Lưu'}
     };
 
     const browserSync=document.createElement("button");
-    browserSync.type="button"; browserSync.className="secondary"; browserSync.textContent="Lấy tự động";
+    browserSync.type="button"; browserSync.className="secondary"; browserSync.innerHTML='<span class="btn-ico">↻</span>Lấy tự động';
     browserSync.onclick=async()=>{
       browserSync.disabled=true; browserSync.textContent="Đang lấy...";
       try{
@@ -9369,15 +9428,15 @@ function render(){
         const data=await r.json(); if(!r.ok) throw new Error(data.detail||data.error||"Không lấy được cấu hình");
         alert("Đã lấy và lưu "+(data.specs?.length||0)+" thông số.");
       }catch(e){alert(e.message)}
-      finally{browserSync.disabled=false;browserSync.textContent="Lấy tự động"}
+      finally{browserSync.disabled=false;browserSync.innerHTML='<span class="btn-ico">↻</span>Lấy tự động'}
     };
 
     const config=document.createElement("button");
-    config.type="button"; config.className="secondary"; config.textContent="Cấu hình";
+    config.type="button"; config.className="secondary"; config.innerHTML='<span class="btn-ico">⚙</span>Cấu hình';
     config.onclick=()=>openManualSpecEditor(model);
 
     const del=document.createElement("button");
-    del.type="button"; del.className="secondary danger"; del.textContent="Xóa";
+    del.type="button"; del.className="secondary danger"; del.innerHTML='<span class="btn-ico">♲</span>Xóa';
     del.onclick=async()=>{
       if(!confirm("Xóa link thông số của model này?"))return;
       const r=await fetch("/api/admin/spec-links",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({model})});
