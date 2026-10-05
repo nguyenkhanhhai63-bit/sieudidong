@@ -16586,3 +16586,125 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
 
 /* V310 - MobileCity-like specification table */
 .technical-spec-section{background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}.technical-spec-title{font-size:22px!important;line-height:1.25!important;font-weight:700!important;color:#111!important;padding:0 0 14px!important;border:0!important;background:#fff!important;text-transform:none!important}.technical-spec-body{padding:0!important;background:#fff!important}.mc-spec-table{width:100%;border:1px solid #e5e5e5;border-radius:3px;overflow:hidden;background:#fff}.mc-spec-row{display:grid;grid-template-columns:190px minmax(0,1fr);border-bottom:1px solid #e5e5e5}.mc-spec-row:last-child{border-bottom:0}.mc-spec-label,.mc-spec-value{padding:13px 15px;font-size:15px;line-height:1.55;color:#222}.mc-spec-label{font-weight:700;background:#fafafa;border-right:1px solid #e5e5e5}.mc-spec-value{font-weight:400;white-space:normal}.technical-spec-empty{padding:18px 0;color:#777;font-size:14px}@media(max-width:600px){.technical-spec-title{font-size:19px!important;padding-bottom:11px!important}.mc-spec-row{grid-template-columns:34% 66%}.mc-spec-label,.mc-spec-value{padding:10px 9px;font-size:13px;line-height:1.45}}
+
+
+/* ===== V316 - TECHNICAL SPECS UI ===== */
+.technical-specs{
+  width:100%;
+  max-width:1180px;
+  margin:24px auto;
+  padding:0;
+  background:#fff;
+  border:1px solid #edf0f3;
+  border-radius:18px;
+  box-shadow:0 8px 30px rgba(15,23,42,.06);
+  overflow:hidden;
+}
+.technical-specs .section-title,
+.technical-specs h2,
+.technical-spec-title{
+  margin:0!important;
+  padding:22px 24px 8px!important;
+  font-size:24px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  color:#111827!important;
+  border:0!important;
+}
+.technical-specs .section-title::after,
+.technical-spec-title::after{
+  content:"Thông tin chi tiết về cấu hình và tính năng của sản phẩm";
+  display:block;
+  margin-top:7px;
+  font-size:13px;
+  line-height:1.45;
+  font-weight:400;
+  color:#7b8494;
+}
+.technical-spec-body{
+  padding:14px 20px 20px!important;
+}
+.tech-spec-table{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  border:1px solid #e8ebef!important;
+  border-radius:13px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+.tech-spec-row{
+  display:grid!important;
+  grid-template-columns:220px minmax(0,1fr)!important;
+  min-height:58px;
+  border-bottom:1px solid #e8ebef!important;
+  background:#fff!important;
+}
+.tech-spec-row:last-child{border-bottom:0!important}
+.tech-spec-label{
+  display:flex!important;
+  align-items:center!important;
+  padding:15px 18px!important;
+  background:#fff8f3!important;
+  color:#101828!important;
+  font-size:14px!important;
+  line-height:1.4!important;
+  font-weight:800!important;
+  border-right:1px solid #e8ebef!important;
+}
+.tech-spec-value{
+  padding:15px 18px!important;
+  color:#1f2937!important;
+  font-size:14px!important;
+  line-height:1.75!important;
+  white-space:pre-line!important;
+  overflow-wrap:anywhere;
+}
+.tech-spec-row:hover .tech-spec-label{background:#fff3e9!important}
+.tech-spec-row:hover .tech-spec-value{background:#fffdfb!important}
+
+/* optional detail button if present */
+.tech-spec-more,
+.technical-spec-more,
+#technicalSpecMore{
+  width:calc(100% - 40px);
+  margin:0 20px 20px!important;
+  min-height:46px;
+  border:1px solid #ff7a45!important;
+  border-radius:10px!important;
+  background:#fff7f2!important;
+  color:#f4511e!important;
+  font-weight:700!important;
+  cursor:pointer;
+}
+
+@media(max-width:700px){
+  .technical-specs{
+    margin:14px 0;
+    border-radius:12px;
+  }
+  .technical-specs .section-title,
+  .technical-specs h2,
+  .technical-spec-title{
+    padding:18px 16px 7px!important;
+    font-size:20px!important;
+  }
+  .technical-spec-body{padding:10px 12px 14px!important}
+  .tech-spec-row{
+    grid-template-columns:112px minmax(0,1fr)!important;
+    min-height:52px;
+  }
+  .tech-spec-label{
+    padding:12px 10px!important;
+    font-size:12px!important;
+  }
+  .tech-spec-value{
+    padding:12px!important;
+    font-size:13px!important;
+    line-height:1.65!important;
+  }
+  .tech-spec-more,.technical-spec-more,#technicalSpecMore{
+    width:calc(100% - 24px);
+    margin:0 12px 14px!important;
+  }
+}

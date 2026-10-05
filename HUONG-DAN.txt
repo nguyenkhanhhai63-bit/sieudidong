@@ -1,15 +1,3 @@
-V315 - BROWSERLESS RENDER DOM MOBILECITY
-
-1. Tạo Browserless API token.
-2. Vercel > Project > Settings > Environment Variables:
-   Name: BROWSERLESS_TOKEN
-   Value: token Browserless của bạn
-   áp dụng Production/Preview theo nhu cầu.
-3. Redeploy.
-4. Admin > Link thông số > bấm "Lấy tự động".
-
-Luồng:
-URL Admin -> Browserless Chrome render thật -> lấy bảng DOM -> Redis -> website.
-
-Vẫn giữ nút "Cấu hình" để nhập/dán thủ công khi cần.
-Không tự tìm URL/model khác.
+V316 - GIAO DIỆN THÔNG SỐ MỚI
+Chỉ cần upload đè file styles.css rồi deploy.
+Thiết kế desktop + mobile, giữ nguyên logic lấy cấu hình hiện tại.
