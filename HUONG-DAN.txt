@@ -1,8 +1,12 @@
-V311
-- Không còn bắt buộc phải tìm tiêu đề 'Thông số kỹ thuật'.
-- Quét các nhãn cấu hình nhưng chỉ chọn CỤM nhãn nằm gần nhau.
-- Cụm phải có ít nhất 5 nhóm khác nhau mới hợp lệ.
-- Loại URL, bảng giá, mua ngay, trả góp, bài đánh giá.
-- Vẫn chỉ dùng đúng URL MobileCity đã lưu trong Admin.
-- Đồng bộ thành công tiếp tục lưu Redis.
-Upload đè các file trong ZIP và deploy lại.
+V312
+Đã sửa parser theo đúng dữ liệu MobileCity đang trả thực tế:
+Thông số kỹ thuật
+Màn hình: | ...
+Hệ điều hành: | ...
+...
+Thiết kế: | ...
+Xem thêm cấu hình chi tiết
+
+Chỉ dùng URL trong Admin. Không tìm nguồn khác.
+Đồng bộ thành công -> lưu Redis.
+Upload đè các file trong ZIP rồi deploy.

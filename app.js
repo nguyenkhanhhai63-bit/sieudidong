@@ -1432,7 +1432,7 @@ async function fetchCompareSpecs(group){
 
   try{
     const res=await fetch(
-      "/api/specs?refresh=1&v=311&name="+encodeURIComponent(group.name),
+      "/api/specs?refresh=1&v=312&name="+encodeURIComponent(group.name),
       {cache:"default",signal:controller.signal}
     );
 
@@ -1999,7 +1999,7 @@ async function loadTechnicalSpecs(productName,container){
 
   try{
     const res=await fetch(
-      "/api/specs?refresh=1&v=311&name="+encodeURIComponent(productName),
+      "/api/specs?refresh=1&v=312&name="+encodeURIComponent(productName),
       {cache:"default"}
     );
 
