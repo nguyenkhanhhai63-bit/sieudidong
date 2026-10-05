@@ -1,1 +1,8 @@
-V310: Xây lại bảng cấu hình theo MobileCity. Chỉ URL Admin -> đúng khối Thông số kỹ thuật -> 10 hàng -> Redis. Upload đè 4 file.
+V311
+- Không còn bắt buộc phải tìm tiêu đề 'Thông số kỹ thuật'.
+- Quét các nhãn cấu hình nhưng chỉ chọn CỤM nhãn nằm gần nhau.
+- Cụm phải có ít nhất 5 nhóm khác nhau mới hợp lệ.
+- Loại URL, bảng giá, mua ngay, trả góp, bài đánh giá.
+- Vẫn chỉ dùng đúng URL MobileCity đã lưu trong Admin.
+- Đồng bộ thành công tiếp tục lưu Redis.
+Upload đè các file trong ZIP và deploy lại.
