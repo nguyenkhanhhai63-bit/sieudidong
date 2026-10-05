@@ -1,11 +1,15 @@
-V314 - NHẬP CẤU HÌNH TRỰC TIẾP TRONG ADMIN
+V315 - BROWSERLESS RENDER DOM MOBILECITY
 
-Luồng mới:
-Admin > Link thông số > Cấu hình
-- Có 10 ô cấu hình.
-- Có ô Dán nguyên bảng MobileCity + nút Tự tách 10 mục.
-- Bấm Lưu cấu hình -> Redis.
-- Trang sản phẩm ưu tiên dữ liệu cấu hình Admin/Redis.
-- Không cần MobileCity/Jina để hiển thị cấu hình đã lưu.
+1. Tạo Browserless API token.
+2. Vercel > Project > Settings > Environment Variables:
+   Name: BROWSERLESS_TOKEN
+   Value: token Browserless của bạn
+   áp dụng Production/Preview theo nhu cầu.
+3. Redeploy.
+4. Admin > Link thông số > bấm "Lấy tự động".
 
-Upload đè TOÀN BỘ file đúng thư mục trong ZIP rồi deploy.
+Luồng:
+URL Admin -> Browserless Chrome render thật -> lấy bảng DOM -> Redis -> website.
+
+Vẫn giữ nút "Cấu hình" để nhập/dán thủ công khi cần.
+Không tự tìm URL/model khác.

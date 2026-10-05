@@ -9228,6 +9228,21 @@ function render(){
     test.textContent="Cấu hình";
     test.onclick=()=>openManualSpecEditor(model);
 
+    const browserSync=document.createElement("button");
+    browserSync.type="button";
+    browserSync.className="secondary";
+    browserSync.textContent="Lấy tự động";
+    browserSync.onclick=async()=>{
+      browserSync.disabled=true; browserSync.textContent="Đang mở trang...";
+      try{
+        const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
+        const data=await r.json();
+        if(!r.ok) throw new Error(data.detail||data.error||"Không lấy được cấu hình");
+        alert("Đã lấy và lưu "+(data.specs?.length||0)+" thông số bằng trình duyệt trung gian.");
+      }catch(e){ alert(e.message); }
+      finally{ browserSync.disabled=false; browserSync.textContent="Lấy tự động"; }
+    };
+
     const del=document.createElement("button");
     del.type="button";
     del.className="secondary danger";
@@ -9245,7 +9260,7 @@ function render(){
       render();
     };
 
-    actions.append(save,test,del);
+    actions.append(save,browserSync,test,del);
     row.append(meta,input,actions);
     rows.appendChild(row);
   });
