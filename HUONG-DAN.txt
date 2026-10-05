@@ -1,12 +1,13 @@
-V312
-Đã sửa parser theo đúng dữ liệu MobileCity đang trả thực tế:
-Thông số kỹ thuật
-Màn hình: | ...
-Hệ điều hành: | ...
-...
-Thiết kế: | ...
-Xem thêm cấu hình chi tiết
+V313 - JINA READER LÀ LỚP TRUNG GIAN CHÍNH
 
-Chỉ dùng URL trong Admin. Không tìm nguồn khác.
-Đồng bộ thành công -> lưu Redis.
-Upload đè các file trong ZIP rồi deploy.
+Luồng:
+URL MobileCity trong Admin
+-> r.jina.ai đọc đúng URL đó
+-> parser đọc Markdown/text
+-> lấy 10 mục cấu hình
+-> lưu Redis
+-> website chỉ đọc Redis
+
+Không còn fetch MobileCity trực tiếp từ Vercel.
+Không tìm model hoặc nguồn thay thế.
+Upload đè các file trong ZIP rồi deploy, sau đó bấm Đồng bộ.
