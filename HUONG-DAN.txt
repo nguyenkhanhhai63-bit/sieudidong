@@ -1,13 +1,11 @@
-V313 - JINA READER LÀ LỚP TRUNG GIAN CHÍNH
+V314 - NHẬP CẤU HÌNH TRỰC TIẾP TRONG ADMIN
 
-Luồng:
-URL MobileCity trong Admin
--> r.jina.ai đọc đúng URL đó
--> parser đọc Markdown/text
--> lấy 10 mục cấu hình
--> lưu Redis
--> website chỉ đọc Redis
+Luồng mới:
+Admin > Link thông số > Cấu hình
+- Có 10 ô cấu hình.
+- Có ô Dán nguyên bảng MobileCity + nút Tự tách 10 mục.
+- Bấm Lưu cấu hình -> Redis.
+- Trang sản phẩm ưu tiên dữ liệu cấu hình Admin/Redis.
+- Không cần MobileCity/Jina để hiển thị cấu hình đã lưu.
 
-Không còn fetch MobileCity trực tiếp từ Vercel.
-Không tìm model hoặc nguồn thay thế.
-Upload đè các file trong ZIP rồi deploy, sau đó bấm Đồng bộ.
+Upload đè TOÀN BỘ file đúng thư mục trong ZIP rồi deploy.

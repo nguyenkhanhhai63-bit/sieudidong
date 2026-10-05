@@ -9225,28 +9225,8 @@ function render(){
     const test=document.createElement("button");
     test.type="button";
     test.className="secondary";
-    test.textContent="Đồng bộ";
-    test.onclick=async()=>{
-      if(!input.value.trim()){
-        alert("Hãy dán link và bấm Lưu trước.");
-        return;
-      }
-
-      test.disabled=true;
-      test.textContent="Đang đồng bộ...";
-
-      try{
-        const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
-        const data=await r.json();
-        if(!r.ok) throw new Error(data.error||"Không đọc được thông số");
-        alert(`Đã đồng bộ ${data.specs?.length||0} mục cấu hình từ MobileCity.`);
-      }catch(e){
-        alert(e.message);
-      }finally{
-        test.disabled=false;
-        test.textContent="Đồng bộ";
-      }
-    };
+    test.textContent="Cấu hình";
+    test.onclick=()=>openManualSpecEditor(model);
 
     const del=document.createElement("button");
     del.type="button";
@@ -14695,6 +14675,80 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   #analyticsCard .v917-heatmap{min-width:650px!important}
 }
 </style>
+
+<style>
+#manualSpecModal{position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px}
+#manualSpecModal.open{display:flex}
+.ms-card{width:min(820px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.25)}
+.ms-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.ms-head h2{margin:0;font-size:20px}
+.ms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ms-field{display:flex;flex-direction:column;gap:5px}.ms-field span{font-size:12px;font-weight:700}
+.ms-field textarea{min-height:70px;padding:10px;border:1px solid #ddd;border-radius:9px;resize:vertical}
+.ms-paste{width:100%;min-height:125px;padding:11px;border:1px solid #ddd;border-radius:9px;resize:vertical;box-sizing:border-box}
+.ms-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+@media(max-width:650px){.ms-grid{grid-template-columns:1fr}}
+</style>
+<div id="manualSpecModal">
+ <div class="ms-card">
+  <div class="ms-head"><h2 id="msTitle">Cấu hình</h2><button class="secondary" onclick="closeManualSpecEditor()">Đóng</button></div>
+  <div style="font-size:12px;color:#667085;margin-bottom:8px">Copy bảng cấu hình MobileCity rồi dán vào ô dưới, bấm <b>Tự tách 10 mục</b>.</div>
+  <textarea id="msPaste" class="ms-paste" placeholder="Dán nguyên bảng cấu hình MobileCity vào đây..."></textarea>
+  <div class="ms-actions" style="justify-content:flex-start;margin:8px 0 14px"><button class="secondary" onclick="parsePastedSpecs()">Tự tách 10 mục</button></div>
+  <div id="msFields" class="ms-grid"></div>
+  <div class="ms-actions"><button class="secondary danger" onclick="clearManualSpecs()">Xóa cấu hình</button><button class="primary" onclick="saveManualSpecs()">Lưu cấu hình</button></div>
+ </div>
+</div>
+<script>
+const MS_ORDER=["Màn hình","Hệ điều hành","Camera sau","Camera trước","CPU","RAM","Bộ nhớ trong","Thẻ SIM","Dung lượng pin","Thiết kế"];
+let msModel="";
+function msEsc(s){return String(s).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}
+function renderMsFields(values={}){
+ const box=document.getElementById("msFields"); box.innerHTML="";
+ MS_ORDER.forEach(label=>{
+  const wrap=document.createElement("label"); wrap.className="ms-field";
+  const t=document.createElement("span"); t.textContent=label;
+  const ta=document.createElement("textarea"); ta.dataset.label=label; ta.value=values[label]||"";
+  wrap.append(t,ta); box.appendChild(wrap);
+ });
+}
+async function openManualSpecEditor(model){
+ msModel=model; document.getElementById("msTitle").textContent="Cấu hình • "+model;
+ document.getElementById("msPaste").value=""; renderMsFields({});
+ document.getElementById("manualSpecModal").classList.add("open");
+ try{
+  const r=await fetch("/api/admin/manual-specs?model="+encodeURIComponent(model),{cache:"no-store"});
+  const d=await r.json(); const vals={}; (d.specs||[]).forEach(x=>vals[x.label]=x.value); renderMsFields(vals);
+ }catch(e){}
+}
+function closeManualSpecEditor(){document.getElementById("manualSpecModal").classList.remove("open")}
+function parsePastedSpecs(){
+ let text=document.getElementById("msPaste").value.replace(/\r/g,"");
+ const hits=[];
+ MS_ORDER.forEach(label=>{
+  const re=new RegExp("(?:^|\\n|\\|)\\s*"+msEsc(label)+"\\s*(?::|\\|)\\s*","gi"); let m;
+  while((m=re.exec(text)))hits.push({label,from:re.lastIndex,at:m.index});
+ });
+ hits.sort((a,b)=>a.at-b.at);
+ const vals={};
+ hits.forEach((h,i)=>{
+  const end=i+1<hits.length?hits[i+1].at:text.length;
+  let v=text.slice(h.from,end).replace(/^\s*\|\s*/,"").replace(/\|\s*$/,"").trim();
+  if(v && v.length<3000 && !vals[h.label])vals[h.label]=v;
+ });
+ document.querySelectorAll("#msFields textarea").forEach(x=>{if(vals[x.dataset.label])x.value=vals[x.dataset.label]});
+}
+async function saveManualSpecs(){
+ const specs={}; document.querySelectorAll("#msFields textarea").forEach(x=>specs[x.dataset.label]=x.value.trim());
+ const r=await fetch("/api/admin/manual-specs",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:msModel,specs})});
+ const d=await r.json(); if(!r.ok){alert(d.error||"Lỗi lưu cấu hình");return}
+ alert("Đã lưu cấu hình vào Redis."); closeManualSpecEditor();
+}
+async function clearManualSpecs(){
+ if(!confirm("Xóa cấu hình đã lưu của model này?"))return;
+ const r=await fetch("/api/admin/manual-specs",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:msModel})});
+ const d=await r.json(); if(!r.ok){alert(d.error||"Lỗi");return} renderMsFields({}); alert("Đã xóa cấu hình.");
+}
+</script>
+
 </body>
 </html>
 
