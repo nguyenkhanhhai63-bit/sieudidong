@@ -9239,7 +9239,7 @@ function render(){
         const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
         const data=await r.json();
         if(!r.ok) throw new Error(data.error||"Không đọc được thông số");
-        alert(`Đã đồng bộ và lưu ${data.specs?.length||0} thông số. Từ giờ website dùng bản đã lưu.`);
+        alert(`Đã đồng bộ ${data.specs?.length||0} mục cấu hình từ MobileCity.`);
       }catch(e){
         alert(e.message);
       }finally{

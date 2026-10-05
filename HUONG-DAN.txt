@@ -1,14 +1,1 @@
-V309 - ĐỌC THEO KHỐI THÔNG SỐ KỸ THUẬT
-
-Upload đè 4 file.
-
-Cách đọc mới:
-- Vẫn thử bảng HTML/Markdown chuẩn trước.
-- Nếu trung gian làm mất cấu trúc bảng, tìm đúng tiêu đề "Thông số kỹ thuật".
-- Chỉ đọc từ tiêu đề đó đến "Xem thêm cấu hình chi tiết"/"Thông tin chung".
-- Chỉ nhận 10 nhãn cấu hình.
-- Không quét xuống bài review, bảng giá, hình ảnh.
-- Có >=5 mục hợp lệ mới lưu Redis.
-- Website tiếp tục dùng bản Redis đã đồng bộ.
-
-Bump request v309.
+V310: Xây lại bảng cấu hình theo MobileCity. Chỉ URL Admin -> đúng khối Thông số kỹ thuật -> 10 hàng -> Redis. Upload đè 4 file.

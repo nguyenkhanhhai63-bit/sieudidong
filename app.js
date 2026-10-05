@@ -1432,7 +1432,7 @@ async function fetchCompareSpecs(group){
 
   try{
     const res=await fetch(
-      "/api/specs?refresh=1&v=309&name="+encodeURIComponent(group.name),
+      "/api/specs?refresh=1&v=301&name="+encodeURIComponent(group.name),
       {cache:"default",signal:controller.signal}
     );
 
@@ -1966,25 +1966,16 @@ function renderTechnicalSpecs(container,data){
     return;
   }
 
-  const wanted=[
-    "Màn hình","Hệ điều hành","Camera sau","Camera trước","CPU",
-    "RAM","Bộ nhớ trong","Thẻ SIM","Dung lượng pin","Thiết kế"
-  ];
-  const rows=new Map(data.specs.map(row=>[String(row.label||"").trim(),row]));
-
   const table=document.createElement("div");
   table.className="tech-spec-table";
 
-  wanted.forEach(name=>{
-    const row=rows.get(name);
-    if(!row || !row.value) return;
-
+  data.specs.forEach(row=>{
     const line=document.createElement("div");
     line.className="tech-spec-row";
 
     const label=document.createElement("div");
     label.className="tech-spec-label";
-    label.textContent=name+":";
+    label.textContent=row.label;
 
     const value=document.createElement("div");
     value.className="tech-spec-value";
@@ -2008,7 +1999,7 @@ async function loadTechnicalSpecs(productName,container){
 
   try{
     const res=await fetch(
-      "/api/specs?refresh=1&v=309&name="+encodeURIComponent(productName),
+      "/api/specs?refresh=1&v=301&name="+encodeURIComponent(productName),
       {cache:"default"}
     );
 
