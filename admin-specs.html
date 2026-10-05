@@ -8126,6 +8126,47 @@ tbody button:last-of-type{background:#fff4f3!important;border-color:#ffe0dd!impo
 }
 </style>
 
+
+<style id="v322-real-spec-table">
+#specRows,.rows{display:block!important}
+.spec-table-head,.spec-table-row{
+ display:grid!important;
+ grid-template-columns:minmax(240px,1.05fr) 120px minmax(420px,2fr) 110px 330px!important;
+ gap:12px!important;align-items:center!important;box-sizing:border-box!important
+}
+.spec-table-head{
+ padding:10px 12px!important;background:#f4f7fa!important;border:1px solid #e3e9f0!important;
+ border-radius:12px 12px 0 0!important;color:#667085!important;font-size:11px!important;
+ font-weight:800!important;text-transform:uppercase!important
+}
+.spec-table-row{
+ margin:0!important;padding:10px 12px!important;min-height:66px!important;background:#fff!important;
+ border:1px solid #e3e9f0!important;border-top:0!important;border-radius:0!important
+}
+.spec-table-row:last-child{border-radius:0 0 12px 12px!important}
+.spec-table-row:hover{background:#fffdfb!important}
+.spec-product{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
+.spec-product strong{display:block!important;font-size:12px!important;color:#172033!important;white-space:normal!important}
+.spec-product small{display:block!important;margin-top:4px!important;color:#8a94a5!important;font-size:10px!important}
+.spec-index{width:24px;height:24px;min-width:24px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#f4f6f8;color:#667085;font-size:10px;font-weight:800}
+.spec-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}
+.spec-badge.linked{background:#e8f8ed;color:#159447}.spec-badge.missing{background:#fff3df;color:#dd8500}
+.spec-linkbox{position:relative!important;display:flex!important;align-items:center!important;min-width:0!important}
+.spec-linkbox .url{width:100%!important;height:38px!important;padding:0 40px 0 11px!important;border:1px solid #dce4ed!important;border-radius:8px!important;background:#fbfcfe!important;box-sizing:border-box!important;font-size:11px!important}
+.spec-open{position:absolute!important;right:5px!important;width:28px!important;height:28px!important;padding:0!important;border:1px solid #dce4ed!important;border-radius:7px!important;background:#fff!important;font-weight:800!important}
+.spec-updated{display:flex!important;flex-direction:column!important;gap:2px!important;font-size:10px!important;color:#475467!important}.spec-updated small{color:#98a2b3!important}
+.spec-actions{display:grid!important;grid-template-columns:54px 90px 78px 54px!important;gap:7px!important}
+.spec-actions button{height:36px!important;min-height:36px!important;margin:0!important;padding:0 8px!important;border-radius:8px!important;border:1px solid #dbe3ec!important;background:#fff!important;color:#344054!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important}
+.spec-actions .spec-save{background:#ff5a0a!important;border-color:#ff5a0a!important;color:#fff!important}
+.spec-actions .danger{background:#fff3f2!important;border-color:#ffdedb!important;color:#df2b22!important}
+@media(max-width:1100px){
+ .spec-table-head{display:none!important}
+ .spec-table-row{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:10px!important;border:1px solid #e3e9f0!important;border-radius:12px!important}
+ .spec-updated{display:none!important}.spec-actions{grid-template-columns:repeat(4,1fr)!important}
+}
+@media(max-width:560px){.spec-actions{grid-template-columns:1fr 1fr!important}}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -9253,7 +9294,6 @@ let specFilter="all";
 
 function render(){
   const q=search.value.trim().toLowerCase();
-
   const allFiltered=products.filter(p=>p.toLowerCase().includes(q));
   const list=allFiltered.filter(p=>{
     const has=!!mapItem(p)?.url;
@@ -9268,90 +9308,85 @@ function render(){
     return;
   }
 
-  list.forEach(model=>{
+  const head=document.createElement("div");
+  head.className="spec-table-head";
+  head.innerHTML="<span>Sản phẩm</span><span>Trạng thái</span><span>Link nguồn thông số</span><span>Cập nhật</span><span>Thao tác</span>";
+  rows.appendChild(head);
+
+  list.forEach((model,index)=>{
     const saved=mapItem(model);
+    const linked=!!saved?.url;
     const row=document.createElement("div");
-    row.className="row";
+    row.className="row spec-table-row";
 
     const meta=document.createElement("div");
-    meta.className="model";
+    meta.className="model spec-product";
     const variantCount=window.PRODUCT_MODEL_META?.get(model)?.variants?.size || 1;
-    meta.innerHTML=`<strong>${model}</strong><small>${variantCount} phiên bản • ${saved?.url ? '<span class="ok">✓ Đã gắn link</span>' : 'Chưa có link'}</small>`;
+    meta.innerHTML=`<span class="spec-index">${index+1}</span><div><strong>${model}</strong><small>${variantCount} phiên bản</small></div>`;
 
+    const status=document.createElement("div");
+    status.className="spec-status";
+    status.innerHTML=linked?'<span class="spec-badge linked">✓ Đã có link</span>':'<span class="spec-badge missing">! Chưa có link</span>';
+
+    const linkBox=document.createElement("div");
+    linkBox.className="spec-linkbox";
     const input=document.createElement("input");
     input.className="url";
     input.type="url";
-    input.placeholder="Dán link trang thông số vào đây...";
+    input.placeholder="Dán link nguồn thông số kỹ thuật...";
     input.value=saved?.url || "";
+    const open=document.createElement("button");
+    open.type="button"; open.className="spec-open"; open.textContent="↗"; open.title="Mở link nguồn";
+    open.onclick=()=>{const u=input.value.trim();if(u)window.open(u,"_blank","noopener")};
+    linkBox.append(input,open);
+
+    const updated=document.createElement("div");
+    updated.className="spec-updated";
+    const dt=saved?.updatedAt ? new Date(saved.updatedAt) : null;
+    updated.innerHTML=dt && !isNaN(dt) ? `<span>${dt.toLocaleDateString("vi-VN")}</span><small>${dt.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}</small>` : '<span>—</span><small>Chưa cập nhật</small>';
 
     const actions=document.createElement("div");
-    actions.className="actions";
+    actions.className="actions spec-actions";
 
     const save=document.createElement("button");
-    save.type="button";
-    save.className="secondary";
-    save.textContent="Lưu";
+    save.type="button"; save.className="spec-save"; save.textContent="Lưu";
     save.onclick=async()=>{
-      save.disabled=true;
-      save.textContent="Đang lưu...";
+      save.disabled=true; save.textContent="Đang lưu...";
       try{
-        const r=await fetch("/api/admin/spec-links",{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({model,url:input.value})
-        });
-        const data=await r.json();
-        if(!r.ok) throw new Error(data.error||"Lỗi");
-        links[model]=data.item;
-        render();
-      }catch(e){
-        alert(e.message);
-      }finally{
-        save.disabled=false;
-        save.textContent="Lưu";
-      }
+        const r=await fetch("/api/admin/spec-links",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,url:input.value})});
+        const data=await r.json(); if(!r.ok) throw new Error(data.error||"Lỗi");
+        links[model]=data.item; render();
+      }catch(e){alert(e.message)}
+      finally{save.disabled=false;save.textContent="Lưu"}
     };
-
-    const test=document.createElement("button");
-    test.type="button";
-    test.className="secondary";
-    test.textContent="Cấu hình";
-    test.onclick=()=>openManualSpecEditor(model);
 
     const browserSync=document.createElement("button");
-    browserSync.type="button";
-    browserSync.className="secondary";
-    browserSync.textContent="Lấy tự động";
+    browserSync.type="button"; browserSync.className="secondary"; browserSync.textContent="Lấy tự động";
     browserSync.onclick=async()=>{
-      browserSync.disabled=true; browserSync.textContent="Đang mở trang...";
+      browserSync.disabled=true; browserSync.textContent="Đang lấy...";
       try{
         const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
-        const data=await r.json();
-        if(!r.ok) throw new Error(data.detail||data.error||"Không lấy được cấu hình");
-        alert("Đã lấy và lưu "+(data.specs?.length||0)+" thông số bằng trình duyệt trung gian.");
-      }catch(e){ alert(e.message); }
-      finally{ browserSync.disabled=false; browserSync.textContent="Lấy tự động"; }
+        const data=await r.json(); if(!r.ok) throw new Error(data.detail||data.error||"Không lấy được cấu hình");
+        alert("Đã lấy và lưu "+(data.specs?.length||0)+" thông số.");
+      }catch(e){alert(e.message)}
+      finally{browserSync.disabled=false;browserSync.textContent="Lấy tự động"}
     };
+
+    const config=document.createElement("button");
+    config.type="button"; config.className="secondary"; config.textContent="Cấu hình";
+    config.onclick=()=>openManualSpecEditor(model);
 
     const del=document.createElement("button");
-    del.type="button";
-    del.className="secondary danger";
-    del.textContent="Xóa";
+    del.type="button"; del.className="secondary danger"; del.textContent="Xóa";
     del.onclick=async()=>{
-      if(!confirm("Xóa link thông số của model này?")) return;
-      const r=await fetch("/api/admin/spec-links",{
-        method:"DELETE",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model})
-      });
-      const data=await r.json();
-      if(!r.ok){ alert(data.error||"Lỗi"); return; }
-      delete links[model];
-      render();
+      if(!confirm("Xóa link thông số của model này?"))return;
+      const r=await fetch("/api/admin/spec-links",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({model})});
+      const data=await r.json(); if(!r.ok){alert(data.error||"Lỗi");return}
+      delete links[model]; render();
     };
 
-    actions.append(save,browserSync,test,del);
-    row.append(meta,input,actions);
+    actions.append(save,browserSync,config,del);
+    row.append(meta,status,linkBox,updated,actions);
     rows.appendChild(row);
   });
 

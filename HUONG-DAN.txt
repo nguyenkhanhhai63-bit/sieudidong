@@ -1,3 +1,2 @@
-V320 - Admin Link thông số theo thiết kế demo.
+V322 lấy trực tiếp admin-specs.html từ ZIP bạn vừa gửi và sửa hàm render thật.
 Upload đè admin-specs.html rồi deploy.
-Giữ nguyên logic Lưu / Lấy tự động / Cấu hình / Xóa và Browserless.
