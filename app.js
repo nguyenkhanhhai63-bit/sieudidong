@@ -4706,9 +4706,27 @@ document.querySelector(".sdd-search-submit")?.addEventListener("click",()=>{
    V252 - Menu Điện thoại / Máy tính bảng / Máy cũ độc lập danh mục KiotViet
    ========================================================= */
 function sddUpdateMainNavActive(kind){
-  document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
-    link.classList.toggle("active", link.dataset.sddMainNav===kind);
-  });
+  // V818: chỉ cho phép DUY NHẤT một tab menu chính active.
+  // Trước đây "Trang chủ" có class active cứng trong HTML nên khi chọn
+  // Điện thoại / Máy tính bảng / Máy cũ sẽ xuất hiện 2 tab cùng gạch cam.
+  const nav=document.querySelector(".sdd-main-nav");
+  if(!nav) return;
+
+  nav.querySelectorAll("a.active").forEach(link=>link.classList.remove("active"));
+
+  if(kind){
+    nav.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
+      link.classList.toggle("active", link.dataset.sddMainNav===kind);
+    });
+    return;
+  }
+
+  // Chỉ active Trang chủ khi URL thực sự là trang chủ.
+  const path=String(location.pathname||"/").replace(/\/+$/,"/");
+  if(path==="/"){
+    const home=nav.querySelector('a[href="/"]');
+    if(home) home.classList.add("active");
+  }
 }
 
 function sddActivateMainCategory(kind){
@@ -4754,6 +4772,7 @@ document.querySelectorAll("[data-sdd-main-nav]").forEach(link=>{
   else if(/máy\s*tính\s*bảng|tablet|ipad/i.test(c)){ ACTIVE_NAV_KIND="tablet"; ACTIVE_MAIN_CATEGORY=""; }
   else if(/điện\s*thoại|smartphone|phone/i.test(c)){ ACTIVE_NAV_KIND="phone"; ACTIVE_MAIN_CATEGORY=""; }
   sddCleanLegacyCategoryUrl();
+  sddUpdateMainNavActive(ACTIVE_NAV_KIND || "");
 })();
 
 // Đồng bộ trạng thái menu sau khi dữ liệu sản phẩm được nạp.
