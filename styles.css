@@ -16739,3 +16739,68 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
     line-height:1.65!important;
   }
 }
+\n\n/* ===== V335 - SPEC UI COMPACT / BALANCED ===== */
+.technical-specs{
+  width:min(1240px,calc(100% - 32px))!important;
+  max-width:1240px!important;
+  margin:24px auto!important;
+  border-radius:14px!important;
+  border:1px solid #e8ebef!important;
+  box-shadow:0 6px 22px rgba(15,23,42,.055)!important;
+  background:#fff!important;
+}
+.technical-specs .section-title,
+.technical-specs h2,
+.technical-spec-title{
+  padding:22px 24px 7px 70px!important;
+  min-height:38px!important;
+  font-size:24px!important;
+}
+.technical-specs .section-title:before,
+.technical-specs h2:before,
+.technical-spec-title:before{
+  left:24px!important;top:19px!important;width:34px!important;height:42px!important;border-radius:8px!important;
+}
+.technical-specs .section-title:after,
+.technical-specs h2:after,
+.technical-spec-title:after{margin-top:6px!important;font-size:12.5px!important}
+.technical-spec-body{padding:16px 20px 22px!important}
+.tech-spec-table{border-radius:10px!important;border-color:#dde3e9!important}
+.tech-spec-row{
+  grid-template-columns:205px minmax(0,1fr)!important;
+  min-height:58px!important;
+  border-color:#e3e7ec!important;
+}
+.tech-spec-label{
+  gap:11px!important;
+  padding:14px 16px!important;
+  background:#fffaf6!important;
+  border-color:#e3e7ec!important;
+  font-size:14px!important;
+  line-height:1.3!important;
+}
+.tech-spec-icon{width:27px!important;height:27px!important;min-width:27px!important}
+.tech-spec-icon svg{width:24px!important;height:24px!important;stroke-width:1.8!important}
+.tech-spec-value{
+  padding:14px 18px!important;
+  font-size:14.5px!important;
+  line-height:1.62!important;
+  color:#182230!important;
+  white-space:pre-line!important;
+}
+@media (min-width:1400px){
+  .technical-specs{max-width:1320px!important}
+  .tech-spec-row{grid-template-columns:220px minmax(0,1fr)!important}
+  .tech-spec-value{font-size:15px!important}
+}
+@media(max-width:700px){
+  .technical-specs{width:calc(100% - 12px)!important;margin:10px auto!important;border-radius:10px!important}
+  .technical-specs .section-title,.technical-specs h2,.technical-spec-title{padding:16px 12px 6px 55px!important;font-size:19px!important}
+  .technical-specs .section-title:before,.technical-specs h2:before,.technical-spec-title:before{left:12px!important;top:14px!important;width:31px!important;height:38px!important}
+  .technical-spec-body{padding:10px 8px 12px!important}
+  .tech-spec-row{grid-template-columns:118px minmax(0,1fr)!important;min-height:56px!important}
+  .tech-spec-label{padding:11px 8px!important;gap:7px!important;font-size:12px!important}
+  .tech-spec-icon{width:22px!important;height:22px!important;min-width:22px!important}
+  .tech-spec-icon svg{width:20px!important;height:20px!important}
+  .tech-spec-value{padding:11px 10px!important;font-size:13px!important;line-height:1.55!important}
+}

@@ -1911,52 +1911,16 @@ function render(){
 function relatedProductGroups(currentGroup, limit=3){
   const flat=flattenProducts(PRODUCTS);
   const allGroups=groupItems(flat);
-  const currentVariant=getDefaultVariantForGroup(currentGroup);
-  const currentPrice=Number(currentVariant?.price||0);
-  const currentBrand=String(currentGroup?.items?.[0]?.brand||"").trim().toLowerCase();
 
-  // Nhận diện dòng máy để ưu tiên máy thực sự cùng phân khúc.
-  const familyOf=(name)=>{
-    const n=String(name||"").toLowerCase();
-    const families=[
-      "turbo","redmi k","redmi note","find x","reno","iqoo neo","iqoo z",
-      "oneplus ace","oneplus","honor win","xiaomi","poco","galaxy s","galaxy a"
-    ];
-    return families.find(x=>n.includes(x)) || "";
-  };
-  const currentFamily=familyOf(currentGroup?.name);
-
-  // Không lấy máy lệch phân khúc để lấp đủ 3 ô.
-  // Có giá hiện tại: chỉ nhận trong khoảng ±30%.
-  const minPrice=currentPrice>0 ? currentPrice*0.70 : 0;
-  const maxPrice=currentPrice>0 ? currentPrice*1.30 : Infinity;
+  const currentBrand=currentGroup.items[0]?.brand || "";
 
   return allGroups
     .filter(g=>g.name!==currentGroup.name)
-    .map(g=>{
-      const v=getDefaultVariantForGroup(g);
-      const price=Number(v?.price||0);
-      const brand=String(g?.items?.[0]?.brand||"").trim().toLowerCase();
-      const inStock=Boolean(v && Number(v.onHand||0)>0);
-      const sameBrand=Boolean(currentBrand && brand===currentBrand);
-      const sameFamily=Boolean(currentFamily && familyOf(g.name)===currentFamily);
-      const priceDiff=currentPrice>0 && price>0 ? Math.abs(price-currentPrice)/currentPrice : 999;
-      return {g,price,inStock,sameBrand,sameFamily,priceDiff};
+    .filter(g=>{
+      const brand=g.items[0]?.brand || "";
+      return currentBrand && brand===currentBrand;
     })
-    .filter(x=>x.price>0)
-    .filter(x=>x.price>=minPrice && x.price<=maxPrice)
-    .filter(x=>x.sameBrand)
-    .sort((a,b)=>{
-      // 1. Cùng dòng (Turbo/K/Find X...) trước.
-      if(a.sameFamily!==b.sameFamily) return Number(b.sameFamily)-Number(a.sameFamily);
-      // 2. Còn hàng trước.
-      if(a.inStock!==b.inStock) return Number(b.inStock)-Number(a.inStock);
-      // 3. Giá gần sản phẩm đang xem nhất.
-      if(a.priceDiff!==b.priceDiff) return a.priceDiff-b.priceDiff;
-      return a.price-b.price;
-    })
-    .slice(0,limit)
-    .map(x=>x.g);
+    .slice(0,limit);
 }
 
 
@@ -2035,7 +1999,7 @@ function renderTechnicalSpecs(container,data){
 
     const value=document.createElement("div");
     value.className="tech-spec-value";
-    value.textContent=row.value;
+    value.textContent=String(row.value || "").replace(/\r/g, "").replace(/\n[ \t]*\n+/g, "\n").trim();
 
     line.append(label,value);
     table.appendChild(line);
