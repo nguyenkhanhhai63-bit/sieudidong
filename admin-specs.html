@@ -8252,6 +8252,14 @@ body{background:#f8fafc!important}
 }
 </style>
 
+
+<style id="v328-preload-specs">
+.specs-bulk-sync{display:flex;align-items:center;gap:10px;margin-left:auto}
+.spec-sync-all{height:38px;padding:0 14px;border:1px solid #ff5a0a;border-radius:9px;background:#ff5a0a;color:#fff;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.spec-sync-all:hover{background:#e94e00}.spec-sync-all:disabled{opacity:.55;cursor:wait}
+.spec-sync-status{font-size:11px;font-weight:700;color:#667085;white-space:nowrap}
+@media(max-width:900px){.specs-bulk-sync{width:100%;margin:8px 0 0;flex-wrap:wrap}.spec-sync-all{width:100%}.spec-sync-status{white-space:normal}}
+</style>
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -8452,6 +8460,10 @@ body{background:#f8fafc!important}
         <button type="button" class="spec-filter active" data-filter="all">Tất cả</button>
         <button type="button" class="spec-filter" data-filter="linked">Đã có link</button>
         <button type="button" class="spec-filter" data-filter="missing">Chưa có link</button>
+      </div>
+      <div class="specs-bulk-sync">
+        <button type="button" id="syncAllSpecs" class="spec-sync-all">↻ Đồng bộ tất cả thông số</button>
+        <span id="syncAllSpecsStatus" class="spec-sync-status"></span>
       </div>
       <div id="stats" class="stats specs-stats"></div>
     </div>
@@ -11403,6 +11415,46 @@ logoutBtn.addEventListener("click",async()=>{
 });
 
 search.addEventListener("input",render);
+
+// V328 - preload all technical specs into Redis before customers visit.
+const syncAllSpecsBtn=document.getElementById("syncAllSpecs");
+const syncAllSpecsStatus=document.getElementById("syncAllSpecsStatus");
+if(syncAllSpecsBtn){
+  syncAllSpecsBtn.addEventListener("click",async()=>{
+    const targets=products.filter(model=>!!mapItem(model)?.url);
+    if(!targets.length){ alert("Chưa có model nào được gắn link thông số."); return; }
+    if(!confirm(`Đồng bộ sẵn thông số cho ${targets.length} model có link? Dữ liệu cũ vẫn được giữ nếu nguồn lỗi.`)) return;
+
+    syncAllSpecsBtn.disabled=true;
+    let ok=0, fail=0, done=0;
+    const failures=[];
+    const update=()=>{
+      syncAllSpecsStatus.textContent=`Đang đồng bộ ${done}/${targets.length} • Thành công ${ok} • Lỗi ${fail}`;
+    };
+    update();
+
+    // Run 2 at a time to avoid flooding Browserless and Vercel.
+    let cursor=0;
+    async function worker(){
+      while(cursor<targets.length){
+        const model=targets[cursor++];
+        try{
+          const r=await fetch("/api/specs?refresh=1&name="+encodeURIComponent(model),{cache:"no-store"});
+          const data=await r.json().catch(()=>({}));
+          if(!r.ok || !Array.isArray(data.specs) || !data.specs.length) throw new Error(data.detail||data.error||("HTTP "+r.status));
+          ok++;
+        }catch(e){
+          fail++; failures.push(model+": "+String(e?.message||e));
+        }finally{ done++; update(); }
+      }
+    }
+    await Promise.all([worker(),worker()]);
+    syncAllSpecsBtn.disabled=false;
+    syncAllSpecsStatus.textContent=`Hoàn tất ${done}/${targets.length} • Thành công ${ok} • Lỗi ${fail}`;
+    if(fail) alert(`Đồng bộ xong: ${ok} thành công, ${fail} lỗi. Dữ liệu cũ của máy lỗi vẫn được giữ.\n\n`+failures.slice(0,8).join("\n"));
+    else alert(`Đã đồng bộ sẵn thông số cho ${ok} model. Khách vào web sẽ đọc cache ngay.`);
+  });
+}
 
 document.getElementById("specFilterGroup")?.addEventListener("click",e=>{
   const btn=e.target.closest(".spec-filter");
