@@ -2759,12 +2759,23 @@ async function load(){
       throw new Error("Invalid product data");
     }
 
+    // V332: cập nhật dữ liệu nền nhưng KHÔNG dựng lại trang chi tiết đang mở.
+    // Trước đây load() chạy định kỳ rồi gọi openProductFromUrl() -> openInlineProductDetail()
+    // và hàm chi tiết có scrollTo(0,0), vì vậy khách đang đọc phía dưới bị nhảy lên đầu.
+    const detailWasOpen=!!(currentProductSlug() && inlineProductDetail && !inlineProductDetail.hidden);
+
     PRODUCTS=[...data.products,...usedProducts];
     saveProductCache(PRODUCTS);
 
     updatedAt.textContent=data.stale
       ? "Đang hiển thị dữ liệu gần nhất"
       : "Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
+
+    if(detailWasOpen){
+      // Chỉ làm mới dữ liệu trong bộ nhớ. DOM chi tiết hiện tại được giữ nguyên,
+      // nên thông số/sản phẩm tương tự tải nền không làm mất vị trí cuộn.
+      return;
+    }
 
     renderMainCategoryMenu();
     renderCategoryFilters();
@@ -2839,7 +2850,7 @@ document.addEventListener("visibilitychange",()=>{
 
 loadBestSellers();
 loadSearchPopularity();
-setInterval(load,60000);
+// V332: bỏ timer load() trùng lặp. __sddLiveKiotSync phía trên đã cập nhật KiotViet mỗi 60 giây.
 setInterval(loadBestSellers,60*60*1000);
 
 
