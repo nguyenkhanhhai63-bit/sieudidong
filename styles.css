@@ -16868,3 +16868,51 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   }
   .technical-spec-section > .technical-spec-body{padding-top:8px!important}
 }
+
+/* ===== V338 - BO O CAM TIEU DE THONG SO ===== */
+.technical-spec-section > .technical-spec-title{
+  min-height:0!important;
+  padding:20px 24px 5px!important;
+  font-size:25px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  color:#101828!important;
+}
+.technical-spec-section > .technical-spec-title:before{
+  content:none!important;
+  display:none!important;
+  width:0!important;
+  height:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.technical-spec-section > .technical-spec-title:after{
+  content:"Thông tin chi tiết về cấu hình và tính năng của sản phẩm"!important;
+  display:block!important;
+  margin-top:4px!important;
+  font-size:13px!important;
+  line-height:18px!important;
+  font-weight:400!important;
+  color:#8a93a3!important;
+}
+.technical-spec-section > .technical-spec-body{
+  padding-top:12px!important;
+}
+@media(max-width:700px){
+  .technical-spec-section > .technical-spec-title{
+    min-height:0!important;
+    padding:16px 12px 4px!important;
+    font-size:21px!important;
+    line-height:1.3!important;
+  }
+  .technical-spec-section > .technical-spec-title:before{
+    content:none!important;
+    display:none!important;
+  }
+  .technical-spec-section > .technical-spec-title:after{
+    margin-top:3px!important;
+    font-size:12px!important;
+    line-height:16px!important;
+  }
+  .technical-spec-section > .technical-spec-body{padding-top:8px!important}
+}
