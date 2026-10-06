@@ -9278,7 +9278,7 @@ function baseModelName(name=""){
   // V333: iPhone máy cũ chỉ quản lý link theo model gốc.
   // Ví dụ: "iPhone 8 cũ - 64 - Đỏ - 98% - Pin 7X" => "iPhone 8 cũ".
   // Giữ riêng Pro / Pro Max / Plus / mini, chỉ gom dung lượng, màu, % pin, Pin 7X/8X/9X.
-  const oldIphone=s.match(/^(iPhone\s+\d+(?:\s+(?:Pro\s+Max|Pro|Plus|mini))?\s+cũ)\b/i);
+  const oldIphone=s.match(/^(iPhone\s+\d+(?:\s+(?:Pro\s+Max|Pro|Plus|mini))?\s+cũ)(?=\s*(?:-|$))/i);
   if(oldIphone) return normalizeModel(oldIphone[1]);
   s=s.replace(/\s*\([^)]*\)\s*/g," ");
   s=s.replace(/\b(?:rom\s*)?tiếng\s*việt\b/gi," ");
@@ -9406,7 +9406,7 @@ function mapItem(model){
   // V333: sau khi gom iPhone cũ, tái sử dụng link của các biến thể cũ.
   // Chỉ tự nhận khi các biến thể cùng model đang trỏ về cùng một URL,
   // tránh lấy nhầm nguồn nếu dữ liệu Admin có nhiều link khác nhau.
-  if(/^iphone\s+/i.test(String(model||"")) && /\bcũ\b/i.test(String(model||""))){
+  if(/^iphone\s+/i.test(String(model||"")) && /(?:^|\s)cũ(?:\s|$|-)/i.test(String(model||""))){
     const target=clean(baseModelName(model));
     const matches=Object.keys(links).filter(k=>clean(baseModelName(k))===target && links[k]?.url);
     const urls=[...new Set(matches.map(k=>String(links[k].url||"").trim()).filter(Boolean))];
