@@ -9274,6 +9274,12 @@ function normalizeModel(name=""){
 
 function baseModelName(name=""){
   let s=normalizeModel(name);
+
+  // V333: iPhone máy cũ chỉ quản lý link theo model gốc.
+  // Ví dụ: "iPhone 8 cũ - 64 - Đỏ - 98% - Pin 7X" => "iPhone 8 cũ".
+  // Giữ riêng Pro / Pro Max / Plus / mini, chỉ gom dung lượng, màu, % pin, Pin 7X/8X/9X.
+  const oldIphone=s.match(/^(iPhone\s+\d+(?:\s+(?:Pro\s+Max|Pro|Plus|mini))?\s+cũ)\b/i);
+  if(oldIphone) return normalizeModel(oldIphone[1]);
   s=s.replace(/\s*\([^)]*\)\s*/g," ");
   s=s.replace(/\b(?:rom\s*)?tiếng\s*việt\b/gi," ");
   s=s.replace(/\blike\s*new\b/gi," ");
@@ -9393,14 +9399,23 @@ function setLoggedIn(value){
 }
 
 function mapItem(model){
-  // V844: mỗi model chỉ hiện link đã gắn cho chính model đó.
-  // Không dùng includes/fuzzy vì các tên gần nhau như "REDMI Pad 2"
-  // và "REDMI Pad 2 Lá" sẽ bị lấy nhầm cùng một link.
-  const exactKey=Object.keys(links).find(k=>
-    String(k||"").trim().replace(/\s+/g," ").toLowerCase() ===
-    String(model||"").trim().replace(/\s+/g," ").toLowerCase()
-  );
-  return exactKey ? links[exactKey] : null;
+  const clean=v=>String(v||"").trim().replace(/\s+/g," ").toLowerCase();
+  const exactKey=Object.keys(links).find(k=>clean(k)===clean(model));
+  if(exactKey) return links[exactKey];
+
+  // V333: sau khi gom iPhone cũ, tái sử dụng link của các biến thể cũ.
+  // Chỉ tự nhận khi các biến thể cùng model đang trỏ về cùng một URL,
+  // tránh lấy nhầm nguồn nếu dữ liệu Admin có nhiều link khác nhau.
+  if(/^iphone\s+/i.test(String(model||"")) && /\bcũ\b/i.test(String(model||""))){
+    const target=clean(baseModelName(model));
+    const matches=Object.keys(links).filter(k=>clean(baseModelName(k))===target && links[k]?.url);
+    const urls=[...new Set(matches.map(k=>String(links[k].url||"").trim()).filter(Boolean))];
+    if(urls.length===1){
+      const newest=matches.sort((a,b)=>new Date(links[b]?.updatedAt||0)-new Date(links[a]?.updatedAt||0))[0];
+      return links[newest];
+    }
+  }
+  return null;
 }
 
 let specFilter="all";
