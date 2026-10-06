@@ -8260,6 +8260,22 @@ body{background:#f8fafc!important}
 .spec-sync-status{font-size:11px;font-weight:700;color:#667085;white-space:nowrap}
 @media(max-width:900px){.specs-bulk-sync{width:100%;margin:8px 0 0;flex-wrap:wrap}.spec-sync-all{width:100%}.spec-sync-status{white-space:normal}}
 </style>
+
+<style id="v329-admin-spec-font">
+/* V329 - font rõ hơn cho Link thông số */
+.spec-table-head{font-size:13px!important;font-weight:800!important;min-height:48px!important}
+.spec-table-row{min-height:76px!important}
+.spec-index{font-size:13px!important}
+.spec-product strong{font-size:14px!important;line-height:1.4!important;font-weight:800!important}
+.spec-product small{font-size:12px!important;line-height:1.35!important}
+.spec-badge{font-size:12px!important;padding:5px 10px!important}
+.spec-linkbox .url{height:42px!important;font-size:13px!important}
+.spec-updated{font-size:12px!important;line-height:1.4!important}
+.spec-updated small{font-size:11px!important}
+.spec-actions button{height:40px!important;min-height:40px!important;font-size:12px!important}
+.btn-ico{font-size:14px!important}
+</style>
+
 </head>
 <body class="auth-pending">
 <div id="mobileAdminDrawerBackdrop" class="mobile-admin-drawer-backdrop"></div>
@@ -9525,13 +9541,33 @@ async function loadAdminProductMeta(){
         if(!pr.ok) throw new Error(pd.error||"Không tải được sản phẩm");
 
         const grouped=new Map();
-        (pd.products||[]).forEach(p=>{
-          const raw=normalizeModel(p.name);
+
+        // V329: lấy đủ cả sản phẩm cha + toàn bộ biến thể KiotViet.
+        // Bản cũ chỉ đọc p.name nên những model chỉ xuất hiện ở variants bị thiếu
+        // trong trang Link thông số.
+        const addKiotModel=(name)=>{
+          const raw=normalizeModel(name);
           const base=baseModelName(raw);
           if(!base) return;
-          const item=grouped.get(base) || {name:base, variants:new Set()};
+          const key=[...grouped.keys()].find(k=>foldKey(k)===foldKey(base)) || base;
+          const item=grouped.get(key) || {name:key, variants:new Set()};
           item.variants.add(raw);
-          grouped.set(base,item);
+          grouped.set(key,item);
+        };
+
+        // Khai báo trước để addKiotModel có thể so khớp không dấu.
+        function foldKey(v){
+          return String(v||"")
+            .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+            .replace(/đ/g,"d").replace(/Đ/g,"D")
+            .toLowerCase().trim();
+        }
+
+        (pd.products||[]).forEach(p=>{
+          addKiotModel(p.name || p.fullName || p.code);
+          (Array.isArray(p.variants)?p.variants:[]).forEach(v=>{
+            addKiotModel(v?.name || v?.fullName || v?.code);
+          });
         });
 
         // V845: gom các dòng thực chất chỉ là thuộc tính/màu bị dính vào tên model.
@@ -9540,7 +9576,7 @@ async function loadAdminProductMeta(){
         const attributeSuffixes=[
           "lá","xanh lá","xanh","đen","trắng","bạc","xám","đỏ","vàng","cam","hồng","tím"
         ];
-        const foldKey=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+
         [...grouped.keys()].forEach(model=>{
           const mk=foldKey(model);
           for(const suffix of attributeSuffixes){

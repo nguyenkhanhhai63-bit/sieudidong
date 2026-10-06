@@ -1,2 +1,6 @@
-V322 lấy trực tiếp admin-specs.html từ ZIP bạn vừa gửi và sửa hàm render thật.
+V329
+- Trang Link thông số đọc cả sản phẩm cha và toàn bộ variants từ /api/products (KiotViet).
+- Không còn bỏ sót model chỉ nằm trong biến thể.
+- Vẫn gom các phiên bản cùng model về một dòng.
+- Tăng font tên máy, link, trạng thái, cập nhật và nút thao tác.
 Upload đè admin-specs.html rồi deploy.
