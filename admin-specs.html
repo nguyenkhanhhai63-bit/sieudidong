@@ -9281,6 +9281,9 @@ function baseModelName(name=""){
   const oldIphone=s.match(/^(iPhone\s+\d+(?:\s+(?:Pro\s+Max|Pro|Plus|mini))?\s+cũ)(?=\s*(?:-|$))/i);
   if(oldIphone) return normalizeModel(oldIphone[1]);
   s=s.replace(/\s*\([^)]*\)\s*/g," ");
+  // V340: ROM chỉ là thuộc tính/phiên bản, không phải model riêng.
+  // Gom "- ROM GỐC", "- ROM Gốc", "- ROM TIẾNG VIỆT"... về model chính.
+  s=s.replace(/(?:^|\s*-\s*)rom\s*(?:gốc|tiếng\s*việt|quốc\s*tế|global|china|cn)\b/gi," ");
   s=s.replace(/\b(?:rom\s*)?tiếng\s*việt\b/gi," ");
   s=s.replace(/\blike\s*new\b/gi," ");
   s=s.replace(/\bchính\s*hãng\b/gi," ");
