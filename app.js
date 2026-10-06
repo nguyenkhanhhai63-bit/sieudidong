@@ -1911,16 +1911,64 @@ function render(){
 function relatedProductGroups(currentGroup, limit=3){
   const flat=flattenProducts(PRODUCTS);
   const allGroups=groupItems(flat);
+  const currentVariant=getDefaultVariantForGroup(currentGroup);
+  const currentPrice=Number(currentVariant?.price||0);
+  const currentBrand=String(currentGroup.items?.[0]?.brand||"").trim().toLowerCase();
+  const currentName=String(currentGroup.name||"").toLowerCase();
 
-  const currentBrand=currentGroup.items[0]?.brand || "";
+  // Nhận diện dòng máy để ưu tiên đúng họ sản phẩm, không lấy máy rẻ xa phân khúc để lấp đủ 3 ô.
+  const familyOf=(name)=>{
+    const n=String(name||"").toLowerCase();
+    const rules=[
+      [/\bk\s*\d{2,3}\b/, "redmi-k"],
+      [/\bturbo\b/, "redmi-turbo"],
+      [/\bnote\s*\d+\b/, "redmi-note"],
+      [/\bfind\s*x\d+\b/, "oppo-find-x"],
+      [/\bk\d+\s*turbo\b/, "oppo-k-turbo"],
+      [/\bneo\s*\d+\b/, "iqoo-neo"],
+      [/\bz\d+\b/, "iqoo-z"],
+      [/\bx\d{2,3}\b/, "vivo-x"],
+      [/\bace\s*\d+/, "oneplus-ace"],
+      [/\boneplus\s*\d+/, "oneplus-number"],
+      [/\bxiaomi\s*\d+/, "xiaomi-number"],
+      [/\bhonor\s*win\b/, "honor-win"]
+    ];
+    for(const [re,key] of rules) if(re.test(n)) return key;
+    return "";
+  };
+
+  const currentFamily=familyOf(currentName);
+  if(!currentPrice || currentPrice<=0) return [];
+
+  const minPrice=currentPrice*0.70;
+  const maxPrice=currentPrice*1.30;
 
   return allGroups
     .filter(g=>g.name!==currentGroup.name)
-    .filter(g=>{
-      const brand=g.items[0]?.brand || "";
-      return currentBrand && brand===currentBrand;
+    .map(g=>{
+      const variant=getDefaultVariantForGroup(g);
+      const price=Number(variant?.price||0);
+      const brand=String(g.items?.[0]?.brand||"").trim().toLowerCase();
+      const family=familyOf(g.name);
+      const inStock=Number(variant?.onHand||0)>0;
+      if(!price || price<minPrice || price>maxPrice) return null;
+
+      const sameBrand=currentBrand && brand===currentBrand;
+      const sameFamily=currentFamily && family===currentFamily;
+      // Khác hãng chỉ được giữ khi cùng họ sản phẩm là bất khả thi; mặc định loại bỏ hoàn toàn.
+      if(!sameBrand) return null;
+
+      const priceGap=Math.abs(price-currentPrice)/currentPrice;
+      let score=0;
+      if(sameFamily) score+=1000;
+      if(inStock) score+=150;
+      score+=Math.max(0,300-Math.round(priceGap*1000));
+      return {g,score,priceGap};
     })
-    .slice(0,limit);
+    .filter(Boolean)
+    .sort((a,b)=>(b.score-a.score)||(a.priceGap-b.priceGap))
+    .slice(0,limit)
+    .map(x=>x.g);
 }
 
 
