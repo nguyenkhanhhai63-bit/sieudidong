@@ -1912,15 +1912,63 @@ function relatedProductGroups(currentGroup, limit=3){
   const flat=flattenProducts(PRODUCTS);
   const allGroups=groupItems(flat);
 
-  const currentBrand=currentGroup.items[0]?.brand || "";
+  const currentItems=Array.isArray(currentGroup?.items)?currentGroup.items:[];
+  const currentBrand=canonicalBrand(currentItems[0]?.brand || "");
+  const currentCategory=categoryKey(currentItems[0]?.rootCategoryName || currentItems[0]?.categoryName || "");
 
-  return allGroups
+  // Giá đại diện: ưu tiên biến thể còn hàng, sau đó lấy mức giá thấp nhất > 0.
+  const representativePrice=(group)=>{
+    const items=Array.isArray(group?.items)?group.items:[];
+    const inStock=items.filter(x=>Number(x?.onHand||0)>0 && Number(x?.price||0)>0);
+    const priced=(inStock.length?inStock:items.filter(x=>Number(x?.price||0)>0));
+    if(!priced.length) return 0;
+    return Math.min(...priced.map(x=>Number(x.price||0)));
+  };
+
+  const currentPrice=representativePrice(currentGroup);
+
+  const candidates=allGroups
     .filter(g=>g.name!==currentGroup.name)
-    .filter(g=>{
-      const brand=g.items[0]?.brand || "";
-      return currentBrand && brand===currentBrand;
+    .map(g=>{
+      const first=g.items?.[0] || {};
+      const brand=canonicalBrand(first.brand || "");
+      const category=categoryKey(first.rootCategoryName || first.categoryName || "");
+      const price=representativePrice(g);
+      const hasStock=(g.items||[]).some(x=>Number(x?.onHand||0)>0);
+      const sameBrand=!!currentBrand && brand===currentBrand;
+      const sameCategory=!!currentCategory && category===currentCategory;
+      const priceGap=(currentPrice>0 && price>0)?Math.abs(price-currentPrice)/currentPrice:9;
+
+      // Điểm càng thấp càng giống. Giá gần là tiêu chí chính sau đúng loại + đúng hãng.
+      let score=0;
+      if(!sameCategory) score+=1000;
+      if(!sameBrand) score+=260;
+      if(!hasStock) score+=90;
+      score+=Math.min(priceGap,3)*220;
+
+      // Phạt mạnh máy lệch phân khúc quá xa để tránh máy 10-11tr gợi ý máy 3-4tr.
+      if(priceGap>0.55) score+=360;
+      if(priceGap>0.85) score+=500;
+
+      return {g,score,priceGap,sameBrand,sameCategory,hasStock,price};
     })
-    .slice(0,limit);
+    .filter(x=>x.sameCategory)
+    .sort((a,b)=>a.score-b.score || a.priceGap-b.priceGap || Number(b.hasStock)-Number(a.hasStock));
+
+  // Ưu tiên cùng hãng + giá trong khoảng hợp lý. Nếu chưa đủ 3 máy mới nới sang hãng khác.
+  const picked=[];
+  const add=(arr)=>{
+    for(const x of arr){
+      if(picked.length>=limit) break;
+      if(!picked.includes(x.g)) picked.push(x.g);
+    }
+  };
+  add(candidates.filter(x=>x.sameBrand && x.priceGap<=0.55));
+  add(candidates.filter(x=>x.sameBrand));
+  add(candidates.filter(x=>x.priceGap<=0.35));
+  add(candidates);
+
+  return picked.slice(0,limit);
 }
 
 
