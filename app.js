@@ -350,7 +350,7 @@ function loadSearchPopularityCache(){
 
 async function loadSearchPopularity(){
   try{
-    const res=await fetch("/api/search-popular",{cache:"default"});
+    const res=await fetch("/api/search-popular",{cache:"no-store"});
     if(!res.ok) throw new Error("HTTP "+res.status);
     const data=await res.json();
     const items=Array.isArray(data.items)?data.items:[];
@@ -1432,8 +1432,8 @@ async function fetchCompareSpecs(group){
 
   try{
     const res=await fetch(
-      "/api/specs?v=328&name="+encodeURIComponent(group.name),
-      {cache:"default",signal:controller.signal}
+      "/api/specs?v=923&name="+encodeURIComponent(group.name),
+      {cache:"no-store",signal:controller.signal}
     );
 
     if(!res.ok) throw new Error("HTTP "+res.status);
@@ -1973,7 +1973,7 @@ function relatedProductGroups(currentGroup, limit=3){
 
 
 
-const SPEC_CACHE_PREFIX = "sieudidong-specs-v8-strict-table:";
+const SPEC_CACHE_PREFIX = "sieudidong-specs-v9-fixed-groups:";
 const SPEC_CACHE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 function specCacheKey(name){
@@ -2067,8 +2067,8 @@ async function loadTechnicalSpecs(productName,container){
 
   try{
     const res=await fetch(
-      "/api/specs?v=328&name="+encodeURIComponent(productName),
-      {cache:"default"}
+      "/api/specs?v=923&name="+encodeURIComponent(productName),
+      {cache:"no-store"}
     );
 
     if(!res.ok) throw new Error("HTTP "+res.status);
