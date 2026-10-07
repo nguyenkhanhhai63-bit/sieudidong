@@ -219,7 +219,32 @@ function extract(rows){
   const rawCharge=findSpec(rows,['sạc nhanh','sac nhanh','công suất sạc','cong suat sac','sạc','sac','charging']);
   return{screen:cleanScreen(rawScreen,size,res,hz),chip:cleanChip(findSpec(rows,['chip','chipset','cpu','bộ xử lý','bo xu ly','vi xử lý','vi xu ly'])),battery:cleanBattery(rawBattery),charge:cleanCharge(rawCharge+' '+rawBattery)}
 }
-async function specFor(name,force=false){const key='sdd_cfg_v913_'+name.toLowerCase();if(!force){try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.t<7*864e5)return c.v}catch{}}try{const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:force?'no-store':'default'});const d=await r.json();const v=extract(d?.specs||[]);try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}return v}catch{return{screen:'—',chip:'—',battery:'—',charge:'—'}}}
+function hasConfig(v){return !!v&&[v.screen,v.chip,v.battery,v.charge].some(x=>x&&x!=='—')}
+async function specFor(name,force=false){
+  const key='sdd_cfg_v921_'+name.toLowerCase();
+  if(!force){
+    try{
+      const c=JSON.parse(localStorage.getItem(key)||'null');
+      if(c&&Date.now()-c.t<7*864e5&&hasConfig(c.v)) return c.v;
+    }catch{}
+  }
+  try{
+    const r=await fetch('/api/specs?'+(force?'refresh=1&':'')+'name='+encodeURIComponent(name),{cache:'no-store'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d?.error||('HTTP '+r.status));
+    const v=extract(d?.specs||[]);
+    // Chỉ lưu cache khi thật sự đọc được cấu hình. Không lưu 4 dấu gạch ngang nữa.
+    if(hasConfig(v)){
+      try{localStorage.setItem(key,JSON.stringify({t:Date.now(),v}))}catch{}
+    }else{
+      try{localStorage.removeItem(key)}catch{}
+    }
+    return v;
+  }catch{
+    try{localStorage.removeItem(key)}catch{}
+    return{screen:'—',chip:'—',battery:'—',charge:'—'};
+  }
+}
 async function pool(items,worker,n=6){let i=0;const jobs=Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const x=items[i++];await worker(x);statusEl.textContent=`Đang đọc cấu hình ${Math.min(i,items.length)}/${items.length} máy...`}});await Promise.all(jobs)}
 function loadAdjust(){try{adjust=Object.assign(adjust,JSON.parse(localStorage.getItem(ADJUST_KEY)||'{}')||{})}catch{};syncAdjustUI();applyAdjust(false)}
 function saveAdjust(){try{localStorage.setItem(ADJUST_KEY,JSON.stringify(adjust))}catch{};scheduleCloudSave()}
@@ -233,7 +258,7 @@ function renderFilters(){const counts={all:all.length};BRAND_ORDER.forEach(b=>co
 function visible(){return all.filter(x=>!x.hidden&&(activeBrand==='all'||x.brand===activeBrand)&&(!query||norm(x.displayName).includes(norm(query))||norm(x.originalName).includes(norm(query))))}
 function render(){const v=visible(), by={};for(const x of v)(by[x.brand]||(by[x.brand]=[])).push(x);groupsEl.innerHTML=BRAND_ORDER.filter(b=>by[b]?.length).map(b=>`<section class="group ${b}"><div class="group-title">${esc(BRAND_LABEL[b])}</div><table><thead><tr><th class="c-name">TÊN MÁY</th><th class="c-screen">MÀN HÌNH</th><th class="c-chip">CHIP</th><th class="c-battery">PIN</th><th class="c-charge">SẠC</th></tr></thead><tbody>${by[b].map(x=>`<tr><td>${esc(x.displayName)}</td><td class="${x.screen==='—'?'missing':''}">${esc(x.screen)}</td><td class="${x.chip==='—'?'missing':''}">${esc(x.chip)}</td><td class="${x.battery==='—'?'missing':''}">${esc(x.battery)}</td><td class="${x.charge==='—'?'missing':''}">${esc(x.charge)}</td></tr>`).join('')}</tbody></table></section>`).join('');fit();statusEl.textContent=`${v.length} model đang hiển thị · ${all.filter(x=>x.screen!=='—'||x.chip!=='—').length}/${all.length} model đã đọc được cấu hình`}
 function fit(){if(adjust.auto)autoFitA4();else manualFitCheck()}
-async function load(force=false){loading.hidden=false;statusEl.textContent='Đang tải danh sách sản phẩm...';try{if(!cloudReady){loadPrefs();loadAdjust();await loadCloudSettings(true);cloudReady=true;}const r=await fetch('/api/products?ts='+Date.now(),{cache:'no-store'});const d=await r.json();all=modelsFromProducts(d?.products||d||[]);applyPrefs();renderFilters();render();renderCustomizer();await pool(all,async x=>Object.assign(x,await specFor(x.originalName,force)),6);render();$('#updated').textContent='CẬP NHẬT: '+new Date().toLocaleDateString('vi-VN')}catch(e){statusEl.textContent='Lỗi: '+(e.message||e);groupsEl.innerHTML='<div style="padding:20px;color:#b42318">Không tải được dữ liệu.</div>'}finally{loading.hidden=true}}
+async function load(force=false){loading.hidden=false;statusEl.textContent='Đang tải danh sách sản phẩm...';try{if(!cloudReady){loadPrefs();loadAdjust();await loadCloudSettings(true);cloudReady=true;}const r=await fetch('/api/products?ts='+Date.now(),{cache:'no-store'});const d=await r.json();all=modelsFromProducts(d?.products||d||[]);applyPrefs();renderFilters();render();renderCustomizer();await pool(all,async x=>Object.assign(x,await specFor(x.originalName,force)),force?2:6);render();$('#updated').textContent='CẬP NHẬT: '+new Date().toLocaleDateString('vi-VN')}catch(e){statusEl.textContent='Lỗi: '+(e.message||e);groupsEl.innerHTML='<div style="padding:20px;color:#b42318">Không tải được dữ liệu.</div>'}finally{loading.hidden=true}}
 function renderCustomizer(){const box=$('#customizeList');if(!box)return;const q=norm($('#customizeSearch')?.value||'');const rows=all.filter(x=>!q||norm(x.displayName).includes(q)||norm(x.originalName).includes(q));box.innerHTML=rows.map((x,i)=>`<div class="customize-row" data-i="${i}" data-key="${esc(x.originalName.toLowerCase())}"><button class="toggle ${x.hidden?'':'on'}" type="button" aria-label="${x.hidden?'Hiện':'Ẩn'} ${esc(x.displayName)}"></button><div class="customize-name"><input value="${esc(x.displayName)}" data-role="name"><small>Tên gốc: ${esc(x.originalName)}</small></div><div class="customize-brand">${esc(BRAND_LABEL[x.brand]||x.brand)}</div></div>`).join('')||'<div style="padding:20px;color:#667085">Không tìm thấy sản phẩm.</div>';box.querySelectorAll('.customize-row').forEach(row=>{const x=all.find(v=>v.originalName.toLowerCase()===row.dataset.key);if(!x)return;row.querySelector('.toggle').onclick=()=>setPref(x,{hidden:!x.hidden,name:x.displayName===x.originalName?'':x.displayName});const inp=row.querySelector('[data-role="name"]');inp.addEventListener('change',()=>{const v=inp.value.trim();setPref(x,{name:v&&v!==x.originalName?v:'',hidden:x.hidden})});inp.addEventListener('keydown',e=>{if(e.key==='Enter'){inp.blur()}})})}
 function openCustomizer(){renderCustomizer();$('#customizeModal').classList.add('open');$('#customizeModal').setAttribute('aria-hidden','false')}
 function closeCustomizer(){$('#customizeModal').classList.remove('open');$('#customizeModal').setAttribute('aria-hidden','true')}
