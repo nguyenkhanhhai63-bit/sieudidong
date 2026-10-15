@@ -4933,3 +4933,33 @@ window.addEventListener("load",()=>{
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply,{once:true}); else apply();
 })();
+
+/* V922 - Tự động trượt thương hiệu từ phải sang trái trên mobile. */
+(()=>{
+  const rail=document.getElementById('categoryFilters');
+  if(!rail || rail.dataset.sddAutoBrands==='1') return;
+  rail.dataset.sddAutoBrands='1';
+  const mobile=window.matchMedia('(max-width: 720px)');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let last=0, holdUntil=0, running=true;
+  const pause=()=>{holdUntil=performance.now()+4500;};
+  rail.addEventListener('pointerdown',pause,{passive:true});
+  rail.addEventListener('touchstart',pause,{passive:true});
+  rail.addEventListener('wheel',pause,{passive:true});
+  rail.addEventListener('focusin',pause);
+  document.addEventListener('visibilitychange',()=>{last=0;});
+  const observer=new IntersectionObserver(entries=>{running=entries[0]?.isIntersecting??false;},{threshold:0.05});
+  observer.observe(rail);
+  function tick(now){
+    const delta=last?Math.min(now-last,60):0; last=now;
+    if(mobile.matches && !reduced.matches && running && !document.hidden && now>holdUntil){
+      const max=rail.scrollWidth-rail.clientWidth;
+      if(max>3){
+        if(rail.scrollLeft>=max-1){rail.scrollLeft=0;holdUntil=now+900;}
+        else rail.scrollLeft=Math.min(max,rail.scrollLeft+delta*0.028);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
