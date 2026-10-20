@@ -577,6 +577,18 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
  document.body.classList.add('sdd-home-all-mode');
  const jobs=[...document.querySelectorAll('[data-home-cat]')];
+ const HOME_CACHE_PREFIX='sdd-home-grid-v923:';
+ function restoreGrid(host,path){
+   try{const cached=JSON.parse(localStorage.getItem(HOME_CACHE_PREFIX+path)||'null');
+     if(!cached?.html||Date.now()-cached.time>24*3600000)return false;
+     host.innerHTML=cached.html;
+     return true;
+   }catch(_){return false;}
+ }
+ function cacheGrid(host,path){
+   try{localStorage.setItem(HOME_CACHE_PREFIX+path,JSON.stringify({time:Date.now(),html:host.innerHTML}));}catch(_){}
+ }
+
  const homeIphoneStash=[];
  const homeIphoneKeys=new Set();
  function iphoneKey(el){
@@ -630,6 +642,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
    f.setAttribute('aria-hidden','true');
    document.body.appendChild(f);
 
+   const restored=restoreGrid(host,path);
    let done=false, round=0, startedAt=0, lastSig='', stableSince=0, checks=0;
    const MAX_ROUNDS=3;
    const ROUND_TIMEOUT=35000;
@@ -641,7 +654,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      round++;
      startedAt=Date.now();
      lastSig=''; stableSince=0; checks=0;
-     host.innerHTML='<div class="loading">'+(path==='/phu-kien'?'Đang tải phụ kiện...':'Đang tải sản phẩm...')+'</div>';
+     if(!restored)host.innerHTML='<div class="loading">'+(path==='/phu-kien'?'Đang tải phụ kiện...':'Đang tải sản phẩm...')+'</div>';
      f.src=srcFor(path,round);
    }
 
@@ -653,6 +666,7 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
      // Quan trọng: /may-cu có thể hoàn tất sau /dien-thoai. Chỉ append iPhone sau khi
      // chính lưới Máy cũ render xong để không bị finishWith() xóa ngược trở lại.
      if(path==='/may-cu'){appendStashedIphones();setTimeout(appendStashedIphones,400);setTimeout(appendStashedIphones,1600);}
+     cacheGrid(host,path);
      f.remove();
    }
 
