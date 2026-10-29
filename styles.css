@@ -16980,3 +16980,35 @@ body.ai-chat-open #zaloConsultBtn.ai-chat-pill::after{
   }
   .sdd-catalog-showcase .sdd-brand-card{flex-shrink:0!important}
 }
+
+/* V953: Keep comparison controls visible above the fixed mobile bottom navigation. */
+@media (max-width: 720px) {
+  #compareBar.compare-bar {
+    position: fixed;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px) + 8px);
+    left: 50%;
+    width: min(480px, calc(100% - 20px));
+    max-height: min(190px, 32dvh);
+    overflow-y: auto;
+    z-index: 9010;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    padding: 9px;
+    border-radius: 12px;
+  }
+  #compareBar.compare-bar:not(.show) { transform: translate(-50%, 140%); }
+  #compareBar.compare-bar.show { transform: translate(-50%, 0); }
+  #compareBar .compare-bar-items { width: 100%; max-width: 100%; min-width: 0; flex: 0 0 auto; overflow-x: auto; }
+  #compareBar .compare-chip { max-width: 48%; flex: 1 1 0; min-width: 0; }
+  #compareBar .compare-bar-actions { display: grid; grid-template-columns: minmax(0,1fr) auto auto; width: 100%; gap: 6px; }
+  #compareBar .compare-bar-instruction { min-width: 0; font-size: 10px; white-space: normal; }
+  #compareBar .compare-clear-btn, #compareBar .compare-open-btn { min-height: 34px; padding: 0 9px; }
+  body:has(#compareBar.compare-bar.show) { padding-bottom: calc(195px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-width: 390px) {
+  #compareBar .compare-bar-actions { grid-template-columns: minmax(0,1fr) auto auto; }
+  #compareBar .compare-bar-instruction { grid-column: auto; }
+}
