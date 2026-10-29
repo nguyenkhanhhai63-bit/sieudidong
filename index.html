@@ -596,12 +596,27 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
     <div class="acc-shop-layout">
       <aside class="acc-shop-sidebar" aria-label="Bộ lọc phụ kiện">
         <div class="acc-filter-panel"><h3>Danh mục phụ kiện</h3><div id="accPublicSidebarCats" class="acc-side-categories"></div></div>
-        <div class="acc-filter-panel"><h3>Lọc theo giá</h3><div id="accPublicPrices" class="acc-price-options"><button data-price="all" class="active">Tất cả mức giá</button><button data-price="under100">Dưới 100K</button><button data-price="100to300">100K – 300K</button><button data-price="over300">Trên 300K</button></div></div>
+        <div class="acc-filter-panel"><h3>Lọc theo giá</h3><div class="acc-price-range"><input id="accPublicPriceMax" type="range" min="0" max="500000" step="10000" value="500000" aria-label="Giá tối đa"><div id="accPublicPriceLabel">0 đ – 500.000 đ</div></div><div id="accPublicPrices" class="acc-price-options"><button data-price="all" class="active">Tất cả mức giá</button><button data-price="under100">Dưới 100K</button><button data-price="100to300">100K – 300K</button><button data-price="over300">Trên 300K</button></div></div>
+        <div class="acc-filter-panel"><h3>Thương hiệu</h3><div id="accPublicBrands" class="acc-brand-list"></div><button type="button" id="accPublicClearFilters" class="acc-clear-filters">↻ Xóa bộ lọc</button></div>
       </aside>
       <section class="acc-shop-content"><div class="acc-public-tools"><input id="accPublicSearch" type="search" placeholder="Tìm phụ kiện..." aria-label="Tìm phụ kiện"><select id="accPublicSort" aria-label="Sắp xếp phụ kiện"><option value="default">Sắp xếp mặc định</option><option value="priceAsc">Giá thấp đến cao</option><option value="priceDesc">Giá cao đến thấp</option><option value="name">Tên A–Z</option></select></div><div id="accPublicCats" class="acc-cat-tabs"></div><div id="accPublicGrid" class="acc-public-grid"><div class="acc-public-empty">Đang tải phụ kiện...</div></div></section>
     </div>
   </main>
 
+<style id="v931-accessory-sidebar-filters">
+#sddAccessoryPage .acc-price-range{margin:5px 0 14px;text-align:center;font-size:12px;color:#64748b}
+#sddAccessoryPage .acc-price-range input{width:100%;accent-color:#ff5a00;cursor:pointer}
+#sddAccessoryPage .acc-price-range #accPublicPriceLabel{margin-top:4px}
+#sddAccessoryPage .acc-brand-list{display:flex;flex-direction:column;gap:3px;margin-bottom:12px}
+#sddAccessoryPage .acc-brand-row{display:flex;align-items:center;gap:9px;padding:7px 3px;font-size:13px;color:#273447;cursor:pointer}
+#sddAccessoryPage .acc-brand-row input{width:16px;height:16px;accent-color:#ff5a00}
+#sddAccessoryPage .acc-brand-row span{flex:1}
+#sddAccessoryPage .acc-brand-row small{background:#eef1f5;border-radius:14px;padding:3px 8px;color:#637083}
+#sddAccessoryPage .acc-clear-filters{width:100%;border:1px solid #dbe1ea;border-radius:9px;background:#fff;padding:10px;color:#263347;font-weight:700;cursor:pointer}
+#sddAccessoryPage .acc-clear-filters:hover{border-color:#ff5a00;color:#e95500}
+#sddAccessoryPage .acc-filter-muted{font-size:12px;color:#94a3b8}
+@media(max-width:820px){#sddAccessoryPage .acc-shop-sidebar{display:flex!important;flex-direction:row;overflow-x:auto;gap:8px;margin-bottom:10px}#sddAccessoryPage .acc-filter-panel{min-width:195px;flex:1}#sddAccessoryPage .acc-shop-layout{display:flex;flex-direction:column}#sddAccessoryPage .acc-shop-content{width:100%}}
+</style>
 <style id="v574-home-all-products-css">
 #sddHomeAllProducts{display:none}
 @media(min-width:1px){
@@ -2256,7 +2271,7 @@ body.sdd-accessory-route main.page{min-height:0!important}
  // Hide only known catalog surfaces; never hide ancestor <main> elements.
  ['productGrid','inlineProductDetail','sddHomeAllProducts'].forEach(id=>{const el=document.getElementById(id);if(el&&el!==page)el.style.display='none'});
 
- const KEY='sdd_accessory_settings_v2';let rows=[],activeCat='Tất cả',activePrice='all';const sideCats=document.getElementById('accPublicSidebarCats'),priceOptions=document.getElementById('accPublicPrices');const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]||m));const money=n=>(Number(n)||0).toLocaleString('vi-VN')+' đ';
+ const KEY='sdd_accessory_settings_v2';let rows=[],activeCat='Tất cả',activePrice='all',selectedBrands=new Set(),priceCeiling=500000;const sideCats=document.getElementById('accPublicSidebarCats'),priceOptions=document.getElementById('accPublicPrices'),brandsEl=document.getElementById('accPublicBrands'),priceMaxEl=document.getElementById('accPublicPriceMax'),priceLabelEl=document.getElementById('accPublicPriceLabel'),clearEl=document.getElementById('accPublicClearFilters');const brandOf=x=>{const b=String(x.brand||x.thuongHieu||x['Thương hiệu']||'').trim();if(b)return b;const n=String(x.name||'');return ['Xiaomi','Redmi','iQOO','OPPO','OnePlus','Samsung','Apple','Vivo','Honor','Realme'].find(v=>new RegExp('(^|[^a-z])'+v+'([^a-z]|$)','i').test(n))||'Khác'};const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]||m));const money=n=>(Number(n)||0).toLocaleString('vi-VN')+' đ';
  async function load(){
    let sheet=[],manual=[],errors=[];
    const results=await Promise.allSettled([
@@ -2286,16 +2301,18 @@ body.sdd-accessory-route main.page{min-height:0!important}
    cats.innerHTML=names.map(c=>`<button class="acc-cat-tab ${activeCat===c?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
    if(sideCats)sideCats.innerHTML=names.map(c=>`<button class="acc-side-cat ${activeCat===c?'active':''}" data-cat="${esc(c)}"><span>${esc(c==='Tất cả'?'Tất cả phụ kiện':c)}</span><small>${c==='Tất cả'?all.length:all.filter(x=>(x.category||'Khác')===c).length}</small></button>`).join('');
    if(priceOptions)priceOptions.querySelectorAll('[data-price]').forEach(b=>b.classList.toggle('active',b.dataset.price===activePrice));
+   if(brandsEl){const counts=new Map();all.forEach(x=>{const b=brandOf(x);counts.set(b,(counts.get(b)||0)+1)});brandsEl.innerHTML=[...counts].sort((a,b)=>a[0].localeCompare(b[0],'vi')).map(([b,n])=>`<label class="acc-brand-row"><input type="checkbox" value="${esc(b)}" ${selectedBrands.has(b)?'checked':''}><span>${esc(b)}</span><small>${n}</small></label>`).join('')||'<span class="acc-filter-muted">Chưa có thương hiệu</span>'}
+   if(priceLabelEl)priceLabelEl.textContent='0 đ – '+money(priceCeiling);
    const q=search.value.trim().toLowerCase();
    let arr=all.filter(x=>(activeCat==='Tất cả'||(x.category||'Khác')===activeCat)&&(!q||[x.name,x.category,x.note].join(' ').toLowerCase().includes(q)));
-   arr=arr.filter(x=>{const p=Number(x.price)||0;return activePrice==='all'||(activePrice==='under100'&&p<100000)||(activePrice==='100to300'&&p>=100000&&p<=300000)||(activePrice==='over300'&&p>300000)});
+   arr=arr.filter(x=>!selectedBrands.size||selectedBrands.has(brandOf(x)));arr=arr.filter(x=>(Number(x.price)||0)<=priceCeiling);arr=arr.filter(x=>{const p=Number(x.price)||0;return activePrice==='all'||(activePrice==='under100'&&p<100000)||(activePrice==='100to300'&&p>=100000&&p<=300000)||(activePrice==='over300'&&p>300000)});
    if(sort.value==='priceAsc')arr.sort((a,b)=>a.price-b.price);
    else if(sort.value==='priceDesc')arr.sort((a,b)=>b.price-a.price);
    else if(sort.value==='name')arr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','vi'));
    else arr.sort((a,b)=>Number(b.featured)-Number(a.featured)||(a.sort||0)-(b.sort||0));
    grid.innerHTML=arr.length?arr.map(x=>`<article class="acc-public-card"><div class="acc-public-img">${x.image?`<img loading="lazy" src="${esc(x.image)}" alt="${esc(x.name)}" onerror="this.remove()">`:''}</div><span class="acc-public-cat">${esc(x.category||'Khác')}</span><h3 title="${esc(x.name)}">${esc(x.name)}</h3>${x.note?`<p class="acc-public-note" title="${esc(x.note)}">${esc(x.note)}</p>`:'<p class="acc-public-note">&nbsp;</p>'}<div class="acc-public-price">${money(x.price)}${x.oldPrice?`<span class="acc-public-old">${money(x.oldPrice)}</span>`:''}</div><span class="acc-public-stock ${Number(x.stock)>0?'':'out'}">${Number(x.stock)>0?'✓ Còn hàng':'Hết hàng'}</span><button class="acc-public-btn" data-name="${esc(x.name)}">Liên hệ tư vấn</button></article>`).join(''):'<div class="acc-public-empty">Hiện chưa có phụ kiện phù hợp.</div>';
  }
- cats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(sideCats)sideCats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(priceOptions)priceOptions.addEventListener('click',e=>{const b=e.target.closest('[data-price]');if(!b)return;activePrice=b.dataset.price;render()});search.addEventListener('input',render);sort.addEventListener('change',render);grid.addEventListener('click',e=>{if(e.target.closest('#accRetry')){load();return}if(e.target.closest('[data-name]'))location.href='https://zalo.me/0353105423'});load();
+ cats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(sideCats)sideCats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(priceOptions)priceOptions.addEventListener('click',e=>{const b=e.target.closest('[data-price]');if(!b)return;activePrice=b.dataset.price;render()});if(brandsEl)brandsEl.addEventListener('change',e=>{if(e.target.matches('input[type="checkbox"]')){e.target.checked?selectedBrands.add(e.target.value):selectedBrands.delete(e.target.value);render()}});if(priceMaxEl)priceMaxEl.addEventListener('input',()=>{priceCeiling=Number(priceMaxEl.value);render()});if(clearEl)clearEl.addEventListener('click',()=>{activeCat='Tất cả';activePrice='all';selectedBrands.clear();priceCeiling=500000;if(priceMaxEl)priceMaxEl.value=500000;search.value='';sort.value='default';render()});search.addEventListener('input',render);sort.addEventListener('change',render);grid.addEventListener('click',e=>{if(e.target.closest('#accRetry')){load();return}if(e.target.closest('[data-name]'))location.href='https://zalo.me/0353105423'});load();
 })();
 </script>
 
