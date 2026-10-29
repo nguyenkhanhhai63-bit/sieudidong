@@ -725,6 +725,9 @@ function getRom(attrs, name){
 // V773: iPhone KiotViet là Máy cũ và được gom theo MODEL, giữ các thuộc tính thật của từng mã hàng.
 function iphoneModelName(name){
   const text=String(name||"").replace(/\s+/g," ").trim();
+  // V952: phụ kiện có chữ iPhone không phải là điện thoại iPhone cũ.
+  // Chặn ngay tại hàm nhận diện model, trước khi gán sourceType/categoryName.
+  if(/(?:^|[\s\-–|])(?:củ\s*sạc|cu\s*sac|sạc|sac|cáp\s*sạc|cap\s*sac|cáp|cap|ốp\s*lưng|op\s*lung|ốp|op|kính\s*cường\s*lực|kinh\s*cuong\s*luc|cường\s*lực|tai\s*nghe|ốp\s*điện\s*thoại|bao\s*da|dán\s*màn|dan\s*man|phụ\s*kiện|phu\s*kien|adapter|charger|case|cable|kính\s*camera)(?=\s|$|[\-–|])/i.test(text)) return "";
   const m=text.match(/\biphone\s*(?:se\s*\d*|\d{1,2})(?:\s*(?:pro\s*max|pro|max|plus|mini|air|e))?/i);
   if(!m) return "";
   return m[0].replace(/^iphone/i,"iPhone").replace(/\s+/g," ").trim();
@@ -1009,22 +1012,11 @@ function renderMainCategoryMenu(){
   });
 }
 
-// V950: Phân loại phụ kiện TRƯỚC khi nhận diện iPhone/máy cũ.
-// Ví dụ "CỦ SẠC IPHONE 35W" có chữ iPhone nhưng không phải điện thoại cũ.
-function sddIsAccessoryProduct(p){
-  const name=String(p?.fullName||p?.baseName||p?.name||"").trim();
-  const category=[p?.categoryName,p?.rootCategoryName].filter(Boolean).join(" ");
-  const normalized=(name+" "+category).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase();
-  const categoryNormalized=category.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase();
-  if(/phu\s*kien|op\s*lung|cu\s*sac|cap\s*sac|cuong\s*luc|kinh\s*cuong|tai\s*nghe|sac\s*du\s*phong|pin\s*du\s*phong|so\s*lanh/.test(categoryNormalized)) return true;
-  return /(?:^|[\s\-])(?:cu\s*sac|cap\s*sac|day\s*sac|sac\s*du\s*phong|pin\s*du\s*phong|op\s*lung|bao\s*da|kinh\s*cuong\s*luc|cuong\s*luc|dan\s*man\s*hinh|tai\s*nghe|cap\s*chuyen|sac\s*khong\s*day|so\s*lanh)(?=$|[\s\-])/i.test(normalized);
-}
 function sddProductKind(p){
-  if(sddIsAccessoryProduct(p)) return "other";
   const sddName=[p?.fullName,p?.baseName,p?.name].filter(Boolean).join(" ");
   if(iphoneModelName(sddName)) return "used";
   if(p?.sourceType==="used" || p?.sourceType==="kiot-iphone-used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
-  const haystack=[p?.fullName,p?.baseName,p?.name,p?.categoryName,p?.rootCategoryName,p?.brand].filter(Boolean).join(" ").toLowerCase();
+  const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand].filter(Boolean).join(" ").toLowerCase();
   if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
   if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
   return "phone";
@@ -1048,7 +1040,7 @@ function flattenProducts(raw){
         : (p.attributes || []);
 
       const fullName = v.name || p.name || "";
-      const iphoneModel = sddIsAccessoryProduct({...p, fullName}) ? "" : iphoneModelName(fullName);
+      const iphoneModel = iphoneModelName(fullName);
       const memory = getMemory(attrs, fullName);
       const color = getColor(attrs, fullName);
       const rom = getRom(attrs, fullName);
