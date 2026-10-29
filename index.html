@@ -460,6 +460,29 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 /* map unsupported synthetic weights to common weights */
 [style*="font-weight:850"],[style*="font-weight:900"],[style*="font-weight:950"]{font-weight:700!important;}
 </style>
+
+<style id="v938-home-accessory-compact">
+/* V938: Homepage accessory section uses the same compact tile proportions as the dedicated page. */
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"]{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important;
+}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-card{
+ width:100%!important;min-width:0!important;min-height:0!important;padding:10px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-img{
+ width:100%!important;height:150px!important;aspect-ratio:auto!important;min-height:0!important;max-height:150px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:8px!important;box-sizing:border-box!important;margin:0 0 9px!important;background:#f8fafc!important;border-radius:9px!important;overflow:hidden!important;
+}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-img img{
+ display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-card h3{font-size:13px!important;line-height:1.35!important;min-height:0!important;margin:4px 0!important}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-note{font-size:11px!important;min-height:0!important;margin:0 0 7px!important}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-price{font-size:16px!important}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-btn{height:34px!important}
+@media(max-width:1199px){body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:899px){body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:600px){body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kien"] .acc-public-img{height:125px!important;max-height:125px!important}}
+</style>
 </head>
 <body>
 
