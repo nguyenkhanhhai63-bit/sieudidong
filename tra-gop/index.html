@@ -1127,5 +1127,35 @@ main.warranty-page-main.v341-header-axis > .warranty-page-card{
   setTimeout(align,900);
 })();
 </script>
+<!-- v947: Mobile bottom navigation, independent of existing header and page layout -->
+<style id="v947-mobile-bottom-navigation-style">
+.sdd-mobile-bottom-nav{display:none}
+@media(max-width:767px){
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
+ .sdd-mobile-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:9000;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));height:calc(66px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:#fff;border-top:1px solid #e7e9ee;box-shadow:0 -5px 20px rgba(17,24,39,.08)}
+ .sdd-mobile-bottom-nav a{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;min-width:0;color:#273247;text-decoration:none!important;font-size:11px;font-weight:600;border-right:1px solid #f1f2f5;-webkit-tap-highlight-color:transparent}
+ .sdd-mobile-bottom-nav a:last-child{border-right:0}
+ .sdd-mobile-bottom-nav a svg{height:23px;width:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+ .sdd-mobile-bottom-nav a[aria-current="page"]{color:#ff6000;font-weight:800}
+ .sdd-mobile-bottom-nav a[aria-current="page"] svg{stroke-width:2.4}
+}
+</style>
+<nav class="sdd-mobile-bottom-nav" aria-label="Điều hướng nhanh trên điện thoại">
+ <a href="/" data-bottom-page="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Trang chủ</span></a>
+ <a href="/may-cu" data-bottom-page="used"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 5h4M11 18.5h2"/></svg><span>Máy cũ</span></a>
+ <a href="/phu-kien" data-bottom-page="accessory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V6a5 5 0 0 1 10 0v2"/><rect x="4" y="8" width="16" height="13" rx="2"/></svg><span>Phụ kiện</span></a>
+ <a href="/tra-cuu-bao-hanh.html" data-bottom-page="warranty"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3 8.5 8 11 5-2.5 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg><span>Bảo hành</span></a>
+</nav>
+<script id="v947-mobile-bottom-navigation-script">
+(function(){
+ function updateBottomNav(){
+  var path=(location.pathname||'/').toLowerCase().replace(/\/+$/,'')||'/';
+  var key=path.indexOf('tra-cuu-bao-hanh')!==-1?'warranty':path.indexOf('phu-kien')!==-1?'accessory':path.indexOf('may-cu')!==-1?'used':path==='/'||path==='/index.html'?'home':'';
+  document.querySelectorAll('.sdd-mobile-bottom-nav a').forEach(function(a){if(a.dataset.bottomPage===key)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+ }
+ updateBottomNav();window.addEventListener('popstate',updateBottomNav);
+ document.querySelectorAll('.sdd-mobile-bottom-nav a').forEach(function(a){a.addEventListener('click',function(){setTimeout(updateBottomNav,80)})});
+})();
+</script>
 </body>
 </html>
