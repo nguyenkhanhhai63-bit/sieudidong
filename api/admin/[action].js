@@ -14,6 +14,7 @@ const handlers = {
   "spec-links": () => import("../../lib/admin-api/spec-links.js"),
   "manual-specs": () => import("../../lib/admin-api/manual-specs.js"),
   "used-products": () => import("../../lib/admin-api/used-products.js"),
+  "accessory-sheet-settings": () => import("../../lib/admin-api/accessory-sheet-settings.js"),
   "used-sheet-settings": () => import("../../lib/admin-api/used-sheet-settings.js"),
   "cloudinary-signature": () => import("../../lib/admin-api/cloudinary-signature.js"),
   "order-visibility": () => import("../../lib/admin-api/order-visibility.js"),
