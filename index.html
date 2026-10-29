@@ -3156,41 +3156,86 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 }
 @media(min-width:821px){#sddAccessoryPage .acc-mobile-filter-summary{display:none!important}}
 </style>
-<script id="v940-accessory-mobile-filters-js">
+<style id="v945-accessory-mobile-shop-css">
+@media(max-width:820px){
+ body.v945-filter-lock{overflow:hidden!important}
+ #sddAccessoryPage .acc-shop-layout{display:flex!important;flex-direction:column!important}
+ #sddAccessoryPage .acc-shop-content{display:flex!important;flex-direction:column!important;min-width:0}
+ #sddAccessoryPage .v945-quick-cats{order:0;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin:2px 0 14px;padding:2px 0 8px;scrollbar-width:none}
+ #sddAccessoryPage .v945-quick-cats::-webkit-scrollbar{display:none}
+ #sddAccessoryPage .v945-quick-cat{flex:0 0 88px;min-height:87px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;background:#fff;border:1px solid #e4e8ef;border-radius:12px;color:#142238;font-size:12px;font-weight:750;line-height:1.2;padding:8px 5px;box-shadow:0 2px 8px #0f172a08}
+ #sddAccessoryPage .v945-quick-cat.active{background:#ff5a00;color:#fff;border-color:#ff5a00}
+ #sddAccessoryPage .v945-quick-icon{font-size:25px;font-weight:500;line-height:1}
+ #sddAccessoryPage .acc-public-tools{order:1!important;display:flex!important;flex-direction:column!important;margin:0 0 9px!important}
+ #sddAccessoryPage .acc-public-tools input{width:100%!important;min-height:45px;font-size:14px}
+ #sddAccessoryPage .acc-public-tools select{position:absolute!important;left:0!important;top:0!important;opacity:0!important;pointer-events:none!important}
+ #sddAccessoryPage .acc-mobile-filter-actions{order:2!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;margin:0 0 8px!important}
+ #sddAccessoryPage #accMobileCategories{display:none!important}
+ #sddAccessoryPage .acc-mobile-filter-actions .v945-sort-button{display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #dbe2eb;border-radius:11px;min-height:46px;font-weight:750;font-size:14px}
+ #sddAccessoryPage .acc-mobile-filter-actions button{min-height:46px!important;font-size:14px!important;border-radius:11px!important}
+ #sddAccessoryPage #accMobileFilters{border-color:#ff5a00!important;color:#ef5100!important;background:#fff7f1!important}
+ #sddAccessoryPage .acc-mobile-filter-summary{order:3!important;margin:0 0 6px!important}
+ #sddAccessoryPage .v945-result-count{order:4;color:#64748b;font-size:13px;margin:4px 0 10px}
+ #sddAccessoryPage .acc-public-grid{order:5!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ #sddAccessoryPage .v945-backdrop{display:none;position:fixed;inset:0;background:#0f172a75;z-index:99991}
+ #sddAccessoryPage .v945-backdrop.v945-show{display:block}
+ #sddAccessoryPage .acc-shop-sidebar{display:none!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:99992!important;max-height:90dvh!important;overflow-y:auto!important;width:100%!important;box-sizing:border-box!important;padding:0 15px 0!important;margin:0!important;border-radius:22px 22px 0 0!important;background:#fff!important;box-shadow:0 -12px 40px #0002!important;flex-direction:column!important;gap:0!important}
+ #sddAccessoryPage .acc-shop-sidebar.v945-open{display:flex!important}
+ #sddAccessoryPage .v945-sheet-header{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;padding:19px 2px 13px;border-bottom:1px solid #edf0f5;font-size:19px}
+ #sddAccessoryPage .v945-sheet-header button{background:#f4f6f8;border:0;border-radius:9px;padding:8px 12px;font-size:17px}
+ #sddAccessoryPage .acc-shop-sidebar .acc-filter-panel,#sddAccessoryPage .acc-shop-sidebar .acc-filter-panel:first-child,#sddAccessoryPage .acc-shop-sidebar .acc-filter-panel:nth-child(2),#sddAccessoryPage .acc-shop-sidebar .acc-filter-panel:nth-child(3){display:block!important;border:0!important;border-bottom:1px solid #edf0f5!important;border-radius:0!important;padding:17px 2px!important;box-shadow:none!important;width:100%!important;min-width:0!important}
+ #sddAccessoryPage .acc-side-categories{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:none!important;overflow:visible!important}
+ #sddAccessoryPage .acc-side-cat{min-height:67px!important;display:flex!important;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:4px;padding:9px 4px!important;border:1px solid #dfe5ee!important;border-radius:10px!important;background:#fff!important;font-size:12px!important}
+ #sddAccessoryPage .acc-side-cat.active{background:#ff5a00!important;color:#fff!important;border-color:#ff5a00!important}
+ #sddAccessoryPage .acc-price-options{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ #sddAccessoryPage .acc-brand-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+ #sddAccessoryPage .acc-clear-filters{display:none!important}
+ #sddAccessoryPage .acc-mobile-filter-footer{display:grid!important;grid-template-columns:1fr 1.5fr;position:sticky!important;bottom:0!important;z-index:3!important;margin:0 -15px!important;padding:12px 15px max(12px,env(safe-area-inset-bottom))!important;background:#fff!important;border:0!important;border-top:1px solid #edf0f5!important;border-radius:0!important;box-shadow:0 -5px 20px #0001!important}
+ #sddAccessoryPage .acc-mobile-filter-footer button{min-height:47px!important;font-size:14px!important}
+}
+@media(min-width:821px){#sddAccessoryPage .v945-quick-cats,#sddAccessoryPage .v945-result-count,#sddAccessoryPage .v945-sheet-header,#sddAccessoryPage .v945-backdrop{display:none!important}}
+</style>
+<script id="v945-accessory-mobile-shop-js">
 (function(){
-  const page=document.getElementById('sddAccessoryPage');if(!page)return;
-  const sidebar=page.querySelector('.acc-shop-sidebar'),layout=page.querySelector('.acc-shop-layout'),content=page.querySelector('.acc-shop-content'),actions=page.querySelector('.acc-mobile-filter-actions');
-  const cat=document.getElementById('accMobileCategories'),filter=document.getElementById('accMobileFilters'),count=document.getElementById('accMobileFilterCount');
-  if(!sidebar||!layout||!content||!actions||!cat||!filter)return;
-  const footer=document.createElement('div');footer.className='acc-mobile-filter-footer';
-  footer.innerHTML='<button type="button" data-mobile-reset>↻ Xóa lọc</button><button type="button" data-mobile-apply>✓ Xem sản phẩm</button>';
-  sidebar.appendChild(footer);
-  const summary=document.createElement('div');summary.className='acc-mobile-filter-summary';actions.insertAdjacentElement('afterend',summary);
-  const mobile=()=>matchMedia('(max-width:820px)').matches;
-  function close(){sidebar.classList.remove('acc-mobile-open','acc-mobile-categories','acc-mobile-filters');cat.setAttribute('aria-expanded','false');filter.setAttribute('aria-expanded','false');}
-  function sync(){if(mobile()){if(sidebar.parentElement!==content)content.insertBefore(sidebar,summary.nextSibling);}else{close();if(sidebar.parentElement!==layout)layout.insertBefore(sidebar,content);}}
-  function toggle(mode){if(!mobile())return;const opened=sidebar.classList.contains('acc-mobile-'+mode);close();if(!opened){sidebar.style.top=(actions.offsetTop+actions.offsetHeight+6)+'px';sidebar.classList.add('acc-mobile-open','acc-mobile-'+mode);(mode==='categories'?cat:filter).setAttribute('aria-expanded','true');}}
-  function update(){
-    const active=page.querySelector('#accPublicSidebarCats .active');const category=active?.textContent?.replace(/\d+\s*$/,'').trim()||'';
-    const price=page.querySelector('#accPublicPrices [data-price].active');const priceText=price&&price.dataset.price!=='all'?price.textContent.trim():'';
-    const brands=[...page.querySelectorAll('#accPublicBrands input:checked')].map(x=>x.closest('label')?.textContent?.trim()||x.value).filter(Boolean);
-    const range=document.getElementById('accPublicPriceMax');const customRange=range&&Number(range.value)<Number(range.max)&&!priceText;
-    const tags=[];if(category&&!/tất cả/i.test(category))tags.push(category);if(priceText)tags.push(priceText);else if(customRange)tags.push('Giá ≤ '+Number(range.value).toLocaleString('vi-VN')+'đ');tags.push(...brands);
-    summary.replaceChildren();tags.forEach(t=>{const el=document.createElement('span');el.textContent=t;summary.appendChild(el)});
-    count.textContent=tags.length?String(tags.length):'';
-    const cards=[...page.querySelectorAll('#accPublicGrid > *')].filter(x=>x.matches('.acc-product-card,.acc-public-card,[data-accessory-id]'));
-    const visible=cards.filter(x=>getComputedStyle(x).display!=='none').length;
-    footer.querySelector('[data-mobile-apply]').textContent='✓ Xem sản phẩm'+(cards.length?' ('+visible+')':'');
-  }
-  cat.addEventListener('click',()=>toggle('categories'));filter.addEventListener('click',()=>toggle('filters'));
-  document.addEventListener('pointerdown',e=>{if(mobile()&&!sidebar.contains(e.target)&&!actions.contains(e.target))close();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-  footer.addEventListener('click',e=>{if(e.target.closest('[data-mobile-reset]')){document.getElementById('accPublicClearFilters')?.click();update();}close();});
-  sidebar.addEventListener('click',e=>{if(e.target.closest('.acc-side-cat')){close();setTimeout(update,0);}});
-  sidebar.addEventListener('change',()=>setTimeout(update,0));sidebar.addEventListener('input',()=>setTimeout(update,0));sidebar.addEventListener('click',()=>setTimeout(update,0));
-  const observer=new MutationObserver(()=>{if(!page.isConnected)return;clearTimeout(observer._t);observer._t=setTimeout(update,100)});
-  observer.observe(page.querySelector('#accPublicGrid'),{childList:true,subtree:false});
-  window.addEventListener('resize',sync,{passive:true});sync();update();
+ const page=document.getElementById('sddAccessoryPage');if(!page)return;
+ const sidebar=page.querySelector('.acc-shop-sidebar'),layout=page.querySelector('.acc-shop-layout'),content=page.querySelector('.acc-shop-content'),actions=page.querySelector('.acc-mobile-filter-actions');
+ const cat=document.getElementById('accMobileCategories'),filter=document.getElementById('accMobileFilters'),count=document.getElementById('accMobileFilterCount');
+ if(!sidebar||!layout||!content||!actions||!cat||!filter)return;
+ const mobile=()=>window.matchMedia('(max-width:820px)').matches;
+ const backdrop=document.createElement('div');backdrop.className='v945-backdrop';page.appendChild(backdrop);
+ const header=document.createElement('div');header.className='v945-sheet-header';header.innerHTML='<strong>Bộ lọc phụ kiện</strong><button type="button" aria-label="Đóng bộ lọc">✕</button>';sidebar.prepend(header);
+ const footer=document.createElement('div');footer.className='acc-mobile-filter-footer';footer.innerHTML='<button type="button" data-mobile-reset>↻ Đặt lại</button><button type="button" data-mobile-apply>Xem sản phẩm</button>';sidebar.appendChild(footer);
+ const summary=document.createElement('div');summary.className='acc-mobile-filter-summary';actions.insertAdjacentElement('afterend',summary);
+ const cats=document.getElementById('accPublicSidebarCats');const quick=document.createElement('div');quick.className='v945-quick-cats';content.insertBefore(quick,content.firstChild);
+ const result=document.createElement('div');result.className='v945-result-count';summary.insertAdjacentElement('afterend',result);
+ const reset=document.getElementById('accPublicClearFilters');const sort=document.getElementById('accPublicSort');const sortBtn=document.createElement('button');sortBtn.type='button';sortBtn.className='v945-sort-button';sortBtn.textContent='↕ Sắp xếp';actions.prepend(sortBtn);sortBtn.addEventListener('click',()=>{try{sort.showPicker()}catch(e){sort.focus();sort.click()}});
+ function close(){sidebar.classList.remove('v945-open');backdrop.classList.remove('v945-show');document.body.classList.remove('v945-filter-lock');cat.setAttribute('aria-expanded','false');filter.setAttribute('aria-expanded','false')}
+ function open(){if(!mobile())return;sidebar.classList.add('v945-open');backdrop.classList.add('v945-show');document.body.classList.add('v945-filter-lock');filter.setAttribute('aria-expanded','true')}
+ function sync(){if(mobile()){if(sidebar.parentElement!==page)page.appendChild(sidebar);cat.style.display='none';}else{close();cat.style.display='';if(sidebar.parentElement!==layout)layout.insertBefore(sidebar,content)}}
+ function update(){
+  if(!mobile())return;
+  const rows=[...cats.querySelectorAll('.acc-side-cat')];quick.replaceChildren();rows.forEach((row,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='v945-quick-cat'+(row.classList.contains('active')?' active':'');const label=row.textContent.trim().replace(/\s*\d+\s*$/,'').trim();btn.innerHTML='<span class="v945-quick-icon">'+({'Tất cả phụ kiện':'▦','Củ sạc':'▣','Cáp sạc':'♧','Ốp lưng':'▯','Tai nghe':'♫','Sạc dự phòng':'▤','Sò lạnh':'◉'}[label]||'◇')+'</span><span class="v945-quick-label"></span>';btn.querySelector('.v945-quick-label').textContent=label;btn.addEventListener('click',()=>{row.click();close();setTimeout(update,80)});quick.appendChild(btn)});
+  const active=rows.find(x=>x.classList.contains('active'));const category=active?.textContent?.replace(/\s*\d+\s*$/,'').trim()||'';
+  const price=page.querySelector('#accPublicPrices [data-price].active');const priceText=price&&price.dataset.price!=='all'?price.textContent.trim():'';
+  const brands=[...page.querySelectorAll('#accPublicBrands input:checked')].map(x=>x.closest('label')?.textContent?.trim()||x.value).filter(Boolean);
+  const range=document.getElementById('accPublicPriceMax');const custom=range&&Number(range.value)<Number(range.max)&&!priceText;
+  const tags=[];if(category&&!/tất cả/i.test(category))tags.push(category);if(priceText)tags.push(priceText);else if(custom)tags.push('Dưới '+Number(range.value).toLocaleString('vi-VN')+'đ');tags.push(...brands);
+  summary.replaceChildren();tags.forEach(t=>{const x=document.createElement('span');x.textContent=t;summary.appendChild(x)});
+  count.textContent=tags.length?String(tags.length):'';
+  const cards=[...page.querySelectorAll('#accPublicGrid > *')].filter(x=>x.matches('.acc-product-card,.acc-public-card,[data-accessory-id]'));
+  const visible=cards.filter(x=>getComputedStyle(x).display!=='none').length;
+  result.textContent=cards.length?'Có '+visible+' sản phẩm':'';
+  footer.querySelector('[data-mobile-apply]').textContent='Xem '+visible+' sản phẩm';
+ }
+ filter.addEventListener('click',()=>sidebar.classList.contains('v945-open')?close():open());
+ cat.addEventListener('click',open);header.querySelector('button').addEventListener('click',close);backdrop.addEventListener('click',close);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ footer.querySelector('[data-mobile-reset]').addEventListener('click',()=>{reset?.click();setTimeout(update,100)});
+ footer.querySelector('[data-mobile-apply]').addEventListener('click',()=>{close();document.getElementById('accPublicGrid')?.scrollIntoView({behavior:'smooth',block:'start'})});
+ sidebar.addEventListener('click',e=>{if(e.target.closest('.acc-side-cat'))setTimeout(update,80)});
+ sidebar.addEventListener('change',()=>setTimeout(update,80));sidebar.addEventListener('input',()=>setTimeout(update,80));sidebar.addEventListener('click',()=>setTimeout(update,100));
+ const grid=document.getElementById('accPublicGrid');if(grid){const observer=new MutationObserver(()=>{clearTimeout(observer.t);observer.t=setTimeout(update,120)});observer.observe(grid,{childList:true})}
+ window.addEventListener('resize',sync,{passive:true});sync();setTimeout(update,300);
 })();
 </script>
 </body>
