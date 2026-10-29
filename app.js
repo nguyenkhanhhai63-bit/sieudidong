@@ -2818,6 +2818,12 @@ async function load(){
     PRODUCTS=[...data.products,...usedProducts];
     saveProductCache(PRODUCTS);
 
+    // V954: Rehydrate compare selections after the live product list arrives.
+    // Previously this happened only when a product cache existed at startup;
+    // on a cold load the detail button and bottom compare bar could disagree.
+    loadCompareItems();
+    renderCompareBar();
+
     updatedAt.textContent=data.stale
       ? "Đang hiển thị dữ liệu gần nhất"
       : "Cập nhật lúc "+new Date().toLocaleTimeString("vi-VN");
