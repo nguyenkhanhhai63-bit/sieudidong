@@ -13303,19 +13303,20 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
   function localSave(){try{localStorage.setItem(KEY,JSON.stringify({products:manualRows,updatedAt:Date.now()}))}catch{}}
   async function load(){
     setStatus('Đang tải...');
-    let sheet=[],warning='';
+    let sheet=[],warning='',ir=null;
     try{
-      const [mr,sr,ir]=await Promise.allSettled([
+      const [mr,sr,imageResponse]=await Promise.allSettled([
         fetch('/api/admin/accessory-settings?_='+Date.now(),{cache:'no-store',credentials:'same-origin'}),
         fetch('/api/accessory-sheet?_='+Date.now(),{cache:'no-store',credentials:'same-origin'}),
         fetch('/api/admin/accessory-images',{cache:'no-store',credentials:'same-origin'})
       ]);
+      ir=imageResponse;
       if(mr.status==='fulfilled'&&mr.value.ok){const j=await mr.value.json(),v=j.settings||j;manualRows=Array.isArray(v?.products)?v.products:localLoad()}
       else{manualRows=localLoad();warning='Không tải được phụ kiện thủ công'}
       if(sr.status==='fulfilled'&&sr.value.ok){const j=await sr.value.json();sheet=Array.isArray(j.items)?j.items:[];if(j.warning)warning=j.warning}
       else warning=warning||'Không tải được Google Sheet';
     }catch(e){manualRows=localLoad();warning=e.message}
-    if(ir.status==='fulfilled'&&ir.value.ok){const d=await ir.value.json();sheetImages=d.images||{}}rows=[...sheet.map(x=>({...x,image:sheetImages[x.id]||x.image})),...manualRows];render();setStatus(`Đã tải ${sheet.length} phụ kiện từ Google Sheet, ${manualRows.length} phụ kiện thủ công`+(warning?' · '+warning:''),warning?'#b54708':'#15803d');
+    if(ir?.status==='fulfilled'&&ir.value.ok){try{const d=await ir.value.json();sheetImages=d.images||{}}catch(e){warning=warning||'Không đọc được ảnh phụ kiện'}}rows=[...sheet.map(x=>({...x,image:sheetImages[x.id]||x.image})),...manualRows];render();setStatus(`Đã tải ${sheet.length} phụ kiện từ Google Sheet, ${manualRows.length} phụ kiện thủ công`+(warning?' · '+warning:''),warning?'#b54708':'#15803d');
   }
   async function persist(){manualRows=rows.filter(x=>x.source!=='sheet');localSave();try{const r=await fetch('/api/admin/accessory-settings',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({products:manualRows,updatedAt:Date.now()})});if(!r.ok)throw new Error('save');setStatus('✓ Đã lưu phụ kiện','#15803d');return true}catch{setStatus('Đã lưu trên trình duyệt; máy chủ chưa nhận dữ liệu','#b54708');return false}}
   function preview(){const u=els.image.value.trim();els.preview.innerHTML=u?`<img src="${esc(u)}" alt="Ảnh phụ kiện" onerror="this.parentNode.innerHTML='<span>Không tải được ảnh</span>'">`:'<span>Chưa có ảnh sản phẩm</span>'}
