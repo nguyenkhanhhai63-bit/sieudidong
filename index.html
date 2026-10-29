@@ -2363,6 +2363,26 @@ body.sdd-accessory-route main.page > :not(#sddAccessoryPage):not(#siteFooter):no
 body.sdd-accessory-route main.page{min-height:0!important}
 </style>
 <script>if(/^\/phu-kien\/?$/.test(location.pathname))document.body.classList.add('sdd-accessory-route');</script>
+<script id="v941-accessory-route-navigation-fix">
+(()=>{
+  const accessoryPath=p=>/^\/phu-kien\/?$/.test(p);
+  const normalize=p=>p.replace(/\/+$/,'')||'/';
+  // Phụ kiện là trang độc lập: điều hướng bằng tải trang đầy đủ để tránh
+  // trạng thái SPA và class sdd-accessory-route còn sót khi chuyển tab.
+  document.addEventListener('click',event=>{
+    const link=event.target.closest?.('a[href]');
+    if(!link || event.defaultPrevented || event.button!==0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target==='_blank' || link.hasAttribute('download'))return;
+    let url;try{url=new URL(link.href,location.href)}catch{return}
+    if(url.origin!==location.origin)return;
+    if(!accessoryPath(location.pathname) && !accessoryPath(url.pathname))return;
+    if(normalize(url.pathname)===normalize(location.pathname) && url.search===location.search && url.hash===location.hash)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    location.assign(url.href);
+  },true);
+  // Nếu lịch sử được cập nhật bởi router cũ, đồng bộ lại giao diện.
+  window.addEventListener('popstate',()=>{location.reload()});
+})();
+</script>
 <script id="accessory-public-v399-js">
 (()=>{
  if(!/^\/phu-kien\/?$/.test(location.pathname))return;
