@@ -592,5 +592,37 @@
  document.querySelectorAll('.sdd-mobile-bottom-nav a').forEach(function(a){a.addEventListener('click',function(){setTimeout(updateBottomNav,80)})});
 })();
 </script>
+
+<!-- V949: warm navigation destinations without replacing native navigation -->
+<script id="v949-mobile-nav-speed">
+(function(){
+  if(!window.matchMedia || !window.matchMedia('(max-width: 768px)').matches)return;
+  var warmed=Object.create(null);
+  function warm(url){
+    try {
+      var u=new URL(url,location.href);
+      if(u.origin!==location.origin || u.pathname===location.pathname || warmed[u.pathname])return;
+      warmed[u.pathname]=true;
+      var link=document.createElement('link');link.rel='prefetch';link.as='document';link.href=u.pathname+u.search;document.head.appendChild(link);
+    }catch(e){}
+  }
+  var nav=document.querySelector('.sdd-mobile-bottom-nav');
+  if(!nav)return;
+  nav.querySelectorAll('a[href]').forEach(function(a){
+    a.addEventListener('pointerenter',function(){warm(a.href)},{passive:true});
+    a.addEventListener('touchstart',function(){warm(a.href)},{passive:true});
+    a.addEventListener('click',function(){
+      nav.querySelectorAll('a').forEach(function(item){item.removeAttribute('aria-current')});
+      a.setAttribute('aria-current','page');
+    });
+  });
+  // Only prefetch the other three bottom tabs on fast connections, after the page has settled.
+  var conn=navigator.connection;
+  if(conn && (conn.saveData || /2g/.test(conn.effectiveType||'')))return;
+  function preload(){nav.querySelectorAll('a[href]').forEach(function(a){warm(a.href)})}
+  if('requestIdleCallback' in window)requestIdleCallback(preload,{timeout:3500});
+  else window.addEventListener('load',function(){setTimeout(preload,1600)},{once:true});
+})();
+</script>
 </body>
 </html>
