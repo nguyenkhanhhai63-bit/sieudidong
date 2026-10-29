@@ -2188,19 +2188,19 @@ html,body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif!im
 <style id="v927-accessory-route-visibility">
 body.sdd-accessory-route #sddAccessoryPage{display:block!important;visibility:visible!important;opacity:1!important;min-height:420px!important}
 body.sdd-accessory-route #sddHomeAllProducts,body.sdd-accessory-route #productGrid,body.sdd-accessory-route #inlineProductDetail{display:none!important}
+body.sdd-accessory-route main.page > :not(#sddAccessoryPage):not(#siteFooter):not(script):not(style){display:none!important}
+body.sdd-accessory-route main.page{min-height:0!important}
 </style>
 <script>if(/^\/phu-kien\/?$/.test(location.pathname))document.body.classList.add('sdd-accessory-route');</script>
-<script id="v928-accessory-detach">if(/^\/phu-kien\/?$/.test(location.pathname)){const p=document.getElementById('sddAccessoryPage');if(p){document.body.appendChild(p);p.hidden=false;p.style.display='block';}}</script>
 <script id="accessory-public-v399-js">
 (()=>{
  if(!/^\/phu-kien\/?$/.test(location.pathname))return;
  const page=document.getElementById('sddAccessoryPage'),grid=document.getElementById('accPublicGrid'),cats=document.getElementById('accPublicCats'),search=document.getElementById('accPublicSearch'),sort=document.getElementById('accPublicSort');if(!page)return;
- // V928: move the accessory page outside any catalog wrapper that may be hidden by the legacy router.
- const footer=document.getElementById('siteFooter')||document.querySelector('footer.sdd-site-footer');
- if(page.parentElement!==document.body){
-   if(footer&&footer.parentElement===document.body)document.body.insertBefore(page,footer);
-   else document.body.appendChild(page);
- }
+ // V929: keep accessories inside the page layout, before the footer.
+ const layout=document.querySelector('main.page');
+ if(layout && page.parentElement!==layout)layout.insertBefore(page,layout.firstElementChild);
+ if(layout && layout.firstElementChild!==page)layout.insertBefore(page,layout.firstElementChild);
+ window.scrollTo(0,0);
  page.hidden=false;
  page.style.setProperty('display','block','important');
  // Hide only known catalog surfaces; never hide ancestor <main> elements.
