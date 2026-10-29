@@ -678,7 +678,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
         <div class="acc-filter-panel"><h3>Lọc theo giá</h3><div class="acc-price-range"><input id="accPublicPriceMax" type="range" min="0" max="500000" step="10000" value="500000" aria-label="Giá tối đa"><div id="accPublicPriceLabel">0 đ – 500.000 đ</div></div><div id="accPublicPrices" class="acc-price-options"><button data-price="all" class="active">Tất cả mức giá</button><button data-price="under100">Dưới 100K</button><button data-price="100to300">100K – 300K</button><button data-price="over300">Trên 300K</button></div></div>
         <div class="acc-filter-panel"><h3>Thương hiệu</h3><div id="accPublicBrands" class="acc-brand-list"></div><button type="button" id="accPublicClearFilters" class="acc-clear-filters">↻ Xóa bộ lọc</button></div>
       </aside>
-      <section class="acc-shop-content"><div class="acc-public-tools"><input id="accPublicSearch" type="search" placeholder="Tìm phụ kiện..." aria-label="Tìm phụ kiện"><select id="accPublicSort" aria-label="Sắp xếp phụ kiện"><option value="default">Sắp xếp mặc định</option><option value="priceAsc">Giá thấp đến cao</option><option value="priceDesc">Giá cao đến thấp</option><option value="name">Tên A–Z</option></select></div><div id="accPublicCats" class="acc-cat-tabs"></div><div id="accPublicGrid" class="acc-public-grid"><div class="acc-public-empty">Đang tải phụ kiện...</div></div></section>
+      <section class="acc-shop-content"><div class="acc-mobile-filter-actions"><button type="button" id="accMobileCategories" aria-expanded="false">☷ Danh mục <span>⌄</span></button><button type="button" id="accMobileFilters" aria-expanded="false">⚙ Bộ lọc <span id="accMobileFilterCount"></span></button></div><div class="acc-public-tools"><input id="accPublicSearch" type="search" placeholder="Tìm phụ kiện..." aria-label="Tìm phụ kiện"><select id="accPublicSort" aria-label="Sắp xếp phụ kiện"><option value="default">Sắp xếp mặc định</option><option value="priceAsc">Giá thấp đến cao</option><option value="priceDesc">Giá cao đến thấp</option><option value="name">Tên A–Z</option></select></div><div id="accPublicCats" class="acc-cat-tabs"></div><div id="accPublicGrid" class="acc-public-grid"><div class="acc-public-empty">Đang tải phụ kiện...</div></div></section>
     </div>
   </main>
 
@@ -695,6 +695,33 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
 #sddAccessoryPage .acc-clear-filters:hover{border-color:#ff5a00;color:#e95500}
 #sddAccessoryPage .acc-filter-muted{font-size:12px;color:#94a3b8}
 @media(max-width:820px){#sddAccessoryPage .acc-shop-sidebar{display:flex!important;flex-direction:row;overflow-x:auto;gap:8px;margin-bottom:10px}#sddAccessoryPage .acc-filter-panel{min-width:195px;flex:1}#sddAccessoryPage .acc-shop-layout{display:flex;flex-direction:column}#sddAccessoryPage .acc-shop-content{width:100%}}
+</style>
+<style id="v940-accessory-mobile-filters">
+@media(min-width:821px){#sddAccessoryPage .acc-mobile-filter-actions,#sddAccessoryPage .acc-mobile-filter-close,#sddAccessoryPage .acc-mobile-filter-footer,#sddAccessoryPage .acc-mobile-backdrop{display:none!important}}
+@media(max-width:820px){
+#sddAccessoryPage{overflow-x:clip}
+#sddAccessoryPage .acc-shop-layout{display:flex!important;flex-direction:column!important;min-width:0}
+#sddAccessoryPage .acc-shop-content{min-width:0;width:100%!important;display:flex;flex-direction:column}
+#sddAccessoryPage .acc-public-tools{order:0;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px;margin-bottom:10px}
+#sddAccessoryPage .acc-public-tools input{min-width:0;width:100%}
+#sddAccessoryPage .acc-public-tools select{max-width:145px;min-width:0}
+#sddAccessoryPage .acc-mobile-filter-actions{order:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+#sddAccessoryPage .acc-mobile-filter-actions button{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 8px;border:1px solid #dce2ea;border-radius:10px;background:#fff;color:#243044;font-weight:700;font-size:13px}
+#sddAccessoryPage .acc-mobile-filter-actions button[aria-expanded=true]{border-color:#ff5a00;color:#f15a00;background:#fff6f0}
+#sddAccessoryPage #accMobileFilterCount:not(:empty){background:#ff5a00;color:#fff;border-radius:20px;min-width:18px;padding:2px 5px;font-size:10px}
+#sddAccessoryPage .acc-cat-tabs{order:2;display:none!important}
+#sddAccessoryPage .acc-public-grid{order:3;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+#sddAccessoryPage .acc-shop-sidebar{display:none!important;position:relative!important;overflow:visible!important;flex-direction:column!important;width:100%!important;gap:10px!important;margin:0 0 12px!important;padding:0!important}
+#sddAccessoryPage .acc-shop-sidebar.acc-mobile-open{display:flex!important}
+#sddAccessoryPage .acc-shop-sidebar .acc-filter-panel{display:none!important;min-width:0!important;width:100%!important;flex:none!important;box-sizing:border-box}
+#sddAccessoryPage .acc-shop-sidebar.acc-mobile-categories .acc-filter-panel:first-child{display:block!important}
+#sddAccessoryPage .acc-shop-sidebar.acc-mobile-filters .acc-filter-panel:nth-child(2),#sddAccessoryPage .acc-shop-sidebar.acc-mobile-filters .acc-filter-panel:nth-child(3){display:block!important}
+#sddAccessoryPage .acc-filter-panel{padding:14px!important;border-radius:12px!important}
+#sddAccessoryPage .acc-side-categories{max-height:280px;overflow-y:auto}
+#sddAccessoryPage .acc-mobile-filter-footer{display:flex;gap:8px;background:#fff;padding:10px;border:1px solid #e2e8f0;border-radius:12px}
+#sddAccessoryPage .acc-mobile-filter-footer button{flex:1;padding:11px 8px;border:1px solid #dce2ea;border-radius:9px;background:#fff;font-weight:700;color:#334155}
+#sddAccessoryPage .acc-mobile-filter-footer button:last-child{background:#ff5a00;border-color:#ff5a00;color:#fff}
+}
 </style>
 <style id="v574-home-all-products-css">
 #sddHomeAllProducts{display:none}
@@ -3077,6 +3104,25 @@ body.sdd-home-all-mode #sddHomeAllProducts>.sdd-all-section:has(.sdd-all-grid[da
 <!-- v783: iPhone dùng CHÍNH DOM/class của card Android Máy cũ, không còn layout riêng -->
 
 
+<script id="v940-accessory-mobile-filters-js">
+(function(){
+const page=document.getElementById('sddAccessoryPage');if(!page)return;
+const sidebar=page.querySelector('.acc-shop-sidebar'),layout=page.querySelector('.acc-shop-layout'),content=page.querySelector('.acc-shop-content'),actions=page.querySelector('.acc-mobile-filter-actions');
+if(!sidebar||!layout||!content||!actions)return;
+const cat=document.getElementById('accMobileCategories'),filter=document.getElementById('accMobileFilters'),count=document.getElementById('accMobileFilterCount');
+const footer=document.createElement('div');footer.className='acc-mobile-filter-footer';footer.innerHTML='<button type="button" data-mobile-reset>↻ Xóa bộ lọc</button><button type="button" data-mobile-apply>Áp dụng</button>';sidebar.appendChild(footer);
+function mobile(){return window.matchMedia('(max-width:820px)').matches}
+function close(){sidebar.classList.remove('acc-mobile-open','acc-mobile-categories','acc-mobile-filters');cat.setAttribute('aria-expanded','false');filter.setAttribute('aria-expanded','false')}
+function sync(){if(mobile()){if(sidebar.parentElement!==content)content.insertBefore(sidebar,actions.nextSibling)}else{close();if(sidebar.parentElement!==layout)layout.insertBefore(sidebar,content)}}
+function toggle(mode){if(!mobile())return;const opened=sidebar.classList.contains('acc-mobile-'+mode);close();if(!opened){sidebar.classList.add('acc-mobile-open','acc-mobile-'+mode);(mode==='categories'?cat:filter).setAttribute('aria-expanded','true')}}
+cat.addEventListener('click',()=>toggle('categories'));filter.addEventListener('click',()=>toggle('filters'));
+footer.addEventListener('click',e=>{if(e.target.closest('[data-mobile-reset]'))document.getElementById('accPublicClearFilters')?.click();close()});
+sidebar.addEventListener('click',e=>{if(e.target.closest('.acc-side-cat'))close()});
+const observer=new MutationObserver(()=>{const price=page.querySelector('#accPublicPrices [data-price].active');const brands=page.querySelectorAll('#accPublicBrands input:checked').length;const n=(price&&price.dataset.price!=='all'?1:0)+brands+(Number(document.getElementById('accPublicPriceMax')?.value||500000)<500000?1:0);count.textContent=n?String(n):''});
+observer.observe(sidebar,{subtree:true,attributes:true,attributeFilter:['class','checked'],childList:true});
+window.addEventListener('resize',sync,{passive:true});sync();
+})();
+</script>
 </body>
 </html>
 
