@@ -2276,7 +2276,8 @@ body.sdd-accessory-route main.page{min-height:0!important}
    let sheet=[],manual=[],errors=[];
    const results=await Promise.allSettled([
      fetch('/api/accessory-sheet',{cache:'no-store'}).then(async r=>{if(!r.ok)throw Error('Google Sheet HTTP '+r.status);return r.json()}),
-     fetch('/api/accessory-settings',{cache:'no-store'}).then(async r=>{if(!r.ok)throw Error('Phụ kiện thủ công HTTP '+r.status);return r.json()})
+     fetch('/api/accessory-settings',{cache:'no-store'}).then(async r=>{if(!r.ok)throw Error('Phụ kiện thủ công HTTP '+r.status);return r.json()}),
+     fetch('/api/accessory-images',{cache:'no-store'}).then(r=>r.json())
    ]);
    if(results[0].status==='fulfilled'){
      const data=results[0].value;
@@ -2287,7 +2288,7 @@ body.sdd-accessory-route main.page{min-height:0!important}
      const j=results[1].value,s=j.settings||j;
      if(Array.isArray(s.products))manual=s.products;
    }else errors.push(results[1].reason?.message||'Không tải được phụ kiện thủ công');
-   rows=[...sheet,...manual];
+   const imageMap=results[2]?.status==='fulfilled'?(results[2].value.images||{}):{};rows=[...sheet.map(x=>({...x,image:imageMap[x.id]||x.image})),...manual];
    if(rows.length){try{localStorage.setItem(KEY,JSON.stringify({products:rows}))}catch{}}
    else {try{rows=JSON.parse(localStorage.getItem(KEY)||'{}').products||[]}catch{rows=[]}}
    render();
