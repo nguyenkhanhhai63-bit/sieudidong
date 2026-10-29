@@ -1009,11 +1009,22 @@ function renderMainCategoryMenu(){
   });
 }
 
+// V950: Phân loại phụ kiện TRƯỚC khi nhận diện iPhone/máy cũ.
+// Ví dụ "CỦ SẠC IPHONE 35W" có chữ iPhone nhưng không phải điện thoại cũ.
+function sddIsAccessoryProduct(p){
+  const name=String(p?.fullName||p?.baseName||p?.name||"").trim();
+  const category=[p?.categoryName,p?.rootCategoryName].filter(Boolean).join(" ");
+  const normalized=(name+" "+category).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase();
+  const categoryNormalized=category.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase();
+  if(/phu\s*kien|op\s*lung|cu\s*sac|cap\s*sac|cuong\s*luc|kinh\s*cuong|tai\s*nghe|sac\s*du\s*phong|pin\s*du\s*phong|so\s*lanh/.test(categoryNormalized)) return true;
+  return /(?:^|[\s\-])(?:cu\s*sac|cap\s*sac|day\s*sac|sac\s*du\s*phong|pin\s*du\s*phong|op\s*lung|bao\s*da|kinh\s*cuong\s*luc|cuong\s*luc|dan\s*man\s*hinh|tai\s*nghe|cap\s*chuyen|sac\s*khong\s*day|so\s*lanh)(?=$|[\s\-])/i.test(normalized);
+}
 function sddProductKind(p){
+  if(sddIsAccessoryProduct(p)) return "other";
   const sddName=[p?.fullName,p?.baseName,p?.name].filter(Boolean).join(" ");
   if(iphoneModelName(sddName)) return "used";
   if(p?.sourceType==="used" || p?.sourceType==="kiot-iphone-used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
-  const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand].filter(Boolean).join(" ").toLowerCase();
+  const haystack=[p?.fullName,p?.baseName,p?.name,p?.categoryName,p?.rootCategoryName,p?.brand].filter(Boolean).join(" ").toLowerCase();
   if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
   if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
   return "phone";
