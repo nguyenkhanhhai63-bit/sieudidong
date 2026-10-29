@@ -1048,7 +1048,7 @@ function flattenProducts(raw){
         : (p.attributes || []);
 
       const fullName = v.name || p.name || "";
-      const iphoneModel = iphoneModelName(fullName);
+      const iphoneModel = sddIsAccessoryProduct({...p, fullName}) ? "" : iphoneModelName(fullName);
       const memory = getMemory(attrs, fullName);
       const color = getColor(attrs, fullName);
       const rom = getRom(attrs, fullName);
