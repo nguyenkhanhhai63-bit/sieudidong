@@ -16,6 +16,7 @@ const handlers = {
   "sitemap": () => import("../lib/public-api/sitemap.js"),
   "specs": () => import("../lib/public-api/specs.js"),
   "version": () => import("../lib/public-api/version.js"),
+  "accessory-settings": () => import("../lib/public-api/accessory-settings.js"),
   "accessory-sheet": () => import("../lib/public-api/accessory-sheet.js"),
   "used-products": () => import("../lib/public-api/used-products.js"),
   "order-products": () => import("../lib/public-api/order-products.js"),
