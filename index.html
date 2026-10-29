@@ -2190,11 +2190,22 @@ body.sdd-accessory-route #sddAccessoryPage{display:block!important;visibility:vi
 body.sdd-accessory-route #sddHomeAllProducts,body.sdd-accessory-route #productGrid,body.sdd-accessory-route #inlineProductDetail{display:none!important}
 </style>
 <script>if(/^\/phu-kien\/?$/.test(location.pathname))document.body.classList.add('sdd-accessory-route');</script>
+<script id="v928-accessory-detach">if(/^\/phu-kien\/?$/.test(location.pathname)){const p=document.getElementById('sddAccessoryPage');if(p){document.body.appendChild(p);p.hidden=false;p.style.display='block';}}</script>
 <script id="accessory-public-v399-js">
 (()=>{
  if(!/^\/phu-kien\/?$/.test(location.pathname))return;
  const page=document.getElementById('sddAccessoryPage'),grid=document.getElementById('accPublicGrid'),cats=document.getElementById('accPublicCats'),search=document.getElementById('accPublicSearch'),sort=document.getElementById('accPublicSort');if(!page)return;
- page.style.display='block';document.querySelectorAll('main:not(#sddAccessoryPage),#productGrid,.products-grid,.home-main,.catalog-main').forEach(el=>{if(!page.contains(el))el.style.display='none'});
+ // V928: move the accessory page outside any catalog wrapper that may be hidden by the legacy router.
+ const footer=document.getElementById('siteFooter')||document.querySelector('footer.sdd-site-footer');
+ if(page.parentElement!==document.body){
+   if(footer&&footer.parentElement===document.body)document.body.insertBefore(page,footer);
+   else document.body.appendChild(page);
+ }
+ page.hidden=false;
+ page.style.setProperty('display','block','important');
+ // Hide only known catalog surfaces; never hide ancestor <main> elements.
+ ['productGrid','inlineProductDetail','sddHomeAllProducts'].forEach(id=>{const el=document.getElementById(id);if(el&&el!==page)el.style.display='none'});
+
  const KEY='sdd_accessory_settings_v2';let rows=[],activeCat='Tất cả';const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]||m));const money=n=>(Number(n)||0).toLocaleString('vi-VN')+' đ';
  async function load(){
    let sheet=[],manual=[],errors=[];
