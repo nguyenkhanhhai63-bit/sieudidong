@@ -1824,10 +1824,10 @@ function render(){
   }
 
   if(q){
-    items=items.filter(x=>
-      x.fullName.toLowerCase().includes(q) ||
-      x.baseName.toLowerCase().includes(q)
-    );
+    items=items.map((item,index)=>({item,index,rank:productSearchRank(item,q)}))
+      .filter(entry=>entry.rank>0)
+      .sort((a,b)=>b.rank-a.rank || a.index-b.index)
+      .map(entry=>entry.item);
   }
 
   let groups=groupItems(items);
@@ -2923,18 +2923,32 @@ setInterval(loadBestSellers,60*60*1000);
 
 const searchSuggestions=document.getElementById("searchSuggestions");
 
+// V959: Ưu tiên tên bắt đầu bằng từ khóa, vẫn tìm được tên/model nằm giữa.
+// Một ký tự chỉ gợi ý theo chữ đầu để tránh kết quả nhiễu.
+function productSearchRank(item, query){
+  const q=normalizeSearchText(query);
+  if(!q) return 0;
+  const names=[item?.fullName,item?.baseName].map(normalizeSearchText);
+  let rank=0;
+  for(const name of names){
+    if(!name) continue;
+    if(name===q) rank=Math.max(rank,100);
+    else if(name.startsWith(q)) rank=Math.max(rank,90);
+    else if(q.length>=2 && name.split(' ').some(word=>word.startsWith(q))) rank=Math.max(rank,65);
+    else if(q.length>=2 && name.includes(q)) rank=Math.max(rank,40);
+  }
+  return rank;
+}
+
 function getSearchSuggestionGroups(query,limit=5){
   const q=String(query||"").trim().toLowerCase();
   if(!q) return [];
   let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
-  // V958: gợi ý theo chữ đầu tên sản phẩm, không lấy chữ nằm giữa tên.
-  // Ví dụ nhập "i" chỉ gợi ý iPhone/iQOO, không lẫn HONOR vì có chữ i trong tên.
-  const normalizeSearchPrefix=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().trim();
-  const prefix=normalizeSearchPrefix(q);
-  items=items.filter(x=>
-    normalizeSearchPrefix(x.fullName).startsWith(prefix) ||
-    normalizeSearchPrefix(x.baseName).startsWith(prefix)
-  );
+  items=items.map((item,index)=>({item,index,rank:productSearchRank(item,q)}))
+    .filter(entry=>entry.rank>0)
+    .sort((a,b)=>b.rank-a.rank || a.index-b.index)
+    .map(entry=>entry.item);
+  // Gom theo model sau khi xếp hạng để các gợi ý đầu luôn phù hợp nhất.
   return groupItems(items).slice(0,limit);
 }
 
