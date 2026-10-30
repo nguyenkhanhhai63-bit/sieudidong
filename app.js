@@ -1310,26 +1310,15 @@ function loadCompareItems(){
   try{
     const saved=JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY)||"[]");
     if(!Array.isArray(saved)) return;
-    const names=saved.map(x=>typeof x==="string"?x:x?.name).filter(Boolean);
     const groups=groupItems(flattenProducts(PRODUCTS));
-    // V955: Keep selections made in the current page immediately visible.
-    // Background refreshes must not overwrite a just-selected second phone.
-    const liveByName=new Map(COMPARE_ITEMS.map(g=>[g.name,g]));
-    const resolved=names.map(name=>groups.find(g=>g.name===name)||liveByName.get(name)).filter(Boolean);
-    if(COMPARE_ITEMS.length){
-      // Current in-memory state is authoritative while the user is interacting.
-      const merged=[...COMPARE_ITEMS];
-      for(const g of resolved){
-        if(merged.length>=MAX_COMPARE_ITEMS) break;
-        if(!merged.some(x=>x.name===g.name)) merged.push(g);
-      }
-      COMPARE_ITEMS=merged.slice(0,MAX_COMPARE_ITEMS);
-    }else{
-      COMPARE_ITEMS=resolved.slice(0,MAX_COMPARE_ITEMS);
-    }
-  }catch(_){
-    COMPARE_ITEMS=[];
-  }
+    const names=saved.map(x=>typeof x==="string"?x:x?.name).filter(Boolean);
+    // Storage is the shared source of truth across search/detail navigation.
+    // Preserve stored entries until live product data resolves, rather than dropping them.
+    COMPARE_ITEMS=names.slice(0,MAX_COMPARE_ITEMS).map(name=>
+      groups.find(g=>g.name===name)||COMPARE_ITEMS.find(g=>g.name===name)||
+      (saved.find(x=>x&&x.name===name&&typeof x==="object")||{name,image:"",items:[]})
+    );
+  }catch(_){}
 }
 
 function isCompared(group){
@@ -1337,6 +1326,9 @@ function isCompared(group){
 }
 
 function toggleCompare(group){
+  // A product can be selected from another page or a different search result.
+  // Always reconcile the shared selection before toggling, not only during fetch.
+  loadCompareItems();
   const exists=isCompared(group);
   if(exists){
     COMPARE_ITEMS=COMPARE_ITEMS.filter(x=>x.name!==group.name);
@@ -1350,8 +1342,14 @@ function toggleCompare(group){
   }
   saveCompareItems();
   renderCompareBar();
+  try{document.dispatchEvent(new CustomEvent("sdd-compare-changed",{detail:{items:COMPARE_ITEMS}}));}catch(_){}
   return true;
 }
+
+window.addEventListener("pageshow",()=>{loadCompareItems();renderCompareBar();});
+window.addEventListener("storage",e=>{
+  if(e.key===COMPARE_STORAGE_KEY){loadCompareItems();renderCompareBar();}
+});
 
 function showCompareNotice(message){
   let el=document.getElementById("compareNotice");
@@ -1368,6 +1366,7 @@ function showCompareNotice(message){
 }
 
 function renderCompareBar(){
+  document.querySelectorAll('#compareBar').forEach((node,i)=>{if(i>0)node.remove();});
   let bar=document.getElementById("compareBar");
   if(!bar){
     bar=document.createElement("div");

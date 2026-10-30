@@ -1916,173 +1916,31 @@ body.sdd-home-all-mode > .compare-bar#compareBar {
   }
 }
 </style>
-<script id="v596-home-native-compare-dock-computed-exact">
+<script id="v957-home-instant-compare-dock">
 (function(){
-  const KEY='sieudidong-compare-v1', HOST_ID='sddHomeNativeCompareHost';
-  let frame=null, seq=0, resizeTimer=null;
-
-  function read(){
-    try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v.slice(0,2):[]}
-    catch(e){return[]}
-  }
-  function isHome(){return document.body.classList.contains('sdd-home-all-mode')}
-  function removeHost(){const h=document.getElementById(HOST_ID);if(h)h.remove()}
-
-  function findDock(doc){
-    // Ưu tiên tìm đúng thanh compare native bằng position fixed/sticky.
-    // Hỗ trợ cả trạng thái mới chọn 1 máy lẫn đủ 2 máy.
-    const all=[...doc.querySelectorAll('body *')];
-    let fallback=null;
-    for(const el of all){
-      const t=(el.textContent||'').replace(/\s+/g,' ').trim();
-      if(!t||t.length>500)continue;
-      const looksCompare=(/Đã chọn/i.test(t)&&(/So sánh/i.test(t)||/Xóa/i.test(t)||/Chọn thêm/i.test(t)));
-      if(!looksCompare)continue;
-      try{
-        const cs=doc.defaultView.getComputedStyle(el);
-        if(cs.position==='fixed'||cs.position==='sticky')return el;
-      }catch(e){}
-      fallback=fallback||el;
-    }
-
-    // Fallback: đi ngược từ các nút đặc trưng của thanh compare.
-    const anchors=[...doc.querySelectorAll('button,a,[role="button"]')].filter(el=>{
-      const t=(el.textContent||'').replace(/\s+/g,' ').trim();
-      return t==='So sánh 2 máy'||t==='Xóa'||/Chọn thêm.*máy/i.test(t);
-    });
-    for(const a of anchors){
-      let n=a;
-      while(n&&n!==doc.body){
-        const t=(n.textContent||'').replace(/\s+/g,' ').trim();
-        if(/Đã chọn/i.test(t)&&(/So sánh/i.test(t)||/Xóa/i.test(t)||/Chọn thêm/i.test(t))){
-          try{
-            const cs=doc.defaultView.getComputedStyle(n);
-            if(cs.position==='fixed'||cs.position==='sticky')return n;
-          }catch(e){}
-          fallback=fallback||n;
-        }
-        n=n.parentElement;
-      }
-    }
-    return fallback;
-  }
-
-  // Copy TOÀN BỘ computed style từ thanh native bên tab Điện thoại.
-  // Như vậy CSS riêng của Trang chủ không thể làm thanh bị lệch/khác nữa.
-  function copyComputedTree(src, dst, win){
-    if(src.nodeType!==1 || dst.nodeType!==1)return;
-    const cs=win.getComputedStyle(src);
-    let css='';
-    for(let i=0;i<cs.length;i++){
-      const prop=cs[i];
-      const val=cs.getPropertyValue(prop);
-      const pri=cs.getPropertyPriority(prop);
-      css+=prop+':'+val+(pri?' !important':'')+';';
-    }
-    dst.setAttribute('style',css);
-    // Giữ class/data/aria để logic click vẫn nhận đúng.
-    for(let i=0;i<src.children.length;i++){
-      if(dst.children[i]) copyComputedTree(src.children[i],dst.children[i],win);
-    }
-  }
-
-  function notify(items){
-    try{document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items}}))}catch(e){}
-  }
-
-  function wire(clone){
-    const removeBtns=[...clone.querySelectorAll('button,a,[role="button"]')].filter(el=>{
-      const t=(el.textContent||'').trim(), a=el.getAttribute('aria-label')||'';
-      return t==='×'||/bỏ|xóa.*sản phẩm/i.test(a);
-    });
-    removeBtns.forEach((el,i)=>el.addEventListener('click',e=>{
-      e.preventDefault();e.stopPropagation();
-      const items=read();
-      if(i<items.length)items.splice(i,1);
-      localStorage.setItem(KEY,JSON.stringify(items));
-      removeHost();notify(items);
-    }));
-
-    clone.querySelectorAll('button,a,[role="button"]').forEach(el=>{
-      const t=(el.textContent||'').replace(/\s+/g,' ').trim();
-      if(t==='Xóa') el.addEventListener('click',e=>{
-        e.preventDefault();e.stopPropagation();
-        localStorage.setItem(KEY,'[]');removeHost();notify([]);
-      });
-      if(t==='So sánh 2 máy'){
-        if(el.tagName==='A')el.href='/so-sanh.html';
-        else el.addEventListener('click',e=>{e.preventDefault();location.href='/so-sanh.html'});
-      }
-    });
-  }
-
-  function mount(doc,mySeq){
-    if(mySeq!==seq||!isHome()||read().length<1)return;
-    const dock=findDock(doc);if(!dock)return;
-    removeHost();
-
-    const host=document.createElement('div');
-    host.id=HOST_ID;
-    // Host không tạo layout mới; thanh clone giữ position fixed y chang native.
-    host.style.cssText='display:contents!important;';
-
-    const clone=dock.cloneNode(true);
-    copyComputedTree(dock,clone,doc.defaultView);
-    clone.removeAttribute('hidden');
-    clone.style.setProperty('display',doc.defaultView.getComputedStyle(dock).display,'important');
-    clone.style.setProperty('visibility','visible','important');
-    clone.style.setProperty('opacity','1','important');
-    clone.style.setProperty('pointer-events','auto','important');
-    clone.style.setProperty('z-index','2147483000','important');
-
-    // Desktop: iframe dùng đúng bề rộng viewport thật để lấy style native desktop.
-    // Không ép thanh so sánh theo layout 720px/mobile như các bản trước.
-    if((window.innerWidth||0)>=900){
-      clone.style.setProperty('max-width','calc(100vw - 48px)','important');
-    }
-
-    // Chặn các selector .sdd-home-all-mode ... tác động vào clone.
-    clone.setAttribute('data-sdd-native-compare-exact','1');
-    wire(clone);
-    host.appendChild(clone);
-    document.body.appendChild(host);
-  }
-
-  function loadNative(){
-    if(!isHome()||read().length<1){
-      removeHost();if(frame){frame.remove();frame=null}return;
-    }
-    const mySeq=++seq;
-    if(frame)frame.remove();
-    frame=document.createElement('iframe');
-    frame.setAttribute('aria-hidden','true');frame.tabIndex=-1;
-    const w=Math.max(320,window.innerWidth||430);
-    const h=Math.max(700,window.innerHeight||932);
-    frame.style.cssText='position:fixed!important;width:'+w+'px!important;height:'+h+'px!important;left:-10000px!important;top:-10000px!important;opacity:0!important;pointer-events:none!important;border:0!important;';
-    frame.src='/dien-thoai?_nativeCompare=1&_t='+Date.now();
-    frame.onload=function(){
-      let tries=0;
-      (function tick(){
-        if(mySeq!==seq)return;
-        try{
-          const d=frame.contentDocument;
-          if(d&&findDock(d)){mount(d,mySeq);return}
-        }catch(e){}
-        if(++tries<35)setTimeout(tick,120);
-      })();
-    };
-    document.body.appendChild(frame);
-  }
-
-  document.addEventListener('sdd-compare-changed',()=>setTimeout(loadNative,0));
-  document.addEventListener('sdd-home-grid-ready',()=>setTimeout(loadNative,0));
-  window.addEventListener('pageshow',()=>setTimeout(loadNative,80));
-  window.addEventListener('resize',()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer=setTimeout(loadNative,180);
-  });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(loadNative,350),{once:true});
-  else setTimeout(loadNative,350);
+ const KEY='sieudidong-compare-v1', ID='sddHomeNativeCompareHost';
+ const read=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a.slice(0,2):[]}catch(_){return[]}};
+ function draw(){
+   let host=document.getElementById(ID);
+   if(!document.body.classList.contains('sdd-home-all-mode')){if(host)host.remove();return;}
+   const a=read();if(!a.length){if(host)host.remove();return;}
+   if(!host){host=document.createElement('div');host.id=ID;document.body.appendChild(host)}
+   host.innerHTML='';
+   const bar=document.createElement('div');bar.className='compare-bar show';bar.setAttribute('data-sdd-native-compare-exact','1');
+   const chips=document.createElement('div');chips.className='compare-bar-items';
+   a.forEach((p,i)=>{const chip=document.createElement('div');chip.className='compare-chip';const span=document.createElement('span');span.textContent=typeof p==='string'?p:p.name||'';const x=document.createElement('button');x.type='button';x.textContent='×';x.onclick=()=>{const v=read();v.splice(i,1);update(v)};chip.append(span,x);chips.append(chip)});
+   const actions=document.createElement('div');actions.className='compare-bar-actions';
+   const note=document.createElement('div');note.className='compare-bar-instruction';note.textContent=a.length===2?'Đã chọn đủ 2 máy • Sẵn sàng so sánh':'Đã chọn 1/2 • Chọn thêm 1 máy';
+   const clear=document.createElement('button');clear.className='compare-clear-btn';clear.textContent='Xóa';clear.onclick=()=>update([]);
+   const go=document.createElement('button');go.className='compare-open-btn';go.textContent=a.length===2?'So sánh 2 máy':'Chọn thêm 1 máy';go.disabled=a.length!==2;go.onclick=()=>{location.href='/so-sanh.html'};
+   actions.append(note,clear,go);bar.append(chips,actions);host.append(bar);
+ }
+ function update(a){localStorage.setItem(KEY,JSON.stringify(a));document.dispatchEvent(new CustomEvent('sdd-compare-changed',{detail:{items:a}}));draw()}
+ document.addEventListener('sdd-compare-changed',draw);
+ document.addEventListener('sdd-home-grid-ready',draw);
+ window.addEventListener('pageshow',draw);
+ window.addEventListener('storage',e=>{if(e.key===KEY)draw()});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',draw);else draw();
 })();
 </script>
 
