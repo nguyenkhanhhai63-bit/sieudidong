@@ -841,10 +841,21 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
      f.src=srcFor(path,round);
    }
 
+   function accessoryRank(el){
+     var label=(el.querySelector('.acc-public-cat,.acc-public-category,.category-badge,.acc-public-tag')||{}).textContent||'';
+     var title=(el.querySelector('h3,.compact-product-title,.product-name')||{}).textContent||'';
+     var value=(label+' '+title).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+     var groups=[/cu\s*sac/,/cap\s*sac/,/sac\s*du\s*phong/,/so\s*lanh/,/op\s*lung/,/cuong\s*luc|kinh\s*cuong/,/tai\s*nghe/];
+     var index=groups.findIndex(re=>re.test(value));
+     return index<0?groups.length:index;
+   }
+   function orderAccessoryCards(cards){
+     return cards.map((el,i)=>({el,i,rank:accessoryRank(el)})).sort((a,b)=>a.rank-b.rank||a.i-b.i).map(x=>x.el);
+   }
    function finishWith(cards){
      done=true;
      host.innerHTML='';
-     cards.filter(function(el){return path==='/phu-kien' || !isAccessoryCard(el);}).forEach(function(el){host.appendChild(el.cloneNode(true))});
+     (path==='/phu-kien'?orderAccessoryCards(cards):cards.filter(function(el){return !isAccessoryCard(el);})).forEach(function(el){host.appendChild(el.cloneNode(true))});
      document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
      // Quan trọng: /may-cu có thể hoàn tất sau /dien-thoai. Chỉ append iPhone sau khi
      // chính lưới Máy cũ render xong để không bị finishWith() xóa ngược trở lại.
@@ -2324,7 +2335,7 @@ body.sdd-accessory-route main.page{min-height:0!important}
    if(sort.value==='priceAsc')arr.sort((a,b)=>a.price-b.price);
    else if(sort.value==='priceDesc')arr.sort((a,b)=>b.price-a.price);
    else if(sort.value==='name')arr.sort((a,b)=>(a.name||'').localeCompare(b.name||'','vi'));
-   else arr.sort((a,b)=>Number(b.featured)-Number(a.featured)||(a.sort||0)-(b.sort||0));
+   else {const rank=v=>{const t=String(v.category||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();const order=['cu sac','cap sac','sac du phong','so lanh','op lung','cuong luc','tai nghe'];const i=order.indexOf(t);return i<0?order.length:i};arr.sort((a,b)=>rank(a)-rank(b)||(a.sort||0)-(b.sort||0)||(a.name||'').localeCompare(b.name||'','vi'));}
    grid.innerHTML=arr.length?arr.map(x=>`<article class="acc-public-card"><div class="acc-public-img">${x.image?`<img loading="lazy" src="${esc(x.image)}" alt="${esc(x.name)}" onerror="this.remove()">`:''}</div><span class="acc-public-cat">${esc(x.category||'Khác')}</span><h3 title="${esc(x.name)}">${esc(x.name)}</h3>${x.note?`<p class="acc-public-note" title="${esc(x.note)}">${esc(x.note)}</p>`:'<p class="acc-public-note">&nbsp;</p>'}<div class="acc-public-price">${money(x.price)}${x.oldPrice?`<span class="acc-public-old">${money(x.oldPrice)}</span>`:''}</div><span class="acc-public-stock ${Number(x.stock)>0?'':'out'}">${Number(x.stock)>0?'✓ Còn hàng':'Hết hàng'}</span><button class="acc-public-btn" data-name="${esc(x.name)}">Liên hệ tư vấn</button></article>`).join(''):'<div class="acc-public-empty">Hiện chưa có phụ kiện phù hợp.</div>';
  }
  cats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(sideCats)sideCats.addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;activeCat=b.dataset.cat;render()});if(priceOptions)priceOptions.addEventListener('click',e=>{const b=e.target.closest('[data-price]');if(!b)return;activePrice=b.dataset.price;render()});if(brandsEl)brandsEl.addEventListener('change',e=>{if(e.target.matches('input[type="checkbox"]')){e.target.checked?selectedBrands.add(e.target.value):selectedBrands.delete(e.target.value);render()}});if(priceMaxEl)priceMaxEl.addEventListener('input',()=>{priceCeiling=Number(priceMaxEl.value);render()});if(clearEl)clearEl.addEventListener('click',()=>{activeCat='Tất cả';activePrice='all';selectedBrands.clear();priceCeiling=500000;if(priceMaxEl)priceMaxEl.value=500000;search.value='';sort.value='default';render()});search.addEventListener('input',render);sort.addEventListener('change',render);grid.addEventListener('click',e=>{if(e.target.closest('#accRetry')){load();return}if(e.target.closest('[data-name]'))location.href='https://zalo.me/0353105423'});load();
