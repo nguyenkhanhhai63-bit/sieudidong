@@ -1036,6 +1036,10 @@ function sddProductKind(p){
 }
 
 function productMatchesMainCategory(p){
+  // V961: Lưới điện thoại/máy cũ trên trang chủ KHÔNG bao gồm phụ kiện.
+  // Phụ kiện có khu vực riêng, kể cả khi tên chứa iPhone hoặc dữ liệu KiotViet gắn sai danh mục.
+  if(sddIsAccessory(p) || sddIsAccessory(p?.fullName || "") || sddIsAccessory(p?.parentName || "")) return false;
+  if(sddProductKind(p)==="other") return false;
   if(ACTIVE_NAV_KIND) return sddProductKind(p) === ACTIVE_NAV_KIND;
   if(!ACTIVE_MAIN_CATEGORY) return true;
 
