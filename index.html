@@ -748,7 +748,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
  if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
  document.body.classList.add('sdd-home-all-mode');
  const jobs=[...document.querySelectorAll('[data-home-cat]')];
- const HOME_CACHE_PREFIX='sdd-home-grid-v923:';
+ const HOME_CACHE_PREFIX='sdd-home-grid-v963:';
  function restoreGrid(host,path){
    try{const cached=JSON.parse(localStorage.getItem(HOME_CACHE_PREFIX+path)||'null');
      if(!cached?.html||Date.now()-cached.time>24*3600000)return false;
@@ -766,10 +766,22 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
    var n=el.querySelector('h1,h2,h3,.product-name,.name,[class*="name"]');
    return ((n&&n.textContent)||el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
  }
+ // V963: Phân loại theo TÊN card, không theo toàn bộ text (mô tả phụ kiện chứa iPhone).
+ function homeCardName(el){
+   var n=el.querySelector('.compact-product-title,.v615-used-name,.product-name,.acc-public-name,h3,h2,h4,[data-name]');
+   return ((n&&n.textContent)||'').replace(/\s+/g,' ').trim();
+ }
+ function isAccessoryCard(el){
+   var name=homeCardName(el).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase();
+   var category=((el.querySelector('.acc-public-category,.acc-public-tag,.accessory-category,.category-badge')||{}).textContent||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+   return /^(?:cu\s*sac|cap\s*sac|cap\b|op\s*lung|op\b|kinh\s*cuong\s*luc|cuong\s*luc|tai\s*nghe|sac\s*du\s*phong|sac\b|so\s*lanh|bao\s*da|dan\s*man|adapter|charger|cable|case|phu\s*kien)\b/.test(name)
+      || /^(?:cu sac|cap sac|op lung|cuong luc|phu kien)$/.test(category.trim());
+ }
+ function isIphonePhoneCard(el){return !isAccessoryCard(el) && /\biphone\s*(?:se\s*\d*|\d{1,2})\b/i.test(homeCardName(el));}
  function stashIphones(cards){
    cards.forEach(function(el){
      var t=(el.textContent||'').replace(/\s+/g,' ').trim();
-     if(!/\biphone\b/i.test(t)) return;
+     if(!isIphonePhoneCard(el)) return;
      var k=iphoneKey(el);
      if(k&&!homeIphoneKeys.has(k)){homeIphoneKeys.add(k);homeIphoneStash.push(el.cloneNode(true));}
    });
@@ -832,7 +844,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
    function finishWith(cards){
      done=true;
      host.innerHTML='';
-     cards.forEach(function(el){host.appendChild(el.cloneNode(true))});
+     cards.filter(function(el){return path==='/phu-kien' || !isAccessoryCard(el);}).forEach(function(el){host.appendChild(el.cloneNode(true))});
      document.dispatchEvent(new CustomEvent('sdd-home-grid-ready',{detail:{path:path,host:host}}));
      // Quan trọng: /may-cu có thể hoàn tất sau /dien-thoai. Chỉ append iPhone sau khi
      // chính lưới Máy cũ render xong để không bị finishWith() xóa ngược trở lại.
@@ -853,6 +865,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
        if(current!==wanted){ setTimeout(check,250); return; }
        g=d&&pickGrid(d,path);
        cards=realCards(g);
+       if(path!=='/phu-kien')cards=cards.filter(function(el){return !isAccessoryCard(el);});
        // v751: iPhone máy cũ lấy trực tiếp từ dữ liệu KiotViet của /dien-thoai.
        // Không chờ nguồn Google Sheet cũ nữa.
        // v746: iPhone của shop là máy cũ trên trang chủ.
@@ -863,7 +876,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
          stashIphones(cards);
          cards=cards.filter(function(el){
            var t=(el.textContent||'').replace(/\s+/g,' ').trim();
-           return !/\biphone\b/i.test(t);
+           return !isIphonePhoneCard(el) && !isAccessoryCard(el);
          });
        }
      }catch(e){}
@@ -1814,7 +1827,7 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
     if(!card || card.nodeType!==1) return false;
     var name=card.querySelector('h1,h2,h3,h4,.product-name,.name,[class*="name"],[data-name]');
     var txt=(name ? normText(name) : '')+' '+normText(card);
-    return txt.indexOf('iphone')!==-1;
+    return /\biphone\s*(?:se\s*\d*|\d{1,2})\b/i.test((name ? normText(name) : '')) && !/^(?:củ sạc|cáp sạc|ốp lưng|kính cường lực|sạc|cáp|ốp)\b/i.test((name ? normText(name) : ''));
   }
   function isRealCard(el){
     if(!el || el.nodeType!==1) return false;
