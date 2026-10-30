@@ -1899,6 +1899,23 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
 
 
 
+<!-- v956: Home uses the dedicated cloned compare dock. Hide only the original
+     direct-body native dock to prevent two overlapping compare layers. -->
+<style id="v956-home-single-compare-dock">
+body.sdd-home-all-mode > #compareBar.compare-bar,
+body.sdd-home-all-mode > .compare-bar#compareBar {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* The dedicated home dock remains visible above the mobile bottom navigation. */
+@media (max-width: 767px) {
+  body.sdd-home-all-mode #sddHomeNativeCompareHost .compare-bar,
+  body.sdd-home-all-mode #sddHomeNativeCompareHost [data-sdd-native-compare-exact="1"] {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+</style>
 <script id="v596-home-native-compare-dock-computed-exact">
 (function(){
   const KEY='sieudidong-compare-v1', HOST_ID='sddHomeNativeCompareHost';
