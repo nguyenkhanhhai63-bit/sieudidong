@@ -1035,11 +1035,20 @@ function sddProductKind(p){
   return "phone";
 }
 
+function sddIsActualPhoneOrTablet(p){
+  // V962: strict storefront guard. Accessory data must never enter the main phone/used grid.
+  const text=[p?.fullName,p?.parentName,p?.baseName,p?.name].filter(Boolean).join(' ');
+  const category=[p?.categoryName,p?.rootCategoryName].filter(Boolean).join(' ');
+  if(sddIsAccessory(p) || sddIsAccessory(text) || sddIsAccessory({name:text,categoryName:category})) return false;
+  const normalized=String(text).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(/(?:^|\s)(?:cu sac|cap sac|op lung|kinh cuong luc|sac du phong|tai nghe|so lanh|bao da|dan man|adapter|charger|cable)(?:\s|$)/.test(normalized)) return false;
+  return sddProductKind(p)!=='other';
+}
+
 function productMatchesMainCategory(p){
   // V961: Lưới điện thoại/máy cũ trên trang chủ KHÔNG bao gồm phụ kiện.
   // Phụ kiện có khu vực riêng, kể cả khi tên chứa iPhone hoặc dữ liệu KiotViet gắn sai danh mục.
-  if(sddIsAccessory(p) || sddIsAccessory(p?.fullName || "") || sddIsAccessory(p?.parentName || "")) return false;
-  if(sddProductKind(p)==="other") return false;
+  if(!sddIsActualPhoneOrTablet(p)) return false;
   if(ACTIVE_NAV_KIND) return sddProductKind(p) === ACTIVE_NAV_KIND;
   if(!ACTIVE_MAIN_CATEGORY) return true;
 
@@ -1829,7 +1838,7 @@ async function openCompareModal(){
 
 function render(){
   const q=searchInput.value.trim().toLowerCase();
-  let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
+  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p) && productMatchesMainCategory(p));
 
   if(ACTIVE_CATEGORY==="Bán chạy"){
     const bestNames = typeof getBestSellerBaseNames==="function"
@@ -1847,7 +1856,7 @@ function render(){
       .map(entry=>entry.item);
   }
 
-  let groups=groupItems(items);
+  let groups=groupItems(items).filter(g=>g.items.some(sddIsActualPhoneOrTablet));
   groups=groups.filter(groupMatchesPrice);
   groups=sortGroups(groups);
 
@@ -2960,7 +2969,7 @@ function productSearchRank(item, query){
 function getSearchSuggestionGroups(query,limit=5){
   const q=String(query||"").trim().toLowerCase();
   if(!q) return [];
-  let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
+  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p) && productMatchesMainCategory(p));
   items=items.map((item,index)=>({item,index,rank:productSearchRank(item,q)}))
     .filter(entry=>entry.rank>0)
     .sort((a,b)=>b.rank-a.rank || a.index-b.index)
