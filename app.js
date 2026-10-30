@@ -2927,10 +2927,13 @@ function getSearchSuggestionGroups(query,limit=5){
   const q=String(query||"").trim().toLowerCase();
   if(!q) return [];
   let items=flattenProducts(PRODUCTS).filter(productMatchesMainCategory);
+  // V958: gợi ý theo chữ đầu tên sản phẩm, không lấy chữ nằm giữa tên.
+  // Ví dụ nhập "i" chỉ gợi ý iPhone/iQOO, không lẫn HONOR vì có chữ i trong tên.
+  const normalizeSearchPrefix=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().trim();
+  const prefix=normalizeSearchPrefix(q);
   items=items.filter(x=>
-    String(x.fullName||"").toLowerCase().includes(q) ||
-    String(x.baseName||"").toLowerCase().includes(q) ||
-    String(x.brand||"").toLowerCase().includes(q)
+    normalizeSearchPrefix(x.fullName).startsWith(prefix) ||
+    normalizeSearchPrefix(x.baseName).startsWith(prefix)
   );
   return groupItems(items).slice(0,limit);
 }
