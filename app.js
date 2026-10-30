@@ -1312,10 +1312,21 @@ function loadCompareItems(){
     if(!Array.isArray(saved)) return;
     const names=saved.map(x=>typeof x==="string"?x:x?.name).filter(Boolean);
     const groups=groupItems(flattenProducts(PRODUCTS));
-    COMPARE_ITEMS=names
-      .map(name=>groups.find(g=>g.name===name))
-      .filter(Boolean)
-      .slice(0,MAX_COMPARE_ITEMS);
+    // V955: Keep selections made in the current page immediately visible.
+    // Background refreshes must not overwrite a just-selected second phone.
+    const liveByName=new Map(COMPARE_ITEMS.map(g=>[g.name,g]));
+    const resolved=names.map(name=>groups.find(g=>g.name===name)||liveByName.get(name)).filter(Boolean);
+    if(COMPARE_ITEMS.length){
+      // Current in-memory state is authoritative while the user is interacting.
+      const merged=[...COMPARE_ITEMS];
+      for(const g of resolved){
+        if(merged.length>=MAX_COMPARE_ITEMS) break;
+        if(!merged.some(x=>x.name===g.name)) merged.push(g);
+      }
+      COMPARE_ITEMS=merged.slice(0,MAX_COMPARE_ITEMS);
+    }else{
+      COMPARE_ITEMS=resolved.slice(0,MAX_COMPARE_ITEMS);
+    }
   }catch(_){
     COMPARE_ITEMS=[];
   }
