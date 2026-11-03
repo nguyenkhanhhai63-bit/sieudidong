@@ -1838,14 +1838,14 @@ async function openCompareModal(){
 
 function render(){
   const q=searchInput.value.trim().toLowerCase();
-  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p) && productMatchesMainCategory(p));
+  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p) && (q ? true : productMatchesMainCategory(p)));
 
-  if(ACTIVE_CATEGORY==="Bán chạy"){
+  if(!q && ACTIVE_CATEGORY==="Bán chạy"){
     const bestNames = typeof getBestSellerBaseNames==="function"
       ? new Set(getBestSellerBaseNames())
       : new Set();
     items = items.filter(x=>bestNames.has(x.baseName));
-  }else if(ACTIVE_CATEGORY!=="Tất cả"){
+  }else if(!q && ACTIVE_CATEGORY!=="Tất cả"){
     items=items.filter(x=>canonicalBrand(x.brand)===canonicalBrand(ACTIVE_CATEGORY));
   }
 
@@ -1866,6 +1866,7 @@ function render(){
   summary.textContent="";
 
   if(!groups.length){
+    if(q)__sddRefreshMissingSearch(q);
     grid.innerHTML='<div class="empty">Không tìm thấy sản phẩm phù hợp.</div>';
     return;
   }
@@ -2948,13 +2949,38 @@ setInterval(loadBestSellers,60*60*1000);
 
 
 const searchSuggestions=document.getElementById("searchSuggestions");
+// V968: A missing model may be absent from a stale KiotViet snapshot.
+// Refresh at most once per exact query in this page session; never block typing.
+const __sddSearchRefreshAttempted=new Set();
+let __sddSearchRefreshTimer=null;
+function __sddRefreshMissingSearch(query){
+  const q=normalizeSearchText(query);
+  if(q.length<3 || __sddSearchRefreshAttempted.has(q))return;
+  clearTimeout(__sddSearchRefreshTimer);
+  __sddSearchRefreshTimer=setTimeout(async()=>{
+    if(normalizeSearchText(searchInput.value)!==q)return;
+    if(flattenProducts(PRODUCTS).some(p=>sddIsActualPhoneOrTablet(p)&&productSearchRank(p,q)>0))return;
+    __sddSearchRefreshAttempted.add(q);
+    try{
+      const r=await fetch('/api/products?refresh=1&ts='+Date.now(),{cache:'no-store'});
+      if(!r.ok)return;
+      const d=await r.json();
+      if(!Array.isArray(d.products)||!d.products.length)return;
+      const used=PRODUCTS.filter(p=>p?.sourceType==='used');
+      PRODUCTS=[...d.products,...used];
+      saveProductCache(PRODUCTS);
+      renderMainCategoryMenu();renderCategoryFilters();render();renderSearchSuggestions();
+    }catch(e){console.warn('Search catalog refresh:',e)}
+  },850);
+}
+
 
 // V959: Ưu tiên tên bắt đầu bằng từ khóa, vẫn tìm được tên/model nằm giữa.
 // Một ký tự chỉ gợi ý theo chữ đầu để tránh kết quả nhiễu.
 function productSearchRank(item, query){
   const q=normalizeSearchText(query);
   if(!q) return 0;
-  const names=[item?.fullName,item?.baseName].map(normalizeSearchText);
+  const names=[item?.fullName,item?.baseName,item?.parentName].map(normalizeSearchText);
   let rank=0;
   for(const name of names){
     if(!name) continue;
@@ -2969,12 +2995,13 @@ function productSearchRank(item, query){
 function getSearchSuggestionGroups(query,limit=5){
   const q=String(query||"").trim().toLowerCase();
   if(!q) return [];
-  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p) && productMatchesMainCategory(p));
+  let items=flattenProducts(PRODUCTS).filter(p=>sddIsActualPhoneOrTablet(p));
   items=items.map((item,index)=>({item,index,rank:productSearchRank(item,q)}))
     .filter(entry=>entry.rank>0)
     .sort((a,b)=>b.rank-a.rank || a.index-b.index)
     .map(entry=>entry.item);
   // Gom theo model sau khi xếp hạng để các gợi ý đầu luôn phù hợp nhất.
+  if(!items.length)__sddRefreshMissingSearch(q);
   return groupItems(items).slice(0,limit);
 }
 
