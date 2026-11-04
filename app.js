@@ -1031,7 +1031,9 @@ function sddProductKind(p){
   if(p?.sourceType==="used" || p?.sourceType==="kiot-iphone-used" || p?.usedItemId || /^(máy cũ)$/i.test(String(p?.rootCategoryName||p?.categoryName||"").trim())) return "used";
   const haystack=[p.fullName,p.baseName,p.name,p.categoryName,p.rootCategoryName,p.brand].filter(Boolean).join(" ").toLowerCase();
   if(/ipad|máy\s*tính\s*bảng|tablet|galaxy\s*tab|redmi\s*pad|xiaomi\s*pad|oppo\s*pad|oneplus\s*pad|honor\s*pad|matepad|legion\s*tab/.test(haystack)) return "tablet";
-  if(/phụ\s*kiện|ốp\s*lưng|cường\s*lực|tai\s*nghe|sạc|cáp|sim|thẻ\s*cào|đồng\s*hồ|watch|loa|camera/.test(haystack)) return "other";
+  // V971: Không xem các từ mô tả cấu hình (Camera Leica, loa kép, sạc nhanh...) là phụ kiện.
+  // Phụ kiện được nhận diện bằng sddIsAccessory() dựa vào tên đầu/danh mục ở trên.
+  if(/^(?:sim(?:\s|$)|thẻ\s*cào|đồng\s*hồ|watch(?:\s|$)|loa(?:\s|$)|camera(?:\s|$))/.test(String(p?.fullName||p?.baseName||p?.name||'').trim().toLowerCase())) return "other";
   return "phone";
 }
 
