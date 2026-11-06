@@ -308,6 +308,35 @@ let ACTIVE_CATEGORY = "Tất cả";
 let ACTIVE_PRICE_FILTER = "Tất cả giá";
 let ACTIVE_SORT = "default";
 
+// V974: Restore catalog filters after a browser refresh/re-mount in this tab.
+// URL parameters take precedence over saved state; other pages are not affected.
+const SDD_FILTER_STATE_KEY="sdd-catalog-filters-v974";
+function sddSaveCatalogFilters(){
+  try{
+    sessionStorage.setItem(SDD_FILTER_STATE_KEY,JSON.stringify({
+      path:location.pathname,at:Date.now(),brand:ACTIVE_CATEGORY,
+      price:ACTIVE_PRICE_FILTER,sort:ACTIVE_SORT
+    }));
+  }catch(_){ }
+}
+function sddRestoreCatalogFilters(){
+  try{
+    const params=new URLSearchParams(location.search);
+    const raw=sessionStorage.getItem(SDD_FILTER_STATE_KEY);
+    const state=raw?JSON.parse(raw):null;
+    if(state && state.path===location.pathname && Date.now()-state.at<30*60*1000){
+      if(!params.has("brand") && typeof state.brand==="string") ACTIVE_CATEGORY=state.brand;
+      if(!params.has("price") && typeof state.price==="string") ACTIVE_PRICE_FILTER=state.price;
+      if(!params.has("sort") && typeof state.sort==="string") ACTIVE_SORT=state.sort;
+    }
+    if(params.has("brand")) ACTIVE_CATEGORY=params.get("brand")||"Tất cả";
+    if(params.has("price")) ACTIVE_PRICE_FILTER=params.get("price")||"Tất cả giá";
+    if(params.has("sort")) ACTIVE_SORT=params.get("sort")||"default";
+  }catch(_){ }
+}
+sddRestoreCatalogFilters();
+
+
 let SEARCH_POPULAR_TERMS=[];
 const SEARCH_POPULAR_CACHE_KEY="sdd-search-popularity-v1";
 const SEARCH_POPULAR_CACHE_MAX_AGE=6*60*60*1000;
@@ -458,6 +487,7 @@ function updateUrlFromState(){
   if(q) url.searchParams.set("q", q);
   else url.searchParams.delete("q");
 
+  sddSaveCatalogFilters();
   history.replaceState(history.state, "", url.pathname + (url.search ? url.search : ""));
 }
 
@@ -1275,6 +1305,7 @@ function renderCategoryFilters(){
 
     btn.addEventListener("click",()=>{
       ACTIVE_CATEGORY=filter;
+      sddSaveCatalogFilters();
       sendAnalytics("filter_click",{action:"Hãng: "+filter});
       renderCategoryFilters();
       render();
@@ -4827,6 +4858,7 @@ function sddActivateMainCategory(kind){
   ACTIVE_MAIN_CATEGORY = "";
   ACTIVE_CATEGORY = "Tất cả";
   ACTIVE_PRICE_FILTER = "Tất cả giá";
+  sddSaveCatalogFilters();
   if(searchInput) searchInput.value="";
 
   renderCategoryFilters();
