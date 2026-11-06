@@ -1226,11 +1226,13 @@ function renderCategoryFilters(){
     ...(BEST_SELLER_READY ? ["Bán chạy"] : [])
   ];
 
-  // Khi mới mở trang mà cache Bán chạy đang được tải,
-  // vẫn giữ trạng thái Bán chạy. Nếu API thật sự lỗi và không có cache,
-  // loadBestSellers() sẽ tự chuyển về Tất cả.
-  if(!all.includes(ACTIVE_CATEGORY) && ACTIVE_CATEGORY !== "Bán chạy"){
-    ACTIVE_CATEGORY = "Tất cả";
+  // V972: Không tự xóa hãng khách đã chọn khi danh sách sản phẩm được
+  // tải lại bất đồng bộ (cache -> KiotViet -> máy cũ). Một snapshot tạm
+  // thiếu hãng không có nghĩa khách đã yêu cầu bỏ bộ lọc.
+  // Chỉ thao tác chủ động của khách mới thay đổi ACTIVE_CATEGORY.
+  if(ACTIVE_CATEGORY && ACTIVE_CATEGORY !== "Tất cả" &&
+     ACTIVE_CATEGORY !== "Bán chạy" && !all.includes(ACTIVE_CATEGORY)){
+    all.push(ACTIVE_CATEGORY);
   }
 
   categoryFilters.innerHTML = "";
