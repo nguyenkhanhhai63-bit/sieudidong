@@ -1257,6 +1257,65 @@ body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid[data-home-cat="/phu-kie
 })();
 </script>
 
+<style id="v975-home-brand-consistency-css">
+/* Enforce the active brand even if legacy price/sort scripts re-show cloned cards. */
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-grid > .sdd-v975-brand-mismatch{display:none!important}
+body.sdd-home-all-mode #sddHomeAllProducts .sdd-all-section.sdd-v975-brand-empty{display:none!important}
+</style>
+<script id="v975-home-brand-consistency">
+(function(){
+  if(location.pathname!=="/" && location.pathname!=="/index.html")return;
+  const home=document.getElementById("sddHomeAllProducts");
+  if(!home)return;
+  const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/[^a-z0-9]+/g," ").trim();
+  function selected(){try{return norm(new URL(location.href).searchParams.get("brand"))}catch(_){return ""}}
+  function matches(card,brand){
+    if(!brand || brand==="tat ca" || brand==="ban chay")return true;
+    const title=card.querySelector(".compact-product-title,.v615-used-name,.product-name,.acc-public-card h3,h3,h2,h4");
+    const name=norm(title?.textContent||card.dataset.name||card.querySelector("img")?.alt||"");
+    const patterns={
+      oppo:/\boppo\b/,vivo:/\bvivo\b/,oneplus:/\boneplus\b/,
+      iqoo:/\biqoo\b/,honor:/\bhonor\b/,samsung:/\bsamsung\b|\bgalaxy\b/,
+      realme:/\brealme\b/,xiaomi:/\b(xiaomi|redmi|poco|mi)\b/,
+      redmi:/\bredmi\b/,poco:/\bpoco\b/,apple:/\b(iphone|apple)\b/,
+      nubia:/\b(nubia|zte)\b/,tecno:/\btecno\b/,
+      huawei:/\bhuawei\b/,google:/\b(pixel|google)\b/,
+      motorola:/\b(motorola|moto)\b/,asus:/\b(asus|rog)\b/,
+      sony:/\bsony\b/,nothing:/\bnothing\b/
+    };
+    return (patterns[brand]||new RegExp("\\b"+brand.replace(/[^a-z0-9]/g,"")+"\\b")).test(name);
+  }
+  let queued=false;
+  function apply(){
+    queued=false;
+    if(!document.body.classList.contains("sdd-home-all-mode"))return;
+    const brand=selected();
+    home.querySelectorAll(".sdd-all-section").forEach(section=>{
+      const grid=section.querySelector(".sdd-all-grid");if(!grid)return;
+      let count=0,matchCount=0;
+      Array.from(grid.children).forEach(card=>{
+        if(card.matches(".loading,.empty,.acc-public-empty,.sdd-price-empty"))return;
+        count++;
+        const ok=matches(card,brand);
+        card.classList.toggle("sdd-v975-brand-mismatch",!ok);
+        if(ok)matchCount++;
+      });
+      section.classList.toggle("sdd-v975-brand-empty",!!brand&&count>0&&matchCount===0);
+    });
+  }
+  function schedule(){if(queued)return;queued=true;requestAnimationFrame(apply)}
+  // Home cards arrive asynchronously from category iframes. Observe only structure,
+  // not class/style mutations, to avoid a MutationObserver feedback loop.
+  const observer=new MutationObserver(schedule);
+  home.querySelectorAll(".sdd-all-grid").forEach(grid=>observer.observe(grid,{childList:true}));
+  document.addEventListener("sdd-home-grid-ready",schedule);
+  document.addEventListener("sdd-home-filter-changed",schedule);
+  window.addEventListener("popstate",schedule);
+  window.addEventListener("pageshow",schedule);
+  // Existing brand click handler updates the URL before firing the custom event.
+  schedule();
+})();
+</script>
 <script id="v587-home-compare-button-fix">
 (function(){
   const STORAGE_KEY='sieudidong-compare-v1';
