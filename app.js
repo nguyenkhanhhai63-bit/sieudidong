@@ -963,10 +963,10 @@ function buildMainCategories(){
       return a.name.localeCompare(b.name,"vi");
     });
 
-  if(!ACTIVE_MAIN_CATEGORY && MAIN_CATEGORIES.length){
-    const phone = MAIN_CATEGORIES.find(x=>/điện thoại|phone|smartphone/i.test(x.name));
-    ACTIVE_MAIN_CATEGORY = phone ? phone.name : MAIN_CATEGORIES[0].name;
-  }
+  // V973: Không tự chọn danh mục đầu tiên khi dữ liệu cache/live thay đổi.
+  // Trên trang chủ, danh mục rỗng nghĩa là hiển thị tất cả điện thoại.
+  // Việc tự gán danh mục theo snapshot tạm khiến bộ lọc hãng biến mất khi cuộn.
+
 }
 
 function renderMainCategoryMenu(){
