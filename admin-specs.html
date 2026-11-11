@@ -8323,6 +8323,7 @@ body{background:#f8fafc!important}
     <button class="sidebar-shortcut" id="sddPriceAdminMenuOpen" type="button">
       <span class="shortcut-icon">▦</span><span>Tùy chỉnh bảng giá</span><b>A4</b>
     </button>
+    <button class="sidebar-shortcut" id="sddLabelPrintOpen" type="button"><span class="shortcut-icon">▤</span><span>In tem điện thoại</span><b>35×22</b></button>
     <button class="sidebar-shortcut" id="sddConfigTableOpen" type="button">
       <span class="shortcut-icon">▤</span><span>Bảng cấu hình</span><b>Mới</b>
     </button>
@@ -15229,6 +15230,7 @@ body:not(.sidebar-collapsed) #adminSidebar .sidebar-logout{margin-top:10px!impor
 /* Preserve hidden routing buttons used by existing admin navigation */
 #adminSidebar .admin-tab.routing-tab{display:none!important}
 </style>
+<script>document.getElementById('sddLabelPrintOpen')?.addEventListener('click',()=>window.open('/in-tem.html','_blank','noopener'));</script>
 </body>
 </html>
 
