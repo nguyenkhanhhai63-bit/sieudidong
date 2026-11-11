@@ -3914,7 +3914,7 @@ function aiChatDecorateShell(){
   if(status && !status.dataset.v823){
     status.dataset.v823='1';
     const textNode=[...status.childNodes].find(n=>n.nodeType===3);
-    if(textNode) textNode.textContent=' Đang trực tuyến · Hỗ trợ trực tuyến';
+    if(textNode) textNode.textContent=' Đang trực tuyến';
   }
   if(aiChatSend && !aiChatSend.dataset.v823){
     aiChatSend.dataset.v823='1';
@@ -5037,7 +5037,7 @@ window.addEventListener("load",()=>{
 
     const status=document.getElementById('chatStaffStatus');
     if(status){
-      status.innerHTML='<i class="chat-online-dot" aria-hidden="true"></i> Đang trực tuyến <b class="ai-chat-disclosure">Hỗ trợ trực tuyến</b>';
+      status.innerHTML='<i class="chat-online-dot" aria-hidden="true"></i> Đang trực tuyến';
     }
 
     const foot=panel.querySelector('.ai-chat-foot');
