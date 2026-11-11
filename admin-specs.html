@@ -8323,7 +8323,6 @@ body{background:#f8fafc!important}
     <button class="sidebar-shortcut" id="sddPriceAdminMenuOpen" type="button">
       <span class="shortcut-icon">▦</span><span>Tùy chỉnh bảng giá</span><b>A4</b>
     </button>
-    <button class="sidebar-shortcut" id="sddLabelPrintOpen" type="button"><span class="shortcut-icon">▤</span><span>In tem điện thoại</span><b>35×22</b></button>
     <button class="sidebar-shortcut" id="sddConfigTableOpen" type="button">
       <span class="shortcut-icon">▤</span><span>Bảng cấu hình</span><b>Mới</b>
     </button>
@@ -12559,7 +12558,7 @@ document.addEventListener("DOMContentLoaded",function(){
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
       const badge=x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':'';
-      let actions=`<button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
+      let actions=`<button type="button" data-act="print-label">🏷️ In tem</button><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
       return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.rom?`<span>${esc(x.rom)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${badge}</div><div class="used-item-actions">${actions}</div></div>`;
     }).join('');
   }
@@ -12618,6 +12617,17 @@ document.addEventListener("DOMContentLoaded",function(){
   els.list?.addEventListener('click',async e=>{
     const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
     const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
+    if(act==='print-label'){
+      const name=String(x.name||'').trim();
+      const detail=[x.memory,x.accessories].map(v=>String(v||'').trim()).filter(Boolean).join(' - ');
+      const imei=String(x.imei||'').replace(/\D/g,'');
+      const price=Number(String(x.price||0).replace(/[^\d.]/g,''));
+      if(!name||!price){toast('Máy này chưa có tên hoặc giá bán hợp lệ.','error');return}
+      const item={name,detail,imei:/^\d{15}$/.test(imei)?imei:'',price};
+      try{localStorage.setItem('sdd_label_print_import_v1',JSON.stringify([item]));window.location.href='/in-tem.html?from=used';}
+      catch(err){toast('Không chuyển dữ liệu sang trang in tem được.','error')}
+      return;
+    }
     if(act==='edit')return x.source==='sheet'?openImageModal(x):edit(x);
     if(act==='toggle'){if(x.source==='sheet'){toast('Trạng thái lấy từ Google Sheet. Hãy đổi cột TRẠNG THÁI trên Sheet Android rồi bấm Đồng bộ Sheet.','error');return}try{await apiSave({...x,status:x.status==='sold'?'available':'sold'});toast('Đã cập nhật trạng thái.','success')}catch(er){toast(er.message,'error')}return}
     if(act==='delete'){
@@ -15230,7 +15240,6 @@ body:not(.sidebar-collapsed) #adminSidebar .sidebar-logout{margin-top:10px!impor
 /* Preserve hidden routing buttons used by existing admin navigation */
 #adminSidebar .admin-tab.routing-tab{display:none!important}
 </style>
-<script>document.getElementById('sddLabelPrintOpen')?.addEventListener('click',()=>window.open('/in-tem.html','_blank','noopener'));</script>
 </body>
 </html>
 
