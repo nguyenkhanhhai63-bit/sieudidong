@@ -8333,6 +8333,9 @@ body{background:#f8fafc!important}
     <button type="button" class="sidebar-shortcut" data-go-tab="ai">
       <span class="shortcut-icon">✦</span><span>Đào tạo AI</span><b id="aiKnowledgeBadge" class="ai-knowledge-badge">0</b>
     </button>
+    <button type="button" class="sidebar-shortcut" id="sddAiDiagnosticsOpen">
+      <span class="shortcut-icon">▤</span><span>Nhật ký AI</span><b>Mới</b>
+    </button>
     <button type="button" class="sidebar-shortcut" data-go-tab="seo">
       <span class="shortcut-icon">⌕</span><span>SEO & Google</span>
     </button>
@@ -15121,6 +15124,69 @@ async function clearManualSpecs(){
 </script>
 
 <script id="acc-sheet-v924">(()=>{const $=id=>document.getElementById(id);const panel=$('accSheetPanel');if(!panel)return;const msg=$('accSheetMessage');async function call(path,options){const r=await fetch(path,{credentials:'same-origin',cache:'no-store',...options});const j=await r.json();if(!r.ok||j.ok===false)throw Error(j.error||'Không thể đồng bộ');return j}async function load(){try{const d=await call('/api/admin/accessory-sheet-settings');$('accSheetUrl').value=d.url||''}catch(e){msg.textContent=e.message}}$('accSheetSave').onclick=async()=>{try{const d=await call('/api/admin/accessory-sheet-settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:$('accSheetUrl').value})});msg.textContent='✓ Đã lưu link Google Sheet, đồng bộ trên các máy.'}catch(e){msg.textContent=e.message}};$('accSheetCheck').onclick=async()=>{msg.textContent='Đang kiểm tra...';try{const d=await call('/api/accessory-sheet');msg.textContent=`✓ Đọc được ${d.items.length} phụ kiện`+(d.warning?' (đang dùng cache: '+d.warning+')':'');document.getElementById('reloadAccessories')?.click()}catch(e){msg.textContent=e.message}};$('accSheetClear').onclick=async()=>{if(!confirm('Ngắt đồng bộ phụ kiện Google Sheet?'))return;await call('/api/admin/accessory-sheet-settings',{method:'DELETE'});$('accSheetUrl').value='';msg.textContent='Đã ngắt liên kết'};load()})();</script>
+
+<style id="sdd-ai-diagnostics-v6-style">
+#sddAiDiagnosticsPanel[hidden]{display:none!important}
+#sddAiDiagnosticsPanel{position:fixed;inset:0;z-index:100050;background:rgba(15,23,42,.54);display:flex;align-items:center;justify-content:center;padding:20px}
+#sddAiDiagnosticsPanel .sdd-diag-box{width:min(1240px,98vw);max-height:92vh;display:flex;flex-direction:column;background:#fff;border-radius:17px;overflow:hidden;box-shadow:0 20px 80px #0003}
+#sddAiDiagnosticsPanel .sdd-diag-header{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #e5e7eb}
+#sddAiDiagnosticsPanel .sdd-diag-header h2{margin:0;font-size:21px}
+#sddAiDiagnosticsPanel .sdd-diag-tools{display:flex;flex-wrap:wrap;gap:9px;padding:14px 20px;background:#f8fafc}
+#sddAiDiagnosticsPanel select,#sddAiDiagnosticsPanel input{border:1px solid #d0d5dd;border-radius:8px;padding:9px;background:#fff;min-width:150px}
+#sddAiDiagnosticsPanel button{border:1px solid #ddd;border-radius:8px;padding:9px 14px;background:#fff;cursor:pointer}
+#sddAiDiagnosticsPanel button.primary{background:#ff5b00;color:white;border-color:#ff5b00}
+#sddAiDiagnosticsPanel .sdd-diag-scroll{overflow:auto;flex:1}
+#sddAiDiagnosticsPanel table{width:100%;border-collapse:collapse;min-width:960px;font-size:12px}
+#sddAiDiagnosticsPanel th,#sddAiDiagnosticsPanel td{padding:12px;text-align:left;border-bottom:1px solid #e5e7eb;vertical-align:top}
+#sddAiDiagnosticsPanel th{background:#f8fafc;position:sticky;top:0}
+#sddAiDiagnosticsPanel .sdd-diag-text{max-width:320px;white-space:pre-wrap;overflow-wrap:anywhere}
+#sddAiDiagnosticsPanel .sdd-diag-error{color:#b42318;font-weight:700}
+#sddAiDiagnosticsPanel .sdd-diag-ok{color:#067647;font-weight:700}
+#sddAiDiagnosticsPanel .sdd-diag-footer{padding:10px 20px;color:#667085;font-size:12px;border-top:1px solid #eee}
+</style>
+<div id="sddAiDiagnosticsPanel" hidden role="dialog" aria-modal="true" aria-label="Nhật ký AI">
+ <div class="sdd-diag-box">
+  <div class="sdd-diag-header"><div><h2>Nhật ký hoạt động AI</h2><small>Gemini / ChatGPT · Theo dõi lỗi, dự phòng và phản hồi khách</small></div><button id="sddDiagClose" type="button">Đóng ✕</button></div>
+  <div class="sdd-diag-tools">
+   <select id="sddDiagFilter"><option value="all">Tất cả trạng thái</option><option value="failure">Lỗi / thất bại</option><option value="fallback">Chuyển AI dự phòng</option><option value="answer">Trả lời thành công</option></select>
+   <input id="sddDiagSearch" placeholder="Tìm câu hỏi / lỗi / model" type="search">
+   <button id="sddDiagReload" class="primary" type="button">↻ Tải lại</button>
+   <button id="sddDiagExport" type="button">Xuất CSV</button>
+  </div>
+  <div class="sdd-diag-scroll"><table><thead><tr><th>Thời gian</th><th>AI / Model</th><th>Trạng thái</th><th>Thời gian xử lý</th><th>Câu hỏi</th><th>AI trả lời</th><th>Chi tiết lỗi / dự phòng</th></tr></thead><tbody id="sddDiagRows"><tr><td colspan="7">Bấm Tải lại để xem nhật ký</td></tr></tbody></table></div>
+  <div id="sddDiagCount" class="sdd-diag-footer">Dữ liệu từ Redis · Giới hạn 200 bản ghi gần nhất · Lưu tối đa 30 ngày</div>
+ </div>
+</div>
+<script id="sdd-ai-diagnostics-v6-script">
+(function(){
+ const panel=document.getElementById('sddAiDiagnosticsPanel'),open=document.getElementById('sddAiDiagnosticsOpen');
+ if(!panel||!open)return;
+ const $=id=>document.getElementById(id);
+ let records=[];
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function selected(){const f=$('sddDiagFilter').value,q=$('sddDiagSearch').value.trim().toLowerCase();return records.filter(x=>{
+  const event=String(x.event||'').toLowerCase(),status=String(x.status||'').toLowerCase();
+  const match=f==='all'||(f==='failure'&&(event==='failure'||(status!=='ok'&&status!=='success')))||(f===event);
+  return match&&(!q||[x.question,x.answer,x.detail,x.provider,x.status].join(' ').toLowerCase().includes(q));
+ });}
+ function render(){const items=selected();$('sddDiagCount').textContent=`Hiển thị ${items.length}/${records.length} bản ghi · Redis lưu tối đa 1.000 lượt, thời hạn 30 ngày`;
+ $('sddDiagRows').innerHTML=items.length?items.map(x=>{const bad=x.event==='failure'||(x.status!=='ok'&&x.status!=='success');const label=x.event==='fallback'?'Dự phòng':x.event==='failure'?'Thất bại':bad?'Lỗi '+(x.status||''):'Thành công';
+ return `<tr><td>${esc(x.at?new Date(x.at).toLocaleString('vi-VN'):'')}</td><td><b>${esc(x.provider)}</b></td><td class="${bad?'sdd-diag-error':'sdd-diag-ok'}">${esc(label)}</td><td>${esc(x.durationMs)} ms</td><td class="sdd-diag-text">${esc(x.question)}</td><td class="sdd-diag-text">${esc(x.answer)}</td><td class="sdd-diag-text">${esc(x.detail)}</td></tr>`}).join(''):'<tr><td colspan="7">Không có bản ghi phù hợp.</td></tr>';}
+ async function load(){ $('sddDiagRows').innerHTML='<tr><td colspan="7">Đang tải nhật ký...</td></tr>';try{
+ const r=await fetch('/api/admin/ai-diagnostics?limit=200&_='+Date.now(),{credentials:'same-origin',cache:'no-store'});const data=await r.json();
+ if(!r.ok)throw Error(data.error||'Không tải được nhật ký');records=Array.isArray(data.items)?data.items:[];render();
+ }catch(e){$('sddDiagRows').innerHTML='<tr><td colspan="7" class="sdd-diag-error">'+esc(e.message)+'</td></tr>';}}
+ open.addEventListener('click',()=>{panel.hidden=false;load()});
+ $('sddDiagClose').addEventListener('click',()=>panel.hidden=true);
+ panel.addEventListener('click',e=>{if(e.target===panel)panel.hidden=true});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)panel.hidden=true});
+ $('sddDiagReload').addEventListener('click',load);
+ $('sddDiagFilter').addEventListener('change',render);
+ $('sddDiagSearch').addEventListener('input',render);
+ $('sddDiagExport').addEventListener('click',()=>{const cols=['at','provider','event','status','durationMs','question','answer','detail','sessionId'];const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv='\ufeff'+[cols.join(','),...selected().map(x=>cols.map(k=>quote(k==='at'&&x[k]?new Date(x[k]).toLocaleString('vi-VN'):x[k])).join(','))].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nhat-ky-ai-sieudidong.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+})();
+</script>
+
 </body>
 </html>
 
