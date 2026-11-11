@@ -8747,7 +8747,7 @@ body{background:#f8fafc!important}
             <div style="overflow:auto;max-height:360px;margin-top:10px"><table style="width:100%;min-width:760px;border-collapse:collapse;font-size:12px"><thead><tr><th>Thời gian</th><th>Trạng thái</th><th>AI xử lý</th><th>Thời gian</th><th>Câu hỏi / Phản hồi</th><th>Chi tiết</th></tr></thead><tbody id="aiDiagRows"><tr><td colspan="6">Bấm Tải log để xem.</td></tr></tbody></table></div>
           </section>
           <div class="ai-log-table-wrap-v856">
-            <table class="ai-log-table-v856"><thead><tr><th>Thời gian</th><th>Khách hàng</th><th>Câu hỏi</th><th>Sản phẩm liên quan</th><th>AI trả lời</th><th>Đánh giá</th><th>Hành động</th></tr></thead><tbody id="aiChatHistoryList"><tr><td colspan="7" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr></tbody></table>
+            <table class="ai-log-table-v856"><thead><tr><th>Thời gian</th><th>Khách hàng</th><th>Câu hỏi</th><th>Sản phẩm liên quan</th><th>AI trả lời</th><th>Đánh giá</th><th>Hành động</th></tr></thead><tbody id="aiChatHistoryList"><tr><td colspan="8" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr></tbody></table>
           </div>
           <div id="aiChatHistoryPagination" class="ai-history-pagination-v533"></div>
           <span id="aiChatHistoryTotalInline" hidden></span><span id="aiChatHistoryTotal" hidden></span>
@@ -13547,11 +13547,11 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
  const status=x=>x.rating==='bad'?'bad':failed(x)?'failed':'ok';
  const filtered=()=>rows.filter(x=>filter==='all'||(filter==='bad'&&x.rating==='bad')||(filter==='failed'&&failed(x))||(filter==='converted'&&x.meta?.needsHuman===true));
  function counts(){document.getElementById('aiLogAllCount').textContent=rows.length;document.getElementById('aiLogBadCount').textContent=rows.filter(x=>x.rating==='bad').length;document.getElementById('aiLogFailedCount').textContent=rows.filter(failed).length;document.getElementById('aiLogConvertedCount').textContent=rows.filter(x=>x.meta?.needsHuman===true).length;const c=document.getElementById('aiChatHistoryCount');if(c)c.textContent=rows.length}
- function render(){counts();const data=filtered(),pages=Math.max(1,Math.ceil(data.length/pageSize));page=Math.min(page,pages);const slice=data.slice((page-1)*pageSize,page*pageSize);if(!slice.length){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">Chưa có dữ liệu phù hợp.</td></tr>'}else body.innerHTML=slice.map((x,i)=>{const q=firstUser(x),a=lastAi(x),st=status(x),vid=x.visitorId||x.meta?.visitorId||('Khách #'+String(x.sessionId||'').slice(-4).toUpperCase());return `<tr><td class="ai-log-time-v856">${esc(dt(x.updatedAt))}</td><td><b>${esc(vid)}</b><small>Web</small></td><td class="ai-log-question-v856">${esc(q)}</td><td><span class="ai-log-product-v856">${esc(product(x))}</span></td><td><span class="ai-log-status-v856 ${st}">${st==='bad'?'Trả lời chưa tốt':st==='failed'?'Không trả lời được':'Đã trả lời'}</span></td><td><div class="ai-log-rating-v856"><button data-rate="good" data-id="${esc(x.sessionId)}" class="${x.rating==='good'?'on':''}" title="Trả lời tốt">♡</button><button data-rate="bad" data-id="${esc(x.sessionId)}" class="bad ${x.rating==='bad'?'on':''}" title="Trả lời chưa tốt">♧</button></div></td><td><button class="ai-log-view-v856" data-view="${esc(x.sessionId)}">Xem</button></td></tr>`}).join('');
+ function render(){counts();const data=filtered(),pages=Math.max(1,Math.ceil(data.length/pageSize));page=Math.min(page,pages);const slice=data.slice((page-1)*pageSize,page*pageSize);if(!slice.length){body.innerHTML='<tr><td colspan="8" class="ai-log-empty-v856">Chưa có dữ liệu phù hợp.</td></tr>'}else body.innerHTML=slice.map((x,i)=>{const q=firstUser(x),a=lastAi(x),st=status(x),vid=x.visitorId||x.meta?.visitorId||('Khách #'+String(x.sessionId||'').slice(-4).toUpperCase());return `<tr><td class="ai-log-time-v856">${esc(dt(x.updatedAt))}</td><td><b>${esc(vid)}</b><small>Web</small></td><td class="ai-log-question-v856">${esc(q)}</td><td><span class="ai-log-product-v856">${esc(product(x))}</span></td><td><span class="ai-log-status-v856 ${st}">${st==='bad'?'Trả lời chưa tốt':st==='failed'?'Không trả lời được':'Đã trả lời'}</span></td><td><div class="ai-log-rating-v856"><button data-rate="good" data-id="${esc(x.sessionId)}" class="${x.rating==='good'?'on':''}" title="Trả lời tốt">♡</button><button data-rate="bad" data-id="${esc(x.sessionId)}" class="bad ${x.rating==='bad'?'on':''}" title="Trả lời chưa tốt">♧</button></div></td><td><button class="ai-log-view-v856" data-view="${esc(x.sessionId)}">Xem</button></td></tr>`}).join('');
  pager.innerHTML=pages<=1?'':Array.from({length:pages},(_,i)=>`<button type="button" class="ai-history-page-btn-v533 ${i+1===page?'active':''}" data-p="${i+1}">${i+1}</button>`).join('')}
  function show(x){if(!x)return;const msgs=x.messages||[];modal.hidden=false;modal.innerHTML=`<div class="ai-log-modal-card-v856"><div class="ai-log-modal-head-v856"><div><h3>Nội dung hội thoại</h3><span>${esc(dt(x.startedAt))} · ${msgs.length} tin nhắn</span></div><button data-close>×</button></div><div class="ai-log-modal-msgs-v856">${msgs.map(m=>`<div class="ai-log-msg-v856 ${m.role==='user'?'user':'assistant'}"><b>${m.role==='user'?'Khách hàng':'AI trả lời'}</b><p>${esc(m.text||'')}</p><small>${esc(dt(m.at))}</small></div>`).join('')}</div></div>`}
  async function rate(id,rating){const resp=await fetch('/api/admin/ai-chat-history',{method:'PATCH',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({id,rating})});const d=await resp.json();if(!resp.ok)throw new Error(d.error||'Không lưu được đánh giá');const x=rows.find(r=>r.sessionId===id);if(x)x.rating=rating;render()}
- async function load(){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr>';try{const r=await fetch('/api/admin/ai-chat-history?limit='+(Number(limit?.value)||50)+'&q='+encodeURIComponent((search?.value||'').trim())+'&_='+Date.now(),{cache:'no-store',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không tải được');rows=Array.isArray(d.items)?d.items:[];page=1;render()}catch(e){body.innerHTML='<tr><td colspan="7" class="ai-log-empty-v856">'+esc(e.message||'Không tải được nhật ký')+'</td></tr>'}}
+ async function load(){body.innerHTML='<tr><td colspan="8" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr>';try{const r=await fetch('/api/admin/ai-chat-history?limit='+(Number(limit?.value)||50)+'&q='+encodeURIComponent((search?.value||'').trim())+'&_='+Date.now(),{cache:'no-store',credentials:'same-origin'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Không tải được');rows=Array.isArray(d.items)?d.items:[];page=1;render()}catch(e){body.innerHTML='<tr><td colspan="8" class="ai-log-empty-v856">'+esc(e.message||'Không tải được nhật ký')+'</td></tr>'}}
  body.addEventListener('click',async e=>{const v=e.target.closest('[data-view]');if(v){show(rows.find(x=>x.sessionId===v.dataset.view));return}const r=e.target.closest('[data-rate]');if(r){try{await rate(r.dataset.id,r.dataset.rate)}catch(err){alert(err.message)}}});
  modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-close]'))modal.hidden=true});
  document.querySelectorAll('[data-ai-log-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-ai-log-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.aiLogFilter;page=1;render()}));
@@ -15153,7 +15153,7 @@ async function clearManualSpecs(){
    <button id="sddDiagReload" class="primary" type="button">↻ Tải lại</button>
    <button id="sddDiagExport" type="button">Xuất CSV</button>
   </div>
-  <div class="sdd-diag-scroll"><table><thead><tr><th>Thời gian</th><th>AI / Model</th><th>Trạng thái</th><th>Thời gian xử lý</th><th>Câu hỏi</th><th>AI trả lời</th><th>Chi tiết lỗi / dự phòng</th></tr></thead><tbody id="sddDiagRows"><tr><td colspan="7">Bấm Tải lại để xem nhật ký</td></tr></tbody></table></div>
+  <div class="sdd-diag-scroll"><table><thead><tr><th>Thời gian</th><th>AI / Model</th><th>Sự kiện</th><th>Trạng thái</th><th>Thời gian xử lý</th><th>Câu hỏi</th><th>AI trả lời</th><th>Chi tiết lỗi / dự phòng</th></tr></thead><tbody id="sddDiagRows"><tr><td colspan="8">Bấm Tải lại để xem nhật ký</td></tr></tbody></table></div>
   <div id="sddDiagCount" class="sdd-diag-footer">Dữ liệu từ Redis · Giới hạn 200 bản ghi gần nhất · Lưu tối đa 30 ngày</div>
  </div>
 </div>
@@ -15166,16 +15166,26 @@ async function clearManualSpecs(){
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function selected(){const f=$('sddDiagFilter').value,q=$('sddDiagSearch').value.trim().toLowerCase();return records.filter(x=>{
   const event=String(x.event||'').toLowerCase(),status=String(x.status||'').toLowerCase();
-  const match=f==='all'||(f==='failure'&&(event==='failure'||(status!=='ok'&&status!=='success')))||(f===event);
+  const match=f==='all'||(f==='failure'&&(event==='failure'||['error','failed','timeout','failure'].includes(status)))||(f===event);
   return match&&(!q||[x.question,x.answer,x.detail,x.provider,x.status].join(' ').toLowerCase().includes(q));
  });}
+ function friendly(x){
+ const raw=String(x.provider||'').trim(), event=String(x.event||'').toLowerCase(),status=String(x.status||'').toLowerCase();
+ const lower=raw.toLowerCase();
+ const handoff=lower.includes('zalo-handoff')||lower.includes('purchase-zalo')||lower.includes('handoff');
+ const provider=handoff?'Hệ thống':lower.includes('gemini')?'Gemini':lower.includes('openai')||lower.includes('gpt')?'ChatGPT':raw&& !lower.includes('handoff')?raw:'Hệ thống';
+ const name=handoff?'Chuyển nhân viên Zalo':event==='fallback'?'Chuyển AI dự phòng':event==='failure'?'Lỗi AI':event==='answer'?'Trả lời khách':event==='handoff'?'Chuyển nhân viên':event==='request'?'Nhận câu hỏi':'Hoạt động hệ thống';
+ const failed=event==='failure'||['error','failed','timeout','failure'].includes(status);
+ const state=failed?'Lỗi':event==='fallback'?'Đã chuyển dự phòng':handoff?'Đã chuyển nhân viên':status==='ok'||status==='success'?'Thành công':'Cần kiểm tra';
+ return {provider,name,state,failed};
+ }
  function render(){const items=selected();$('sddDiagCount').textContent=`Hiển thị ${items.length}/${records.length} bản ghi · Redis lưu tối đa 1.000 lượt, thời hạn 30 ngày`;
- $('sddDiagRows').innerHTML=items.length?items.map(x=>{const bad=x.event==='failure'||(x.status!=='ok'&&x.status!=='success');const label=x.event==='fallback'?'Dự phòng':x.event==='failure'?'Thất bại':bad?'Lỗi '+(x.status||''):'Thành công';
- return `<tr><td>${esc(x.at?new Date(x.at).toLocaleString('vi-VN'):'')}</td><td><b>${esc(x.provider)}</b></td><td class="${bad?'sdd-diag-error':'sdd-diag-ok'}">${esc(label)}</td><td>${esc(x.durationMs)} ms</td><td class="sdd-diag-text">${esc(x.question)}</td><td class="sdd-diag-text">${esc(x.answer)}</td><td class="sdd-diag-text">${esc(x.detail)}</td></tr>`}).join(''):'<tr><td colspan="7">Không có bản ghi phù hợp.</td></tr>';}
- async function load(){ $('sddDiagRows').innerHTML='<tr><td colspan="7">Đang tải nhật ký...</td></tr>';try{
+ $('sddDiagRows').innerHTML=items.length?items.map(x=>{const info=friendly(x);
+ return `<tr><td>${esc(x.at?new Date(x.at).toLocaleString('vi-VN'):'')}</td><td><b>${esc(info.provider)}</b></td><td>${esc(info.name)}</td><td class="${info.failed?'sdd-diag-error':'sdd-diag-ok'}">${esc(info.state)}</td><td>${esc(x.durationMs)} ms</td><td class="sdd-diag-text">${esc(x.question)}</td><td class="sdd-diag-text">${esc(x.answer)}</td><td class="sdd-diag-text">${esc(x.detail)}</td></tr>`}).join(''):'<tr><td colspan="8">Không có bản ghi phù hợp.</td></tr>';}
+ async function load(){ $('sddDiagRows').innerHTML='<tr><td colspan="8">Đang tải nhật ký...</td></tr>';try{
  const r=await fetch('/api/admin/ai-diagnostics?limit=200&_='+Date.now(),{credentials:'same-origin',cache:'no-store'});const data=await r.json();
  if(!r.ok)throw Error(data.error||'Không tải được nhật ký');records=Array.isArray(data.items)?data.items:[];render();
- }catch(e){$('sddDiagRows').innerHTML='<tr><td colspan="7" class="sdd-diag-error">'+esc(e.message)+'</td></tr>';}}
+ }catch(e){$('sddDiagRows').innerHTML='<tr><td colspan="8" class="sdd-diag-error">'+esc(e.message)+'</td></tr>';}}
  open.addEventListener('click',()=>{panel.hidden=false;load()});
  $('sddDiagClose').addEventListener('click',()=>panel.hidden=true);
  panel.addEventListener('click',e=>{if(e.target===panel)panel.hidden=true});
