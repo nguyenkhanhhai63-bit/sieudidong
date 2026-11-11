@@ -15148,7 +15148,7 @@ async function clearManualSpecs(){
  <div class="sdd-diag-box">
   <div class="sdd-diag-header"><div><h2>Nhật ký hoạt động AI</h2><small>Gemini / ChatGPT · Theo dõi lỗi, dự phòng và phản hồi khách</small></div><button id="sddDiagClose" type="button">Đóng ✕</button></div>
   <div class="sdd-diag-tools">
-   <select id="sddDiagFilter"><option value="all">Tất cả trạng thái</option><option value="failure">Lỗi / thất bại</option><option value="fallback">Chuyển AI dự phòng</option><option value="answer">Trả lời thành công</option></select>
+   <select id="sddDiagFilter"><option value="all">Tất cả trạng thái</option><option value="failure">Lỗi / thất bại</option><option value="fallback">Chuyển ChatGPT</option><option value="gemini-switch">Đổi model Gemini</option><option value="answer">Trả lời thành công</option></select>
    <input id="sddDiagSearch" placeholder="Tìm câu hỏi / lỗi / model" type="search">
    <button id="sddDiagReload" class="primary" type="button">↻ Tải lại</button>
    <button id="sddDiagExport" type="button">Xuất CSV</button>
@@ -15173,10 +15173,10 @@ async function clearManualSpecs(){
  const raw=String(x.provider||'').trim(), event=String(x.event||'').toLowerCase(),status=String(x.status||'').toLowerCase();
  const lower=raw.toLowerCase();
  const handoff=lower.includes('zalo-handoff')||lower.includes('purchase-zalo')||lower.includes('handoff');
- const provider=handoff?'Hệ thống':lower.includes('gemini')?'Gemini':lower.includes('openai')||lower.includes('gpt')?'ChatGPT':raw&& !lower.includes('handoff')?raw:'Hệ thống';
- const name=handoff?'Chuyển nhân viên Zalo':event==='fallback'?'Chuyển AI dự phòng':event==='failure'?'Lỗi AI':event==='answer'?'Trả lời khách':event==='handoff'?'Chuyển nhân viên':event==='request'?'Nhận câu hỏi':'Hoạt động hệ thống';
+ const provider=handoff?'Hệ thống':lower.startsWith('gemini-')?'Gemini · '+raw:lower.includes('gemini')?'Gemini':lower.includes('openai')||lower.includes('gpt')?'ChatGPT':raw&& !lower.includes('handoff')?raw:'Hệ thống';
+ const name=handoff?'Chuyển nhân viên Zalo':event==='gemini-switch'?'Đổi model Gemini':event==='fallback'?'Chuyển sang ChatGPT':event==='failure'?'Lỗi AI':event==='answer'?'Trả lời khách':event==='handoff'?'Chuyển nhân viên':event==='request'?'Nhận câu hỏi':'Hoạt động hệ thống';
  const failed=event==='failure'||['error','failed','timeout','failure'].includes(status);
- const state=failed?'Lỗi':event==='fallback'?'Đã chuyển dự phòng':handoff?'Đã chuyển nhân viên':status==='ok'||status==='success'?'Thành công':'Cần kiểm tra';
+ const state=failed?'Lỗi':event==='gemini-switch'?'Gemini đã trả lời':event==='fallback'?'Đã chuyển ChatGPT':handoff?'Đã chuyển nhân viên':status==='ok'||status==='success'?'Thành công':'Cần kiểm tra';
  return {provider,name,state,failed};
  }
  function render(){const items=selected();$('sddDiagCount').textContent=`Hiển thị ${items.length}/${records.length} bản ghi · Redis lưu tối đa 1.000 lượt, thời hạn 30 ngày`;
