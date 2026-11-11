@@ -8739,6 +8739,10 @@ body{background:#f8fafc!important}
             </div>
             <div class="ai-log-search-v856">⌕ <input id="aiChatHistorySearch" type="search" placeholder="Tìm kiếm câu hỏi..."><select id="aiChatHistoryLimit"><option value="50" selected>50 gần nhất</option><option value="100">100 gần nhất</option></select></div>
           </div>
+          <section id="aiDiagnosticsPanel" style="margin:14px 0;padding:14px;border:1px solid #e5e7eb;border-radius:12px;background:#fff">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b>Nhật ký hoạt động Gemini / ChatGPT</b><p style="margin:4px 0;color:#667085;font-size:12px">Theo dõi AI trả lời, chuyển dự phòng, thời gian xử lý và lỗi kết nối (lưu 30 ngày, tối đa 1.000 lượt).</p></div><div style="display:flex;gap:8px"><select id="aiDiagFilter" aria-label="Lọc nhật ký AI"><option value="all">Tất cả</option><option value="fallback">Chuyển dự phòng</option><option value="failure">Lỗi không trả lời</option><option value="answer">Trả lời bình thường</option></select><button id="aiDiagReload" type="button" class="secondary">↻ Tải log</button></div></div>
+            <div style="overflow:auto;max-height:360px;margin-top:10px"><table style="width:100%;min-width:760px;border-collapse:collapse;font-size:12px"><thead><tr><th>Thời gian</th><th>Trạng thái</th><th>AI xử lý</th><th>Thời gian</th><th>Câu hỏi / Phản hồi</th><th>Chi tiết</th></tr></thead><tbody id="aiDiagRows"><tr><td colspan="6">Bấm Tải log để xem.</td></tr></tbody></table></div>
+          </section>
           <div class="ai-log-table-wrap-v856">
             <table class="ai-log-table-v856"><thead><tr><th>Thời gian</th><th>Khách hàng</th><th>Câu hỏi</th><th>Sản phẩm liên quan</th><th>AI trả lời</th><th>Đánh giá</th><th>Hành động</th></tr></thead><tbody id="aiChatHistoryList"><tr><td colspan="7" class="ai-log-empty-v856">Đang tải nhật ký...</td></tr></tbody></table>
           </div>
@@ -13515,6 +13519,17 @@ if(seoQuickCheck)seoQuickCheck.addEventListener("click",()=>{loadSeoStatus();try
 </script>
 
 
+<script id="ai-diagnostics-v1-js">
+(()=>{
+ const panel=document.getElementById('aiDiagnosticsPanel');if(!panel)return;
+ const tbody=document.getElementById('aiDiagRows'),filter=document.getElementById('aiDiagFilter'),reload=document.getElementById('aiDiagReload');let rows=[];
+ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const render=()=>{const list=rows.filter(x=>filter.value==='all'||x.event===filter.value);tbody.innerHTML=list.length?list.map(x=>`<tr style="border-top:1px solid #eee"><td style="padding:9px">${esc(new Date(x.at).toLocaleString('vi-VN'))}</td><td style="padding:9px">${esc(x.event==='failure'?'🔴 Lỗi':x.event==='fallback'?'🟠 Dự phòng':'🟢 OK')}</td><td style="padding:9px">${esc(x.provider)}</td><td style="padding:9px">${esc(x.durationMs)} ms</td><td style="padding:9px;max-width:340px;overflow-wrap:anywhere"><b>${esc(x.question)}</b><div style="color:#667085">${esc(x.answer)}</div></td><td style="padding:9px;overflow-wrap:anywhere">${esc(x.detail||'—')}</td></tr>`).join(''):'<tr><td colspan="6" style="padding:12px">Chưa có log phù hợp.</td></tr>'};
+ const load=async()=>{tbody.innerHTML='<tr><td colspan="6">Đang tải...</td></tr>';try{const r=await fetch('/api/admin/ai-diagnostics?limit=200',{credentials:'same-origin',cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||'Lỗi tải log');rows=d.items||[];render()}catch(e){tbody.innerHTML='<tr><td colspan="6">'+esc(e.message)+'</td></tr>'}};
+ reload.addEventListener('click',load);filter.addEventListener('change',render);
+ document.querySelector('[data-ai-v408-tab="history"]')?.addEventListener('click',load);
+})();
+</script>
 <script id="ai-chat-history-v856-js">
 (function(){
  const card=document.getElementById('aiSettingsCard'); if(!card)return;
