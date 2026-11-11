@@ -8300,6 +8300,7 @@ body{background:#f8fafc!important}
     <!-- Routing tabs: dùng để các shortcut AI/SEO kích hoạt đúng panel nhưng không hiển thị lặp trong sidebar -->
     <button class="admin-tab routing-tab" data-tab="ai" type="button" aria-hidden="true" tabindex="-1"><span>Đào tạo AI</span></button>
     <button class="admin-tab routing-tab" data-tab="seo" type="button" aria-hidden="true" tabindex="-1"><span>SEO & Google</span></button>
+    <button class="admin-tab routing-tab" data-tab="labelPrint" type="button" aria-hidden="true" tabindex="-1"><span>In tem điện thoại</span></button>
     <button class="admin-tab routing-tab" data-tab="used" type="button" aria-hidden="true" tabindex="-1"><span>Máy cũ</span></button>
     <button class="admin-tab routing-tab" data-tab="orderVisibility" type="button" aria-hidden="true" tabindex="-1"><span>Sản phẩm theo yêu cầu</span></button>
     <button class="admin-tab routing-tab" data-tab="footer" type="button" aria-hidden="true" tabindex="-1"><span>Footer</span></button>
@@ -8312,7 +8313,7 @@ body{background:#f8fafc!important}
       <span>Danh sách máy cũ</span>
       <b>Riêng</b>
     </button>
-    <button type="button" class="sidebar-shortcut" id="sddLabelPrintMenuOpen" onclick="window.location.href='/in-tem.html'">
+    <button type="button" class="sidebar-shortcut" id="sddLabelPrintMenuOpen" data-go-tab="labelPrint">
       <span class="shortcut-icon">🏷️</span>
       <span>In tem điện thoại</span>
       <b>35×22</b>
@@ -9164,6 +9165,9 @@ body.used-image-modal-open{overflow:hidden}
   </div>
 </section>
 
+<section id="labelPrintCard" class="panel" data-panel="labelPrint" style="display:none; padding:0; background:transparent; border:0">
+  <iframe id="labelPrintFrame" title="In tem điện thoại" loading="lazy" style="width:100%;min-height:calc(100vh - 170px);height:1350px;border:0;border-radius:14px;background:#f3f6fb" referrerpolicy="same-origin"></iframe>
+</section>
 </main>
 
 
@@ -9332,6 +9336,7 @@ const ADMIN_DEEP_LINK_TABS={
   "tra-gop":"installment",
   "dich-vu":"services",
   "may-cu":"used",
+  "in-tem":"labelPrint",
   "san-pham-theo-yeu-cau":"orderVisibility",
   "dao-tao-ai":"ai",
   "phu-kien":"accessories",
@@ -11341,6 +11346,7 @@ adminTabs.addEventListener("click",e=>{
   const showInstallment = tab==="installment";
   const showServices = tab==="services";
   const showUsed = tab==="used";
+  const showLabelPrint = tab==="labelPrint";
 
   adminCard.classList.toggle("active", showSpecs);
   analyticsCard.classList.toggle("active", showAnalytics);
@@ -11357,6 +11363,10 @@ adminTabs.addEventListener("click",e=>{
   installmentCard.style.display = showInstallment ? "" : "none";
   servicePricingCard.style.display = showServices ? "" : "none";
   usedProductsCard.style.display = showUsed ? "" : "none";
+  const labelPanel=document.getElementById("labelPrintCard");
+  const labelFrame=document.getElementById("labelPrintFrame");
+  if(labelPanel)labelPanel.style.display=showLabelPrint?"":"none";
+  if(showLabelPrint&&labelFrame&&!labelFrame.getAttribute("src"))labelFrame.setAttribute("src","/in-tem.html");
 
   if(showSpecs){
     loadSpecLinksForAdmin().catch(e=>{
@@ -12090,6 +12100,7 @@ const ADMIN_PAGE_META={
   footer:["Quản lý Footer","Tùy chỉnh nội dung, icon và màu sắc footer website"],
   accessories:["Quản lý Phụ kiện","Danh sách phụ kiện riêng, giá bán và tồn kho"],
   used:["Danh sách máy cũ","Dữ liệu máy, giá và trạng thái đồng bộ từ Google Sheet"],
+  labelPrint:["In tem điện thoại","Tạo và xuất tem 35 × 22 mm cho Label Expert"],
   orderVisibility:["Sản phẩm theo yêu cầu","Quản lý sản phẩm khách có thể đặt theo yêu cầu"],
 
 };
