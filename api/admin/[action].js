@@ -1,4 +1,5 @@
 const handlers = {
+  "kiot-serials": () => import("../../lib/admin-api/kiot-serials.js"),
   "ai-settings": () => import("../../lib/admin-api/ai-settings.js"),
   "ai-chat-training": () => import("../../lib/admin-api/ai-chat-training.js"),
   "ai-welcome-generate": () => import("../../lib/admin-api/ai-welcome-generate.js"),
