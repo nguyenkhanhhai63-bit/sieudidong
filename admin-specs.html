@@ -11365,7 +11365,7 @@ adminTabs.addEventListener("click",e=>{
   usedProductsCard.style.display = showUsed ? "" : "none";
   const labelPanel=document.getElementById("labelPrintCard");
   const labelFrame=document.getElementById("labelPrintFrame");
-  if(labelPanel)labelPanel.style.display=showLabelPrint?"":"none";
+  if(labelPanel){labelPanel.classList.toggle("active",showLabelPrint);labelPanel.style.display=showLabelPrint?"block":"none";}
   if(showLabelPrint&&labelFrame&&!labelFrame.getAttribute("src"))labelFrame.setAttribute("src","/in-tem.html");
 
   if(showSpecs){
