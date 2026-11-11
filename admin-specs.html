@@ -15197,6 +15197,38 @@ async function clearManualSpecs(){
 })();
 </script>
 
+<style id="sdd-sidebar-demo-v12">
+/* Siêu Di Động: refreshed sidebar inspired by approved mockup; existing IDs/events retained */
+:root{--admin-sidebar:#f7f9fe;--admin-sidebar-2:#fff;--sidebar-w:286px}
+body:not(.sidebar-collapsed) #adminSidebar.admin-sidebar{width:286px!important;background:linear-gradient(155deg,#fbfcff,#f2f6fc)!important;color:#14213b!important;padding:17px 13px 15px!important;border-right:1px solid #e5eaf3!important;box-shadow:4px 0 25px #172c4d0d!important;overflow-y:auto!important;scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-brand{min-height:76px!important;flex-shrink:0;display:flex!important;gap:12px!important;padding:10px 10px 14px!important;margin-bottom:7px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-brand img{width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:15px!important;object-fit:cover;box-shadow:0 7px 17px #ff65002a!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-brand strong{font-size:17px!important;color:#111d36!important;font-weight:800!important;white-space:nowrap}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-brand span{font-size:11px!important;color:#8491a7!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-brand-toggle{margin-left:auto!important;flex-shrink:0;background:#fff!important;border:1px solid #e6eaf2!important;border-radius:12px!important;color:#344763!important;box-shadow:0 2px 8px #1a33500b!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-section-title{position:relative;padding:18px 11px 9px!important;color:#7f90aa!important;font-size:10px!important;font-weight:800!important;letter-spacing:.13em!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-section-title:after{content:"";height:1px;position:absolute;left:95px;right:8px;top:55%;background:#e1e7f0}
+body:not(.sidebar-collapsed) #adminSidebar #sidebarNavMount,body:not(.sidebar-collapsed) #adminSidebar .sidebar-shortcuts{background:#fff!important;border:1px solid #e8edf5!important;border-radius:17px!important;padding:7px!important;box-shadow:0 6px 20px #1c33500a!important;gap:3px!important}
+body:not(.sidebar-collapsed) #adminSidebar .admin-tabs{gap:3px!important}
+body:not(.sidebar-collapsed) #adminSidebar .admin-tab,body:not(.sidebar-collapsed) #adminSidebar .sidebar-shortcut{display:grid!important;grid-template-columns:38px minmax(0,1fr) auto!important;align-items:center!important;min-height:51px!important;width:100%!important;padding:5px 9px!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#172642!important;text-align:left!important;font-size:12px!important;font-weight:750!important;gap:9px!important;box-shadow:none!important;white-space:normal!important;line-height:1.25!important}
+body:not(.sidebar-collapsed) #adminSidebar .admin-tab:hover,body:not(.sidebar-collapsed) #adminSidebar .sidebar-shortcut:hover{background:#fff3e9!important;color:#f15b08!important}
+body:not(.sidebar-collapsed) #adminSidebar .admin-tab.active{background:linear-gradient(110deg,#ff5700,#ff8700)!important;color:white!important;box-shadow:0 8px 18px #ff670033!important}
+body:not(.sidebar-collapsed) #adminSidebar .nav-icon,body:not(.sidebar-collapsed) #adminSidebar .shortcut-icon{width:36px!important;height:36px!important;min-width:36px!important;border-radius:11px!important;display:grid!important;place-items:center!important;background:#f8faff!important;border:1px solid #e7edf5!important;color:#223653!important;font-size:18px!important;box-shadow:0 2px 6px #20304a09!important}
+body:not(.sidebar-collapsed) #adminSidebar .admin-tab.active .nav-icon{background:#ffffff2b!important;color:white!important;border-color:#ffffff25!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-shortcut b,body:not(.sidebar-collapsed) #adminSidebar .nav-new{border-radius:8px!important;background:#eaf9ee!important;border:1px solid #cdf0d6!important;color:#12823e!important;font-size:9px!important;font-weight:700!important;padding:4px 7px!important;white-space:nowrap!important}
+body:not(.sidebar-collapsed) #adminSidebar .used-sidebar-entry b{background:#fff2e9!important;border-color:#ffd9c1!important;color:#ee5d0b!important}
+body:not(.sidebar-collapsed) #adminSidebar .ai-knowledge-badge{display:none!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-bottom{margin-top:16px!important;border:0!important;padding:0 3px 8px!important;color:#64748b!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-status-card{background:#edfff4!important;border:1px solid #b9edcb!important;border-radius:15px!important;padding:13px!important;color:#12683a!important;box-shadow:none!important}
+body:not(.sidebar-collapsed) #adminSidebar .system-status{font-size:12px!important;font-weight:800!important;color:#12683a!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-update-label{font-size:10px!important;color:#6d8a79!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-update-time{font-size:11px!important;color:#1b5335!important}
+body:not(.sidebar-collapsed) #adminSidebar .sidebar-logout{margin-top:10px!important;border-radius:12px!important}
+@media(min-width:761px){body:not(.sidebar-collapsed) .admin-topbar{left:286px!important}body:not(.sidebar-collapsed) .wrap{margin-left:286px!important}}
+@media(max-width:760px){body #adminSidebar.admin-sidebar{width:min(86vw,312px)!important}body.mobile-sidebar-open #adminSidebar.admin-sidebar{background:#f7f9fe!important;color:#172642!important}}
+/* Preserve hidden routing buttons used by existing admin navigation */
+#adminSidebar .admin-tab.routing-tab{display:none!important}
+</style>
 </body>
 </html>
 
