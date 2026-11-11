@@ -34,21 +34,115 @@ $('usedClose').addEventListener('click',()=>picker.classList.remove('open'));
 picker.addEventListener('click',e=>{if(e.target===picker)picker.classList.remove('open')});
 $('usedAddSelected').addEventListener('click',()=>{const items=[...selectedUsed].map(i=>usedToLabel(usedItems[i])).filter(x=>x.name&&x.price>0);if(!items.length){$('usedPickerStatus').textContent='Chọn ít nhất một máy có tên và giá bán hợp lệ.';return}rows.push(...items);save();picker.classList.remove('open');$('message').textContent=`Đã thêm ${items.length} máy cũ vào danh sách in.`});
 
-// KiotViet: use the existing public product snapshot; never fabricate serial/IMEI.
-const kiotPicker=$('kiotPicker');let kiotItems=[],kiotSelected=new Set();
+// KiotViet: preview serials before adding labels. No fabricated IMEIs.
+const kiotPicker=$('kiotPicker');
+let kiotItems=[],kiotSelected=new Set(),kiotExpanded=new Set(),kiotSerialCache=new Map(),kiotSerialSelected=new Map();
 function shortKiotName(value){
- const raw=String(value||'').trim();
- // Remove technical specifications in parentheses and everything after the first attribute separator.
- return raw.replace(/\s*\([^)]*\)/g,'').split(/\s+-\s+/)[0].replace(/\s+/g,' ').trim()||raw;
+ let s=String(value||'').trim().replace(/\s*\([^)]*\)/g,'').split(/\s+-\s+/)[0].trim();
+ return s||String(value||'').trim();
 }
 function kiotDetail(v){const attrs=Array.isArray(v.attributes)?v.attributes:[];return attrs.map(a=>String(a.value||'').trim()).filter(Boolean).join(' - ')}
-function renderKiot(){const q=$('kiotSearch').value.trim().toLocaleLowerCase('vi');const matches=kiotItems.map((x,i)=>({x,i})).filter(({x})=>[x.name,x.code,x.detail,x.category].some(v=>String(v||'').toLocaleLowerCase('vi').includes(q)));$('kiotRows').innerHTML=matches.length?matches.slice(0,250).map(({x,i})=>`<label class="pickrow"><input type="checkbox" data-kiot-index="${i}" ${kiotSelected.has(i)?'checked':''}><span><b>${esc(x.name)}</b><small>${esc([x.code,x.detail,Number(x.price).toLocaleString('vi-VN')+'đ','Tồn: '+x.stock].filter(Boolean).join(' · '))}</small></span></label>`).join(''):'<p class="note">Không tìm thấy sản phẩm phù hợp.</p>';$('kiotStatus').textContent=`${kiotItems.length} phiên bản còn hàng · Đã chọn ${kiotSelected.size}`+(matches.length>250?' · Hiển thị 250 kết quả đầu, hãy tìm kiếm để lọc':'')}
-$('importKiot').addEventListener('click',async()=>{kiotPicker.classList.add('open');$('kiotStatus').textContent='Đang tải sản phẩm KiotViet...';$('kiotRows').innerHTML='';kiotSelected.clear();$('kiotSearch').value='';try{const response=await fetch('/api/products',{credentials:'same-origin'});const data=await response.json();if(!response.ok||!Array.isArray(data.products))throw new Error(data.error||'Không tải được danh sách sản phẩm');kiotItems=[];for(const p of data.products){const vs=Array.isArray(p.variants)&&p.variants.length?p.variants:[p];for(const v of vs){const stock=Number(v.onHand||0),price=Number(v.price??p.basePrice??0);if(stock<=0||price<=0)continue;kiotItems.push({name:shortKiotName(v.name||p.name),code:String(v.code||p.code||''),productId:Number(v.id||p.id||0),detail:kiotDetail(v)||kiotDetail(p),category:p.categoryName||'',price,stock});}}renderKiot()}catch(error){$('kiotStatus').textContent='Lỗi: '+error.message}});
+function kiotKey(x){return String(x.productId||x.code)}
+function kiotSerialSection(x){
+ const key=kiotKey(x),cached=kiotSerialCache.get(key);
+ if(!cached)return '<div class="kiot-serial-status">Đang kiểm tra IMEI tồn kho...</div>';
+ if(cached.error)return `<div class="kiot-serial-status error">Lỗi: ${esc(cached.error)}. Có thể thêm tem không IMEI.</div>`;
+ if(!cached.imeis.length)return `<div class="kiot-serial-status">${esc(cached.warning||'Không tìm thấy IMEI tồn kho. Có thể thêm tem không IMEI.')}</div>`;
+ const chosen=kiotSerialSelected.get(key)||new Set(cached.imeis);
+ return `<div class="kiot-serial-status">IMEI còn hàng (${cached.imeis.length}) · Đã chọn ${chosen.size}
+ <button type="button" class="secondary kiot-select-all" data-serial-all="${esc(key)}">Chọn tất cả</button>
+ <button type="button" class="secondary kiot-select-none" data-serial-none="${esc(key)}">Bỏ chọn</button></div>
+ <div class="kiot-serial-list">${cached.imeis.map(v=>`<label class="kiot-serial-row"><input type="checkbox" data-serial-key="${esc(key)}" data-serial="${esc(v)}" ${chosen.has(v)?'checked':''}><span>${esc(v)}</span></label>`).join('')}</div>`;
+}
+function renderKiot(){
+ const q=$('kiotSearch').value.trim().toLocaleLowerCase('vi');
+ const matches=kiotItems.map((x,i)=>({x,i})).filter(({x})=>[x.name,x.fullName,x.code,x.detail,x.category].some(v=>String(v||'').toLocaleLowerCase('vi').includes(q)));
+ $('kiotRows').innerHTML=matches.length?matches.slice(0,250).map(({x,i})=>`<div class="kiot-product">
+ <div class="kiot-product-main"><label class="kiot-check"><input type="checkbox" data-kiot-index="${i}" ${kiotSelected.has(i)?'checked':''}></label>
+ <div class="kiot-product-info"><b>${esc(x.name)}</b><small>${esc([x.code,x.detail,Number(x.price).toLocaleString('vi-VN')+'đ','Tồn: '+x.stock].filter(Boolean).join(' · '))}</small></div>
+ <button type="button" class="secondary" data-kiot-expand="${i}">${kiotExpanded.has(i)?'Thu gọn':'Xem IMEI / chi tiết'}</button></div>
+ ${kiotExpanded.has(i)?`<div class="kiot-details"><div class="kiot-details-grid"><div><small>Tên sản phẩm KiotViet</small><strong>${esc(x.fullName)}</strong></div><div><small>Mã hàng</small><strong>${esc(x.code||'—')}</strong></div><div><small>Phiên bản / màu</small><strong>${esc(x.detail||'—')}</strong></div><div><small>Giá bán</small><strong>${Number(x.price).toLocaleString('vi-VN')}đ</strong></div><div><small>Tồn kho</small><strong>${x.stock}</strong></div></div>${kiotSerialSection(x)}</div>`:''}</div>`).join(''):'<p class="note">Không tìm thấy sản phẩm phù hợp.</p>';
+ $('kiotStatus').textContent=`${kiotItems.length} phiên bản còn hàng · Đã chọn ${kiotSelected.size}`+(matches.length>250?' · Hiển thị 250 kết quả đầu, hãy tìm kiếm để lọc':'');
+}
+async function loadKiotSerials(x){
+ const key=kiotKey(x);
+ if(kiotSerialCache.has(key))return;
+ try{
+  if(!x.productId)throw new Error('Sản phẩm không có productId');
+  const r=await fetch('/api/admin/kiot-serials?productId='+encodeURIComponent(x.productId),{credentials:'same-origin',cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok)throw new Error(data.error||`HTTP ${r.status}`);
+  const imeis=[...new Set((Array.isArray(data.imeis)?data.imeis:[]).map(String).filter(v=>/^\d{15}$/.test(v)))];
+  kiotSerialCache.set(key,{imeis,warning:data.warning||''});
+  kiotSerialSelected.set(key,new Set(imeis));
+ }catch(e){kiotSerialCache.set(key,{error:e.message,imeis:[]})}
+ renderKiot();
+}
+$('importKiot').addEventListener('click',async()=>{
+ kiotPicker.classList.add('open');$('kiotStatus').textContent='Đang tải sản phẩm KiotViet...';$('kiotRows').innerHTML='';
+ kiotSelected.clear();kiotExpanded.clear();kiotSerialCache.clear();kiotSerialSelected.clear();$('kiotSearch').value='';
+ try{
+  const response=await fetch('/api/products',{credentials:'same-origin'});
+  const data=await response.json();
+  if(!response.ok||!Array.isArray(data.products))throw new Error(data.error||'Không tải được danh sách sản phẩm');
+  kiotItems=[];
+  for(const p of data.products){
+   const vs=Array.isArray(p.variants)&&p.variants.length?p.variants:[p];
+   for(const v of vs){
+    const stock=Number(v.onHand||0),price=Number(v.price??p.basePrice??0);
+    if(stock<=0||price<=0)continue;
+    kiotItems.push({name:shortKiotName(v.name||p.name),fullName:String(v.name||p.name||''),code:String(v.code||p.code||''),productId:Number(v.id||p.id||0),detail:kiotDetail(v)||kiotDetail(p),category:p.categoryName||'',price,stock});
+   }
+  }
+  renderKiot();
+ }catch(error){$('kiotStatus').textContent='Lỗi: '+error.message}
+});
 $('kiotSearch').addEventListener('input',renderKiot);
-$('kiotRows').addEventListener('change',e=>{const el=e.target.closest('[data-kiot-index]');if(!el)return;const i=Number(el.dataset.kiotIndex);if(el.checked)kiotSelected.add(i);else kiotSelected.delete(i);renderKiot()});
+$('kiotRows').addEventListener('change',e=>{
+ const el=e.target;
+ if(el.matches('[data-kiot-index]')){
+  const i=Number(el.dataset.kiotIndex);if(el.checked)kiotSelected.add(i);else kiotSelected.delete(i);
+ }else if(el.matches('[data-serial-key]')){
+  const key=el.dataset.serialKey,selected=kiotSerialSelected.get(key)||new Set();
+  if(el.checked)selected.add(el.dataset.serial);else selected.delete(el.dataset.serial);
+  kiotSerialSelected.set(key,selected);
+ }
+ renderKiot();
+});
+$('kiotRows').addEventListener('click',async e=>{
+ const toggle=e.target.closest('[data-kiot-expand]');
+ if(toggle){
+  const i=Number(toggle.dataset.kiotExpand),x=kiotItems[i];
+  if(kiotExpanded.has(i))kiotExpanded.delete(i);else{kiotExpanded.add(i);kiotSelected.add(i)}
+  renderKiot();if(kiotExpanded.has(i))await loadKiotSerials(x);return;
+ }
+ const all=e.target.closest('[data-serial-all]'),none=e.target.closest('[data-serial-none]');
+ if(all||none){
+  const key=(all||none).dataset[all?'serialAll':'serialNone'],data=kiotSerialCache.get(key);
+  kiotSerialSelected.set(key,new Set(all?(data?.imeis||[]):[]));renderKiot();
+ }
+});
 $('kiotClose').addEventListener('click',()=>kiotPicker.classList.remove('open'));
 kiotPicker.addEventListener('click',e=>{if(e.target===kiotPicker)kiotPicker.classList.remove('open')});
-$('kiotAdd').addEventListener('click',async()=>{const items=[...kiotSelected].map(i=>kiotItems[i]).filter(Boolean);if(!items.length){$('kiotStatus').textContent='Hãy chọn ít nhất một sản phẩm';return}kiotPicker.classList.remove('open');$('message').textContent='Đang kiểm tra IMEI tồn kho trên KiotViet...';let count=0,missing=0;const warnings=[];for(const x of items){let serials=[];if(x.productId){try{const response=await fetch('/api/admin/kiot-serials?productId='+encodeURIComponent(x.productId),{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(response.ok&&Array.isArray(data.imeis)){serials=data.imeis;if(!serials.length)warnings.push(x.code+': '+(data.warning||'Không có IMEI')+' '+(data.checks||[]).map(c=>c.source+' '+(c.ok?'OK':c.error)).join('; '))}else warnings.push(x.code+': '+(data.error||'HTTP '+response.status))}catch(e){warnings.push(x.code+': '+e.message);console.warn('IMEI KiotViet',e)}}if(serials.length){for(const imei of serials){rows.push({name:x.name,detail:x.detail,imei,price:x.price});count++}}else{rows.push({name:x.name,detail:x.detail,imei:'',price:x.price});missing++}}save();$('message').textContent=`Đã thêm ${count} tem có IMEI từ KiotViet và ${missing} tem chưa lấy được IMEI (cần nhập thủ công).`});
+$('kiotAdd').addEventListener('click',async()=>{
+ const items=[...kiotSelected].map(i=>kiotItems[i]).filter(Boolean);
+ if(!items.length){$('kiotStatus').textContent='Hãy chọn ít nhất một sản phẩm';return}
+ const btn=$('kiotAdd');btn.disabled=true;btn.textContent='Đang lấy IMEI...';
+ let count=0,missing=0,skipped=0;const errors=[];
+ try{
+  for(const x of items){
+   const key=kiotKey(x);if(!kiotSerialCache.has(key))await loadKiotSerials(x);
+   const data=kiotSerialCache.get(key)||{imeis:[]};
+   const serials=(data.imeis||[]).filter(v=>(kiotSerialSelected.get(key)||new Set(data.imeis)).has(v));
+   if(serials.length){for(const imei of serials){rows.push({name:x.name,detail:x.detail,imei,price:x.price});count++}}
+   else if(data.imeis?.length){skipped++}
+   else{rows.push({name:x.name,detail:x.detail,imei:'',price:x.price});missing++;if(data.error)errors.push(x.code+': '+data.error)}
+  }
+  save();kiotPicker.classList.remove('open');
+  $('message').textContent=`Đã thêm ${count} tem có IMEI, ${missing} tem không IMEI.`+(skipped?` Bỏ qua ${skipped} sản phẩm vì chưa chọn IMEI.`:'')+(errors.length?' Lỗi: '+errors.join('; '):'');
+ }finally{btn.disabled=false;btn.textContent='Thêm IMEI đã chọn vào danh sách in'}
+});
+
 
 $('printDirect').addEventListener('click',()=>{
 if(!rows.length){alert('Chưa có tem để in');return}
