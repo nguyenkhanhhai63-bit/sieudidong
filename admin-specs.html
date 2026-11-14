@@ -12571,7 +12571,7 @@ document.addEventListener("DOMContentLoaded",function(){
     els.list.innerHTML=data.map(x=>{
       const imgs=Array.isArray(x.imageAssets)&&x.imageAssets.length?x.imageAssets.map(imageUrl):(x.images||[]);
       const badge=x.source==='sheet'?'<span class="used-sheet-badge">Google Sheet</span>':'';
-      let actions=`<button type="button" data-act="print-label">🏷️ In tem</button><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
+      let actions=`<button type="button" data-act="print-label">🏷️ In tem</button><button type="button" data-act="print-warranty">🧾 In bảo hành A4</button><button type="button" data-act="edit">${x.source==='sheet'?(imgs.length?'Cập nhật ảnh':'Thêm ảnh'):'Ảnh / ghi chú'}</button><button type="button" data-act="toggle">${x.source==='sheet'?'Đổi trạng thái ở Sheet':(x.status==='sold'?'Bán lại':'Đã bán')}</button>${x.source==='sheet'?'':'<button type="button" class="danger" data-act="delete">Xóa</button>'}`;
       return `<div class="used-item-card" data-id="${esc(x.id)}">${imgs?.[0]?`<img class="used-item-photo" src="${imgs[0]}" alt="">`:'<div class="used-item-photo"></div>'}<div class="used-item-main"><strong>${esc(x.name)}</strong><div class="used-item-meta">${x.memory?`<span>${esc(x.memory)}</span>`:''}${x.color?`<span>${esc(x.color)}</span>`:''}${x.rom?`<span>${esc(x.rom)}</span>`:''}${x.condition?`<span>Ngoại hình: ${esc(x.condition)}</span>`:''}${x.battery?`<span>Pin: ${esc(x.battery)}</span>`:''}${x.imei?`<span>IMEI: ${esc(x.imei)}</span>`:''}<span>${imgs.length} ảnh</span></div><div class="used-item-price">${money(x.price)}</div><span class="used-item-state ${x.status==='sold'?'sold':''}">${x.status==='sold'?'Đã bán':'Còn hàng'}</span>${badge}</div><div class="used-item-actions">${actions}</div></div>`;
     }).join('');
   }
@@ -12630,6 +12630,14 @@ document.addEventListener("DOMContentLoaded",function(){
   els.list?.addEventListener('click',async e=>{
     const act=e.target.closest('[data-act]')?.dataset.act;if(!act)return;
     const card=e.target.closest('[data-id]'),x=rows.find(v=>String(v.id)===String(card?.dataset.id));if(!x)return;
+    if(act==='print-warranty'){
+      try{
+        const item={name:x.name||'',memory:x.memory||'',color:x.color||'',rom:x.rom||'',condition:x.condition||'',battery:x.battery||'',imei:x.imei||'',price:x.price||0,warranty:x.warranty||'6 tháng',accessories:x.accessories||'',note:x.note||'',source:x.source||''};
+        localStorage.setItem('sdd_used_warranty_print_v1',JSON.stringify(item));
+        window.open('/in-bao-hanh-may-cu.html','_blank','noopener');
+      }catch(err){toast('Không mở được phiếu bảo hành.','error')}
+      return;
+    }
     if(act==='print-label'){
       const name=String(x.name||'').trim();
       const detail=[x.memory,x.accessories].map(v=>String(v||'').trim()).filter(Boolean).join(' - ');
