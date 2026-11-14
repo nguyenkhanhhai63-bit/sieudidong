@@ -1,0 +1,7 @@
+{
+  "name": "sieudidong-cloudflare",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*", "/ai-data", "/admin", "/san-pham/*", "/products/*", "/c/*", "/sitemap.xml", "/dien-thoai", "/may-tinh-bang", "/may-cu", "/phu-kien"]
+}
